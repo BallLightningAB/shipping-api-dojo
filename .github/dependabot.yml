@@ -1,0 +1,38 @@
+version: 2.1
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Europe/Stockholm"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+
+    assignees:
+      - "BallLightningAB"
+    labels:
+      - "dependencies"
+
+    # Block major bumps for normal version updates
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+    # Group minor+patch to reduce PR noise
+    groups:
+      js-minor-and-patch:
+        applies-to: "version-updates"
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    rebase-strategy: "auto"
+
+    assignees:
+      - "BallLightningAB"
+    labels:
+      - "dependencies"

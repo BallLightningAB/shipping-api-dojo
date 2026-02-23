@@ -1,0 +1,13 @@
+{
+  "initialized": true,
+  "mode": "file-router",
+  "projectName": "balllightning",
+  "typescript": true,
+  "tailwind": true,
+  "git": true,
+  "addOnOptions": {},
+  "packageManager": "pnpm",
+  "version": 1,
+  "framework": "react-cra",
+  "chosenAddOns": ["shadcn", "start", "biome", "nitro"]
+}

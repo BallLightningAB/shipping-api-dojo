@@ -1,0 +1,263 @@
+# Memory Bank Usage and Maintenance Guide
+
+## Overview
+The memory-bank directory contains the core documentation and tracking files for the Ball Lightning AB company site. These files serve as the authoritative source for project roadmap, progress tracking, and version history in combination with https://github.com/users/BallLightningAB/projects/9 where all issues are tracked.
+
+## Core Files
+
+### active-context.yaml
+**Purpose**: Primary roadmap and progress tracking document
+- Contains current work items, deliverables, and detailed progress logs
+- Uses I{issue}D{deliverable} ID scheme for traceability (e.g., I3D1 = Issue #3 Deliverable 1)
+- Maintains `remaining_deliverables` sections to show outstanding work
+- Serves as the "near-complete record of truth" for development progress
+
+**Maintenance**:
+- Update progress_log entries as work is completed
+- Each progress_log entry includes `covers: [...]` array linking to deliverable IDs
+- Use generic tags (I3Docs, I3UI, I3Fix, I3Test, I3Biome) for work not tied to specific deliverables
+- Mark concatenated entries with `[concatenated]` when merging related small tasks
+- Update `remaining_deliverables` as items are completed
+
+### CHANGELOG.yaml
+**Purpose**: Version history and release tracking
+- Tracks all version releases with dates, commits, and detailed change descriptions
+- Refs: lines include version, issue number, and relevant IxDy IDs for linkage
+- Maintains reverse chronological order (latest versions first)
+
+**Maintenance**:
+- Add new entries for each version release
+- Extend Refs: lines with corresponding IxDy IDs from active-context.yaml
+- Include detailed bullet points describing all changes made
+- Keep version numbers synchronized with active-context.yaml meta.release
+
+### balllightning-pdd.yaml
+**Purpose**: Project Design Document with technical specifications
+- Contains product definitions, technical stack, and architectural decisions
+- Serves as the canonical technical reference for the project
+
+**Maintenance**:
+- Update when significant technical decisions or architectural changes occur
+- **IMPORTANT**: Always update the `meta.version` field in this file (not active-context.yaml)
+- Keep technical stack information current with actual implementation
+- Update product descriptions and domain information as needed
+
+## Version Management
+
+### Version Synchronization
+- `balllightning-pdd.yaml` tracks its `meta.version` for documentation versioning
+- `active-context.yaml` tracks both the global `meta.release` for the current code version and the 'meta.pdd_version' specifically for the PDD
+- update balllightning-pdd.yaml version when documentation changes, not code
+
+### ID Scheme Reference
+```
+I{issue}D{n} = Deliverable n for GitHub issue #{issue}
+Examples:
+- I3D1 = Issue #3 Deliverable 1
+- I1D4 = Issue #1 Deliverable 4
+
+Generic Tags:
+- I3Docs = Documentation work
+- I3UI = UI polish/improvements
+- I3Fix = Minor fixes
+- I3Test = Test-related work
+- I3Biome = Biome/tooling configuration
+```
+
+## Workflow Integration
+
+### Progress Tracking Flow
+1. Define deliverables in active-context.yaml with I{issue}D{n} prefixes
+2. Work on deliverables, updating progress_log with `covers: [...]` arrays
+3. Mark items in `remaining_deliverables` as completed
+4. Create CHANGELOG.yaml entry for version release
+5. Add relevant IxDy IDs to CHANGELOG Refs: lines
+6. Update balllightning-pdd.yaml if technical specifications change
+
+### Memory Bank as Single Source of Truth
+- active-context.yaml provides complete progress narrative
+- CHANGELOG.yaml provides version-specific change summaries
+- balllightning-pdd.yaml provides technical foundation
+- Together they create comprehensive project documentation
+
+## Best Practices
+
+### Content Quality
+- Maintain detailed progress_log entries - avoid over-compaction
+- Use clear, descriptive language in all entries
+- Ensure all deliverable IDs are properly referenced
+- Keep technical specifications accurate and up-to-date
+
+### File Integrity
+- Validate YAML syntax after changes
+- Ensure proper indentation and structure
+- Test ID references between files
+- Maintain consistent formatting across all memory-bank files
+
+### Review Process
+- Review active-context.yaml progress completeness before releases
+- Verify CHANGELOG.yaml entries match actual changes made
+- Confirm balllightning-pdd.yaml reflects current technical state
+- Check version synchronization between files
+
+## Communication Guidelines
+
+### Drafting Expressive Commit Messages
+Use the memory-bank structure to create clear, traceable commit messages:
+
+**Format**: `type(scope): concise description`
+**Types**: 
+- `feat`: new features/deliverables
+- `fix`: bug fixes
+- `docs`: documentation changes
+- `refactor`: code restructuring
+- `test`: testing work
+- `chore`: maintenance/tooling
+
+**Scope Guidelines**:
+- Reference specific deliverables when possible: `feat(site): implement blog detail pages (I3D6)`
+- Include IxDy IDs for direct linkage: `fix(typography): resolve dark mode prose colors (I3D1)`
+- Use generic tags for broader work: `chore(biome): update linting rules (I3Biome)`
+
+**Examples**:
+```
+feat(assets): implement logo SVG master and favicon set (I3D1, I3D2)
+fix(meta): resolve site.webmanifest icon purpose fields (I3D6)
+docs(memory-bank): update usage guide and version management
+feat(portfolio): add Chronomation subpage with case study (I2D5)
+test(og): validate OG image previews across social platforms (I3D11)
+```
+
+### Writing Effective GitHub Issue Updates
+Leverage the memory-bank structure for comprehensive issue tracking:
+
+**Progress Updates**:
+- Reference completed deliverables with IxDy IDs
+- Link to specific progress_log entries from active-context.yaml
+- Mention any new deliverables added during development
+
+**Status Reporting**:
+- Use `remaining_deliverables` to show what's left
+- Reference concatenated entries when appropriate
+- Cross-reference related issues or dependencies
+
+**Update Templates**:
+```
+#### Progress Summary
+Completed deliverables: I3D1, I3D2, I3D4
+Remaining: I3D10, I3D11
+
+#### Key Changes
+- Implemented theme provider with dark/light/system modes (I3D2)
+- Created shared layout components (I3D4)
+- See active-context.yaml progress_log for detailed breakdown
+
+#### Next Steps
+- Focus on newsletter integration (I3D10)
+- SEO configuration (I3D11)
+```
+
+### Available GH Label List
+- NAME                         DESCRIPTION                                      COLOR  
+- type: question               Further information is requested                 #d876e3
+- wontfix                      This will not be worked on                       #ffffff
+- type: bug                    Defect in existing behavior                      #D73A4A
+- type: feature                New capability                                   #A2EEEF
+- type: chore                  Maintenance/cleanup                              #CFDFE1
+- type: docs                   Documentation work                               #0075CA
+- type: refactor               Code restructuring                               #FBCA04
+- type: test                   Testing/QA                                       #5319E7
+- area: frontend               UI and client application                        #1D76DB
+- type: security               Security-related work                            #B60205
+- area: api                    Server/API endpoints                             #0E8A16
+- area: db                     Database and schema                              #006B75
+- area: web3                   On-chain, wallets, RPC                           #5319E7
+- area: infra                  Infra/ops/config                                 #BFD4F2
+- area: ci                     CI/CD and automation                             #5EBEFF
+- status: blocked              Blocked by external/internal dependency          #000000
+- status: needs-info           Waiting on clarification                         #FEF2C0
+- size: S                      Small                                            #EDEDED
+- status: ready                Ready to start                                   #0E8A16
+- size: M                      Medium                                           #EDEDED
+- size: L                      Large                                            #EDEDED
+- risk: high                   High delivery or prod risk                       #D73A4A
+- risk: medium                 Moderate risk                                    #F9D0C4
+- breaking-change              Breaking API/contract change                     #5319E7
+- risk: low                    Low risk                                         #D4C5F9
+- needs-triage                 New/ungroomed                                    #FEF2C0
+- area: documentation          Documentation area (guides, README, specs)       #0366D6
+- area: research-and-planning  Discovery, research spikes, planning, PDD/specs  #C5DEF5
+- status: planned                                                               #948a59
+- type: dependency                                                              #cdd646
+
+### Integration with Development Workflow
+- Commit messages should reference the deliverables they implement
+- Issue updates should mirror the structure in active-context.yaml
+- Pull request descriptions should include relevant IxDy IDs
+- Use memory-bank files as the source of truth for all project communication
+
+## Sub-Issue Management
+
+### Sub-Issue Structure
+For tracking related work under a parent issue, use the `sub_issues` array:
+
+```yaml
+sub_issues:
+  - id: descriptive-sub-issue-id
+    issue: "#4"
+    title: "Brief descriptive title"
+    status: done|in-progress|planned
+    links:
+      issue: https://github.com/BallLightningAB/balllightning/issues/4
+```
+
+### When to Use Sub-Issues
+Sub-issues are appropriate for:
+- Organizational or documentation tasks that support a main issue
+- Separate but related work that doesn't fit into the main deliverable structure
+- Cross-cutting concerns (like tooling upgrades, process improvements)
+- Work that needs its own issue tracking but is logically part of a parent effort
+
+### Sub-Issue vs Deliverable Decision
+**Use sub-issues when:**
+- The work requires separate GitHub issue tracking
+- The task has its own lifecycle independent of parent deliverables
+- The work spans multiple areas or affects multiple parent deliverables
+
+**Use deliverables when:**
+- The work is a direct component of the main issue
+- The task fits naturally into the parent issue's scope
+- The work can be tracked with the parent issue's I{issue}D{n} scheme
+
+### Documentation Guidelines
+- Sub-issues maintain their own I{issue}D{n} deliverable scheme (e.g., I4D1, I4D2)
+- Parent issue progress_log can reference sub-issue completion using generic tags
+- Sub-issues should be linked from the parent issue for visibility
+- Update the parent issue's sub_issues array when sub-issues are created or completed
+
+### Lifecycle Management
+**Sub-issue completion:**
+- Simple sub-issues (like organizational tasks) can just update status to "done"
+- Complex sub-issues with their own deliverables should be moved to `recent_done` with full structure
+- Parent issue progress_log can include entries like: `covers: [I3Docs] note: "Completed sub-issue #4: memory-bank organizational upgrade"`
+
+**Progress tracking:**
+- Sub-issues maintain their own progress_log for detailed tracking
+- Parent issue progress_log can reference major sub-issue milestones
+- Use generic tags (I3Docs, I3UI) when sub-issue work supports parent deliverables
+- Keep detailed progress within the sub-issue, summary references in parent
+
+### Example Usage
+```yaml
+# Parent issue (#3) - main implementation
+sub_issues:
+  - id: memory-bank-organizational-upgrade
+    issue: "#4" 
+    title: "docs(memory-bank): implement ID-based tracking system"
+    status: done
+
+# Sub-issue (#4) - has its own deliverables
+deliverables:
+  - "[I4D1] Refactor active-context.yaml ID scheme"
+  - "[I4D2] Create memory-bank-usage.yaml"
+```

@@ -1,0 +1,39 @@
+meta:
+  release: "1.0.0"
+  repo: github.com/BallLightningAB/api-trainer
+  pdd_version: "1.0"
+  references:
+    changelog: specs/memory-bank/CHANGELOG.yaml
+  # Legend:
+  # - I{issue}D{n}: deliverable n for GitHub issue #{issue} (e.g. I3D3 = Issue #3 Deliverable 3)
+  # - I3Docs / I3UI / I3Fix / I3Test / I3Biome: tags for documentation, UI polish, minor fixes, tests and Biome/tooling work not tied to a single deliverable
+roadmap:
+  current:
+    - id: api-trainer-mvp
+      title: "Carrier API-Trainer MVP Build"
+      status: completed
+      deliverables:
+        - "[done] Repo cleanse — remove BL boilerplate, rebrand to API Trainer"
+        - "[done] Progress system — Zod schema, localStorage storage, TanStack store, XP/streak actions"
+        - "[done] Content data layer — 8 lessons, 20+ drills, 5 scenarios, 13 wiki entries, 15 directory links"
+        - "[done] Routes + UI — landing, REST track, SOAP track, lesson/$slug, arena, wiki, wiki/$slug, directory, settings"
+        - "[done] Header/Footer rebrand with new navigation"
+        - "[done] SEO — meta tags, JSON-LD (WebSite + WebApplication), sitemap, robots.txt, manifest"
+        - "[done] README rewrite"
+        - "[done] Production build passes (pnpm build exit 0)"
+        - "[done] Fixed TanStack Store crash — replaced custom useProgressStore with proper useStore hook"
+        - "[done] Updated all component imports to use useStore(progressStore, selector) pattern"
+        - "[done] Created comprehensive api-trainer-pdd.yaml replacing balllightning-pdd.yaml"
+        - "[done] Updated color scheme — removed red (#DD3A28) in favor of blue/green/yellow from logo"
+        - "[done] Updated theme-color meta tags, CSS variables, and chart colors"
+        - "[done] Fixed TanStack Router export — changed getRouter() function to direct router export"
+        - "[done] Hardened progress hydration/cross-tab sync: validate+merge state, avoid full replacement, clean up listeners"
+        - "[done] Swapped progress store to @tanstack/store atom API to align with latest router/store runtime"
+  next_steps:
+    - id: content-expansion
+      title: "Add more lessons, drills, and scenarios"
+      status: planned
+    - id: search-and-filtering
+      title: "Wiki search, directory filtering"
+      status: planned
+  recent_done:

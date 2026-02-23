@@ -1,0 +1,21 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: detect-private-key
+        name: Detect private keys
+
+  # Gitleaks hook removed - not installed
+  # To enable: install gitleaks and uncomment below:
+  # - repo: local
+  #   hooks:
+  #     - id: gitleaks-protect
+  #       name: Gitleaks (local)
+  #       entry: gitleaks protect --verbose --redact --staged
+  #       language: system
+  #       types: [text]
+  #       pass_filenames: false
+# Usage:
+#   1) Install pre-commit: pip install pre-commit  (or pipx install pre-commit)
+#   2) pre-commit install
+#   3) Commit as usual; hooks run automatically.

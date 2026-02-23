@@ -1,0 +1,33 @@
+entries:
+  - date: "2026-02-23"
+    version: "1.0.0"
+    commit: TBD
+    status: in-progress
+    title: "feat: Carrier API-Trainer MVP build"
+    details: |-
+      Full MVP build of the Carrier API-Trainer — an interactive learning tool
+      for carrier REST and SOAP API integration.
+
+      - Repo cleanse: removed all BL boilerplate (services, portfolio, contact, builder-coil, github)
+      - Rebranded to Carrier API-Trainer (package.json, meta, structured data, Header, Footer)
+      - Progress system: Zod schema, isomorphic localStorage storage, TanStack store,
+        debounced writes, cross-tab sync, XP/streak/drill/lesson/scenario actions
+      - Content data layer: 8 lessons (1 intro, 4 REST, 3 SOAP), 20+ drills (MCQ, cloze, builder),
+        5 incident scenarios, 13 wiki entries, 15 directory links — all as TypeScript data files
+      - UI components: LessonReader, McqDrill, ClozeDrill, BuilderDrill, DrillRunner,
+        ScenarioPlayer, WikiArticle, XpBadge, StreakBadge, ContinueBanner, LessonStatus
+      - Routes: /, /learn/rest, /learn/soap, /lesson/$slug, /arena, /wiki, /wiki/$slug,
+        /directory, /settings (with export/import/reset)
+      - SEO: JSON-LD (WebSite + WebApplication + Organization), meta tags, sitemap, robots.txt, manifest
+      - README rewrite with project structure and getting started
+      - Production build passes (pnpm build exit 0)
+      - Fixed TanStack Store crash: replaced custom useProgressStore with proper useStore hook from @tanstack/react-store
+      - Updated all component imports to use useStore(progressStore, selector) pattern
+      - Created comprehensive api-trainer-pdd.yaml replacing balllightning-pdd.yaml
+      - Updated color scheme: removed red (#DD3A28) in favor of blue (#3B82F6), green (#10B981), yellow (#F59E0B) from logo
+      - Updated theme-color meta tags, CSS variables, and chart colors
+      - About section already in place with 15+ years shipping/logistics experience
+      - All progress widgets, badges, and UI components now use correct TanStack Store API
+      - Fixed TanStack Router export: changed getRouter() function to direct router export to prevent "Cannot set property state" error
+      - Hardened progress hydration/cross-tab sync: validate+merge state, avoid full replacement, clean up listeners
+      - Swapped progress store to @tanstack/store atom API to align with latest router/store runtime

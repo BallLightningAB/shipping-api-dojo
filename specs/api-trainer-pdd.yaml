@@ -1,0 +1,183 @@
+api_trainer_pdd:
+  meta:
+    name: "Carrier API-Trainer — Product PDD"
+    code_name: "api-trainer"
+    version: "1.0.0"
+    repo: "https://github.com/BallLightningAB/api-trainer"
+    domain: "https://api-trainer.balllightning.cloud"
+    owner:
+      individual: "Nicolas Brulay"
+      company: "Ball Lightning AB"
+    planning_reference: "specs/current-changes/api-trainer-pre-planning-info.yaml"
+
+  product:
+    kind: "learning_platform"
+    description: >-
+      Interactive carrier-integration learning tool for REST and SOAP interview prep
+      and troubleshooting. Browser-based, authless MVP with local progress storage.
+      Covers HTTP semantics, SOAP envelopes, WSDL/XSD, error handling, and real-world
+      incident scenarios from shipping/logistics integrations.
+    positioning: >-
+      Free educational tool for developers working with carrier APIs (FedEx, UPS, DHL, USPS).
+      Built by Nicolas Brulay, leveraging 15+ years of shipping/logistics industry experience.
+      No account required — all progress stored locally in browser.
+
+  techstack:
+    framework: "TanStack Start (React 19, file-based routing, SSR)"
+    runtime: "Vercel (Node 24.x)"
+    language: "TypeScript (strict mode)"
+    styling:
+      css: "TailwindCSS v4"
+      ui: "shadcn/ui, Lucide icons, Motion (Framer Motion)"
+    state:
+      progress: "@tanstack/react-store (client-side, localStorage-backed)"
+      validation: "Zod"
+    tooling:
+      lint_format: ["Biome 2.3.11", "Ultracite 7.0.8"]
+      bundler: "Vite 7.3.0"
+      hosting: "Vercel"
+      security: ["Gitleaks", "pre-commit hooks"]
+
+  design:
+    brand: "api-trainer"
+    color_scheme:
+      primary_palette:
+        blue: "#3B82F6" # from logo
+        green: "#10B981" # from logo
+        yellow: "#F59E0B" # from logo
+      dark_mode:
+        background_base: "#05070A"
+        background_elevated: "#0A1014"
+        foreground_body: "#E5E7EB"
+        heading_cream: "#F5E6D3"
+      accent_usage:
+        xp_badge: "blue (#3B82F6)"
+        streak_badge: "orange (#F59E0B)"
+        success_states: "green (#10B981)"
+        lesson_complete: "green (#10B981)"
+    typography:
+      headings: "Montserrat (400, 500, 600, 700)"
+      body: "Lora (400, 500, 600, 700, italic)"
+      code: "JetBrains Mono (400, 500, 600)"
+
+  routes:
+    core:
+      - path: "/"
+        purpose: "Landing page with continue banner, track selection, XP/streak display"
+        ssr: true
+      - path: "/learn/rest"
+        purpose: "REST track overview with lesson list and progress"
+        ssr: true
+      - path: "/learn/soap"
+        purpose: "SOAP track overview with lesson list and progress"
+        ssr: true
+      - path: "/lesson/:slug"
+        purpose: "Lesson reader with embedded drills"
+        ssr: "data-only"
+      - path: "/arena"
+        purpose: "Incident scenarios list and player"
+        ssr: true
+      - path: "/wiki"
+        purpose: "Wiki index with article categories"
+        ssr: true
+      - path: "/wiki/:slug"
+        purpose: "Individual wiki article with sources"
+        ssr: true
+      - path: "/directory"
+        purpose: "Curated links to carrier tools, specs, portals"
+        ssr: true
+      - path: "/settings"
+        purpose: "Export/import/reset progress"
+        ssr: true
+
+  content:
+    lessons:
+      count: 8
+      tracks:
+        rest: 4
+        soap: 3
+        intro: 1
+      format: "TypeScript data files in src/content/lessons/"
+      structure:
+        - "Concept explanation (5-10 min read)"
+        - "1-3 embedded drills per lesson"
+        - "Carrier reality box (production gotchas + logging tips)"
+        - "References section with sources"
+    drills:
+      count: "20+"
+      types:
+        - "MCQ (multiple choice with explanations)"
+        - "Cloze (fill-in-the-blank for headers, status codes, SOAP tags)"
+        - "Builder (REST: inputs → HTTP + cURL; SOAP: inputs → envelope + headers)"
+      scoring: "0-100 per drill, bestScore + attempts tracked"
+    scenarios:
+      count: 5
+      format: "Decision-tree incidents from carrier integration work"
+      examples:
+        - "Timeout on create shipment → idempotent retry strategy"
+        - "429 rate limiting → backoff + queue"
+        - "SOAP fault with detail → parse + root cause"
+        - "WSDL change breaks client → mitigation"
+        - "200 with error payload → robust error detection"
+    wiki:
+      count: 13
+      sections:
+        - "Glossary (idempotency, correlation ID, SOAP fault, WSDL, XSD)"
+        - "HTTP status codes cheat pages"
+        - "SOAP envelope anatomy"
+        - "WSDL/XSD mental model"
+        - "Auth patterns (API key, OAuth2, signing)"
+      requirement: "All articles cite sources (RFCs, W3C/OASIS specs, MDN)"
+    directory:
+      count: 15
+      categories:
+        - "HTTP RFCs and tooling"
+        - "SOAP/WSDL tools and validators"
+        - "OpenAPI tooling"
+        - "Request inspection tools (intercept proxies)"
+
+  progress_system:
+    storage:
+      type: "localStorage"
+      key: "api-trainer-progress"
+      schema_version: 1
+    data_model:
+      xp: "integer (accumulated points)"
+      streak: "integer (consecutive days)"
+      lessons: "Record<slug, {completed, completedAt, drillScores}>"
+      scenarios_completed: "string[] (scenario IDs)"
+    features:
+      - "Debounced writes (300ms)"
+      - "Cross-tab sync via storage event"
+      - "Export/import JSON for manual multi-device transfer"
+      - "Versioned schema with migration scaffold"
+    ssr_safety:
+      - "All localStorage access via createIsomorphicFn"
+      - "Progress UI wrapped in <ClientOnly>"
+      - "Hydration on client mount only"
+
+  policies:
+    data_privacy:
+      rule: "No user accounts, no server-side storage, no PII collection"
+      storage: "All progress in browser localStorage only"
+    secrets:
+      rule: "No API keys or secrets required for MVP"
+      repo: "Public repository, no sensitive data"
+    security:
+      baseline:
+        - "Gitleaks pre-commit hooks (detect-private-key)"
+        - "GitHub Actions secret scanning on main branch"
+        - "No external API calls requiring credentials"
+
+  future_roadmap:
+    auth_sync:
+      description: "Better Auth + Neon/Drizzle for cloud progress sync"
+      approach: "Attach local anonId to user on first login, merge progress"
+    advanced_drills:
+      - "Interactive API sandbox with mock carrier endpoints"
+      - "Real-time SOAP envelope validator"
+      - "HTTP request builder with live preview"
+    monetization:
+      - "Premium scenarios (advanced troubleshooting)"
+      - "Certification badges"
+      - "Directory affiliate links (tool recommendations)"

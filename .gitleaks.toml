@@ -1,0 +1,30 @@
+# Gitleaks configuration (conservative defaults)
+# Shared by local pre-commit (optional) and CI workflow
+
+title = "The Builder Coil gitleaks config"
+
+[allowlist]
+# Reduce noise from non-code assets and documentation
+# Does NOT allowlist secrets in source files
+  description = "Allow common non-code artifacts"
+  files = [
+    '''\.md$''',
+    '''\.png$''',
+    '''\.jpg$''',
+    '''\.jpeg$''',
+    '''\.gif$''',
+    '''\.svg$''',
+    '''CHANGELOG\.yaml$'''
+  ]
+  paths = [
+    '''^specs/''',
+    '''^public/''',
+    '''^src/images/'''
+  ]
+  regexes = [
+    '''(?i)dummy|example'''
+  ]
+
+# Notes:
+# - Built-in Gitleaks rules remain enabled; this file only trims obvious false positives.
+# - Tighten or add custom rules as the codebase matures.

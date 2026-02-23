@@ -1,0 +1,685 @@
+app:
+  name: API Trainer
+  codename: api-trainer
+  purpose: Interactive, carrier-integration-focused learning site for REST + SOAP, optimized for interview prep
+    and real-world troubleshooting.
+  target_users:
+  - Carrier Integration Specialists
+  - Implementation consultants / integration engineers
+  - Developers onboarding to logistics/shipping APIs
+  core_value:
+  - Teaches REST + SOAP through short lessons, drills, and incident-style scenarios that mirror carrier integration
+    work (idempotency, retries, faults, WSDL/XSD, auth, error mapping).
+  - Includes a small wiki/glossary with strict references to primary sources (RFCs, W3C/OASIS specs, MDN).
+  mvp_features:
+    learning_paths:
+    - id: rest
+      title: REST for Carrier Integrations
+      outcome: Confidently design, debug, and operate HTTP-based carrier APIs with correct semantics and resilient
+        client behavior.
+    - id: soap
+      title: SOAP for Carrier Integrations
+      outcome: Confidently read/author SOAP envelopes, understand WSDL/XSD, and debug SOAP Faults commonly found
+        in enterprise carrier stacks.
+    lessons:
+      format: MDX content pages with embedded drills
+      count_target: 6–8 total for MVP (4 REST, 3 SOAP, 1 intro)
+      each_lesson_includes:
+      - Concept explanation (5–10 min read)
+      - 1–3 drills
+      - A short 'carrier reality' box (what breaks in production + what to log)
+      - References section (sources[] in frontmatter + rendered list)
+    drills:
+      types_in_mvp:
+      - mcq (multiple choice + explanation)
+      - 'cloze (fill in blanks: headers, status codes, SOAP tags)'
+      - 'builder.rest (inputs -> output: raw HTTP + cURL)'
+      - 'builder.soap (inputs -> output: SOAP envelope + required headers)'
+      scoring:
+      - 0–100 score per drill
+      - store bestScore + attempts
+      - award XP on first pass + bonus for improvement
+    arena:
+      name: Incident Arena
+      description: Decision-tree scenarios based on common carrier integration incidents.
+      scenarios_mvp: 5
+      each_scenario:
+      - Context + payload/snippet (HTTP response or SOAP fault excerpt)
+      - 2–4 decision steps
+      - Each step explains why a choice is correct/incorrect
+      - 'Final summary: recommended action + what to log + what to retry'
+    wiki:
+      format: MDX articles with sources[]
+      sections_mvp:
+      - Glossary (idempotency, correlation id, SOAP fault, WSDL, XSD, etc.)
+      - HTTP status codes cheat pages
+      - SOAP envelope anatomy
+      - WSDL/XSD mental model
+      - Auth patterns (API key, OAuth2 overview, signing basics)
+      requirement: Every wiki page must render references from sources[] and avoid unsourced claims.
+    progress:
+      description: Authless MVP progress stored locally.
+      includes:
+      - XP
+      - streak
+      - completed lessons + status
+      - drill attempts + best score
+      - last visited lesson
+      persistence:
+      - localStorage (versioned schema)
+      - export/import JSON for manual multi-device
+      - cross-tab sync via storage event (best-effort)
+    directory_stub:
+      description: Static page listing useful carrier-integration tools/specs (future monetization angle).
+      entries_mvp:
+      - HTTP RFCs and tooling
+      - SOAP/WSDL tools and validators
+      - OpenAPI tooling
+      - Request inspection tools (e.g., intercept proxies) - list only, no integration yet
+  non_goals_mvp:
+  - User accounts / cloud sync
+  - Payments
+  - Server-side attempt history
+  - Real API sandbox proxy requiring secrets
+  information_architecture:
+    routes:
+    - '/: landing + continue'
+    - '/learn/rest: REST track overview'
+    - '/learn/soap: SOAP track overview'
+    - '/lesson/[slug]: lesson reader + drills'
+    - '/arena: scenarios'
+    - '/wiki: wiki index'
+    - '/wiki/[slug]: wiki article'
+    - '/settings: export/import/reset progress'
+    - '/directory: resources list'
+  ux_notes:
+    style: Borrow existing boilerplate theme/tokens; keep MVP simple and readable.
+    fun_elements_mvp:
+    - XP badge
+    - streak badge
+    - lesson completion checkmarks
+    - optional 'combo' badge for consecutive correct drills (nice-to-have)
+  content_seed_plan_mvp:
+    lessons:
+    - 'Intro: What carrier integrations get wrong (retries, idempotency, faults)'
+    - 'REST-1: HTTP semantics (safe/idempotent, retries)'
+    - 'REST-2: Auth + headers + correlation IDs'
+    - 'REST-3: Error mapping + Problem Details'
+    - 'REST-4: Pagination + webhooks basics'
+    - 'SOAP-1: Envelope + namespaces'
+    - 'SOAP-2: WSDL/XSD mental model'
+    - 'SOAP-3: Fault handling + what to log'
+    wiki_entries_minimum: 12
+    scenarios:
+    - Timeout on create shipment -> idempotent retry strategy
+    - 429 / rate limiting -> backoff + queue
+    - SOAP fault with detail -> parse + root cause
+    - WSDL change breaks client -> mitigation
+    - Carrier returns 200 with error payload -> robust error detection
+guide:
+  id: hubert-api-trainer-mvp-progress-2026-02
+  goal:
+  - Cleanse the existing TanStack Start boilerplate repo (api-trainer) of BallLightning-specific branding/content
+    while keeping the existing theme/styling.
+  - Implement MVP-safe, authless 'session + progress' using durable local storage on the client.
+  - Ensure SSR/hydration correctness in TanStack Start (Feb 2026 best practices) and keep an easy upgrade path to
+    Better Auth + Neon/Drizzle later.
+  primary_refs:
+    tanstack_start:
+    - 'Routing is file-based under src/routes (TanStack Start): https://tanstack.com/start/latest/docs/framework/react/guide/routing'
+    - 'Selective SSR is per-route via ssr property / defaultSsr: https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr'
+    - 'Execution Model (isomorphic-by-default, execution boundaries): https://tanstack.com/start/latest/docs/framework/react/guide/execution-model'
+    - 'Code Execution Patterns (ClientOnly, createClientOnlyFn, createIsomorphicFn): https://tanstack.com/start/latest/docs/framework/react/guide/code-execution-patterns'
+    - 'Environment Functions (createIsomorphicFn/createClientOnlyFn tree-shaking): https://tanstack.com/start/latest/docs/framework/react/guide/environment-functions'
+    - 'Hydration Errors (Date.now, locale/tz, ClientOnly strategy): https://tanstack.com/start/latest/docs/framework/react/guide/hydration-errors'
+    - 'Import Protection (.server.* / .client.* file naming, experimental): https://tanstack.com/start/latest/docs/framework/react/guide/import-protection'
+    - 'Server routes exist alongside router routes (future): https://tanstack.com/start/latest/docs/framework/react/guide/server-routes'
+    tanstack_router:
+    - 'ClientOnly component (renders children only after hydration): import { ClientOnly } from ''@tanstack/react-router'''
+    - 'useHydrated hook (returns boolean after hydration): import { useHydrated } from ''@tanstack/react-router'''
+    tanstack_store:
+    - 'TanStack Store core quick start (createStore): https://tanstack.com/store/latest/docs/quick-start'
+    - 'TanStack React Store quick start (createStore + useStore): https://tanstack.com/store/latest/docs/framework/react/quick-start'
+    browser_storage_sync:
+    - 'MDN storage event (cross-tab sync semantics): https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event'
+    optional_future_local_first:
+    - 'TanStack DB LocalStorage collections (persists + cross-tab sync), but DB is beta: https://tanstack.com/db/latest/docs/collections/local-storage-collection'
+  scope:
+    MVP_in:
+    - No auth. No backend. No server-stored progress.
+    - Progress persists locally across reloads/restarts on the same browser profile (localStorage).
+    - Cross-tab sync via storage event (best-effort).
+    - Export / import progress JSON for manual multi-device.
+    - Versioned schema + migrations scaffold so later Better Auth sync is straightforward.
+    - 'SSR-safe: no access to window/localStorage during server render.'
+    MVP_out:
+    - Accounts / payments / multi-tenant DB
+    - Cloud sync
+    - Attempt history storage (use IndexedDB later if needed)
+    - Sensitive tokens in local storage (explicitly forbidden)
+  repo_cleanse:
+    checklist:
+    - name: Rename app/package
+      steps:
+      - 'Update package.json: name, description, repository, author, license (to match a commercial product), keywords.'
+      - 'Update README.md: remove BallLightning references; add api-trainer purpose + quickstart.'
+    - name: Remove BL-specific brand assets/copy
+      steps:
+      - Replace favicon/og images/logo if present; keep the theme tokens and component styling.
+      - Search & replace 'balllightning'/'Ball Lightning'/'balllightning.cloud' strings in repo.
+      - Update meta tags / OpenGraph defaults in root document / head utilities (wherever the boilerplate sets them).
+      - Ensure at least one favicon link exists (can point to /logo.png) in the root document/head wiring to avoid
+        missing icon in browsers.
+    - name: Routes and content
+      steps:
+      - Delete BL-specific pages/sections; keep shared layout and UI primitives.
+      - Keep src/routes structure intact (TanStack Start file-based routing).
+    - name: Env + deploy hygiene
+      steps:
+      - Remove unused env vars; ensure build works with zero env (MVP).
+      - Confirm SSR mode strategy per route (see 'ssr_strategy' below).
+    acceptance:
+    - pnpm i && pnpm dev works.
+    - No BallLightning strings remain (except historical git history).
+    - Landing page renders and navigates in production build.
+  ssr_strategy:
+    rationale:
+    - TanStack Start routes SSR by default; localStorage is client-only.
+    - Avoid hydration mismatches by keeping progress-dependent UI client-gated.
+    - Use Selective SSR only where it meaningfully reduces risk/effort.
+    approach:
+    - keep_ssr_true:
+      - / (landing)
+      - /wiki/* (static references content)
+      - /directory (static MVP)
+    - keep_ssr_true_but_client_gate_progress_ui:
+      - /learn/*
+      - /lesson/*
+      - /arena
+      notes:
+      - Lesson content can SSR; only progress widgets (Continue, XP, Streak, Completed badges) are client-only.
+    - consider_data_only_for_interactive_routes:
+      - 'For /lesson/* and /arena, ssr: ''data-only'' runs loader on server but skips component SSR.'
+      - This preserves server-side data loading while avoiding hydration issues in interactive UI.
+      - 'Reference: https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr'
+    - avoid_ssr_false_unless_necessary:
+      - 'ssr: false disables both loader and component SSR. There are open issues with server functions on ssr:
+        false routes (TanStack/router#5471).'
+      - 'Import Protection (experimental) helps prevent client deps from leaking into server bundles, but ssr: false
+        still carries risk.'
+      - 'Prefer client gating (<ClientOnly>) or ssr: ''data-only'' over ssr: false.'
+    implementation_hint:
+    - Use built-in ClientOnly from @tanstack/react-router and useHydrated from @tanstack/react-router. Do NOT roll
+      your own.
+    - Use createClientOnlyFn from @tanstack/react-start for browser-only utility functions (e.g., localStorage helpers).
+    - 'Prefer client gating over ssr: false to preserve SEO for content pages.'
+    - Consider .client.ts file suffix for client-only modules to leverage Start's Import Protection.
+    - 'Use ssr: ''data-only'' on highly interactive routes if needed, but do NOT set it on __root; keep root SSR-enabled
+      and client-gate only the browser-dependent parts.'
+  progress_system_design:
+    storage:
+      type: localStorage
+      key: api-trainer:progress:v1
+      constraints:
+      - Use TanStack Start environment functions (createIsomorphicFn / createClientOnlyFn) so browser-only localStorage
+        code is tree-shaken from server bundles.
+      - Never store secrets/tokens.
+      - All writes are JSON.stringify with schema validation on read.
+      - Debounced writes to avoid storage thrash.
+      - Graceful fallback if storage unavailable/quota/private-mode errors.
+      cross_tab_sync:
+        mechanism: window 'storage' event
+        note: Event fires in other tabs, not the origin tab.
+    identity:
+      anon_id:
+        purpose:
+        - Stable local identity for namespacing/export/import.
+        - 'Future: attach local progress to an authenticated user and merge.'
+        generation:
+        - Generate on client via crypto.randomUUID() once; persist under api-trainer:anonId.
+        server_render:
+        - anonId is null/undefined during SSR; set on hydration.
+    schema:
+      versioning:
+        current: 1
+        rule:
+        - Increment v on breaking shape changes and implement migrate().
+      shape:
+        typescript: |
+          export type ProgressV1 = {
+            v: 1
+            anonId: string | null
+            updatedAt: number
+            xp: number
+            streak: { count: number; lastDayISO: string | null }
+            lessons: Record<string, { status: "new"|"in_progress"|"done"; bestScore?: number; lastAt: number }>
+            drills: Record<string, { attempts: number; bestScore?: number; lastAt: number }>
+            lastVisitedLessonId?: string | null
+            settings?: { track?: "rest"|"soap"; reducedMotion?: boolean }
+          }
+      validation:
+        tool: zod (or valibot) for runtime safety
+        behavior:
+        - 'On read: parse -> if invalid, reset to defaults but keep anonId.'
+        - 'On import: strict parse; show user-friendly error if invalid.'
+  implementation_plan:
+    dependencies:
+      add:
+      - '@tanstack/react-store'
+      - zod
+      avoid:
+      - TanStack DB for MVP progress (DB is beta; optional later).
+    files_to_add:
+    - path: src/lib/progress/progress.schema.ts
+      purpose: Zod schema + TS types + defaults + migrate()
+      code: |
+        import { z } from "zod"
+
+        export const ProgressV1Schema = z.object({
+          v: z.literal(1),
+          anonId: z.string().nullable(),
+          updatedAt: z.number().int().nonnegative(),
+          xp: z.number().int().nonnegative(),
+          streak: z.object({
+            count: z.number().int().nonnegative(),
+            lastDayISO: z.string().nullable(),
+          }),
+          lessons: z.record(
+            z.object({
+              status: z.enum(["new", "in_progress", "done"]),
+              bestScore: z.number().int().min(0).max(100).optional(),
+              lastAt: z.number().int().nonnegative(),
+            })
+          ),
+          drills: z.record(
+            z.object({
+              attempts: z.number().int().nonnegative(),
+              bestScore: z.number().int().min(0).max(100).optional(),
+              lastAt: z.number().int().nonnegative(),
+            })
+          ),
+          lastVisitedLessonId: z.string().nullable().optional(),
+          settings: z
+            .object({
+              track: z.enum(["rest", "soap"]).optional(),
+              reducedMotion: z.boolean().optional(),
+            })
+            .optional(),
+        })
+        export type ProgressV1 = z.infer<typeof ProgressV1Schema>
+
+        export type AnyProgress = ProgressV1
+
+        export const PROGRESS_VERSION = 1 as const
+
+        // IMPORTANT: createDefaultProgress must be deterministic (no Date.now())
+        // to prevent SSR/hydration mismatches. Set updatedAt in client-only code.
+        // See: https://tanstack.com/start/latest/docs/framework/react/guide/hydration-errors
+        export function createDefaultProgress(): ProgressV1 {
+          return {
+            v: 1,
+            anonId: null,
+            updatedAt: 0,
+            xp: 0,
+            streak: { count: 0, lastDayISO: null },
+            lessons: {},
+            drills: {},
+            lastVisitedLessonId: null,
+            settings: {},
+          }
+        }
+
+        export function migrateProgress(raw: unknown): ProgressV1 {
+          // v1 only for now; scaffold for v2+.
+          const parsed = ProgressV1Schema.safeParse(raw)
+          if (parsed.success) return parsed.data
+          return createDefaultProgress()
+        }
+    - path: src/lib/progress/progress.storage.ts
+      purpose: Isomorphic storage adapter using Start environment functions (tree-shaken client-only localStorage
+        access) + export/import utilities
+      code: |
+        import { createIsomorphicFn } from "@tanstack/react-start"
+        import { migrateProgress, type ProgressV1, createDefaultProgress } from "./progress.schema"
+
+        const PROGRESS_KEY = "api-trainer:progress:v1"
+        const ANON_KEY = "api-trainer:anonId"
+
+        // IMPORTANT (Start best practice):
+        // - TanStack Start is isomorphic-by-default.
+        // - Use environment functions so browser-only code is tree-shaken from the server bundle.
+        // - Avoid touching window/localStorage during SSR to prevent hydration/runtime errors.
+
+        export const getOrCreateAnonId = createIsomorphicFn()
+          .server(() => null as string | null)
+          .client(() => {
+            try {
+              const existing = window.localStorage.getItem(ANON_KEY)
+              if (existing) return existing
+              const id = crypto.randomUUID()
+              window.localStorage.setItem(ANON_KEY, id)
+              return id
+            } catch {
+              return null
+            }
+          })
+
+        export const readProgress = createIsomorphicFn()
+          .server(() => createDefaultProgress())
+          .client(() => {
+            const fallback = createDefaultProgress()
+            try {
+              const raw = window.localStorage.getItem(PROGRESS_KEY)
+              if (!raw) return fallback
+              return migrateProgress(JSON.parse(raw))
+            } catch {
+              return fallback
+            }
+          })
+
+        export const writeProgress = createIsomorphicFn()
+          .server((_next: ProgressV1) => undefined)
+          .client((next: ProgressV1) => {
+            try {
+              window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(next))
+            } catch {
+              // ignore (quota/private mode). UI should still work in-memory.
+            }
+          })
+
+        export const onProgressStorageEvent = createIsomorphicFn()
+          .server((_cb: (p: ProgressV1) => void) => (() => {}) as () => void)
+          .client((cb: (p: ProgressV1) => void) => {
+            const handler = (e: StorageEvent) => {
+              if (e.key !== PROGRESS_KEY || !e.newValue) return
+              try {
+                cb(migrateProgress(JSON.parse(e.newValue)))
+              } catch {
+                // ignore
+              }
+            }
+            window.addEventListener("storage", handler)
+            return () => window.removeEventListener("storage", handler)
+          })
+
+        export function exportProgressJson(p: ProgressV1): string {
+          return JSON.stringify(p, null, 2)
+        }
+
+        export function importProgressJson(json: string): ProgressV1 | null {
+          try {
+            const raw = JSON.parse(json)
+            return migrateProgress(raw)
+          } catch {
+            return null
+          }
+        }
+    - path: src/lib/progress/progress.store.ts
+      purpose: TanStack Store instance + hydration + debounced persistence + cross-tab sync
+      code: |
+        import { createStore } from "@tanstack/react-store"
+        import { readProgress, writeProgress, getOrCreateAnonId, onProgressStorageEvent } from "./progress.storage"
+        import { createDefaultProgress, type ProgressV1 } from "./progress.schema"
+
+        // Start with defaults (SSR-safe). Hydrate on client.
+        export const progressStore = createStore<ProgressV1>(createDefaultProgress())
+
+        let hydrated = false
+        let unsubStorage: (() => void) | null = null
+
+        // debounce writes
+        let writeTimer: number | null = null
+        const WRITE_DEBOUNCE_MS = 300
+
+        function scheduleWrite(state: ProgressV1) {
+          if (typeof window === "undefined") return
+          if (writeTimer) window.clearTimeout(writeTimer)
+          writeTimer = window.setTimeout(() => {
+            writeProgress(state)
+            writeTimer = null
+          }, WRITE_DEBOUNCE_MS)
+        }
+
+        export function hydrateProgressStore(): void {
+          if (hydrated) return
+          hydrated = true
+
+          const anonId = getOrCreateAnonId()
+          const fromDisk = readProgress()
+
+          const merged: ProgressV1 = {
+            ...fromDisk,
+            anonId: fromDisk.anonId ?? anonId,
+            updatedAt: Date.now(),
+          }
+
+          progressStore.setState(() => merged)
+
+          // Persist on changes
+          progressStore.subscribe(() => {
+            const state = progressStore.state
+            // Ensure updatedAt advances on each logical change
+            // (callers should also set updatedAt, but this is a safety net)
+            scheduleWrite(state)
+          })
+
+          // Cross-tab sync (best-effort). storage event fires in other tabs only. (MDN)
+          unsubStorage = onProgressStorageEvent((incoming) => {
+            const current = progressStore.state
+            if (incoming.updatedAt > current.updatedAt) {
+              progressStore.setState(() => incoming)
+            }
+          })
+        }
+
+        export function teardownProgressStore(): void {
+          unsubStorage?.()
+          unsubStorage = null
+        }
+    - path: src/lib/progress/progress.actions.ts
+      purpose: Pure action helpers (XP, streak, lesson/drill updates) using local-day streak logic + lastVisitedLessonId
+      code: |
+        import { progressStore } from "./progress.store"
+        import type { ProgressV1 } from "./progress.schema"
+
+        const now = () => Date.now()
+
+        function localDayISO(d = new Date()) {
+          const y = d.getFullYear()
+          const m = String(d.getMonth() + 1).padStart(2, "0")
+          const day = String(d.getDate()).padStart(2, "0")
+          return `${y}-${m}-${day}`
+        }
+
+        function set(next: (p: ProgressV1) => ProgressV1) {
+          progressStore.setState((prev) => {
+            const updated = next(prev)
+            // updatedAt is only written client-side via actions (avoid SSR mismatch sources like Date.now() in defaults)
+            return { ...updated, updatedAt: now() }
+          })
+        }
+
+        export const progressActions = {
+          setLastVisitedLesson(lessonId: string | null) {
+            set((p) => ({ ...p, lastVisitedLessonId: lessonId }))
+          },
+
+          markLesson(lessonId: string, status: "new" | "in_progress" | "done") {
+            set((p) => ({
+              ...p,
+              lessons: {
+                ...p.lessons,
+                [lessonId]: {
+                  status,
+                  bestScore: p.lessons[lessonId]?.bestScore,
+                  lastAt: now(),
+                },
+              },
+            }))
+          },
+
+          recordLessonBestScore(lessonId: string, score: number) {
+            set((p) => {
+              const prev = p.lessons[lessonId]
+              const bestScore = Math.max(prev?.bestScore ?? 0, score)
+              return {
+                ...p,
+                lessons: {
+                  ...p.lessons,
+                  [lessonId]: {
+                    status: prev?.status ?? "in_progress",
+                    bestScore,
+                    lastAt: now(),
+                  },
+                },
+              }
+            })
+          },
+
+          recordDrill(drillId: string, score: number) {
+            set((p) => {
+              const prev = p.drills[drillId]
+              const bestScore = Math.max(prev?.bestScore ?? 0, score)
+              return {
+                ...p,
+                drills: {
+                  ...p.drills,
+                  [drillId]: {
+                    attempts: (prev?.attempts ?? 0) + 1,
+                    bestScore,
+                    lastAt: now(),
+                  },
+                },
+              }
+            })
+          },
+
+          addXp(delta: number) {
+            set((p) => ({ ...p, xp: Math.max(0, p.xp + delta) }))
+          },
+
+          bumpStreakIfNeeded() {
+            set((p) => {
+              const today = localDayISO()
+              const last = p.streak.lastDayISO
+              if (last === today) return p
+
+              const yesterday = (() => {
+                const d = new Date()
+                d.setDate(d.getDate() - 1)
+                return localDayISO(d)
+              })()
+
+              const nextCount = last === yesterday ? p.streak.count + 1 : 1
+              return { ...p, streak: { count: nextCount, lastDayISO: today } }
+            })
+          },
+
+          resetAll() {
+            set((p) => ({
+              ...p,
+              xp: 0,
+              streak: { count: 0, lastDayISO: null },
+              lessons: {},
+              drills: {},
+              lastVisitedLessonId: null,
+            }))
+          },
+        }
+    - path: src/components/progress/ProgressHydrator.tsx
+      purpose: Client-only mount that hydrates the progress store once (render inside <ClientOnly>)
+      code: |
+        import { useEffect } from "react"
+        import { hydrateProgressStore } from "../../lib/progress/progress.store"
+
+        export function ProgressHydrator() {
+          useEffect(() => {
+            hydrateProgressStore()
+          }, [])
+          return null
+        }
+    - path: src/components/progress/ProgressWidgets.tsx
+      purpose: Example widgets (XP + streak) using TanStack react-store selectors
+      code: |
+        import { useStore } from "@tanstack/react-store"
+        import { progressStore } from "../../lib/progress/progress.store"
+
+        export function XpBadge() {
+          const xp = useStore(progressStore, (s) => s.xp)
+          return <div className="rounded-md border px-2 py-1 text-sm">XP: {xp}</div>
+        }
+
+        export function StreakBadge() {
+          const streak = useStore(progressStore, (s) => s.streak.count)
+          return <div className="rounded-md border px-2 py-1 text-sm">Streak: {streak}</div>
+        }
+    - path: src/routes/__root.tsx
+      purpose: Mount ProgressHydrator client-only + use built-in <ClientOnly> and built-in useHydrated patterns
+      changes:
+      - Do NOT read localStorage directly in route module scope.
+      - Render <ClientOnly> with <ProgressHydrator /> near the top of the shell (or inside header) so hydrateProgressStore()
+        runs once on the client.
+      - Use built-in ClientOnly from '@tanstack/react-router' for progress widgets and any browser-only UI (no custom
+        wrappers).
+      note: 'ClientOnly docs: https://tanstack.com/router/latest/docs/api/router/clientOnlyComponent'
+    - path: src/routes/settings.tsx
+      purpose: 'MVP utilities: export/import/reset progress'
+      implementation_notes:
+      - 'Export: show textarea with JSON + download button.'
+      - 'Import: paste/upload JSON, validate, set store, persist.'
+      - 'Reset: confirm, then reset actions + persist.'
+      code_snippets:
+        download_helper: |
+          function download(filename: string, text: string) {
+            const a = document.createElement("a")
+            a.href = URL.createObjectURL(new Blob([text], { type: "application/json" }))
+            a.download = filename
+            a.click()
+            URL.revokeObjectURL(a.href)
+          }
+    wiring_steps:
+    - Add <ClientOnly><ProgressHydrator /></ClientOnly> in src/routes/__root.tsx so progress hydration + subscriptions
+      are initialized once on the client.
+    - Wrap only progress-dependent UI with <ClientOnly> to avoid SSR mismatch.
+    - Use progressActions for mutations; never mutate store state inline in random components.
+    - Set updatedAt on every mutation (actions already do).
+    - Wrap progress-dependent UI (XP/streak/continue/completion badges) in <ClientOnly> from '@tanstack/react-router'
+      to avoid hydration mismatch.
+    - Keep localStorage access inside Start environment functions (createIsomorphicFn/createClientOnlyFn) to align
+      with Start's isomorphic execution model.
+  testing_and_validation:
+    manual_acceptance_tests:
+    - 'Progress persists across reload: complete a lesson -> refresh -> completion remains.'
+    - Streak/XP increments correctly.
+    - Import/export roundtrip works and preserves state.
+    - 'Storage corruption tolerance: manually set invalid JSON in localStorage key -> app resets gracefully.'
+    - 'Cross-tab sync: open two tabs -> complete drill in tab A -> tab B updates after storage event.'
+    - 'SSR sanity: production build renders without hydration warnings; progress UI appears after hydration.'
+    automated_tests_optional_mvp:
+    - 'If repo already has Vitest: add unit tests for migrateProgress(), importProgressJson().'
+    - Otherwise skip for timebox, but keep code pure and testable.
+  future_upgrade_path:
+    better_auth_neon_drizzle:
+      design_notes:
+      - Keep anonId in client progress so first login can attach/merge.
+      - When Better Auth added, store server progress keyed by userId; on login merge local->server by per-field
+        updatedAt or simple last-write-wins at first.
+      planned_db_tables:
+      - users (Better Auth)
+      - tenant (later)
+      - 'user_progress: userId, jsonb progress, updatedAt'
+      sync_policy_v1:
+      - 'On login: if server empty -> upload local; else merge then persist both.'
+      - Keep localStorage as offline cache; sync opportunistically.
+    optional_tanstack_db_localstorage:
+      note:
+      - TanStack DB LocalStorage collections provide persistence + tab sync, but DB is beta; revisit when stable.
+  deliverables_for_hubert:
+  - 'PR 1: repo cleanse (rename, remove BL copy/assets, keep theme).'
+  - 'PR 2: progress system (files above) + minimal settings page for export/import/reset.'
+  - 'PR 3 (optional): wire XP/streak widgets into header + lesson completion buttons call progressActions.'
+  done_definition_MVP:
+  - App builds and runs without env vars.
+  - Local progress works (persist + import/export + basic cross-tab).
+  - No SSR hydration errors caused by progress/localStorage access.
+  - Clean branding (no BallLightning-specific content remains).

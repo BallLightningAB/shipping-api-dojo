@@ -1,0 +1,281 @@
+@import "./fonts.css";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+/* =============================================================================
+   Carrier API-Trainer – Brand Styling
+   Based on: specs/api-trainer-pdd.yaml
+   ============================================================================= */
+
+/* Typography: Big Shoulders Variable (primary), JetBrains Mono (code) */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply m-0;
+  font-family: var(--font-primary), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Headings use Big Shoulders Variable */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-heading {
+  font-family: var(--font-primary), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+}
+
+/* Specific heading sizes and tracking per design system */
+h1 {
+  font-size: clamp(3rem, 4.5vw, 3.8rem);
+  line-height: 1.0;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+h2 {
+  font-size: clamp(2.3rem, 3.5vw, 3.05rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.013em;
+}
+
+h3 {
+  font-size: 2.44rem;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+}
+
+h4 {
+  font-size: 1.95rem;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h5 {
+  font-size: 1.5625rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.008em;
+}
+
+h6 {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+/* JetBrains Mono alternative for devlog feel */
+.font-mono-heading {
+  font-family: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0em;
+}
+
+/* Serif utility class (keep for future use) */
+.font-serif {
+  font-family:
+    Lora,
+    "Times New Roman",
+    ui-serif,
+    Georgia,
+    serif;
+}
+
+/* =============================================================================
+   Dark Mode Only (Void Base)
+   - Background: #05070A (void)
+   - Foreground: #F5E6D3 (cream)
+   - Headings: #F5E6D3 (cream)
+   ============================================================================= */
+
+:root {
+  /* Core backgrounds – void */
+  --background: #05070a;
+  --foreground: #f5e6d3;
+
+  /* Card / elevated surfaces */
+  --card: #05070a;
+  --card-foreground: #f5e6d3;
+
+  /* Popover */
+  --popover: #080c11;
+  --popover-foreground: #f5e6d3;
+
+  /* Primary action – blue */
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+
+  /* Secondary – green */
+  --secondary: #22c55e;
+  --secondary-foreground: #05070a;
+
+  /* Muted – subtle cream tint on void */
+  --muted: rgba(245, 230, 211, 0.05);
+  --muted-foreground: #d4c9b8;
+
+  /* Accent – yellow */
+  --accent: #eab308;
+  --accent-foreground: #05070a;
+
+  /* BL Brand Colors (updated for API Trainer) */
+  --bl-red: #3b82f6; /* mapped to blue for compatibility */
+  --bl-red-hover: #2563eb;
+  --bl-rose: #22c55e; /* mapped to green */
+  --bl-rose-hover: #16a34a;
+  --bl-ember: #eab308; /* mapped to yellow */
+  --bl-cream: #f5e6d3;
+  --bl-cream-soft: #f9f3e8;
+  --bl-void: #05070a;
+
+  /* Destructive */
+  --destructive: #f97373;
+  --destructive-foreground: #05070a;
+
+  /* Border / Input – subtle cream tint */
+  --border: rgba(245, 230, 211, 0.15);
+  --input: rgba(245, 230, 211, 0.15);
+  --ring: #3b82f6;
+
+  /* Chart colors */
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #eab308;
+  --chart-4: #4ade80;
+  --chart-5: #fbbf24;
+
+  /* Radius */
+  --radius: 0.625rem;
+
+  /* Sidebar */
+  --sidebar: #0a1014;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #f5e6d3;
+  --sidebar-accent: #111827;
+  --sidebar-accent-foreground: #e5e7eb;
+  --sidebar-border: rgba(148, 163, 184, 0.35);
+  --sidebar-ring: #3b82f6;
+
+  /* Typography font families */
+  --font-primary: "Big Shoulders Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-jetbrains: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Custom prose utility for BL cream theme in dark mode
+   This creates a prose-cream class that uses our brand colors */
+@utility prose-cream {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--foreground);
+  --tw-prose-links: var(--bl-red);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--foreground);
+  --tw-prose-bullets: var(--foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--card);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+@theme inline {
+  /* Core colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* BL Brand Colors (available as bg-bl-red, text-bl-rose, etc.) */
+  --color-bl-red: var(--bl-red);
+  --color-bl-red-hover: var(--bl-red-hover);
+  --color-bl-rose: var(--bl-rose);
+  --color-bl-rose-hover: var(--bl-rose-hover);
+  --color-bl-ember: var(--bl-ember);
+  --color-bl-cream: var(--bl-cream);
+  --color-bl-cream-soft: var(--bl-cream-soft);
+  --color-bl-void: var(--bl-void);
+
+  /* Chart colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Typography font families */
+  --font-sans: var(--font-primary);
+  --font-serif: Lora, "Times New Roman", ui-serif, Georgia, serif;
+  --font-mono: var(--font-jetbrains);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  h1,
+  h2 {
+    color: var(--bl-cream);
+  }
+}
