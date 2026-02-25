@@ -1,4 +1,20 @@
 entries:
+  - date: "2026-02-25"
+    version: "1.0.1"
+    commit: TBD
+    status: planned
+    title: "feat: Add OG images issue to priority queue"
+    details: |-
+      Added new high priority issue for creating OG images to replace Ball Lightning branding
+      with API-Trainer specific visuals for improved social media presence.
+
+      - Created GitHub issue #6: "Create new OG images for API-Trainer site"
+      - Added issue to front of current priority queue in active-context.yaml
+      - Defined 5 deliverables (I6D1-I6D5) for OG image creation and testing
+      - Estimated 2 hours development, 1 hour testing
+      - Bumped version to 1.0.1
+    refs:
+      - "I6D1, I6D2, I6D3, I6D4, I6D5"
   - date: "2026-02-23"
     version: "1.0.0"
     commit: TBD

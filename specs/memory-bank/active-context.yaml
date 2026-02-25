@@ -1,6 +1,7 @@
 meta:
-  release: "1.0.0"
-  repo: github.com/BallLightningAB/api-trainer
+  release: "1.0.1"
+  repo: "github.com/BallLightningAB/api-trainer"
+  github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
   references:
     changelog: specs/memory-bank/CHANGELOG.yaml
@@ -9,31 +10,154 @@ meta:
   # - I3Docs / I3UI / I3Fix / I3Test / I3Biome: tags for documentation, UI polish, minor fixes, tests and Biome/tooling work not tied to a single deliverable
 roadmap:
   current:
-    - id: api-trainer-mvp
-      title: "Carrier API-Trainer MVP Build"
-      status: completed
+    - id: create-og-images
+      issue: "#6"
+      title: "Create new OG images for API-Trainer site"
+      status: planned
+      priority: high
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/6"
       deliverables:
-        - "[done] Repo cleanse — remove BL boilerplate, rebrand to API Trainer"
-        - "[done] Progress system — Zod schema, localStorage storage, TanStack store, XP/streak actions"
-        - "[done] Content data layer — 8 lessons, 20+ drills, 5 scenarios, 13 wiki entries, 15 directory links"
-        - "[done] Routes + UI — landing, REST track, SOAP track, lesson/$slug, arena, wiki, wiki/$slug, directory, settings"
-        - "[done] Header/Footer rebrand with new navigation"
-        - "[done] SEO — meta tags, JSON-LD (WebSite + WebApplication), sitemap, robots.txt, manifest"
-        - "[done] README rewrite"
-        - "[done] Production build passes (pnpm build exit 0)"
-        - "[done] Fixed TanStack Store crash — replaced custom useProgressStore with proper useStore hook"
-        - "[done] Updated all component imports to use useStore(progressStore, selector) pattern"
-        - "[done] Created comprehensive api-trainer-pdd.yaml replacing balllightning-pdd.yaml"
-        - "[done] Updated color scheme — removed red (#DD3A28) in favor of blue/green/yellow from logo"
-        - "[done] Updated theme-color meta tags, CSS variables, and chart colors"
-        - "[done] Fixed TanStack Router export — changed getRouter() function to direct router export"
-        - "[done] Hardened progress hydration/cross-tab sync: validate+merge state, avoid full replacement, clean up listeners"
-        - "[done] Swapped progress store to @tanstack/store atom API to align with latest router/store runtime"
+        - "[I6D1] Design new OG image templates for API-Trainer branding"
+        - "[I6D2] Create OG images for main landing page"
+        - "[I6D3] Create OG images for key learning pages (REST track, SOAP track, arena)"
+        - "[I6D4] Update meta tags with new OG image URLs"
+        - "[I6D5] Test OG image previews across social platforms"
+      est:
+        dev_h: 2
+        test_h: 1
+      sub_issues: []
+      remaining_deliverables:
+        - "[I6D1] Design new OG image templates for API-Trainer branding"
+        - "[I6D2] Create OG images for main landing page"
+        - "[I6D3] Create OG images for key learning pages (REST track, SOAP track, arena)"
+        - "[I6D4] Update meta tags with new OG image URLs"
+        - "[I6D5] Test OG image previews across social platforms"
+      progress_log: []
   next_steps:
     - id: content-expansion
-      title: "Add more lessons, drills, and scenarios"
+      title: "Add more lessons, drills, scenarios and make minor improvements"
       status: planned
+      deliverables:
+        - "[I5D1] Randomize drill order, ensuring the second answer isn't always the correct one"
+        - "[I5D2] Randomize scenario order"
+        - "[I5D3] Add more lessons"
+        - "[I5D4] Add more drills"
+        - "[I5D5] Add more scenarios"
     - id: search-and-filtering
       title: "Wiki search, directory filtering"
       status: planned
+      deliverables:
+        - "[I6D1] Add wiki search"
+        - "[I6D2] Add directory filtering"
   recent_done:
+    - id: api-trainer-mvp
+      issue: "#4"
+      title: "Carrier API-Trainer MVP Build"
+      status: done
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/4"
+        pr: ""
+      deliverables:
+        - "[I4D1] Repo cleanse — remove BL boilerplate, rebrand to API Trainer"
+        - "[I4D2] Progress system — Zod schema, localStorage storage, TanStack store, XP/streak actions"
+        - "[I4D3] Content data layer — 8 lessons, 20+ drills, 5 scenarios, 13 wiki entries, 15 directory links"
+        - "[I4D4] Routes + UI — landing, REST track, SOAP track, lesson/$slug, arena, wiki, wiki/$slug, directory, settings"
+        - "[I4D5] Header/Footer rebrand with new navigation"
+        - "[I4D6] SEO — meta tags, JSON-LD (WebSite + WebApplication), sitemap, robots.txt, manifest"
+        - "[I4D7] README rewrite"
+        - "[I4D8] Production build passes (pnpm build exit 0)"
+        - "[I4D9] Fixed TanStack Store crash — replaced custom useProgressStore with proper useStore hook"
+        - "[I4D10] Updated all component imports to use useStore(progressStore, selector) pattern"
+        - "[I4D11] Created comprehensive api-trainer-pdd.yaml replacing balllightning-pdd.yaml"
+        - "[I4D12] Updated color scheme — removed red (#DD3A28) in favor of blue/green/yellow from logo"
+        - "[I4D13] Updated theme-color meta tags, CSS variables, and chart colors"
+        - "[I4D14] Fixed TanStack Router export — changed getRouter() function to direct router export"
+        - "[I4D15] Hardened progress hydration/cross-tab sync: validate+merge state, avoid full replacement, clean up listeners"
+        - "[I4D16] Swapped progress store to @tanstack/store atom API to align with latest router/store runtime"
+      est:
+        dev_h: 6
+        test_h: 2
+      sub_issues: []
+      remaining_deliverables: []
+      progress_log: []
+    - id: mvp-step-1-cleanup-plan
+      issue: "#1"
+      title: "MVP step 1: Boilerplate cleanup and build plan"
+      status: done
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/1"
+        pr: ""
+      deliverables:
+        - "[I1D1] Remove BL boilerplate (services, portfolio, contact, builder-coil, github)"
+        - "[I1D2] Rebrand repo metadata, structured data, Header/Footer, manifest/theme colors"
+        - "[I1D3] Capture build plan in specs (api-trainer-pdd.yaml) and active-context roadmap"
+        - "[I1D4] Establish content/routing/SEO/progress-system plan for MVP"
+      est:
+        dev_h: 1
+        test_h: 0
+      sub_issues: []
+      remaining_deliverables: []
+      progress_log:
+        - note: "Cleanup and planning completed for v1.0.0"
+    - id: mvp-step-2-build
+      issue: "#2"
+      title: "MVP step 2: Build the Carrier API-Trainer"
+      status: done
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/2"
+        pr: ""
+      deliverables:
+        - "[I2D1] Progress system: Zod schema, isomorphic localStorage, TanStack store, debounced writes, cross-tab sync, XP/streak/drill/lesson/scenario actions"
+        - "[I2D2] Content: 8 lessons (REST/SOAP), 20+ drills, 5 scenarios, 13 wiki entries, 15 directory links"
+        - "[I2D3] Routes/UI: landing, REST/SOAP tracks, lesson/$slug, arena, wiki, wiki/$slug, directory, settings (export/import/reset)"
+        - "[I2D4] SEO: JSON-LD (WebSite + WebApplication + Organization), meta tags, sitemap, robots.txt, manifest"
+        - "[I2D5] Brand/UI: rebrand to API-Trainer, color scheme (blue #3B82F6, green #10B981, yellow #F59E0B), theme-color meta/CSS vars/chart colors"
+      est:
+        dev_h: 3
+        test_h: 0
+      sub_issues: []
+      remaining_deliverables: []
+      progress_log:
+        - note: "MVP build delivered in v1.0.0"
+    - id: mvp-step-3-debug
+      issue: "#3"
+      title: "MVP step 3: Debug & stabilize build"
+      status: done
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/3"
+        pr: ""
+      deliverables:
+        - "[I3D1] Fixed TanStack Store/Router runtime crash; aligned packages to compatible versions"
+        - "[I3D2] Replaced custom useProgressStore with useStore(progressStore, selector) across components"
+        - "[I3D3] Hardened progress hydration & cross-tab sync (validate+merge state, avoid full replacement, clean up listeners)"
+        - "[I3D4] Swapped progress store to @tanstack/store atom API to align with router/store runtime"
+        - "[I3D5] Ensured production build passes (pnpm build exit 0)"
+      est:
+        dev_h: 0
+        test_h: 2
+      sub_issues: []
+      remaining_deliverables: []
+      progress_log:
+        - note: "Stability fixes completed for v1.0.0"
+    - id: mvp-v1-parent
+      issue: "#4"
+      title: "API-Trainer MVP (v1.0.0) — cleanup, build, debug"
+      status: done
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/4"
+        pr: ""
+      deliverables:
+        - "[I4D17] #1 Boilerplate cleanup and plan"
+        - "[I4D18] #2 Build the Carrier API-Trainer"
+        - "[I4D19] #3 Debug & stabilize build"
+      est:
+        dev_h: 0
+        test_h: 0
+      sub_issues:
+        - "#1"
+        - "#2"
+        - "#3"
+      remaining_deliverables: []
+      progress_log:
+        - note: "All MVP sub-issues completed; v1.0.0 shipped"

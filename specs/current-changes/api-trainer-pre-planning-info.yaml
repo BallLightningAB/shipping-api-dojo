@@ -683,3 +683,12 @@ guide:
   - Local progress works (persist + import/export + basic cross-tab).
   - No SSR hydration errors caused by progress/localStorage access.
   - Clean branding (no BallLightning-specific content remains).
+
+recent_updates:
+  - date: "2026-02-25"
+    version: "1.0.1"
+    changes:
+      - Added high priority issue #6 for creating new OG images to replace Ball Lightning branding
+      - Updated active-context.yaml with new issue in current priority queue
+      - Bumped version to 1.0.1
+      - Created GitHub issue with proper labels and assignment
