@@ -237,7 +237,7 @@ function HomePage() {
 								alt="Nicolas Brulay"
 								className="h-auto w-full rounded-2xl"
 								height={400}
-								src="/media/face.png"
+								src="/media/face_400x400.webp"
 								width={400}
 							/>
 						</div>
