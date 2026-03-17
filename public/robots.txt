@@ -3,4 +3,4 @@ User-agent: *
 Disallow:
 
 # Sitemap
-Sitemap: https://api-trainer.balllightning.cloud/sitemap.xml
+Sitemap: https://shipping.apidojo.app/sitemap.xml

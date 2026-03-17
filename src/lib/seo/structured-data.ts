@@ -1,13 +1,13 @@
 /**
- * JSON-LD Structured Data for Carrier API-Trainer
+ * JSON-LD Structured Data for Shipping API Dojo
  *
  * Provides schema.org structured data for SEO:
  * - WebSite + WebApplication schema on root
  * - LearningResource schema for lessons
  */
 
-const SITE_URL = "https://api-trainer.balllightning.cloud";
-const SITE_NAME = "Carrier API-Trainer";
+const SITE_URL = "https://shipping.apidojo.app";
+const SITE_NAME = "Shipping API Dojo";
 const ORGANIZATION_NAME = "Ball Lightning AB";
 const ORGANIZATION_URL = "https://balllightning.cloud";
 
@@ -31,7 +31,7 @@ export function generateRootEntityGraphSchema() {
 				"@id": WEBSITE_ID,
 				name: SITE_NAME,
 				description:
-					"Interactive carrier-integration learning for REST and SOAP interview prep and troubleshooting.",
+					"Interactive shipping and carrier integration learning for REST and SOAP interview prep and troubleshooting.",
 				url: SITE_URL,
 				publisher: {
 					"@id": ORGANIZATION_ID,
@@ -42,7 +42,7 @@ export function generateRootEntityGraphSchema() {
 				"@id": APP_ID,
 				name: SITE_NAME,
 				description:
-					"Free, interactive learning tool for carrier REST and SOAP API integration — lessons, drills, and incident scenarios.",
+					"Interactive learning tool for shipping REST and SOAP API integration with lessons, drills, and incident scenarios.",
 				url: SITE_URL,
 				applicationCategory: "EducationalApplication",
 				operatingSystem: "All",

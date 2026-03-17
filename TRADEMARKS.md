@@ -1,12 +1,14 @@
 # Trademarks and Brand Use
 
-This repository is open source and may be used under the terms of the LICENSE file.
-However, the following are **not** licensed for your use except as permitted below:
+This repository is open source and may be used under the terms of the [LICENSE](LICENSE) file.
+However, trademark rights, brand identifiers, and trade dress are **not** granted to you through that license except as explicitly permitted below.
 
 ## Trademarks / Brand identifiers
 The following names, logos, and brand identifiers are trademarks and/or trade dress of Ball Lightning AB (even if unregistered):
 
 - Ball Lightning
+- Shipping API Dojo
+- API Trainer / API-Trainer
 - The Builder Coil
 - Chronomation
 - “The Upkeep”
@@ -14,7 +16,7 @@ The following names, logos, and brand identifiers are trademarks and/or trade dr
 
 ## You MAY
 - Use this repository to learn from and copy **system patterns**, architecture, and implementation ideas.
-- Fork the repository and modify it for your own use, **provided you remove/replace** the trademarks and brand identifiers listed above.
+- Fork the repository and modify it for your own use, **provided you remove or replace** the trademarks and brand identifiers listed above.
 - Refer to the project factually (e.g., in articles or tutorials) so long as it does not imply endorsement.
 
 ## You MAY NOT

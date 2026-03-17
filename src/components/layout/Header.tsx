@@ -36,14 +36,14 @@ export function Header() {
 				{/* Logo */}
 				<Link className="flex items-center gap-2" to="/">
 					<img
-						alt="Carrier API-Trainer"
+						alt="Shipping API Dojo"
 						className="h-12 w-12"
 						height={48}
 						src="/logo.png"
 						width={48}
 					/>
 					<span className="font-heading font-semibold text-lg text-bl-cream">
-						API Trainer
+						Shipping API Dojo
 					</span>
 				</Link>
 

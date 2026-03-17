@@ -1,10 +1,10 @@
 api_trainer_pdd:
   meta:
-    name: "Carrier API-Trainer — Product PDD"
+    name: "Shipping API Dojo — Product PDD"
     code_name: "api-trainer"
     version: "1.0.0"
     repo: "https://github.com/BallLightningAB/api-trainer"
-    domain: "https://api-trainer.balllightning.cloud"
+    domain: "https://shipping.apidojo.app"
     owner:
       individual: "Nicolas Brulay"
       company: "Ball Lightning AB"

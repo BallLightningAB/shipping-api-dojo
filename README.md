@@ -1,27 +1,61 @@
-# Carrier API-Trainer
+# Shipping API Dojo
 
-Interactive carrier-integration learning for REST and SOAP interview prep and troubleshooting. A Nicolas Brulay / [Ball Lightning AB](https://balllightning.cloud) project.
+Shipping API Dojo is a web-first, open-core learning product for shipping and carrier API integrations. This repository contains the public core application and content engine. The hosted product is moving from the older `Carrier API-Trainer` preview identity toward the `Shipping API Dojo` brand.
 
-## What is this?
+## Current Product State
 
-A free, browser-based learning tool for developers who work with carrier APIs (FedEx, UPS, DHL, USPS, etc.). It covers:
+The current public build includes:
 
-- **REST Track** — HTTP semantics, auth, error mapping, pagination & webhooks
-- **SOAP Track** — envelopes, namespaces, WSDL/XSD, fault handling
-- **Incident Arena** — realistic troubleshooting scenarios
-- **Wiki** — quick-reference articles on integration patterns
-- **Directory** — curated links to specs, tools, and carrier portals
+- **REST lessons** covering semantics, auth, error handling, pagination, and webhooks
+- **SOAP lessons** covering envelopes, namespaces, WSDL/XSD, and faults
+- **Incident Arena** scenario drills for troubleshooting shipping integration failures
+- **Wiki** reference content for shipping/API concepts
+- **Directory** curated links to specs, tools, and carrier resources
+- **Anonymous local progress** stored in the browser today
 
-Progress is stored locally in your browser — no account needed.
+## V2 Direction
+
+The active v2 plan is tracked in [`specs/current-changes`](specs/current-changes) and centers on:
+
+- 20 lessons, 20 drill families, and 20 scenario families
+- deterministic content families and seeded randomization
+- signed-in server-backed progress with Better Auth + Neon/Drizzle
+- hosted access tiers: anonymous sample -> signed-in free -> Pro -> Enterprise
+- Creem billing, Resend transactional email, and `shipping.apidojo.app` as the target production domain under the `apidojo.app` umbrella
+- stronger SEO-first knowledge architecture around lessons, wiki, and directory surfaces
+
+## Open-Core Boundary
+
+- The code and public-core materials in this repository are licensed under [`AGPL-3.0-only`](LICENSE).
+- Trademarks, logos, and brand identifiers remain reserved under [`TRADEMARKS.md`](TRADEMARKS.md).
+- Hosted premium features, private operational configuration, billing integrations, private content packs, and other non-public materials are not granted through this repository unless separately provided.
+
+## SEO and Directory Priority
+
+Search visibility is a first-class product concern. During v2 work:
+
+- lesson, wiki, and directory content should remain SSR-visible and crawlable
+- canonical URLs, sitemap output, and structured data should stay aligned with route content
+- internal linking should keep the directory and knowledge surfaces usable as a hub-and-spoke system
+- route migrations and the eventual domain cutover should avoid unnecessary URL churn
 
 ## Tech Stack
 
+### Current implementation
+
 - **TanStack Start** (React 19, file-based routing, SSR)
-- **TailwindCSS v4** + shadcn/ui + Lucide icons
-- **@tanstack/react-store** for client-side progress state
+- **Tailwind CSS v4** + shadcn/ui + Lucide icons
+- **@tanstack/react-store** for anonymous/local progress state
 - **Zod** for runtime validation
-- **Biome** + Ultracite for linting/formatting
+- **Biome** + Ultracite for formatting/linting
 - **Vite** for bundling, deployed to **Vercel**
+
+### Planned v2 additions
+
+- **Better Auth** for hosted accounts and sessions
+- **Neon Postgres** + **Drizzle ORM** for durable progress and entitlements
+- **Creem** for subscriptions and billing
+- **Resend** for transactional email
 
 ## Getting Started
 
@@ -30,13 +64,19 @@ pnpm install
 pnpm dev
 ```
 
-Open http://localhost:3000.
+Open `http://localhost:3000`.
+
+## Domains
+
+- Current preview: [https://api-trainer.balllightning.cloud](https://api-trainer.balllightning.cloud)
+- Target production domain for v2 launch: `https://shipping.apidojo.app`
+- Planned umbrella/domain strategy: `apidojo.app` as the network root, with topic-specific subdomains
 
 ## Project Structure
 
-```
+```text
 src/
-├── content/          # TypeScript data files (lessons, drills, scenarios, wiki, directory)
+├── content/          # Current lessons, drills, scenarios, wiki, and directory data
 ├── components/
 │   ├── arena/        # Scenario player
 │   ├── drill/        # MCQ, cloze, builder drill components
@@ -44,26 +84,21 @@ src/
 │   ├── progress/     # XP badge, streak, continue banner, hydrator
 │   ├── wiki/         # Wiki article renderer
 │   ├── layout/       # Header, Footer, Layout
-│   └── ui/           # shadcn/ui primitives
+│   └── ui/           # Shared UI primitives
 ├── lib/
-│   ├── progress/     # Schema, storage, store, actions
-│   └── seo/          # Meta tags, structured data
+│   ├── progress/     # Progress schema, storage, store, actions
+│   └── seo/          # Meta tags, structured data, sitemap helpers
 ├── routes/           # TanStack file-based routes
-└── styles.css        # Global styles + TailwindCSS
+└── styles.css        # Global styles
 ```
 
 ## Security Baseline
 
-- **Local pre-commit hooks**: `detect-private-key` and `gitleaks protect` via `.pre-commit-config.yaml`.
-- **CI secret scanning**: `.github/workflows/secret-scan.yml` runs Gitleaks on pushes/PRs to `main`.
+- Local secret scanning via `.pre-commit-config.yaml`
+- CI secret scanning via `.github/workflows/secret-scan.yml`
 
-## Domain
+## Funding
 
-https://api-trainer.balllightning.cloud
+- See [FUNDING.yml](FUNDING.yml)
 
-## License & Funding
-
-- License: see [LICENSE](LICENSE)
-- Funding: see [FUNDING.yml](FUNDING.yml)
-
- 2026 Nicolas Brulay / Ball Lightning AB
+2026 Nicolas Brulay / Ball Lightning AB

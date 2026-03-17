@@ -937,7 +937,7 @@ function renderPage(page) {
 						<div class="tags">${tagMarkup}</div>
 					</div>
 					<div class="footer">
-						<span>api-trainer.balllightning.cloud</span>
+						<span>shipping.apidojo.app</span>
 						<strong>Ball Lightning AB</strong>
 					</div>
 				</div>

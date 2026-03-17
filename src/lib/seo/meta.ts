@@ -27,7 +27,7 @@ export interface SeoMeta {
 }
 
 const SITE_NAME = "Shipping API Dojo";
-const SITE_URL = "https://api-trainer.balllightning.cloud";
+const SITE_URL = "https://shipping.apidojo.app";
 const OG_IMAGE_WIDTH = "1200";
 const OG_IMAGE_HEIGHT = "630";
 const OG_IMAGE_TYPE = "image/png";

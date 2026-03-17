@@ -1,5 +1,7 @@
 {
   "name": "api-trainer",
+  "description": "Shipping API Dojo open-core learning app for shipping and carrier API integrations",
+  "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,7 +11,8 @@
     "dev": "vite dev --host 127.0.0.1 --port 3000",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc --noEmit",
     "generate:og": "node scripts/generate-og-images.mjs",
     "format": "biome format --write",
     "lint": "biome lint",

@@ -95,9 +95,9 @@ function HomePage() {
 								className="mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
 								preset="fade-in-blur"
 							>
-								Carrier{" "}
+								Shipping{" "}
 								<span className="bg-gradient-to-r from-blue-500 via-green-500 to-yellow-500 bg-clip-text text-transparent">
-									API Trainer
+									API Dojo
 								</span>
 							</TextEffect>
 
@@ -106,7 +106,7 @@ function HomePage() {
 								delay={0.3}
 								preset="fade-in-blur"
 							>
-								Interactive learning for REST and SOAP carrier integration —
+								Interactive learning for REST and SOAP shipping integration —
 								lessons, drills, and incident scenarios for interview prep and
 								production troubleshooting.
 							</TextEffect>

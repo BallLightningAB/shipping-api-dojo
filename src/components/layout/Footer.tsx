@@ -24,19 +24,19 @@ export function Footer() {
 					<div className="md:col-span-2">
 						<Link className="flex items-center gap-2" to="/">
 							<img
-								alt="Carrier API-Trainer"
+								alt="Shipping API Dojo"
 								className="h-12 w-12"
 								height={48}
 								src="/logo.png"
 								width={48}
 							/>
 							<span className="font-heading font-semibold text-lg">
-								API Trainer
+								Shipping API Dojo
 							</span>
 						</Link>
 						<p className="mt-3 max-w-sm text-muted-foreground text-sm">
-							Interactive carrier-integration learning for REST and SOAP
-							interview prep and troubleshooting.
+							Interactive shipping API learning for REST and SOAP interview prep
+							and troubleshooting.
 						</p>
 					</div>
 

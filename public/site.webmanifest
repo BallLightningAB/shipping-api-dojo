@@ -1,10 +1,10 @@
 {
-  "name": "Carrier API-Trainer",
-  "short_name": "API Trainer",
-  "description": "Interactive carrier-integration learning for REST and SOAP interview prep and troubleshooting",
+  "name": "Shipping API Dojo",
+  "short_name": "API Dojo",
+  "description": "Interactive shipping and carrier API learning for REST and SOAP interview prep and troubleshooting",
   "start_url": "/",
   "scope": "/",
-  "id": "carrier-api-trainer",
+  "id": "shipping-api-dojo",
   "purpose": "any",
   "icons": [
     {
@@ -46,7 +46,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#DD3A28",
+  "theme_color": "#3B82F6",
   "background_color": "#05070A",
   "display": "standalone",
   "orientation": "portrait-primary"

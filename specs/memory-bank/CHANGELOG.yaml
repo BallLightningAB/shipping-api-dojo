@@ -1,5 +1,130 @@
 entries:
   - date: "2026-03-17"
+    version: "1.0.10"
+    commit: TBD
+    status: in-progress
+    title: "docs(domain): move v2 planning to shipping.apidojo.app"
+    details: |-
+      Shifted the v2 planning and SEO target from the standalone
+      shippingapidojo.com domain to the apidojo.app umbrella strategy with
+      shipping.apidojo.app as the product hostname.
+
+      - Updated README.md, the v2 plan set, and memory-bank artifacts to use
+        shipping.apidojo.app and apidojo.app where relevant
+      - Updated SEO-facing runtime files including structured data, meta base
+        URL, robots.txt, sitemap.xml, the site manifest, and the landing-page
+        brand copy to align with the new domain strategy
+      - Updated the OG image generator and regenerated the social preview assets
+        with the new product URL
+      - Synced the affected GitHub issues to the new umbrella-domain plan
+      - Bumped release metadata to 1.0.10 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+  - date: "2026-03-17"
+    version: "1.0.9"
+    commit: TBD
+    status: in-progress
+    title: "docs(license): replace shortcut agpl notice with canonical text"
+    details: |-
+      Replaced the short AGPL boundary notice with the full canonical GNU AGPL
+      v3 text after deciding to keep the repo on a standard, scanner-friendly
+      license file.
+
+      - Replaced LICENSE with the official GNU Affero General Public License v3 text
+      - Kept the open-core boundary explanation in README.md and TRADEMARKS.md
+      - Bumped release metadata to 1.0.9 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+  - date: "2026-03-17"
+    version: "1.0.8"
+    commit: TBD
+    status: in-progress
+    title: "docs(v2): tighten licensing, seo, and validation guardrails"
+    details: |-
+      Refined the v2 planning and repo metadata so the implementation phase
+      starts from clearer legal, SEO, testing, and scope assumptions.
+
+      - Updated README.md, TRADEMARKS.md, package metadata, and LICENSE to
+        reflect the Shipping API Dojo open-core direction and AGPL boundary
+      - Added a local compliance plan for issue #12 and revised the issue #5
+        joint plan to treat #12 and #13 as explicit v2 support issues
+      - Tightened the #7, #8, #9, #10, #11, and #13 plans with SEO-first
+        guardrails, stronger automated-validation expectations, and revised
+        effort estimates
+      - Added a standalone Vitest config plus foundational unit tests for the
+        progress schema and SEO meta helpers so pnpm test now passes cleanly
+      - Refreshed active-context.yaml to track the heavier estimate rollup, the
+        new issue #12 planning artifact, and the updated documentation state
+      - Bumped release metadata to 1.0.8 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+  - date: "2026-03-17"
+    version: "1.0.7"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): add mobile-readiness follow-up"
+    details: |-
+      Added a future native-app strategy issue and tightened the local plan set
+      so the web-first v2 work does not paint the product into a browser-only
+      corner.
+
+      - Created GitHub issue #13 for mobile readiness and native app strategy
+      - Added a local outline plan for #13 in specs/current-changes
+      - Updated the issue #5 joint plan plus the #7, #9, and #11 plans to
+        preserve platform-neutral content, progress, entitlement, certificate,
+        and backend-contract boundaries for a future native client
+      - Updated GitHub issue #5 and the memory-bank roadmap to track #13 as a
+        follow-on after the web v2 path
+      - Bumped release metadata to 1.0.7 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+  - date: "2026-03-17"
+    version: "1.0.6"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): sync refined issue plans and add EU compliance follow-up"
+    details: |-
+      Synced the refined local plan set back into GitHub issues and added a
+      separate follow-up issue for EU privacy and launch-compliance work.
+
+      - Updated GitHub issues #5, #7, #8, #9, #10, and #11 to reflect the
+        reviewed implementation details, validation expectations, and refined
+        auth/billing/email/runtime decisions
+      - Created GitHub issue #12 for EU privacy, storage disclosure, and
+        launch-compliance work before the hosted auth/paid launch
+      - Updated active-context.yaml with the new #12 next-step issue, refreshed
+        progress notes, and bumped release metadata to 1.0.6
+      - Confirmed the current hosted scope does not require a cookie-consent
+        banner if storage remains strictly necessary only, while still tracking
+        the required privacy and storage-disclosure work separately
+    refs:
+      - "I5D7, I5D8"
+  - date: "2026-03-17"
+    version: "1.0.5"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): finalize issue 5 execution plans"
+    details: |-
+      Finalized the issue #5 planning package so execution can proceed in a
+      strict branch order with the new auth, billing, email, and domain
+      foundation separated from the content proof of concept and migration work.
+
+      - Created six planning artifacts in specs/current-changes for the issue #5
+        joint plan plus issues #7, #11, #8, #9, and #10
+      - Created GitHub issue #11 for auth, entitlements, billing, email, and
+        domain foundation between #7 and #8
+      - Updated GitHub issues #5, #7, #8, #9, and #10 to match the new scope,
+        including 20 scenario families, dedicated Resend, and the initial shippingapidojo.com domain target
+      - Refined the plan set after external review with explicit deliverable
+        mappings, realistic issue estimates, typed variant/run contracts,
+        TanStack webhook strategy, progress migration planning, and iterative
+        validation guidance for each issue
+      - Updated active-context.yaml to track issue #11, the #7 -> #11 -> #8 -> #9
+        execution order, and the revised #10 certificate scope
+      - Bumped release metadata to 1.0.5 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+  - date: "2026-03-17"
     version: "1.0.4"
     commit: TBD
     status: in-progress
