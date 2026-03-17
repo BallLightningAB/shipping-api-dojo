@@ -1,5 +1,5 @@
 meta:
-  release: "1.0.3"
+  release: "1.0.4"
   repo: "github.com/BallLightningAB/api-trainer"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -32,6 +32,7 @@ roadmap:
       progress_log:
         - note: "Implemented reproducible OG asset generation, created new home/rest/soap/arena PNGs, updated route meta tags, and captured deployment-time preview validation steps in specs/current-changes/issue-6-og-images.md."
         - note: "Adjusted the OG artwork and affected route SEO titles to use the Shipping API Dojo product name while keeping post-deployment social preview validation as the remaining open deliverable."
+        - note: "Removed duplicate canonical tags by moving the home canonical out of the root route and keeping one canonical per route for /, /learn/rest, /learn/soap, and /arena."
     - id: content-expansion
       issue: "#5"
       title: "Content expansion: minimum viable randomization, 20 lessons, 20 drill families, and deeper scenarios"

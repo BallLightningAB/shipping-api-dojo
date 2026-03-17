@@ -9,7 +9,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Layout } from "@/components/layout/Layout";
 import { ProgressHydrator } from "@/components/progress/ProgressHydrator";
-import { generateCanonical, generateMeta, SITE_URL } from "@/lib/seo/meta";
+import { generateMeta, SITE_URL } from "@/lib/seo/meta";
 import {
 	generateRootEntityGraphSchema,
 	jsonLdScript,
@@ -86,7 +86,6 @@ export const Route = createRootRoute({
 					rel: "stylesheet",
 					href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&display=swap",
 				},
-				generateCanonical("/"),
 				{
 					rel: "icon",
 					href: "/favicon.ico",

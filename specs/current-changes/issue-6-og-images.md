@@ -40,6 +40,7 @@ Scope: Replace leftover Ball Lightning OG assets with API-Trainer branded images
 - Confirm the affected routes publish page-specific `og:image` and `twitter:image` values.
 - Confirm the default site OG image now points at `og-home.png` instead of `logo.png`.
 - Verified locally via SSR HTML fetch that `/`, `/learn/rest`, `/learn/soap`, and `/arena` emit the expected absolute image URLs and `1200x630` metadata.
+- Verified locally that `/`, `/learn/rest`, `/learn/soap`, and `/arena` each emit exactly one canonical link after moving the home canonical out of the root route.
 
 ## Still Needed After Deployment
 

@@ -1,7 +1,23 @@
 entries:
   - date: "2026-03-17"
-    version: "1.0.3"
+    version: "1.0.4"
     commit: TBD
+    status: in-progress
+    title: "fix(seo): remove duplicate canonical tags from key routes"
+    details: |-
+      Cleaned up canonical link emission after the OG rollout so the root route
+      no longer injects a second canonical tag into child pages.
+
+      - Removed the root-level canonical link from src/routes/__root.tsx
+      - Added the home canonical link directly to src/routes/index.tsx
+      - Verified locally that /, /learn/rest, /learn/soap, and /arena each emit
+        exactly one canonical link
+      - Re-ran lint and production build checks after the SEO fix
+    refs:
+      - "I6D4"
+  - date: "2026-03-17"
+    version: "1.0.3"
+    commit: 99c9fa9
     status: in-progress
     title: "feat(og): refresh Shipping API Dojo social preview assets"
     details: |-

@@ -11,10 +11,14 @@ import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { ContinueBanner } from "@/components/progress/ContinueBanner";
 import { StreakBadge, XpBadge } from "@/components/progress/ProgressWidgets";
+import { generateCanonical } from "@/lib/seo/meta";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/")({
+	head: () => ({
+		links: [generateCanonical("/")],
+	}),
 	component: HomePage,
 });
 
