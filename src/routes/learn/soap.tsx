@@ -4,8 +4,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LessonStatus } from "@/components/progress/LessonStatus";
 import { getLessonsByTrack } from "@/content/lessons";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/learn/soap")({
+	head: () => {
+		const title = "SOAP Track";
+		const description =
+			"Navigate SOAP envelopes, XML namespaces, WSDL contracts, and fault handling for legacy carrier integrations.";
+
+		return {
+			meta: [
+				{ title: `${title} | Shipping API Dojo` },
+				...generateMeta({
+					title,
+					description,
+					url: "/learn/soap",
+					image: "/og-soap.png",
+					imageAlt:
+						"SOAP Track preview with XML envelope structure, WSDL focus, and SOAP fault cues.",
+					type: "website",
+				}),
+			],
+			links: [generateCanonical("/learn/soap")],
+		};
+	},
 	component: SoapTrackPage,
 });
 

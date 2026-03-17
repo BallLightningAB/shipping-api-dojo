@@ -10,6 +10,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest run",
+    "generate:og": "node scripts/generate-og-images.mjs",
     "format": "biome format --write",
     "lint": "biome lint",
     "check": "biome check"

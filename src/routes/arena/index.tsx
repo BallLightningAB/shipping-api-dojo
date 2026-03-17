@@ -7,8 +7,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { scenarios } from "@/content/scenarios";
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/arena/")({
+	head: () => {
+		const title = "Incident Arena";
+		const description =
+			"Practice realistic carrier integration incidents: timeouts, rate limits, SOAP faults, and silent failures.";
+
+		return {
+			meta: [
+				{ title: `${title} | Shipping API Dojo` },
+				...generateMeta({
+					title,
+					description,
+					url: "/arena",
+					image: "/og-arena.png",
+					imageAlt:
+						"Incident Arena preview with carrier troubleshooting scenarios and decision steps.",
+					type: "website",
+				}),
+			],
+			links: [generateCanonical("/arena")],
+		};
+	},
 	component: ArenaPage,
 });
 

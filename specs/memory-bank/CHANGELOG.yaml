@@ -1,7 +1,29 @@
 entries:
+  - date: "2026-03-17"
+    version: "1.0.3"
+    commit: TBD
+    status: in-progress
+    title: "feat(og): refresh Shipping API Dojo social preview assets"
+    details: |-
+      Replaced the leftover Ball Lightning social cards with route-specific
+      Shipping API Dojo OG images and wired the affected routes to publish
+      absolute Open Graph and Twitter metadata.
+
+      - Added a reproducible OG image generator at scripts/generate-og-images.mjs
+      - Generated new 1200x630 images for the landing page, REST track,
+        SOAP track, and Incident Arena
+      - Removed the unused Ball Lightning OG leftovers from public/
+      - Updated SEO helpers to emit absolute image URLs plus width, height,
+        type, and alt metadata
+      - Updated the root, REST, SOAP, and arena routes to publish the new
+        route-specific OG/Twitter image tags and canonical links
+      - Captured deployment-time social preview validation steps in
+        specs/current-changes/issue-6-og-images.md
+    refs:
+      - "I6D1, I6D2, I6D3, I6D4"
   - date: "2026-03-16"
     version: "1.0.2"
-    commit: TBD
+    commit: 849c193
     status: in-progress
     title: "docs(memory-bank): plan issue 5 content expansion roadmap"
     details: |-

@@ -4,8 +4,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LessonStatus } from "@/components/progress/LessonStatus";
 import { getLessonsByTrack } from "@/content/lessons";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/learn/rest")({
+	head: () => {
+		const title = "REST Track";
+		const description =
+			"Master HTTP semantics, authentication, error handling, and webhook patterns for carrier REST API integrations.";
+
+		return {
+			meta: [
+				{ title: `${title} | Shipping API Dojo` },
+				...generateMeta({
+					title,
+					description,
+					url: "/learn/rest",
+					image: "/og-rest.png",
+					imageAlt:
+						"REST Track preview with carrier API request flow, retry headers, and rate-limit cues.",
+					type: "website",
+				}),
+			],
+			links: [generateCanonical("/learn/rest")],
+		};
+	},
 	component: RestTrackPage,
 });
 

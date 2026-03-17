@@ -1,5 +1,5 @@
 /**
- * SEO Meta Tag Utilities for Carrier API-Trainer
+ * SEO Meta Tag Utilities for Shipping API Dojo
  *
  * Provides helpers for generating meta tags, Open Graph, and Twitter Card tags
  * compatible with TanStack Start's head() function.
@@ -26,12 +26,26 @@ export interface SeoMeta {
 	type?: "website" | "article";
 }
 
-const SITE_NAME = "Carrier API-Trainer";
+const SITE_NAME = "Shipping API Dojo";
 const SITE_URL = "https://api-trainer.balllightning.cloud";
-const DEFAULT_IMAGE = `${SITE_URL}/logo.png`;
+const OG_IMAGE_WIDTH = "1200";
+const OG_IMAGE_HEIGHT = "630";
+const OG_IMAGE_TYPE = "image/png";
 const DEFAULT_DESCRIPTION =
 	"Interactive carrier-integration learning for REST and SOAP interview prep and troubleshooting.";
 const TWITTER_HANDLE = "@nicbrulay";
+
+function toAbsoluteUrl(pathOrUrl: string) {
+	if (pathOrUrl.startsWith("http")) {
+		return pathOrUrl;
+	}
+
+	return pathOrUrl.startsWith("/")
+		? `${SITE_URL}${pathOrUrl}`
+		: `${SITE_URL}/${pathOrUrl}`;
+}
+
+const DEFAULT_IMAGE = toAbsoluteUrl("/og-home.png");
 
 interface MetaTag {
 	name?: string;
@@ -58,7 +72,11 @@ function buildCoreMeta(input: CoreMetaInput): MetaTag[] {
 		{ property: "og:description", content: description },
 		{ property: "og:url", content: url },
 		{ property: "og:image", content: image },
+		{ property: "og:image:url", content: image },
 		{ property: "og:image:alt", content: imageAlt },
+		{ property: "og:image:width", content: OG_IMAGE_WIDTH },
+		{ property: "og:image:height", content: OG_IMAGE_HEIGHT },
+		{ property: "og:image:type", content: OG_IMAGE_TYPE },
 		{ name: "twitter:card", content: "summary_large_image" },
 		{ name: "twitter:site", content: TWITTER_HANDLE },
 		{ name: "twitter:title", content: title },
@@ -97,8 +115,8 @@ export function generateMeta(seo: SeoMeta) {
 		? seo.title
 		: `${seo.title} | ${SITE_NAME}`;
 	const description = seo.description || DEFAULT_DESCRIPTION;
-	const url = seo.url || SITE_URL;
-	const image = seo.image || DEFAULT_IMAGE;
+	const url = seo.url ? toAbsoluteUrl(seo.url) : SITE_URL;
+	const image = seo.image ? toAbsoluteUrl(seo.image) : DEFAULT_IMAGE;
 	const imageAlt = seo.imageAlt || seo.title;
 	const type = seo.type || "website";
 
@@ -122,7 +140,7 @@ export function generateMeta(seo: SeoMeta) {
  * Generate canonical link for TanStack Start head() function
  */
 export function generateCanonical(path: string) {
-	const url = path.startsWith("http") ? path : `${SITE_URL}${path}`;
+	const url = toAbsoluteUrl(path);
 	return { rel: "canonical", href: url };
 }
 
