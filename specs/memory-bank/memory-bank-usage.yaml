@@ -174,20 +174,10 @@ Remaining: I3D10, I3D11
 - area: web3                   On-chain, wallets, RPC                           #5319E7
 - area: infra                  Infra/ops/config                                 #BFD4F2
 - area: ci                     CI/CD and automation                             #5EBEFF
-- status: blocked              Blocked by external/internal dependency          #000000
-- status: needs-info           Waiting on clarification                         #FEF2C0
-- size: S                      Small                                            #EDEDED
-- status: ready                Ready to start                                   #0E8A16
-- size: M                      Medium                                           #EDEDED
-- size: L                      Large                                            #EDEDED
-- risk: high                   High delivery or prod risk                       #D73A4A
-- risk: medium                 Moderate risk                                    #F9D0C4
 - breaking-change              Breaking API/contract change                     #5319E7
-- risk: low                    Low risk                                         #D4C5F9
 - needs-triage                 New/ungroomed                                    #FEF2C0
 - area: documentation          Documentation area (guides, README, specs)       #0366D6
 - area: research-and-planning  Discovery, research spikes, planning, PDD/specs  #C5DEF5
-- status: planned                                                               #948a59
 - type: dependency                                                              #cdd646
 
 ### Integration with Development Workflow

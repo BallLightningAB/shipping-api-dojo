@@ -1,5 +1,5 @@
 meta:
-  release: "1.0.1"
+  release: "1.0.2"
   repo: "github.com/BallLightningAB/api-trainer"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -10,6 +10,56 @@ meta:
   # - I3Docs / I3UI / I3Fix / I3Test / I3Biome: tags for documentation, UI polish, minor fixes, tests and Biome/tooling work not tied to a single deliverable
 roadmap:
   current:
+    - id: content-expansion
+      issue: "#5"
+      title: "Content expansion: minimum viable randomization, 20 lessons, 20 drill families, and deeper scenarios"
+      status: planned
+      priority: high
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/5"
+      deliverables:
+        - "[I5D1] Implement minimum viable randomization for MCQ answer order so the correct answer is not fixed in one slot"
+        - "[I5D2] Implement minimum viable randomization for lesson drill order"
+        - "[I5D3] Implement minimum viable randomization for arena scenario order"
+        - "[I5D4] Reach a target of 20 lessons through the new content-family direction"
+        - "[I5D5] Reach a target of 20 authored drill families with stronger explanations and stronger distractors"
+        - "[I5D6] Deepen the scenario set into a clearer ladder and future scenario-family structure"
+        - "[I5D7] Track the work through linked sub-issues for technical scoping, proof of concept, and full migration/content expansion"
+        - "[I5D8] Keep higher-value randomization as a separate follow-on issue"
+      est:
+        dev_h: 16
+        test_h: 4
+      sub_issues:
+        - id: content-expansion-scoping
+          issue: "#7"
+          title: "Technical scoping for content families, seeded randomization, and gated progress"
+          status: planned
+          links:
+            issue: "https://github.com/BallLightningAB/api-trainer/issues/7"
+        - id: content-expansion-poc
+          issue: "#8"
+          title: "Proof of concept for content families, seeded randomization, and deeper scenarios"
+          status: planned
+          links:
+            issue: "https://github.com/BallLightningAB/api-trainer/issues/8"
+        - id: content-expansion-migration
+          issue: "#9"
+          title: "Full content migration and expansion to 20 lessons, 20 drill families, and deeper scenarios"
+          status: planned
+          links:
+            issue: "https://github.com/BallLightningAB/api-trainer/issues/9"
+      remaining_deliverables:
+        - "[I5D1] Implement minimum viable randomization for MCQ answer order so the correct answer is not fixed in one slot"
+        - "[I5D2] Implement minimum viable randomization for lesson drill order"
+        - "[I5D3] Implement minimum viable randomization for arena scenario order"
+        - "[I5D4] Reach a target of 20 lessons through the new content-family direction"
+        - "[I5D5] Reach a target of 20 authored drill families with stronger explanations and stronger distractors"
+        - "[I5D6] Deepen the scenario set into a clearer ladder and future scenario-family structure"
+        - "[I5D7] Track the work through linked sub-issues for technical scoping, proof of concept, and full migration/content expansion"
+        - "[I5D8] Keep higher-value randomization as a separate follow-on issue"
+      progress_log:
+        - note: "Research captured in specs/current-changes/issue-5-content-expansion-research.md and GitHub issue #5 was updated to target minimum viable randomization, 20 lessons, 20 drill families, and deeper scenarios."
+  next_steps:
     - id: create-og-images
       issue: "#6"
       title: "Create new OG images for API-Trainer site"
@@ -34,16 +84,28 @@ roadmap:
         - "[I6D4] Update meta tags with new OG image URLs"
         - "[I6D5] Test OG image previews across social platforms"
       progress_log: []
-  next_steps:
-    - id: content-expansion
-      title: "Add more lessons, drills, scenarios and make minor improvements"
+    - id: higher-value-randomization
+      issue: "#10"
+      title: "Higher-value randomization, review modes, and premium challenge direction"
       status: planned
+      priority: medium
+      links:
+        issue: "https://github.com/BallLightningAB/api-trainer/issues/10"
       deliverables:
-        - "[I5D1] Randomize drill order, ensuring the second answer isn't always the correct one"
-        - "[I5D2] Randomize scenario order"
-        - "[I5D3] Add more lessons"
-        - "[I5D4] Add more drills"
-        - "[I5D5] Add more scenarios"
+        - "[I10D1] Outline higher-value randomized variants beyond ordering changes: payloads, headers, error codes, evidence snippets, and misconception rotation"
+        - "[I10D2] Outline review-mode and challenge-mode surfaces such as daily or weekly seeded challenges"
+        - "[I10D3] Outline premium-ready randomization features, analytics hooks, and content-gating opportunities"
+        - "[I10D4] Reserve future AI-only challenge directions as explicit later work, not part of the current implementation"
+      est:
+        dev_h: 0
+        test_h: 0
+      sub_issues: []
+      remaining_deliverables:
+        - "[I10D1] Outline higher-value randomized variants beyond ordering changes: payloads, headers, error codes, evidence snippets, and misconception rotation"
+        - "[I10D2] Outline review-mode and challenge-mode surfaces such as daily or weekly seeded challenges"
+        - "[I10D3] Outline premium-ready randomization features, analytics hooks, and content-gating opportunities"
+        - "[I10D4] Reserve future AI-only challenge directions as explicit later work, not part of the current implementation"
+      progress_log: []
     - id: search-and-filtering
       title: "Wiki search, directory filtering"
       status: planned
