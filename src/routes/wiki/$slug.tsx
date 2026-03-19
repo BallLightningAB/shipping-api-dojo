@@ -3,9 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WikiArticle } from "@/components/wiki/WikiArticle";
 import { getWikiBySlug } from "@/content/wiki";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/wiki/$slug")({
-	component: WikiSlugPage,
 	loader: ({ params }) => {
 		const entry = getWikiBySlug(params.slug);
 		if (!entry) {
@@ -13,6 +13,26 @@ export const Route = createFileRoute("/wiki/$slug")({
 		}
 		return { entry };
 	},
+	head: ({ loaderData }) => {
+		const entry = loaderData?.entry;
+		if (!entry) {
+			return {};
+		}
+
+		return {
+			meta: [
+				...generateMeta({
+					title: entry.title,
+					description: entry.summary,
+					url: `/wiki/${entry.slug}`,
+					type: "article",
+					tags: ["shipping api", "carrier api", "wiki"],
+				}),
+			],
+			links: [generateCanonical(`/wiki/${entry.slug}`)],
+		};
+	},
+	component: WikiSlugPage,
 });
 
 function WikiSlugPage() {

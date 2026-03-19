@@ -4,6 +4,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.local/
 count.txt
 .env
 .nitro

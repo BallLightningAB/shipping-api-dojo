@@ -1,8 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { wikiEntries } from "@/content/wiki";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/wiki/")({
+	head: () => {
+		const title = "Shipping API Wiki";
+		const description =
+			"Quick-reference articles on shipping and carrier API concepts, standards, retry logic, SOAP, and production debugging patterns.";
+
+		return {
+			meta: [
+				...generateMeta({
+					title,
+					description,
+					url: "/wiki",
+				}),
+			],
+			links: [generateCanonical("/wiki")],
+		};
+	},
 	component: WikiIndexPage,
 });
 

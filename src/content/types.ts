@@ -1,5 +1,5 @@
 /**
- * Content Data Types for Carrier API-Trainer
+ * Content Data Types for Shipping API Dojo
  */
 
 export type Track = "rest" | "soap" | "intro";

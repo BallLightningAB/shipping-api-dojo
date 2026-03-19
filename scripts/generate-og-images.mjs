@@ -47,7 +47,7 @@ const pages = [
 				<div class="feature-card tone-blue">
 					<div class="feature-kicker">Track</div>
 					<strong>REST + SOAP</strong>
-					<p>Concepts, references, and patterns for carrier APIs.</p>
+					<p>Concepts, references, and patterns for shipping APIs.</p>
 				</div>
 				<div class="feature-card tone-green">
 					<div class="feature-kicker">Practice</div>

@@ -1,7 +1,7 @@
 # Issue 12 Compliance Plan
 
 Date: 2026-03-17
-Issue: [#12](https://github.com/BallLightningAB/api-trainer/issues/12)
+Issue: [#12](https://github.com/BallLightningAB/shipping-api-dojo/issues/12)
 Branch: `codex/issue-12-compliance`
 Scope: Privacy, storage-disclosure, and launch-compliance work required before production auth and paid features are enabled.
 

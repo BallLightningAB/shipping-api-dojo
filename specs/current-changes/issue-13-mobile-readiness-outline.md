@@ -1,7 +1,7 @@
 # Mobile Readiness and Native App Strategy Plan
 
 Date: 2026-03-17
-Issue: [#13](https://github.com/BallLightningAB/api-trainer/issues/13)
+Issue: [#13](https://github.com/BallLightningAB/shipping-api-dojo/issues/13)
 Branch: `codex/issue-13-mobile-readiness`
 Scope: Follow-on strategy only after the web v2 work is complete.
 

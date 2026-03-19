@@ -1,14 +1,14 @@
-api_trainer_pdd:
+shipping_api_dojo_pdd:
   meta:
     name: "Shipping API Dojo — Product PDD"
-    code_name: "api-trainer"
+    code_name: "shipping-api-dojo"
     version: "1.0.0"
-    repo: "https://github.com/BallLightningAB/api-trainer"
+    repo: "https://github.com/BallLightningAB/shipping-api-dojo"
     domain: "https://shipping.apidojo.app"
     owner:
       individual: "Nicolas Brulay"
       company: "Ball Lightning AB"
-    planning_reference: "specs/current-changes/api-trainer-pre-planning-info.yaml"
+    planning_reference: "specs/current-changes/shipping-api-dojo-pre-planning-info.yaml"
 
   product:
     kind: "learning_platform"
@@ -39,7 +39,7 @@ api_trainer_pdd:
       security: ["Gitleaks", "pre-commit hooks"]
 
   design:
-    brand: "api-trainer"
+    brand: "shipping-api-dojo"
     color_scheme:
       primary_palette:
         blue: "#3B82F6" # from logo
@@ -139,7 +139,7 @@ api_trainer_pdd:
   progress_system:
     storage:
       type: "localStorage"
-      key: "api-trainer-progress"
+      key: "shipping-api-dojo-progress"
       schema_version: 1
     data_model:
       xp: "integer (accumulated points)"

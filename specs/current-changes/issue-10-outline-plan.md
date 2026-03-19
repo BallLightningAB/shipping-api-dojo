@@ -1,7 +1,7 @@
 # Higher-Value Randomization, Review Modes, and Shareable Certificates Plan
 
 Date: 2026-03-17
-Issue: [#10](https://github.com/BallLightningAB/api-trainer/issues/10)
+Issue: [#10](https://github.com/BallLightningAB/shipping-api-dojo/issues/10)
 Branch: `codex/issue-10-outline`
 Scope: Outline only. No implementation in this phase.
 

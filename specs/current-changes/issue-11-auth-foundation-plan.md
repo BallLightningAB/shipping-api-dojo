@@ -1,7 +1,7 @@
 # Issue 11 Auth Foundation Plan
 
 Date: 2026-03-17
-Issue: [#11](https://github.com/BallLightningAB/api-trainer/issues/11)
+Issue: [#11](https://github.com/BallLightningAB/shipping-api-dojo/issues/11)
 Branch: `codex/issue-11-auth-foundation`
 Scope: Implement the platform foundation defined in `#7`.
 

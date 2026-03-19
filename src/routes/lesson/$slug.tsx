@@ -7,9 +7,9 @@ import { getLessonBySlug, lessons } from "@/content/lessons";
 import { getDrillsByIds } from "@/content/drills";
 import { completeDrill, completeLesson } from "@/lib/progress/progress.actions";
 import { LessonStatus } from "@/components/progress/LessonStatus";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/lesson/$slug")({
-	component: LessonPage,
 	loader: ({ params }) => {
 		const lesson = getLessonBySlug(params.slug);
 		if (!lesson) {
@@ -18,6 +18,26 @@ export const Route = createFileRoute("/lesson/$slug")({
 		const drillData = getDrillsByIds(lesson.drillIds);
 		return { lesson, drills: drillData };
 	},
+	head: ({ loaderData }) => {
+		const lesson = loaderData?.lesson;
+		if (!lesson) {
+			return {};
+		}
+
+		return {
+			meta: [
+				...generateMeta({
+					title: lesson.title,
+					description: lesson.summary,
+					url: `/lesson/${lesson.slug}`,
+					type: "article",
+					tags: ["shipping api training", lesson.track, "carrier integrations"],
+				}),
+			],
+			links: [generateCanonical(`/lesson/${lesson.slug}`)],
+		};
+	},
+	component: LessonPage,
 });
 
 function LessonPage() {

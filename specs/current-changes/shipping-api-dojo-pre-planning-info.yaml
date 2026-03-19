@@ -1,6 +1,6 @@
 app:
-  name: API Trainer
-  codename: api-trainer
+  name: Shipping API Dojo
+  codename: shipping-api-dojo
   purpose: Interactive, carrier-integration-focused learning site for REST + SOAP, optimized for interview prep
     and real-world troubleshooting.
   target_users:
@@ -117,9 +117,9 @@ app:
     - WSDL change breaks client -> mitigation
     - Carrier returns 200 with error payload -> robust error detection
 guide:
-  id: hubert-api-trainer-mvp-progress-2026-02
+  id: hubert-shipping-api-dojo-mvp-progress-2026-02
   goal:
-  - Cleanse the existing TanStack Start boilerplate repo (api-trainer) of BallLightning-specific branding/content
+  - Cleanse the existing TanStack Start boilerplate repo (shipping-api-dojo) of BallLightning-specific branding/content
     while keeping the existing theme/styling.
   - Implement MVP-safe, authless 'session + progress' using durable local storage on the client.
   - Ensure SSR/hydration correctness in TanStack Start (Feb 2026 best practices) and keep an easy upgrade path to
@@ -162,7 +162,7 @@ guide:
     - name: Rename app/package
       steps:
       - 'Update package.json: name, description, repository, author, license (to match a commercial product), keywords.'
-      - 'Update README.md: remove BallLightning references; add api-trainer purpose + quickstart.'
+      - 'Update README.md: remove BallLightning references; add shipping-api-dojo purpose + quickstart.'
     - name: Remove BL-specific brand assets/copy
       steps:
       - Replace favicon/og images/logo if present; keep the theme tokens and component styling.
@@ -219,7 +219,7 @@ guide:
   progress_system_design:
     storage:
       type: localStorage
-      key: api-trainer:progress:v1
+      key: shipping-api-dojo:progress:v1
       constraints:
       - Use TanStack Start environment functions (createIsomorphicFn / createClientOnlyFn) so browser-only localStorage
         code is tree-shaken from server bundles.
@@ -236,7 +236,7 @@ guide:
         - Stable local identity for namespacing/export/import.
         - 'Future: attach local progress to an authenticated user and merge.'
         generation:
-        - Generate on client via crypto.randomUUID() once; persist under api-trainer:anonId.
+        - Generate on client via crypto.randomUUID() once; persist under shipping-api-dojo:anonId.
         server_render:
         - anonId is null/undefined during SSR; set on hydration.
     schema:
@@ -342,8 +342,8 @@ guide:
         import { createIsomorphicFn } from "@tanstack/react-start"
         import { migrateProgress, type ProgressV1, createDefaultProgress } from "./progress.schema"
 
-        const PROGRESS_KEY = "api-trainer:progress:v1"
-        const ANON_KEY = "api-trainer:anonId"
+        const PROGRESS_KEY = "shipping-api-dojo:progress:v1"
+        const ANON_KEY = "shipping-api-dojo:anonId"
 
         // IMPORTANT (Start best practice):
         // - TanStack Start is isomorphic-by-default.

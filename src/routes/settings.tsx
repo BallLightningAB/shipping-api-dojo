@@ -7,8 +7,24 @@ import { resetProgress } from "@/lib/progress/progress.actions";
 import { parseProgress } from "@/lib/progress/progress.schema";
 import { saveProgress } from "@/lib/progress/progress.storage";
 import { progressStore } from "@/lib/progress/progress.store";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/settings")({
+	head: () => ({
+		meta: [
+			...generateMeta({
+				title: "Settings",
+				description:
+					"Manage local Shipping API Dojo progress data for export, import, and reset actions.",
+				url: "/settings",
+			}),
+			{
+				name: "robots",
+				content: "noindex, nofollow",
+			},
+		],
+		links: [generateCanonical("/settings")],
+	}),
 	component: SettingsPage,
 });
 
@@ -52,7 +68,7 @@ function SettingsPanel() {
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = "api-trainer-progress.json";
+		a.download = "shipping-api-dojo-progress.json";
 		a.click();
 		URL.revokeObjectURL(url);
 	}

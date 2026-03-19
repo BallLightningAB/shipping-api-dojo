@@ -1,7 +1,7 @@
 # Issue 8 PoC Plan
 
 Date: 2026-03-17
-Issue: [#8](https://github.com/BallLightningAB/api-trainer/issues/8)
+Issue: [#8](https://github.com/BallLightningAB/shipping-api-dojo/issues/8)
 Branch: `codex/issue-8-poc`
 Scope: Prove the content-family and seeded-randomization approach on one narrow slice.
 

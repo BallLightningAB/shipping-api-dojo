@@ -1,6 +1,6 @@
 {
   "name": "Shipping API Dojo",
-  "short_name": "API Dojo",
+  "short_name": "Shipping Dojo",
   "description": "Interactive shipping and carrier API learning for REST and SOAP interview prep and troubleshooting",
   "start_url": "/",
   "scope": "/",

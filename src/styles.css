@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /* =============================================================================
-   Carrier API-Trainer – Brand Styling
-   Based on: specs/api-trainer-pdd.yaml
+   Shipping API Dojo – Brand Styling
+   Based on: specs/shipping-api-dojo-pdd.yaml
    ============================================================================= */
 
 /* Typography: Big Shoulders Variable (primary), JetBrains Mono (code) */
@@ -140,7 +140,7 @@ h6 {
   --accent: #eab308;
   --accent-foreground: #05070a;
 
-  /* BL Brand Colors (updated for API Trainer) */
+  /* Brand colors for Shipping API Dojo */
   --bl-red: #3b82f6; /* mapped to blue for compatibility */
   --bl-red-hover: #2563eb;
   --bl-rose: #22c55e; /* mapped to green */

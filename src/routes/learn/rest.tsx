@@ -8,13 +8,12 @@ import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/learn/rest")({
 	head: () => {
-		const title = "REST Track";
+		const title = "REST Shipping API Training";
 		const description =
-			"Master HTTP semantics, authentication, error handling, and webhook patterns for carrier REST API integrations.";
+			"Learn HTTP semantics, authentication, error handling, and webhook patterns for shipping and carrier REST API integrations.";
 
 		return {
 			meta: [
-				{ title: `${title} | Shipping API Dojo` },
 				...generateMeta({
 					title,
 					description,

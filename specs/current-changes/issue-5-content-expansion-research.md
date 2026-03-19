@@ -1,7 +1,7 @@
 # Issue 5 Research Paper: Higher-Quality, Higher-Volume, Randomized Content Without AI
 
 Date: 2026-03-16
-Issue: [#5](https://github.com/BallLightningAB/api-trainer/issues/5)
+Issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Scope: Research only. No implementation changes yet.
 
 ## Executive Summary

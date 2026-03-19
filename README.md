@@ -1,6 +1,6 @@
 # Shipping API Dojo
 
-Shipping API Dojo is a web-first, open-core learning product for shipping and carrier API integrations. This repository contains the public core application and content engine. The hosted product is moving from the older `Carrier API-Trainer` preview identity toward the `Shipping API Dojo` brand.
+Shipping API Dojo is a web-first, open-core learning product for shipping and carrier API integrations. This repository contains the public core application and content engine for the hosted product at `shipping.apidojo.app`.
 
 ## Current Product State
 
@@ -68,9 +68,14 @@ Open `http://localhost:3000`.
 
 ## Domains
 
-- Current preview: [https://api-trainer.balllightning.cloud](https://api-trainer.balllightning.cloud)
-- Target production domain for v2 launch: `https://shipping.apidojo.app`
+- Current hosted domain: [https://shipping.apidojo.app](https://shipping.apidojo.app)
 - Planned umbrella/domain strategy: `apidojo.app` as the network root, with topic-specific subdomains
+
+## Email Handling
+
+- The temporary public contact address is `info@balllightning.cloud` until product-domain inbox routing is in place.
+- A low-cost next step is Cloudflare Email Routing for inbound aliases on `shipping.apidojo.app`, forwarding addresses like `hello@shipping.apidojo.app` to an existing inbox.
+- Cloudflare Email Routing is suitable for inbound forwarding, but it does not provide full mailbox hosting or true outbound sending as the product-domain address.
 
 ## Project Structure
 

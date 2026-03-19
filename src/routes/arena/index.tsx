@@ -11,13 +11,12 @@ import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/arena/")({
 	head: () => {
-		const title = "Incident Arena";
+		const title = "Shipping Incident Practice";
 		const description =
-			"Practice realistic carrier integration incidents: timeouts, rate limits, SOAP faults, and silent failures.";
+			"Practice realistic shipping and carrier integration incidents: timeouts, rate limits, SOAP faults, and silent failures.";
 
 		return {
 			meta: [
-				{ title: `${title} | Shipping API Dojo` },
 				...generateMeta({
 					title,
 					description,

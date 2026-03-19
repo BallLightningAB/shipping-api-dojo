@@ -8,13 +8,12 @@ import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/learn/soap")({
 	head: () => {
-		const title = "SOAP Track";
+		const title = "SOAP Shipping API Training";
 		const description =
-			"Navigate SOAP envelopes, XML namespaces, WSDL contracts, and fault handling for legacy carrier integrations.";
+			"Learn SOAP envelopes, XML namespaces, WSDL contracts, and fault handling for legacy shipping and carrier integrations.";
 
 		return {
 			meta: [
-				{ title: `${title} | Shipping API Dojo` },
 				...generateMeta({
 					title,
 					description,

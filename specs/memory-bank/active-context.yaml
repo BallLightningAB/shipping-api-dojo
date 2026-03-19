@@ -1,6 +1,6 @@
 meta:
-  release: "1.0.10"
-  repo: "github.com/BallLightningAB/api-trainer"
+  release: "1.0.12"
+  repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
   references:
@@ -10,36 +10,13 @@ meta:
   # - I3Docs / I3UI / I3Fix / I3Test / I3Biome: tags for documentation, UI polish, minor fixes, tests and Biome/tooling work not tied to a single deliverable
 roadmap:
   current:
-    - id: create-og-images
-      issue: "#6"
-      title: "Create new OG images for API-Trainer site"
-      status: in-progress
-      priority: high
-      links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/6"
-      deliverables:
-        - "[I6D1] Design new OG image templates for API-Trainer branding"
-        - "[I6D2] Create OG images for main landing page"
-        - "[I6D3] Create OG images for key learning pages (REST track, SOAP track, arena)"
-        - "[I6D4] Update meta tags with new OG image URLs"
-        - "[I6D5] Test OG image previews across social platforms"
-      est:
-        dev_h: 2
-        test_h: 1
-      sub_issues: []
-      remaining_deliverables:
-        - "[I6D5] Test OG image previews across social platforms"
-      progress_log:
-        - note: "Implemented reproducible OG asset generation, created new home/rest/soap/arena PNGs, updated route meta tags, and captured deployment-time preview validation steps in specs/current-changes/issue-6-og-images.md."
-        - note: "Adjusted the OG artwork and affected route SEO titles to use the Shipping API Dojo product name while keeping post-deployment social preview validation as the remaining open deliverable."
-        - note: "Removed duplicate canonical tags by moving the home canonical out of the root route and keeping one canonical per route for /, /learn/rest, /learn/soap, and /arena."
     - id: content-expansion
       issue: "#5"
       title: "Content expansion: minimum viable randomization, 20 lessons, 20 drill families, and 20 scenario families"
       status: in-progress
       priority: high
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/5"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/5"
       deliverables:
         - "[I5D1] Implement minimum viable randomization for MCQ answer order so the correct answer is not fixed in one slot"
         - "[I5D2] Implement minimum viable randomization for lesson drill order"
@@ -58,25 +35,25 @@ roadmap:
           title: "Technical scoping for content families, seeded randomization, and gated progress"
           status: in-progress
           links:
-            issue: "https://github.com/BallLightningAB/api-trainer/issues/7"
+            issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/7"
         - id: content-expansion-auth-foundation
           issue: "#11"
           title: "Auth, entitlements, billing, email, and domain foundation"
           status: planned
           links:
-            issue: "https://github.com/BallLightningAB/api-trainer/issues/11"
+            issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/11"
         - id: content-expansion-poc
           issue: "#8"
           title: "Proof of concept for content families, seeded randomization, and deeper scenarios"
           status: planned
           links:
-            issue: "https://github.com/BallLightningAB/api-trainer/issues/8"
+            issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/8"
         - id: content-expansion-migration
           issue: "#9"
           title: "Full content migration and expansion to 20 lessons, 20 drill families, and 20 scenario families"
           status: planned
           links:
-            issue: "https://github.com/BallLightningAB/api-trainer/issues/9"
+            issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/9"
       remaining_deliverables:
         - "[I5D1] Implement minimum viable randomization for MCQ answer order so the correct answer is not fixed in one slot"
         - "[I5D2] Implement minimum viable randomization for lesson drill order"
@@ -91,6 +68,7 @@ roadmap:
         - note: "Synced GitHub issues #5, #7, #8, #9, #10, and #11 with the refined local plan set after external review, including explicit validation expectations and the updated implementation details."
         - note: "Added GitHub issue #13 and a local outline plan for mobile readiness so the current web-first v2 work preserves platform-neutral content, progress, entitlement, and certificate boundaries for a future native client."
         - note: "Updated the v2 joint/scoping/foundation/migration plans with SEO-first guardrails, heavier automated-testing expectations, revised estimates, and a new local compliance plan for issue #12; refreshed README.md, TRADEMARKS.md, package metadata, and the AGPL/open-core direction; added a standalone Vitest config plus foundational unit tests for progress parsing and SEO metadata so pnpm test is now a real passing check; replaced LICENSE with the full canonical GNU AGPL v3 text; and shifted the planned production domain strategy from shippingapidojo.com to shipping.apidojo.app under the apidojo.app umbrella, including aligned SEO files and regenerated OG assets."
+        - note: "Unified the public site around the Shipping API Dojo product name, expanded crawlable SEO coverage to lesson and wiki routes, removed settings from index targets, migrated the local progress storage key away from the old api-trainer name, and added a local .gitignored account/env rollout checklist ahead of the planned repo rename."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
@@ -98,7 +76,7 @@ roadmap:
       status: planned
       priority: medium
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/10"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/10"
       deliverables:
         - "[I10D1] Outline higher-value randomized variants beyond ordering changes: payloads, headers, error codes, evidence snippets, and misconception rotation"
         - "[I10D2] Outline review-mode and challenge-mode surfaces such as daily or weekly seeded challenges, exam modes, and weak-area review"
@@ -122,7 +100,7 @@ roadmap:
       status: planned
       priority: medium
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/12"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/12"
       deliverables:
         - "[I12D1] Confirm and document which cookies and storage/access technologies are strictly necessary and confirm that no consent banner is required as long as analytics and other non-essential tracking remain disabled"
         - "[I12D2] Create a privacy policy and cookie/storage disclosure covering auth/session cookies, local progress storage, server-backed progress, billing, payment-provider data flows, and transactional email"
@@ -148,7 +126,7 @@ roadmap:
       status: planned
       priority: medium
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/13"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/13"
       deliverables:
         - "[I13D1] Review the Shipping API Dojo v2 architecture for mobile blockers across content families, progress, auth, entitlements, certificates, and challenge-run generation"
         - "[I13D2] Define the platform-neutral boundaries required so a future native client can reuse the same content model, progress model, and premium entitlement system without duplicating core logic"
@@ -174,12 +152,36 @@ roadmap:
         - "[I6D1] Add wiki search"
         - "[I6D2] Add directory filtering"
   recent_done:
+    - id: create-og-images
+      issue: "#6"
+      title: "Create new OG images for Shipping API Dojo site"
+      status: done
+      priority: high
+      links:
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/6"
+        pr: ""
+      deliverables:
+        - "[I6D1] Design new OG image templates for Shipping API Dojo branding"
+        - "[I6D2] Create OG images for main landing page"
+        - "[I6D3] Create OG images for key learning pages (REST track, SOAP track, arena)"
+        - "[I6D4] Update meta tags with new OG image URLs"
+        - "[I6D5] Test OG image previews across social platforms"
+      est:
+        dev_h: 2
+        test_h: 1
+      sub_issues: []
+      remaining_deliverables: []
+      progress_log:
+        - note: "Implemented reproducible OG asset generation, created new home/rest/soap/arena PNGs, updated route meta tags, and documented the work in specs/archived/completed/issue-6-og-images.md."
+        - note: "Adjusted the OG artwork and affected route SEO titles to use the Shipping API Dojo product name."
+        - note: "Removed duplicate canonical tags by moving the home canonical out of the root route and keeping one canonical per route for /, /learn/rest, /learn/soap, and /arena."
+        - note: "Validated the updated OG images on 2026-03-18, confirmed issue #6 is complete, and kept the GitHub issue closed."
     - id: api-trainer-mvp
       issue: "#4"
       title: "Carrier API-Trainer MVP Build"
       status: done
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/4"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/4"
         pr: ""
       deliverables:
         - "[I4D1] Repo cleanse — remove BL boilerplate, rebrand to API Trainer"
@@ -192,7 +194,7 @@ roadmap:
         - "[I4D8] Production build passes (pnpm build exit 0)"
         - "[I4D9] Fixed TanStack Store crash — replaced custom useProgressStore with proper useStore hook"
         - "[I4D10] Updated all component imports to use useStore(progressStore, selector) pattern"
-        - "[I4D11] Created comprehensive api-trainer-pdd.yaml replacing balllightning-pdd.yaml"
+        - "[I4D11] Created comprehensive shipping-api-dojo-pdd.yaml replacing balllightning-pdd.yaml"
         - "[I4D12] Updated color scheme — removed red (#DD3A28) in favor of blue/green/yellow from logo"
         - "[I4D13] Updated theme-color meta tags, CSS variables, and chart colors"
         - "[I4D14] Fixed TanStack Router export — changed getRouter() function to direct router export"
@@ -209,12 +211,12 @@ roadmap:
       title: "MVP step 1: Boilerplate cleanup and build plan"
       status: done
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/1"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/1"
         pr: ""
       deliverables:
         - "[I1D1] Remove BL boilerplate (services, portfolio, contact, builder-coil, github)"
         - "[I1D2] Rebrand repo metadata, structured data, Header/Footer, manifest/theme colors"
-        - "[I1D3] Capture build plan in specs (api-trainer-pdd.yaml) and active-context roadmap"
+        - "[I1D3] Capture build plan in specs (shipping-api-dojo-pdd.yaml) and active-context roadmap"
         - "[I1D4] Establish content/routing/SEO/progress-system plan for MVP"
       est:
         dev_h: 1
@@ -228,7 +230,7 @@ roadmap:
       title: "MVP step 2: Build the Carrier API-Trainer"
       status: done
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/2"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/2"
         pr: ""
       deliverables:
         - "[I2D1] Progress system: Zod schema, isomorphic localStorage, TanStack store, debounced writes, cross-tab sync, XP/streak/drill/lesson/scenario actions"
@@ -248,7 +250,7 @@ roadmap:
       title: "MVP step 3: Debug & stabilize build"
       status: done
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/3"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/3"
         pr: ""
       deliverables:
         - "[I3D1] Fixed TanStack Store/Router runtime crash; aligned packages to compatible versions"
@@ -268,7 +270,7 @@ roadmap:
       title: "API-Trainer MVP (v1.0.0) — cleanup, build, debug"
       status: done
       links:
-        issue: "https://github.com/BallLightningAB/api-trainer/issues/4"
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/4"
         pr: ""
       deliverables:
         - "[I4D17] #1 Boilerplate cleanup and plan"

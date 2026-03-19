@@ -1,6 +1,6 @@
 {
-  "name": "api-trainer",
-  "description": "Shipping API Dojo open-core learning app for shipping and carrier API integrations",
+  "name": "shipping-api-dojo",
+  "description": "Shipping API Dojo open-core shipping API training app for REST and SOAP carrier integrations",
   "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",

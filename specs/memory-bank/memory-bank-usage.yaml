@@ -31,7 +31,7 @@ The memory-bank directory contains the core documentation and tracking files for
 - Include detailed bullet points describing all changes made
 - Keep version numbers synchronized with active-context.yaml meta.release
 
-### balllightning-pdd.yaml
+### shipping-api-dojo-pdd.yaml
 **Purpose**: Project Design Document with technical specifications
 - Contains product definitions, technical stack, and architectural decisions
 - Serves as the canonical technical reference for the project
@@ -45,9 +45,9 @@ The memory-bank directory contains the core documentation and tracking files for
 ## Version Management
 
 ### Version Synchronization
-- `balllightning-pdd.yaml` tracks its `meta.version` for documentation versioning
+- `shipping-api-dojo-pdd.yaml` tracks its `meta.version` for documentation versioning
 - `active-context.yaml` tracks both the global `meta.release` for the current code version and the 'meta.pdd_version' specifically for the PDD
-- update balllightning-pdd.yaml version when documentation changes, not code
+- update shipping-api-dojo-pdd.yaml version when documentation changes, not code
 
 ### ID Scheme Reference
 ```
@@ -72,12 +72,12 @@ Generic Tags:
 3. Mark items in `remaining_deliverables` as completed
 4. Create CHANGELOG.yaml entry for version release
 5. Add relevant IxDy IDs to CHANGELOG Refs: lines
-6. Update balllightning-pdd.yaml if technical specifications change
+6. Update shipping-api-dojo-pdd.yaml if technical specifications change
 
 ### Memory Bank as Single Source of Truth
 - active-context.yaml provides complete progress narrative
 - CHANGELOG.yaml provides version-specific change summaries
-- balllightning-pdd.yaml provides technical foundation
+- shipping-api-dojo-pdd.yaml provides technical foundation
 - Together they create comprehensive project documentation
 
 ## Best Practices
@@ -97,7 +97,7 @@ Generic Tags:
 ### Review Process
 - Review active-context.yaml progress completeness before releases
 - Verify CHANGELOG.yaml entries match actual changes made
-- Confirm balllightning-pdd.yaml reflects current technical state
+- Confirm shipping-api-dojo-pdd.yaml reflects current technical state
 - Check version synchronization between files
 
 ## Communication Guidelines

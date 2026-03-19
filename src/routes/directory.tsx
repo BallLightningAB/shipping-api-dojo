@@ -2,8 +2,25 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { directoryEntries } from "@/content/directory";
+import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/directory")({
+	head: () => {
+		const title = "Shipping API Directory";
+		const description =
+			"Curated shipping API directory of specs, tools, carrier developer portals, and community resources for integration work.";
+
+		return {
+			meta: [
+				...generateMeta({
+					title,
+					description,
+					url: "/directory",
+				}),
+			],
+			links: [generateCanonical("/directory")],
+		};
+	},
 	component: DirectoryPage,
 });
 

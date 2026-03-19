@@ -34,9 +34,9 @@ function RootNotFound() {
 
 export const Route = createRootRoute({
 	head: () => {
-		const title = "Shipping API Dojo | REST & SOAP Interview Prep";
+		const title = "Shipping API Dojo | Shipping API Training for REST & SOAP";
 		const description =
-			"Interactive carrier-integration learning for REST and SOAP interview prep and troubleshooting.";
+			"Shipping API training for REST and SOAP carrier integrations, interview prep, and production troubleshooting.";
 
 		return {
 			meta: [

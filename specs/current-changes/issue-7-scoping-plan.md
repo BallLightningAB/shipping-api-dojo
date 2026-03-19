@@ -1,7 +1,7 @@
 # Issue 7 Scoping Plan
 
 Date: 2026-03-17
-Issue: [#7](https://github.com/BallLightningAB/api-trainer/issues/7)
+Issue: [#7](https://github.com/BallLightningAB/shipping-api-dojo/issues/7)
 Branch: `codex/issue-7-scoping`
 Scope: Decision-complete technical scoping only. No Neon, Better Auth, Creem, or Resend implementation in this issue.
 

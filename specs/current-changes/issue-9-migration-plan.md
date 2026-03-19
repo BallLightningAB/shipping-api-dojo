@@ -1,7 +1,7 @@
 # Issue 9 Migration Plan
 
 Date: 2026-03-17
-Issue: [#9](https://github.com/BallLightningAB/api-trainer/issues/9)
+Issue: [#9](https://github.com/BallLightningAB/shipping-api-dojo/issues/9)
 Branch: `codex/issue-9-migration`
 Scope: Full migration from the legacy static model to the new 20/20/20 content-family model.
 

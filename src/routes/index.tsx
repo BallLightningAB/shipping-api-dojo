@@ -26,7 +26,7 @@ const tracks = [
 	{
 		title: "REST Track",
 		description:
-			"HTTP semantics, auth, error mapping, pagination & webhooks for carrier APIs.",
+			"HTTP semantics, auth, error mapping, pagination, and webhooks for shipping and carrier APIs.",
 		href: "/learn/rest",
 		icon: BookOpen,
 		lessons: 4,
@@ -34,7 +34,7 @@ const tracks = [
 	{
 		title: "SOAP Track",
 		description:
-			"Envelopes, namespaces, WSDL/XSD, and fault handling for legacy carrier APIs.",
+			"Envelopes, namespaces, WSDL/XSD, and fault handling for legacy shipping integrations.",
 		href: "/learn/soap",
 		icon: BookOpen,
 		lessons: 3,
@@ -106,7 +106,7 @@ function HomePage() {
 								delay={0.3}
 								preset="fade-in-blur"
 							>
-								Interactive learning for REST and SOAP shipping integration —
+								Shipping API training for REST and SOAP integrations, with
 								lessons, drills, and incident scenarios for interview prep and
 								production troubleshooting.
 							</TextEffect>
@@ -260,15 +260,31 @@ function HomePage() {
 									world's largest carrier networks.
 								</p>
 								<p>
-									This API Trainer was built to help developers master the
-									quirks of carrier integrations — from modern REST webhooks to
-									legacy SOAP envelopes — based on real-world production
+									Shipping API Dojo was built to help developers master the
+									quirks of carrier integrations, from modern REST webhooks to
+									legacy SOAP envelopes, based on real-world production
 									incidents.
 								</p>
 								<p>
-									Currently building [Chronomation](https://chronomation.com)
-									and documenting the journey on [The Builder
-									Coil](https://thebuildercoil.com).
+									Currently building{" "}
+									<a
+										className="text-foreground underline decoration-muted-foreground/40 underline-offset-4 transition-colors hover:text-blue-500"
+										href="https://chronomation.com"
+										rel="noopener noreferrer"
+										target="_blank"
+									>
+										Chronomation
+									</a>{" "}
+									and documenting the journey on{" "}
+									<a
+										className="text-foreground underline decoration-muted-foreground/40 underline-offset-4 transition-colors hover:text-blue-500"
+										href="https://thebuildercoil.com"
+										rel="noopener noreferrer"
+										target="_blank"
+									>
+										The Builder Coil
+									</a>
+									.
 								</p>
 							</div>
 							<div className="mt-8 flex gap-4">
@@ -278,7 +294,7 @@ function HomePage() {
 									size="sm"
 									variant="outline"
 								>
-									<a href="mailto:contact@balllightning.cloud">Get in Touch</a>
+									<a href="mailto:info@balllightning.cloud">Get in Touch</a>
 								</Button>
 								<Button
 									asChild

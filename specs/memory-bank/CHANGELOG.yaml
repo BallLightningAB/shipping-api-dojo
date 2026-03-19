@@ -1,7 +1,51 @@
 entries:
+  - date: "2026-03-19"
+    version: "1.0.12"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): close issue 6 and finalize repo rename cleanup"
+    details: |-
+      Closed the remaining OG-image follow-up after validating the social
+      preview work, and finished the post-rename cleanup for the local specs,
+      issue links, and Vercel project linkage.
+
+      - Moved issue #6 from current work into recent_done and recorded the
+        completed OG-image validation in the archived issue artifact
+      - Renamed the remaining specs that still used the old api-trainer slug
+        and updated memory-bank/current-changes GitHub links to the renamed repo
+      - Restored the local `.vercel/project.json` link to the existing
+        `shipping-api-dojo` Vercel project
+      - Synced stale GitHub issue wording for #6 and #11 to the current
+        Shipping API Dojo naming
+      - Bumped release metadata to 1.0.12 in preparation for commit review
+    refs:
+      - "I6D5"
+  - date: "2026-03-18"
+    version: "1.0.11"
+    commit: 614b666
+    status: in-progress
+    title: "chore(branding): align public site with shipping api dojo"
+    details: |-
+      Aligned the public app, SEO surfaces, and local setup workflow with the
+      Shipping API Dojo product identity ahead of the planned repository rename.
+
+      - Unified public-facing brand copy around Shipping API Dojo while keeping
+        shipping API and carrier integration terminology in SEO-targeted text
+      - Added canonical/meta coverage for lesson, wiki, and directory routes
+        and expanded the sitemap to include real lesson and wiki URLs
+      - Removed the settings page from sitemap index targets and marked it
+        noindex in route metadata
+      - Migrated browser progress storage from the old api-trainer key to the
+        new shipping-api-dojo key without dropping existing local data
+      - Added a local .gitignored env/account rollout checklist and documented
+        the temporary Cloudflare email-routing plan in README.md
+      - Swapped the temporary public contact CTA to info@balllightning.cloud
+        until product-domain mailbox routing is configured
+    refs:
+      - "I5D7, I5D8"
   - date: "2026-03-17"
     version: "1.0.10"
-    commit: TBD
+    commit: 614b666
     status: in-progress
     title: "docs(domain): move v2 planning to shipping.apidojo.app"
     details: |-
@@ -194,7 +238,7 @@ entries:
       Added new high priority issue for creating OG images to replace Ball Lightning branding
       with API-Trainer specific visuals for improved social media presence.
 
-      - Created GitHub issue #6: "Create new OG images for API-Trainer site"
+      - Created GitHub issue #6: "Create new OG images for Shipping API Dojo site"
       - Added issue to front of current priority queue in active-context.yaml
       - Defined 5 deliverables (I6D1-I6D5) for OG image creation and testing
       - Estimated 2 hours development, 1 hour testing
@@ -225,7 +269,7 @@ entries:
       - Production build passes (pnpm build exit 0)
       - Fixed TanStack Store crash: replaced custom useProgressStore with proper useStore hook from @tanstack/react-store
       - Updated all component imports to use useStore(progressStore, selector) pattern
-      - Created comprehensive api-trainer-pdd.yaml replacing balllightning-pdd.yaml
+      - Created comprehensive shipping-api-dojo-pdd.yaml replacing balllightning-pdd.yaml
       - Updated color scheme: removed red (#DD3A28) in favor of blue (#3B82F6), green (#10B981), yellow (#F59E0B) from logo
       - Updated theme-color meta tags, CSS variables, and chart colors
       - About section already in place with 15+ years shipping/logistics experience

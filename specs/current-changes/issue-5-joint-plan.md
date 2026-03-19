@@ -1,7 +1,7 @@
 # Issue 5 Joint Plan
 
 Date: 2026-03-17
-Parent issue: [#5](https://github.com/BallLightningAB/api-trainer/issues/5)
+Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Scope: Coordination plan for the full web-v2 program anchored by `#5`, with core execution across `#7`, `#11`, `#8`, `#9`, and `#10`, plus required supporting issues `#12` and `#13`.
 
 ## Goal
@@ -33,6 +33,12 @@ Issue `#5` provides the global instructions and guardrails for the whole web-v2 
 - Public-repo licensing is `AGPL-3.0-only`; trademarks remain reserved and private premium materials stay outside the public repo.
 - Lessons, wiki, and directory surfaces are SEO-critical and must remain crawlable, SSR-visible, and internally linked throughout v2.
 - Every implementation issue must add or update automated tests wherever the behavior can be covered mechanically, then use browser-control validation for route and auth flows that still require end-to-end confirmation.
+
+## Current Execution Notes
+
+- The public product identity is now `Shipping API Dojo`, with `API Dojo` treated as the umbrella brand for future sibling products.
+- Public SEO copy should prefer keyword phrases like `shipping API training`, `carrier APIs`, and `carrier integrations` instead of reviving the old `API Trainer` product label.
+- A repository rename to `shipping-api-dojo` is planned before `#7` implementation starts, so repo-path and GitHub-link cleanup should happen immediately after that rename rather than drifting into later branches.
 
 ## Execution Order
 
