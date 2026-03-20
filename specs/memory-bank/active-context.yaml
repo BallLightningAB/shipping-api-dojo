@@ -1,5 +1,5 @@
 meta:
-  release: "1.0.12"
+  release: "1.0.13"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -33,7 +33,7 @@ roadmap:
         - id: content-expansion-scoping
           issue: "#7"
           title: "Technical scoping for content families, seeded randomization, and gated progress"
-          status: in-progress
+          status: done
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/7"
         - id: content-expansion-auth-foundation
@@ -69,6 +69,8 @@ roadmap:
         - note: "Added GitHub issue #13 and a local outline plan for mobile readiness so the current web-first v2 work preserves platform-neutral content, progress, entitlement, and certificate boundaries for a future native client."
         - note: "Updated the v2 joint/scoping/foundation/migration plans with SEO-first guardrails, heavier automated-testing expectations, revised estimates, and a new local compliance plan for issue #12; refreshed README.md, TRADEMARKS.md, package metadata, and the AGPL/open-core direction; added a standalone Vitest config plus foundational unit tests for progress parsing and SEO metadata so pnpm test is now a real passing check; replaced LICENSE with the full canonical GNU AGPL v3 text; and shifted the planned production domain strategy from shippingapidojo.com to shipping.apidojo.app under the apidojo.app umbrella, including aligned SEO files and regenerated OG assets."
         - note: "Unified the public site around the Shipping API Dojo product name, expanded crawlable SEO coverage to lesson and wiki routes, removed settings from index targets, migrated the local progress storage key away from the old api-trainer name, and added a local .gitignored account/env rollout checklist ahead of the planned repo rename."
+        - note: "Validated issue #7 scoping against the current codebase plus current TanStack Start, Better Auth, Resend, Neon, and Drizzle docs; clarified that SSR-visible seeds may come from loaders but secret or auth-bound logic must move to server functions/server routes; captured Resend Free's single-domain and single-webhook constraints; corrected the registrar checklist to apidojo.app; and marked the issue-7 plan as implementation-ready for #11 without implying that the v2 architecture already exists in code."
+        - note: "Closed GitHub issue #7, archived the issue-7 scoping plan, and marked the #7 sub-issue in the roadmap as done so the remaining v2 sequence can proceed to #11."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

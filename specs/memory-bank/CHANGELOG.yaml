@@ -1,4 +1,23 @@
 entries:
+  - date: "2026-03-21"
+    version: "1.0.13"
+    commit: 0257711
+    status: in-progress
+    title: "docs(memory-bank): close issue 7 and archive v2 scoping handoff"
+    details: |-
+      Closed the issue-7 scoping work after validating the repo and official
+      provider docs, then archived the handoff artifact so #11 can start from
+      a clean completed scope.
+
+      - Validated issue #7 against the current codebase and current TanStack
+        Start, Better Auth, Resend, Neon, and Drizzle guidance
+      - Tightened the scoping plan with explicit current-codebase deltas,
+        runtime-boundary notes, and provider constraints for #11
+      - Closed GitHub issue #7 and marked the roadmap sub-issue as done
+      - Archived the issue-7 scoping plan under specs/archived/completed
+      - Bumped release metadata to 1.0.13 in preparation for commit review
+    refs:
+      - "I7D1, I7D2, I7D3, I7D4, I7D5, I7D6"
   - date: "2026-03-19"
     version: "1.0.12"
     commit: TBD

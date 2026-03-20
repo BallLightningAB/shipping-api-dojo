@@ -5,6 +5,18 @@ Issue: [#7](https://github.com/BallLightningAB/shipping-api-dojo/issues/7)
 Branch: `codex/issue-7-scoping`
 Scope: Decision-complete technical scoping only. No Neon, Better Auth, Creem, or Resend implementation in this issue.
 
+## Validation Status
+
+Validated on 2026-03-20 against:
+
+- the current Shipping API Dojo codebase
+- current official TanStack Start docs
+- current official Better Auth docs
+- current official Resend docs
+- current official Neon and Drizzle docs
+
+Decision: this plan is implementation-ready for `#11`, but the current codebase still uses the v1 flat content model and local-only progress system. The work in this issue remains documentation and handoff, not runtime implementation.
+
 ## Goal
 
 Define the final architecture for:
@@ -150,6 +162,13 @@ type ScenarioFamilyDefinition = {
 - Lessons keep inline section ownership in the first iteration; sections do not become standalone entities.
 - Existing inline lesson sections should migrate into `sections: LessonSectionDefinition[]`, not a `sectionIds` lookup model.
 
+### Current-codebase delta to close in `#8` and `#9`
+
+- Current lessons are keyed by `slug` and `order`; the family migration must add canonical `lessonId` without breaking existing lesson URLs.
+- Current drills are static authored items with fixed `correctIndex`; the family migration must move scoring to canonical `drillFamilyId` plus deterministic `variantId`.
+- Current scenarios are fixed step trees; the family migration must introduce `scenarioFamilyId`, deterministic run generation, and run-specific evidence without changing progress identity semantics.
+- Current lesson sections have no stable IDs; the migration must add section IDs while keeping sections inline with the lesson definition.
+
 ## Seeded Randomization Decision
 
 ### Default strategy
@@ -167,8 +186,10 @@ type ScenarioFamilyDefinition = {
 
 ### Execution boundary
 
-- Preferred path: route loader or server function creates the seed and serializes it.
+- Preferred path: route loader or server function creates the seed and serializes it when the randomized output must be SSR-visible.
 - Allowed fallback: `ClientOnly` only when the seed depends on device-local or post-hydration state that the loader cannot know safely.
+- TanStack Start loaders are isomorphic and may run again on client navigation, so loaders are only for non-secret seed generation and serializable content selection.
+- Secret-only logic, auth-bound state changes, and provider-backed mutations must live in `createServerFn(...)` handlers or server routes, not in loaders.
 
 ### PRNG recommendation
 
@@ -188,6 +209,7 @@ type ScenarioFamilyDefinition = {
 - Server state in Neon is authoritative.
 - Client state acts as cache and offline buffer only.
 - After sign-in, UI should load and reconcile against server progress.
+- Signed-in progress reads and writes should use authenticated server functions, not direct client-side persistence.
 
 ### Merge rules on sign-in
 
@@ -247,7 +269,7 @@ Use capability keys instead of one boolean plan flag.
 
 - Create a dedicated Resend account for API Trainer
 - Verify the `shipping.apidojo.app` sending domain
-- Assume Resend Free allows one verified domain per team, so the dedicated account avoids cross-project collisions
+- Resend currently allows one custom domain and one webhook endpoint on the Free plan, so the dedicated account avoids cross-project collisions
 - Add SPF, DKIM, and DMARC records
 - Roll out DMARC in phases: `p=none`, then `p=quarantine`, then `p=reject` after healthy delivery signals
 - Configure sender identities:
@@ -256,6 +278,7 @@ Use capability keys instead of one boolean plan flag.
   - `hello@shipping.apidojo.app`
   - `certificates@shipping.apidojo.app`
 - Treat those sender identities as valid outbound addresses on the single verified domain; provision mailbox or forwarding separately if any address needs to receive replies
+- Resend does not require pre-created sender identities; any sender on the verified domain is acceptable as long as the `from` domain exactly matches the verified domain
 - Capture fallback behavior if DNS verification is delayed:
   - finish local auth/billing code behind feature flags
   - block production email sends until the domain is verified
@@ -293,6 +316,13 @@ emailEvents(id, userId, emailType, providerMessageId, providerEventId, status, m
 certificates(id, userId, certificateType, title, credentialId, shareSlug, visibility, issuedAt, updatedAt)
 ```
 
+### Auth and cookie constraints validated for `#11`
+
+- Set Better Auth `baseURL` explicitly in every environment through `BETTER_AUTH_URL`; do not rely on request inference.
+- Preview and multi-host behavior should use an explicit allowed-hosts configuration rather than broad cookie scoping.
+- Only enable cross-subdomain cookies if the final product actually needs shared auth across sibling subdomains; the default should keep cookies scoped as narrowly as possible.
+- Better Auth sessions are cookie-backed and the core session fields above align with the documented session model.
+
 ### Operational data retention notes
 
 - Keep raw billing webhook payloads for `180 days` by default, then archive or prune them.
@@ -303,6 +333,7 @@ certificates(id, userId, certificateType, title, credentialId, shareSlug, visibi
 - Keep local anonymous progress on the existing browser-safe path.
 - Move signed-in authoritative progress reads and writes to authenticated server functions.
 - Use server-only HTTP request handlers for Creem and Resend webhooks because they need raw-body signature verification and should not be modeled as client-invoked mutations.
+- TanStack Start server routes should own raw webhook receipt from `src/server.ts`; this is a hard boundary, not a UI-route concern.
 - Keep business rules and payload contracts independent of browser-only component logic so future native clients can reuse the same backend.
 - Keep SEO-only concerns such as route metadata, breadcrumbs, and sitemap generation at the web route/catalog layer rather than leaking them into shared domain logic.
 
@@ -310,7 +341,7 @@ certificates(id, userId, certificateType, title, credentialId, shareSlug, visibi
 
 ### Accounts
 
-- domain registrar access for `shippingapidojo.com`
+- domain registrar access for `apidojo.app`
 - Vercel project and domain access
 - Neon project access
 - Better Auth provider configuration inputs
@@ -323,7 +354,6 @@ certificates(id, userId, certificateType, title, credentialId, shareSlug, visibi
 - `DATABASE_URL`
 - `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL`
-- `BETTER_AUTH_TRUSTED_ORIGINS`
 - `SESSION_COOKIE_DOMAIN`
 - `RESEND_API_KEY`
 - `RESEND_FROM_EMAIL`
@@ -334,6 +364,12 @@ certificates(id, userId, certificateType, title, credentialId, shareSlug, visibi
 - `CREEM_PRO_PRODUCT_ID`
 - `CREEM_PRO_PRICE_ID`
 - `CREEM_ENTERPRISE_PRODUCT_ID` or lookup key equivalent
+
+### Environment and config notes
+
+- Better Auth preview-host allowlisting may be code-backed config rather than a first-class environment variable; verify the final representation during `#11`.
+- Resend Free currently limits the product to one webhook endpoint, so email-event ingestion should be consolidated behind one handler.
+- The current repo has no active `BETTER_AUTH`, `CREEM`, `RESEND`, `DATABASE_URL`, or `APP_BASE_URL` wiring yet; `#11` owns the first real integration pass.
 
 ## Acceptance Criteria
 
@@ -350,3 +386,20 @@ certificates(id, userId, certificateType, title, credentialId, shareSlug, visibi
 - verify TanStack Start execution boundaries before approving the webhook and seed strategy
 - verify the env list against the actual providers before `#11` starts
 - keep the plan open until the implementation team can start `#11` without inventing missing contracts
+
+## 2026-03-20 Validation Summary
+
+### Confirmed in the current repo
+
+- The current app already uses TanStack Start route loaders and SSR-friendly route metadata for lessons and wiki content.
+- Canonical URLs and JSON-LD already assume `https://shipping.apidojo.app`.
+- The public AGPL open-core posture is already reflected in `package.json` and `README.md`.
+- Anonymous progress is explicitly browser-local today and already uses a Shipping API Dojo-specific storage key.
+
+### Confirmed gaps this issue is scoping around
+
+- The repo still uses flat `src/content/*.ts` content collections rather than family folders and family definitions.
+- Progress is still keyed by lesson slug and scenario ID in local storage, with no signed-in merge path or server authority.
+- Seeded randomization, variant IDs, run seeds, and scenario-family run generation do not exist yet.
+- There is no auth, billing, email, or database implementation in the application code today.
+- Sitemap and robots guardrails are documented but should still be treated as implementation work to preserve during `#8`, `#9`, and the domain cutover.
