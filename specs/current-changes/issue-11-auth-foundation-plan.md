@@ -19,7 +19,7 @@ Ship the shared infrastructure required before the content proof of concept:
 
 ## Dependencies
 
-- `#7` must be complete enough to lock schema, entitlement, and seed/progress contracts.
+- `#7` is archived in `specs/archived/completed/issue-7-scoping-plan.md` and must be complete enough to lock schema, entitlement, and seed/progress contracts.
 - `apidojo.app` must be purchased before production domain cutover steps can finish.
 - Dedicated Resend account creation must be available before production email validation can finish.
 

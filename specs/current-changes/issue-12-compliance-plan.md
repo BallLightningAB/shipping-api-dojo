@@ -24,7 +24,7 @@ Ship the legal and operational compliance layer that matches the hosted v2 imple
 
 ## Dependencies
 
-- `#7` must lock the storage, auth, billing, and email architecture.
+- `#7` is archived in `specs/archived/completed/issue-7-scoping-plan.md` and must lock the storage, auth, billing, and email architecture.
 - `#11` must be implemented far enough to expose the real cookies, server-side storage, payment flow, and email behavior.
 - This issue must complete before production auth and paid features are enabled on `shipping.apidojo.app`.
 

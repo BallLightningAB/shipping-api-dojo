@@ -28,6 +28,8 @@ Ship the full authored content expansion with:
 - all existing content regrouped into the shared family taxonomy
 - SSR-visible, crawlable lesson surfaces that strengthen the wiki and directory knowledge graph instead of weakening it
 
+The migration should use the archived `#7` handoff in `specs/archived/completed/issue-7-scoping-plan.md` as the contract source for family IDs, seeded randomization, and progress boundaries.
+
 ## Final Lesson Target
 
 ### Existing lessons to migrate and upgrade

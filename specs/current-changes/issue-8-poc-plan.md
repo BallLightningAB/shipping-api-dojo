@@ -20,6 +20,7 @@ Scope: Prove the content-family and seeded-randomization approach on one narrow 
 ## Goal
 
 Validate that the architecture from `#7` and the foundation from `#11` are workable before the full migration in `#9`.
+The `#7` handoff lives in `specs/archived/completed/issue-7-scoping-plan.md`.
 
 ## Locked Slice
 
