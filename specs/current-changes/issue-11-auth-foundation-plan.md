@@ -155,13 +155,13 @@ Ship the shared infrastructure required before the content proof of concept:
 
 ## Acceptance Criteria
 
-- users can sign in and out
-- signed-in users persist progress to Neon
-- anonymous users remain local-only
-- anonymous progress can be merged into an account
-- Creem webhooks update entitlement state idempotently
-- Resend can send verified-domain auth and billing emails
-- production domain, auth URLs, and cookies are ready for `shipping.apidojo.app`
+- [x] users can sign in and out
+- [x] signed-in users persist progress to Neon
+- [x] anonymous users remain local-only
+- [x] anonymous progress can be merged into an account
+- [x] Creem webhooks update entitlement state idempotently
+- [x] Resend can send verified-domain auth and billing emails
+- [x] production domain, auth URLs, and cookies are ready for `shipping.apidojo.app`
 
 ## Validation And Iteration
 

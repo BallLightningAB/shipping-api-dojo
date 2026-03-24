@@ -1,8 +1,21 @@
 entries:
+  - date: "2026-03-24"
+    version: "1.0.14"
+    commit: pending
+    status: in-progress
+    title: "feat(external-services): configure auth foundation services for issue #11"
+    details: |-
+      Configured external services and environment setup for auth foundation:
+      - Creem billing: store created, API key with minimal permissions, webhooks configured
+      - Resend email: mail.apidojo.app domain verified, Cloudflare routing aligned
+      - Neon database: pooled connection string configured
+      - Environment variables: core auth and billing envs added to .env.local
+      - Product setup: Shipping - Pro tier at EUR 4.99/month configured
+      Note: Foundation setup complete, implementation work remaining
   - date: "2026-03-21"
     version: "1.0.13"
     commit: 0257711
-    status: in-progress
+    status: completed
     title: "docs(memory-bank): close issue 7 and archive v2 scoping handoff"
     details: |-
       Closed the issue-7 scoping work after validating the repo and official
