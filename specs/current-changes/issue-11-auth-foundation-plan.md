@@ -58,6 +58,15 @@ Ship the shared infrastructure required before the content proof of concept:
   - preview database or preview branch
   - production database
 
+### Phase 1 progress (2026-03-25)
+
+- added `drizzle-orm`, `drizzle-kit`, `pg`, and `@types/pg`
+- added Drizzle configuration and scripts in `package.json`
+- added initial DB schema for progress, entitlements, subscriptions, billing events, certificates, email events, and progress merge events
+- generated initial SQL migration at `drizzle/0000_giant_songbird.sql`
+- added DB env parsing and DB client foundation modules under `src/lib/db/`
+- added unit tests for DB env validation and schema exports
+
 ### Phase 2: Better Auth (`I11D3`)
 
 - install Better Auth
@@ -156,13 +165,13 @@ Ship the shared infrastructure required before the content proof of concept:
 
 ## Acceptance Criteria
 
-- [x] users can sign in and out
-- [x] signed-in users persist progress to Neon
-- [x] anonymous users remain local-only
-- [x] anonymous progress can be merged into an account
-- [x] Creem webhooks update entitlement state idempotently
-- [x] Resend can send verified-domain auth and billing emails
-- [x] production domain, auth URLs, and cookies are ready for `shipping.apidojo.app`
+- [ ] users can sign in and out
+- [ ] signed-in users persist progress to Neon
+- [ ] anonymous users remain local-only
+- [ ] anonymous progress can be merged into an account
+- [ ] Creem webhooks update entitlement state idempotently
+- [ ] Resend can send verified-domain auth and billing emails
+- [ ] production domain, auth URLs, and cookies are ready for `shipping.apidojo.app`
 
 ## Validation And Iteration
 

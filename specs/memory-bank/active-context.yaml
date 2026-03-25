@@ -1,5 +1,5 @@
 meta:
-  release: "1.0.15"
+  release: "1.0.16"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -49,6 +49,7 @@ roadmap:
             - covers: [I11D6] note: "Resend domain mail.apidojo.app verified, Cloudflare email routing configured and aligned with outbound domain"
             - covers: [I11D2, I11D3, I11D5, I11D6] note: "External services foundation completed - implementation work remaining"
             - note: "Foundation setup complete, ready to begin Better Auth, Creem integration, and email implementation"
+            - covers: [I11D2] note: "Completed Phase 1 Neon/Drizzle implementation: added schema, migration generation workflow, DB env parsing, DB client scaffolding, and unit tests for env+schema modules."
         - id: content-expansion-poc
           issue: "#8"
           title: "Proof of concept for content families, seeded randomization, and deeper scenarios"

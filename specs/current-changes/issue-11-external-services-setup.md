@@ -116,3 +116,11 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 - [x] Resend domain verification completed (mail.apidojo.app)
 - [x] Creem product configuration completed
 - [x] Neon DATABASE_URL added
+
+## Implementation Progress (2026-03-25)
+
+- [x] Phase 1 started and completed for Neon/Drizzle foundation
+- [x] Drizzle config and migration scripts added
+- [x] Initial schema and SQL migration generated
+- [x] DB env validation and DB client scaffolding added
+- [ ] Phase 2 Better Auth implementation (next)

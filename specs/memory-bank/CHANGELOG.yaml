@@ -1,5 +1,23 @@
 entries:
   - date: "2026-03-25"
+    version: "1.0.16"
+    commit: pending
+    status: in-progress
+    title: "feat(auth-foundation): implement issue #11 phase 1 neon and drizzle base"
+    details: |-
+      Implemented the first execution slice of issue #11 by shipping the Neon/Drizzle
+      database foundation and migration scaffolding, plus local verification coverage.
+
+      - Added Drizzle + Postgres dependencies and DB scripts for generate/migrate/push/studio
+      - Added `drizzle.config.ts` and generated initial SQL migration for core auth-foundation tables
+      - Added DB modules for env parsing, connection handling, and schema exports under `src/lib/db`
+      - Added Phase 1 tables for progress, entitlements, subscriptions, billing events,
+        certificates, email events, and progress-merge auditing
+      - Added unit tests for DB env parsing and schema exports
+      - Updated local issue #11 artifacts and posted an issue progress update on GitHub
+    refs:
+      - "I11D2"
+  - date: "2026-03-25"
     version: "1.0.15"
     commit: pending
     status: in-progress
