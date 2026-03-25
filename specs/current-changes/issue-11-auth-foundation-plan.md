@@ -127,6 +127,17 @@ Ship the shared infrastructure required before the content proof of concept:
 - add server-side guards for premium-only actions and content packs
 - add minimal debug visibility for current entitlements in development
 
+### Phase 4 progress (2026-03-25)
+
+- added capability bundles and tier-resolution logic:
+  - `src/lib/entitlements/entitlements.ts`
+  - `src/lib/entitlements/entitlements.test.ts`
+- added server-side entitlement sync and capability guard contracts:
+  - `getCurrentEntitlements`
+  - `requireCapability`
+  - implemented in `src/lib/entitlements/entitlements.sync.ts`
+- added development-only entitlement debug visibility in settings route
+
 ### Phase 5: Creem billing (`I11D5`)
 
 - create Pro checkout flow with monthly and annual options

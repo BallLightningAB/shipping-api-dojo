@@ -1,7 +1,22 @@
 entries:
   - date: "2026-03-25"
-    version: "1.0.19"
+    version: "1.0.20"
     commit: pending
+    status: in-progress
+    title: "feat(entitlements): start issue #11 phase 4 capability resolution and guards"
+    details: |-
+      Started Phase 4 of issue #11 by adding capability resolution and server-side
+      entitlement guards for free/pro/enterprise access control.
+
+      - Added entitlement tier/capability bundle resolver with tests
+      - Added server-side `getCurrentEntitlements` and `requireCapability` contracts
+      - Added development-only entitlement debug visibility in settings route
+      - Updated local issue #11 artifacts and memory-bank release metadata
+    refs:
+      - "I11D3"
+  - date: "2026-03-25"
+    version: "1.0.19"
+    commit: 422e194
     status: in-progress
     title: "feat(progress-sync): wire signed-in hydrator to phase 3 server contracts"
     details: |-

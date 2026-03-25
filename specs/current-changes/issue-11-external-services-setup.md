@@ -125,3 +125,4 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 - [x] DB env validation and DB client scaffolding added
 - [x] Phase 2 Better Auth server scaffolding started (auth routes, plugins, schema, migration)
 - [x] Phase 3 server-backed progress contracts and merge rules started (server functions + tested merge logic)
+- [x] Phase 4 entitlement resolution and server capability guards started

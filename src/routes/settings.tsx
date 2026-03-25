@@ -1,8 +1,10 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { Download, Trash2, Upload } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth/client";
+import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
 import { resetProgress } from "@/lib/progress/progress.actions";
 import { parseProgress } from "@/lib/progress/progress.schema";
 import { saveProgress } from "@/lib/progress/progress.storage";
@@ -47,6 +49,7 @@ function SettingsPage() {
 }
 
 function SettingsPanel() {
+	const session = authClient.useSession();
 	const xp = useStore(progressStore, (s) => s.xp);
 	const streak = useStore(progressStore, (s) => s.streak);
 	const lessonsProgress = useStore(progressStore, (s) => s.lessons);
@@ -55,6 +58,25 @@ function SettingsPanel() {
 		(s) => s.scenariosCompleted
 	);
 	const [importStatus, setImportStatus] = useState<string | null>(null);
+	const [entitlementDebug, setEntitlementDebug] = useState<{
+		capabilities: string[];
+		source: string;
+		tier: string;
+	} | null>(null);
+
+	useEffect(() => {
+		if (!import.meta.env.DEV) {
+			return;
+		}
+
+		getCurrentEntitlements()
+			.then((entitlements) => {
+				setEntitlementDebug(entitlements);
+			})
+			.catch((error: unknown) => {
+				console.error("Failed to load entitlement debug info", error);
+			});
+	}, []);
 
 	const completedLessons = Object.values(lessonsProgress).filter(
 		(l) => l.completed
@@ -140,6 +162,21 @@ function SettingsPanel() {
 					<p className="text-sm text-muted-foreground">{importStatus}</p>
 				)}
 			</div>
+
+			{import.meta.env.DEV && entitlementDebug && (
+				<div className="space-y-3 rounded-lg border border-border p-4">
+					<h2 className="text-xl">Entitlement Debug</h2>
+					<p className="text-sm text-muted-foreground">
+						User: {session.data?.user?.email ?? "anonymous"}
+					</p>
+					<p className="text-sm text-muted-foreground">
+						Tier: {entitlementDebug.tier} ({entitlementDebug.source})
+					</p>
+					<pre className="overflow-auto rounded bg-muted p-3 text-xs">
+						{JSON.stringify(entitlementDebug.capabilities, null, 2)}
+					</pre>
+				</div>
+			)}
 		</div>
 	);
 }
