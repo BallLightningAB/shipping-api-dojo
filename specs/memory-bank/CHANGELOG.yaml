@@ -1,7 +1,25 @@
 entries:
   - date: "2026-03-25"
-    version: "1.0.22"
+    version: "1.0.23"
     commit: pending
+    status: in-progress
+    title: "feat(auth-domain): start issue #11 phase 7 preview-safe auth domain readiness"
+    details: |-
+      Started Phase 7 of issue #11 by wiring Better Auth domain and cookie
+      readiness for preview and production environments.
+
+      - Added auth config helpers for dynamic base URL allowed-host derivation
+      - Added trusted proxy + secure-cookie wiring in Better Auth advanced config
+      - Added optional cross-subdomain cookie domain support via SESSION_COOKIE_DOMAIN
+      - Added welcome email trigger through Better Auth user-create database hook
+      - Added focused tests for auth host/cookie/security config behavior
+      - Updated issue #11 progress artifacts and memory-bank release metadata
+      - Revalidated with format, lint, typecheck, tests, and build
+    refs:
+      - "I11D1, I11D7"
+  - date: "2026-03-25"
+    version: "1.0.22"
+    commit: 82a3e83
     status: in-progress
     title: "feat(email-lifecycle): implement issue #11 phase 6 resend lifecycle flow"
     details: |-

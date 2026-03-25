@@ -8,6 +8,7 @@ const authEnvSchema = z.object({
 	RESEND_API_KEY: z.string().min(1),
 	RESEND_FROM_EMAIL: z.email(),
 	RESEND_WEBHOOK_SECRET: z.string().optional(),
+	SESSION_COOKIE_DOMAIN: z.string().optional(),
 });
 
 export type AuthEnv = z.infer<typeof authEnvSchema>;

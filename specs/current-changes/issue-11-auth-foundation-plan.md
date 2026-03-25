@@ -260,3 +260,15 @@ Ship the shared infrastructure required before the content proof of concept:
   - storage of debugging/support metadata in `email_events`
 - integrated billing lifecycle email dispatch in Creem webhook handling
 - added unit tests for lifecycle copy resolution and Resend webhook helpers
+
+### Phase 7 progress (2026-03-25)
+
+- added Better Auth dynamic base URL host allow-list generation to support preview domains safely
+- enabled trusted proxy headers in Better Auth advanced config for hosted deployments
+- wired optional cross-subdomain cookie domain support through `SESSION_COOKIE_DOMAIN`
+- wired secure-cookie behavior from auth base URL protocol (`https` => secure cookies)
+- added Better Auth `databaseHooks.user.create.after` to send welcome email after account creation
+- added auth config helper tests covering:
+  - allowed-host derivation
+  - subdomain cookie configuration
+  - secure-cookie protocol behavior

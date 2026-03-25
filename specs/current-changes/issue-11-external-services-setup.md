@@ -127,4 +127,4 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 - [x] Phase 4 entitlement resolution and server capability guards started
 - [x] Phase 5 Creem webhook verification and subscription/entitlement sync started
 - [x] Phase 6 Resend transactional template rendering, webhook verification, and event persistence started
-- [ ] Phase 7 domain cutover readiness (shipping.apidojo.app URL/cookie finalization)
+- [x] Phase 7 auth/domain readiness started (preview-safe Better Auth base URL host config + cookie domain support)

@@ -12,9 +12,11 @@ describe("parseAuthEnv", () => {
 			BETTER_AUTH_URL: "http://127.0.0.1:3000",
 			RESEND_API_KEY: "re_123",
 			RESEND_FROM_EMAIL: "auth@mail.apidojo.app",
+			SESSION_COOKIE_DOMAIN: ".apidojo.app",
 		});
 
 		expect(parsed.BETTER_AUTH_URL).toBe("http://127.0.0.1:3000");
+		expect(parsed.SESSION_COOKIE_DOMAIN).toBe(".apidojo.app");
 	});
 
 	it("throws if BETTER_AUTH_SECRET is too short", () => {
