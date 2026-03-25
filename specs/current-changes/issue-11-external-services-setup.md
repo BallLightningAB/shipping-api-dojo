@@ -123,4 +123,4 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 - [x] Drizzle config and migration scripts added
 - [x] Initial schema and SQL migration generated
 - [x] DB env validation and DB client scaffolding added
-- [ ] Phase 2 Better Auth implementation (next)
+- [x] Phase 2 Better Auth server scaffolding started (auth routes, plugins, schema, migration)

@@ -77,6 +77,24 @@ Ship the shared infrastructure required before the content proof of concept:
 - protect server actions and route boundaries for signed-in-only features
 - keep anonymous browsing available
 
+### Phase 2 progress (2026-03-25)
+
+- installed `better-auth`
+- added Better Auth server instance with:
+  - Drizzle adapter (`pg`)
+  - email/password enabled
+  - magic-link plugin enabled
+  - TanStack Start cookie plugin enabled
+- added TanStack Start auth handler route at `/api/auth/$`
+- added auth client helper (`better-auth/react`)
+- added auth env parsing and trusted-origin normalization tests
+- added Better Auth core schema tables to Drizzle:
+  - `user`
+  - `session`
+  - `account`
+  - `verification`
+- generated migration `drizzle/0001_familiar_dreaming_celestial.sql`
+
 ### Phase 3: Server-backed progress (`I11D4`)
 
 - implement signed-in progress reads and writes against Neon

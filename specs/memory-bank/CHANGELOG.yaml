@@ -1,7 +1,25 @@
 entries:
   - date: "2026-03-25"
-    version: "1.0.16"
+    version: "1.0.17"
     commit: pending
+    status: in-progress
+    title: "feat(auth-foundation): start issue #11 phase 2 better auth scaffolding"
+    details: |-
+      Started Phase 2 of issue #11 by wiring Better Auth into TanStack Start and
+      extending the Drizzle schema with Better Auth core tables.
+
+      - Added Better Auth server instance with Drizzle adapter, magic link plugin,
+        email/password mode, and TanStack Start cookies integration
+      - Added API handler route at `/api/auth/$` for GET/POST auth requests
+      - Added auth environment parsing helpers and tests for env/trusted origins
+      - Added Better Auth core schema tables (`user`, `session`, `account`,
+        `verification`) to Drizzle and generated migration `0001`
+      - Updated local issue #11 artifacts and memory-bank progress logs for Phase 2
+    refs:
+      - "I11D3"
+  - date: "2026-03-25"
+    version: "1.0.16"
+    commit: a90d495
     status: in-progress
     title: "feat(auth-foundation): implement issue #11 phase 1 neon and drizzle base"
     details: |-
@@ -19,7 +37,7 @@ entries:
       - "I11D2"
   - date: "2026-03-25"
     version: "1.0.15"
-    commit: pending
+    commit: ebc7c83
     status: in-progress
     title: "docs(implementation): finalize auth foundation decisions and implementation path for issue #11"
     details: |-

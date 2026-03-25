@@ -18,6 +18,7 @@ import { Route as WikiSlugRouteImport } from './routes/wiki/$slug'
 import { Route as LessonSlugRouteImport } from './routes/lesson/$slug'
 import { Route as LearnSoapRouteImport } from './routes/learn/soap'
 import { Route as LearnRestRouteImport } from './routes/learn/rest'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -64,6 +65,11 @@ const LearnRestRoute = LearnRestRouteImport.update({
   path: '/learn/rest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/wiki/$slug': typeof WikiSlugRoute
   '/arena/': typeof ArenaIndexRoute
   '/wiki/': typeof WikiIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/wiki/$slug': typeof WikiSlugRoute
   '/arena': typeof ArenaIndexRoute
   '/wiki': typeof WikiIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/wiki/$slug': typeof WikiSlugRoute
   '/arena/': typeof ArenaIndexRoute
   '/wiki/': typeof WikiIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/wiki/$slug'
     | '/arena/'
     | '/wiki/'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/wiki/$slug'
     | '/arena'
     | '/wiki'
+    | '/api/auth/$'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/wiki/$slug'
     | '/arena/'
     | '/wiki/'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +157,7 @@ export interface RootRouteChildren {
   WikiSlugRoute: typeof WikiSlugRoute
   ArenaIndexRoute: typeof ArenaIndexRoute
   WikiIndexRoute: typeof WikiIndexRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnRestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,6 +245,7 @@ const rootRouteChildren: RootRouteChildren = {
   WikiSlugRoute: WikiSlugRoute,
   ArenaIndexRoute: ArenaIndexRoute,
   WikiIndexRoute: WikiIndexRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
