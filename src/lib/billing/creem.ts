@@ -14,6 +14,11 @@ export interface CreemWebhookEvent {
 	type: string;
 }
 
+export type BillingLifecycleEmailType =
+	| "payment_failure"
+	| "subscription_cancellation"
+	| "subscription_confirmation";
+
 function normalizeSignature(signatureHeader: string): string {
 	if (signatureHeader.startsWith("sha256=")) {
 		return signatureHeader.slice("sha256=".length);
@@ -147,4 +152,39 @@ export function extractSubscriptionFields(
 		subscriptionId,
 		userId,
 	};
+}
+
+export function resolveBillingLifecycleEmailType(params: {
+	eventType: string;
+	status: string | null;
+}): BillingLifecycleEmailType | null {
+	const status = params.status?.toLowerCase();
+	const eventType = params.eventType.toLowerCase();
+
+	if (
+		status === "active" ||
+		eventType.includes("subscription.created") ||
+		eventType.includes("checkout.completed")
+	) {
+		return "subscription_confirmation";
+	}
+
+	if (
+		status === "past_due" ||
+		status === "unpaid" ||
+		eventType.includes("invoice.payment_failed")
+	) {
+		return "payment_failure";
+	}
+
+	if (
+		status === "canceled" ||
+		status === "cancelled" ||
+		eventType.includes("subscription.canceled") ||
+		eventType.includes("subscription.cancelled")
+	) {
+		return "subscription_cancellation";
+	}
+
+	return null;
 }

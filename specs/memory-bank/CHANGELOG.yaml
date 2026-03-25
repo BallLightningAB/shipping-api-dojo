@@ -1,7 +1,24 @@
 entries:
   - date: "2026-03-25"
-    version: "1.0.21"
+    version: "1.0.22"
     commit: pending
+    status: in-progress
+    title: "feat(email-lifecycle): implement issue #11 phase 6 resend lifecycle flow"
+    details: |-
+      Implemented Phase 6 of issue #11 by adding Resend lifecycle email helpers,
+      tracked webhook ingestion, and billing-triggered transactional sends.
+
+      - Added shared lifecycle email copy/send helpers for welcome and billing states
+      - Added Resend webhook signature verification via Svix headers and SDK verify
+      - Added tracked-event filtering and idempotent event persistence for resend webhooks
+      - Added billing lifecycle classification helpers and webhook-triggered email dispatch
+      - Added unit tests for lifecycle email copy, resend webhook parsing, and billing classification
+      - Revalidated with format, lint, typecheck, tests, and production build
+    refs:
+      - "I11D6"
+  - date: "2026-03-25"
+    version: "1.0.21"
+    commit: d864f97
     status: in-progress
     title: "feat(billing): start issue #11 phase 5 creem webhook sync"
     details: |-

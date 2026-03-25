@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
 	extractSubscriptionFields,
 	parseCreemWebhookEvent,
+	resolveBillingLifecycleEmailType,
 	resolvePlanKeyFromProductId,
 	resolveTierFromPlanKey,
 	verifyCreemWebhookSignature,
@@ -94,5 +95,34 @@ describe("parse/extract helpers", () => {
 		expect(fields.subscriptionId).toBe("sub_123");
 		expect(fields.planKey).toBe("pro_monthly");
 		expect(fields.status).toBe("active");
+	});
+});
+
+describe("resolveBillingLifecycleEmailType", () => {
+	it("classifies active subscription events as confirmations", () => {
+		expect(
+			resolveBillingLifecycleEmailType({
+				eventType: "subscription.updated",
+				status: "active",
+			})
+		).toBe("subscription_confirmation");
+	});
+
+	it("classifies failed payments", () => {
+		expect(
+			resolveBillingLifecycleEmailType({
+				eventType: "invoice.payment_failed",
+				status: "past_due",
+			})
+		).toBe("payment_failure");
+	});
+
+	it("classifies canceled subscriptions", () => {
+		expect(
+			resolveBillingLifecycleEmailType({
+				eventType: "subscription.canceled",
+				status: "canceled",
+			})
+		).toBe("subscription_cancellation");
 	});
 });

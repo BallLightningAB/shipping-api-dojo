@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 
 import { getAuthEnv } from "@/lib/auth/env";
+import { renderAuthActionEmail } from "@/lib/email/templates/auth-action";
 
 interface AuthEmailInput {
 	email: string;
@@ -28,15 +29,12 @@ async function sendAuthEmail({ email, subject, title, url }: AuthEmailInput) {
 		from: env.RESEND_FROM_EMAIL,
 		to: [email],
 		subject,
-		html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-        <h1 style="font-size: 20px;">${title}</h1>
-        <p>Use the button below to continue.</p>
-        <p><a href="${url}" style="display:inline-block;padding:10px 16px;background:#0f172a;color:#fff;text-decoration:none;border-radius:6px;">Continue</a></p>
-        <p>If the button does not work, copy this URL:</p>
-        <p><a href="${url}">${url}</a></p>
-      </div>
-    `,
+		html: renderAuthActionEmail({
+			actionLabel: "Continue",
+			actionUrl: url,
+			previewText: subject,
+			title,
+		}),
 	});
 }
 

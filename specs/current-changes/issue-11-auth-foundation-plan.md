@@ -241,3 +241,22 @@ Ship the shared infrastructure required before the content proof of concept:
 - use browser control for sign-up, sign-in, sign-out, premium gating, and merge-flow validation
 - verify the domain/base-URL change does not regress canonical tags, sitemap origins, robots, or auth redirects
 - validate each phase before starting the next one instead of deferring all checks to the end
+
+### Phase 6 progress (2026-03-25)
+
+- replaced raw auth email markup with shared React Email rendering helpers
+- added lifecycle email copy/send helpers for:
+  - welcome
+  - subscription confirmation
+  - payment failure
+  - subscription cancellation
+- added Resend webhook helper module with:
+  - payload parsing
+  - tracked event filtering for delivered/bounced/complained/suppressed states
+  - Svix signature verification through Resend SDK
+- added Resend webhook endpoint `src/routes/api/webhooks/resend.ts` with:
+  - signature enforcement when `RESEND_WEBHOOK_SECRET` is present
+  - idempotent email-event persistence by provider event id + event type
+  - storage of debugging/support metadata in `email_events`
+- integrated billing lifecycle email dispatch in Creem webhook handling
+- added unit tests for lifecycle copy resolution and Resend webhook helpers

@@ -75,7 +75,6 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 ### Deferred (not needed for current scope)
 
 - `SESSION_COOKIE_DOMAIN` - Not needed during development
-- `RESEND_WEBHOOK_SECRET` - Resend webhooks not in current scope
 
 ## Implementation Notes
 
@@ -127,3 +126,5 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 - [x] Phase 3 server-backed progress contracts and merge rules started (server functions + tested merge logic)
 - [x] Phase 4 entitlement resolution and server capability guards started
 - [x] Phase 5 Creem webhook verification and subscription/entitlement sync started
+- [x] Phase 6 Resend transactional template rendering, webhook verification, and event persistence started
+- [ ] Phase 7 domain cutover readiness (shipping.apidojo.app URL/cookie finalization)

@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import {
 	extractSubscriptionFields,
 	parseCreemWebhookEvent,
+	resolveBillingLifecycleEmailType,
 	resolveTierFromPlanKey,
 	verifyCreemWebhookSignature,
 } from "@/lib/billing/creem";
@@ -13,8 +14,14 @@ import { getDb } from "@/lib/db/client";
 import {
 	billingEvents,
 	subscriptions,
+	user,
 	userEntitlements,
 } from "@/lib/db/schema";
+import {
+	sendPaymentFailureEmail,
+	sendSubscriptionCancellationEmail,
+	sendSubscriptionConfirmationEmail,
+} from "@/lib/email/lifecycle";
 
 function resolveProductIdForPlanKey(
 	planKey: string,
@@ -128,6 +135,34 @@ export const Route = createFileRoute("/api/webhooks/creem")({
 								updatedAt: new Date(),
 							},
 						});
+
+					const [billingUser] = await db
+						.select({ email: user.email })
+						.from(user)
+						.where(eq(user.id, fields.userId))
+						.limit(1);
+
+					const lifecycleEmailType = resolveBillingLifecycleEmailType({
+						eventType: event.type,
+						status: fields.status,
+					});
+
+					if (billingUser?.email && lifecycleEmailType) {
+						if (lifecycleEmailType === "subscription_confirmation") {
+							await sendSubscriptionConfirmationEmail(
+								billingUser.email,
+								fields.planKey
+							);
+						}
+
+						if (lifecycleEmailType === "payment_failure") {
+							await sendPaymentFailureEmail(billingUser.email);
+						}
+
+						if (lifecycleEmailType === "subscription_cancellation") {
+							await sendSubscriptionCancellationEmail(billingUser.email);
+						}
+					}
 				}
 
 				await db
