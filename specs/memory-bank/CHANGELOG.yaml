@@ -1,4 +1,17 @@
 entries:
+  - date: "2026-03-25"
+    version: "1.0.15"
+    commit: pending
+    status: in-progress
+    title: "docs(implementation): finalize auth foundation decisions and implementation path for issue #11"
+    details: |-
+      Finalized all remaining decisions and clarified implementation path for #11:
+      - Better Auth strategy: Magic link + password (confirmed for web+mobile compatibility)
+      - Creem structure: Monthly and annual product IDs (separate products due to Creem limitations)
+      - Environment variables: All required envs configured with correct naming
+      - Implementation path: 7 phases clearly defined with technical details
+      - GitHub issues updated: #5, #7, #11 reflect current status and dependencies
+      - Documentation: Perfect clarity for future Cascade sessions on next steps
   - date: "2026-03-24"
     version: "1.0.14"
     commit: pending

@@ -29,16 +29,16 @@ Ship the shared infrastructure required before the content proof of concept:
 
 - purchase `apidojo.app`
 - confirm registrar and DNS access
-- create a Neon project for API Trainer
+- create a Neon project for the Shipping API Dojo
 - create or confirm a Creem merchant account with test/live credentials
-- create a dedicated Resend account for API Trainer
+- create a dedicated Resend account for the API Dojo (umbrella level)
 - add Vercel env access for preview and production
 
 ### Decisions to have ready
 
-- whether Better Auth starts with magic links only or magic link + password
-- final Creem Pro product and price IDs
-- Enterprise contact path and whether an enterprise checkout placeholder is needed in the first pass
+- **Better Auth strategy**: Magic link + password (confirmed for web+mobile compatibility)
+- **Creem product structure**: Monthly and annual product IDs (separate products due to lack of permanent annual discount)
+- **Enterprise contact path**: Out of scope for v2, keep for future plans
 
 ## Rough Estimate
 
@@ -64,7 +64,7 @@ Ship the shared infrastructure required before the content proof of concept:
 - use Better Auth built-in cookie sessions
 - configure session cookies as `httpOnly`, `secure` outside local dev, and `sameSite=lax`
 - use a rolling session with a 30-day max age unless a later security review changes it
-- implement sign-up, sign-in, sign-out, and session retrieval
+- implement sign-up, sign-in, sign-out, and session retrieval with magic link + password support
 - protect server actions and route boundaries for signed-in-only features
 - keep anonymous browsing available
 
@@ -86,12 +86,13 @@ Ship the shared infrastructure required before the content proof of concept:
 
 ### Phase 5: Creem billing (`I11D5`)
 
-- create Pro checkout flow
+- create Pro checkout flow with monthly and annual options
 - verify success return handling
 - implement the public Creem webhook as a server-only HTTP request handler with raw-body signature verification
 - implement webhook verification and idempotent event processing
 - map Creem subscription state into entitlement grants
 - add customer portal or billing management link if supported in the first pass
+- Use Creem Better Auth SDK for integration: https://docs.creem.io/code/sdks/better-auth
 
 ### Phase 6: Dedicated Resend setup (`I11D6`)
 
@@ -105,8 +106,8 @@ Ship the shared infrastructure required before the content proof of concept:
 - implement transactional email sending for:
   - sign-in or magic link
   - welcome
-  - password reset if password auth is enabled
-  - subscription confirmation
+  - password reset (for password auth support)
+  - subscription confirmation (monthly/annual)
   - payment failure or cancellation
 - reserve OTP or 2FA verification email for later auth hardening
 - implement Resend event handling for delivered, bounced, complained, and suppressed states
@@ -140,8 +141,8 @@ Ship the shared infrastructure required before the content proof of concept:
 - `CREEM_API_KEY`
 - `CREEM_WEBHOOK_SECRET`
 - `CREEM_ENV`
-- `CREEM_PRO_PRODUCT_ID`
-- `CREEM_PRO_PRICE_ID`
+- `CREEM_PRO_MONTHLY_PRODUCT_ID`
+- `CREEM_PRO_ANNUAL_PRODUCT_ID`
 - `CREEM_ENTERPRISE_PRODUCT_ID` or lookup key equivalent
 
 ## Implementation Notes

@@ -47,10 +47,10 @@ Scope: Document external service configurations created during auth foundation s
 - **Price**: EUR 0/month
 
 #### Pro Tier  
-- **Name**: Pro
+- **Name**: Shipping - Pro
 - **Description**: Premium challenge modes, deeper variant banks, certificates, richer review tools
 - **Capabilities**: All Free capabilities + content.premium.read, full randomization.premium, full review.mode, certificate.basic
-- **Price target**: EUR 4.99/month (annual equivalent with ~17% discount)
+- **Pricing**: EUR 4.99/month or EUR 49/year (separate products due to Creem limitations)
 - **Value metric**: Flat-fee per signed-in individual account
 
 #### Enterprise Tier
@@ -68,8 +68,8 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 - [x] `CREEM_API_KEY` - Configured with minimal permissions
 - [x] `CREEM_WEBHOOK_SECRET` - Set up for shipping-api-dojo-webhooks
 - [x] `CREEM_ENV` - Set to "test"
-- [x] `CREEM_PRO_PRODUCT_ID` - Configured
-- [x] `CREEM_PRO_PRICE_ID` - Configured
+- [x] `CREEM_PRO_MONTHLY_PRODUCT_ID` - Configured
+- [x] `CREEM_PRO_ANNUAL_PRODUCT_ID` - Configured
 - [ ] `CREEM_ENTERPRISE_PRODUCT_ID` - Deferred until later
 
 ### Deferred (not needed for current scope)
@@ -79,18 +79,32 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 
 ## Implementation Notes
 
-- First paid implementation needs one self-serve Pro tier plus Enterprise placeholders
+- First paid implementation needs monthly and annual Pro tiers plus Enterprise placeholders
+- Creem Better Auth SDK available for integration: https://docs.creem.io/code/sdks/better-auth
+- Creem price IDs are not needed upfront - use product IDs for checkout, price IDs come from webhooks/subscription data
+- Better Auth will support both magic links and passwords for web+mobile compatibility
 - Creem owns formal invoices and receipts
 - Assume Creem test mode during development
 - Feature flags or test-mode defaults to allow local development without billing
 
-## Next Steps
+## Next Implementation Steps
 
-1. Configure Resend sending domain verification (shipping.apidojo.app)
-2. Set up Creem Pro product with the details above
-3. Add Creem environment variables to .env.local
-4. Implement webhook handler for Creem events
-5. Test billing flow in Creem test mode
+**Foundation Complete ✅ - Ready for Implementation Phase**
+
+1. **Phase 1**: Neon/Drizzle schema setup (users, progress, entitlements, subscriptions)
+2. **Phase 2**: Better Auth implementation (magic link + password support)
+3. **Phase 3**: Server-backed progress system with anonymous-to-account migration
+4. **Phase 4**: Capability-based entitlements (free/pro/enterprise)
+5. **Phase 5**: Creem billing integration (checkout, webhooks, subscription sync)
+6. **Phase 6**: Resend email templates and sending logic
+7. **Phase 7**: Domain cutover configuration (production URLs, Vercel)
+
+**Key Implementation Details**:
+- Use Creem Better Auth SDK: https://docs.creem.io/code/sdks/better-auth
+- Use mcp-server-neon if needed for database operations
+- Monthly/annual product IDs: CREEM_PRO_MONTHLY_PRODUCT_ID, CREEM_PRO_ANNUAL_PRODUCT_ID
+- Better Auth: Magic link + password for web+mobile compatibility
+- All external services configured and ready
 
 ## Status
 
