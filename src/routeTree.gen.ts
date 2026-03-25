@@ -18,6 +18,7 @@ import { Route as WikiSlugRouteImport } from './routes/wiki/$slug'
 import { Route as LessonSlugRouteImport } from './routes/lesson/$slug'
 import { Route as LearnSoapRouteImport } from './routes/learn/soap'
 import { Route as LearnRestRouteImport } from './routes/learn/rest'
+import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -65,6 +66,11 @@ const LearnRestRoute = LearnRestRouteImport.update({
   path: '/learn/rest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWebhooksCreemRoute = ApiWebhooksCreemRouteImport.update({
+  id: '/api/webhooks/creem',
+  path: '/api/webhooks/creem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/arena/': typeof ArenaIndexRoute
   '/wiki/': typeof WikiIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/arena': typeof ArenaIndexRoute
   '/wiki': typeof WikiIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/arena/': typeof ArenaIndexRoute
   '/wiki/': typeof WikiIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/arena/'
     | '/wiki/'
     | '/api/auth/$'
+    | '/api/webhooks/creem'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/arena'
     | '/wiki'
     | '/api/auth/$'
+    | '/api/webhooks/creem'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/arena/'
     | '/wiki/'
     | '/api/auth/$'
+    | '/api/webhooks/creem'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   ArenaIndexRoute: typeof ArenaIndexRoute
   WikiIndexRoute: typeof WikiIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiWebhooksCreemRoute: typeof ApiWebhooksCreemRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnRestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/webhooks/creem': {
+      id: '/api/webhooks/creem'
+      path: '/api/webhooks/creem'
+      fullPath: '/api/webhooks/creem'
+      preLoaderRoute: typeof ApiWebhooksCreemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArenaIndexRoute: ArenaIndexRoute,
   WikiIndexRoute: WikiIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiWebhooksCreemRoute: ApiWebhooksCreemRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

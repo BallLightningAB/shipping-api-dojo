@@ -1,7 +1,23 @@
 entries:
   - date: "2026-03-25"
-    version: "1.0.20"
+    version: "1.0.21"
     commit: pending
+    status: in-progress
+    title: "feat(billing): start issue #11 phase 5 creem webhook sync"
+    details: |-
+      Started Phase 5 of issue #11 by implementing Creem webhook verification and
+      idempotent subscription + entitlement synchronization.
+
+      - Added Creem webhook signature verification and payload parsing utilities
+      - Added webhook field extraction and plan/tier mapping helpers
+      - Added `/api/webhooks/creem` endpoint with idempotent billing-event handling
+      - Upserts subscription records and entitlement grants from validated webhook data
+      - Added unit tests for signature verification and payload extraction logic
+    refs:
+      - "I11D5"
+  - date: "2026-03-25"
+    version: "1.0.20"
+    commit: 098cb7a
     status: in-progress
     title: "feat(entitlements): start issue #11 phase 4 capability resolution and guards"
     details: |-

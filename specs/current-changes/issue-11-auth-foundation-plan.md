@@ -148,6 +148,21 @@ Ship the shared infrastructure required before the content proof of concept:
 - add customer portal or billing management link if supported in the first pass
 - Use Creem Better Auth SDK for integration: https://docs.creem.io/code/sdks/better-auth
 
+### Phase 5 progress (2026-03-25)
+
+- added Creem webhook helpers in `src/lib/billing/creem.ts`:
+  - signature verification
+  - webhook parsing
+  - plan/tier mapping
+  - subscription-field extraction
+- added Creem env parser in `src/lib/billing/creem.env.ts`
+- added Creem webhook endpoint `src/routes/api/webhooks/creem.ts` with:
+  - signature verification
+  - idempotent billing event handling
+  - subscription upsert
+  - entitlement upsert from subscription mapping
+- added tests in `src/lib/billing/creem.test.ts`
+
 ### Phase 6: Dedicated Resend setup (`I11D6`)
 
 - verify `shipping.apidojo.app` as a Resend sending domain
