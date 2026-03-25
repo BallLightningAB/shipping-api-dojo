@@ -1,7 +1,23 @@
 entries:
   - date: "2026-03-25"
-    version: "1.0.17"
+    version: "1.0.18"
     commit: pending
+    status: in-progress
+    title: "feat(progress): start issue #11 phase 3 server-backed progress contracts"
+    details: |-
+      Started Phase 3 of issue #11 with server-side progress contracts and
+      anonymous-to-account merge logic for signed-in users.
+
+      - Added server functions for signed-in progress read/write operations
+      - Added merge flow with explicit decision requirement when server progress exists
+      - Added tested merge utility that unions completed scenarios, keeps strongest drill
+        scores, and preserves latest activity metadata
+      - Added shared server session helper and updated issue/memory artifacts
+    refs:
+      - "I11D4"
+  - date: "2026-03-25"
+    version: "1.0.17"
+    commit: dd94c25
     status: in-progress
     title: "feat(auth-foundation): start issue #11 phase 2 better auth scaffolding"
     details: |-

@@ -104,6 +104,21 @@ Ship the shared infrastructure required before the content proof of concept:
 - if the account already has progress, show an explicit merge-versus-keep-server decision before writing
 - expose stable contracts for lesson, drill-family, and scenario-family progress
 
+### Phase 3 progress (2026-03-25)
+
+- added server-side progress contracts in `src/lib/progress/progress.server.ts`:
+  - `readServerProgress`
+  - `writeServerProgress`
+  - `mergeAnonymousProgressOnSignIn`
+- implemented merge behavior:
+  - auto-apply local progress when server snapshot is empty/default
+  - require decision when server snapshot already has non-default progress
+  - support explicit strategies: `merge_local` and `keep_server`
+- added merge utility and tests:
+  - `src/lib/progress/progress.merge.ts`
+  - `src/lib/progress/progress.merge.test.ts`
+- added request-session server helper (`src/lib/auth/server.ts`) for shared auth checks in server boundaries
+
 ### Phase 4: Capability-based entitlements (`I11D3`)
 
 - implement capability resolution from account state plus subscription state
