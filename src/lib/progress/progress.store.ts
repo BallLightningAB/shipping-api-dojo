@@ -65,3 +65,11 @@ export function setupCrossTabSync() {
 		window.removeEventListener("storage", onStorage);
 	};
 }
+
+export function getProgressSnapshot(): ProgressData {
+	return progressStore.state;
+}
+
+export function replaceProgress(next: ProgressData) {
+	progressStore.setState(() => ({ ...next }));
+}

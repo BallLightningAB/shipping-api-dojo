@@ -1,5 +1,5 @@
 meta:
-  release: "1.0.18"
+  release: "1.0.19"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -51,7 +51,7 @@ roadmap:
             - note: "Foundation setup complete, ready to begin Better Auth, Creem integration, and email implementation"
             - covers: [I11D2] note: "Completed Phase 1 Neon/Drizzle implementation: added schema, migration generation workflow, DB env parsing, DB client scaffolding, and unit tests for env+schema modules."
             - covers: [I11D3] note: "Completed Phase 2 Better Auth server scaffolding: added Better Auth server instance, TanStack Start /api/auth/$ handler, auth env parsing tests, and core auth schema/migration tables."
-            - covers: [I11D4] note: "Started Phase 3 server-backed progress contracts: added signed-in read/write server functions, anonymous merge decision flow, and tested merge utility behavior."
+            - covers: [I11D4] note: "Started Phase 3 server-backed progress contracts: added signed-in read/write server functions, anonymous merge decision flow, tested merge utility behavior, and wired signed-in sync through ProgressHydrator with safe no-write behavior when user merge choice is still pending."
         - id: content-expansion-poc
           issue: "#8"
           title: "Proof of concept for content families, seeded randomization, and deeper scenarios"

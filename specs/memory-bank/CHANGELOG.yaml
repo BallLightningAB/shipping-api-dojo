@@ -1,7 +1,23 @@
 entries:
   - date: "2026-03-25"
-    version: "1.0.18"
+    version: "1.0.19"
     commit: pending
+    status: in-progress
+    title: "feat(progress-sync): wire signed-in hydrator to phase 3 server contracts"
+    details: |-
+      Continued issue #11 Phase 3 by connecting the signed-in client progress
+      hydration flow to the server progress contracts introduced in the prior commit.
+
+      - Wired `ProgressHydrator` to call `mergeAnonymousProgressOnSignIn`
+      - Added safe no-write behavior when merge choice is required and no strategy is chosen yet
+      - Added progress-store helpers for snapshot and full-state replacement during sync
+      - Renamed server-function module to `progress.sync.ts` to satisfy TanStack import-protection
+      - Revalidated with lint, typecheck, tests, and production build
+    refs:
+      - "I11D4"
+  - date: "2026-03-25"
+    version: "1.0.18"
+    commit: ca23bb2
     status: in-progress
     title: "feat(progress): start issue #11 phase 3 server-backed progress contracts"
     details: |-

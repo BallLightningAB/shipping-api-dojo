@@ -106,7 +106,7 @@ Ship the shared infrastructure required before the content proof of concept:
 
 ### Phase 3 progress (2026-03-25)
 
-- added server-side progress contracts in `src/lib/progress/progress.server.ts`:
+- added server-side progress contracts in `src/lib/progress/progress.sync.ts`:
   - `readServerProgress`
   - `writeServerProgress`
   - `mergeAnonymousProgressOnSignIn`
@@ -118,6 +118,7 @@ Ship the shared infrastructure required before the content proof of concept:
   - `src/lib/progress/progress.merge.ts`
   - `src/lib/progress/progress.merge.test.ts`
 - added request-session server helper (`src/lib/auth/server.ts`) for shared auth checks in server boundaries
+- wired signed-in progress sync in `ProgressHydrator` using server functions with safe no-write behavior when merge decision is still required
 
 ### Phase 4: Capability-based entitlements (`I11D3`)
 
