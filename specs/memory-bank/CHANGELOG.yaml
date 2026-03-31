@@ -1,7 +1,7 @@
 entries:
   - date: "2026-03-31"
     version: "1.0.25"
-    commit: TBD
+    commit: b581cd5
     status: in-progress
     title: "docs(readme): record entitlement caveat from issue #11 review follow-up"
     details: |-
