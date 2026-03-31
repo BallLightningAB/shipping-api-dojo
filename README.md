@@ -24,6 +24,10 @@ The active v2 plan is tracked in [`specs/current-changes`](specs/current-changes
 - Creem billing, Resend transactional email, and `shipping.apidojo.app` as the target production domain under the `apidojo.app` umbrella
 - stronger SEO-first knowledge architecture around lessons, wiki, and directory surfaces
 
+## Architectural Caveat
+
+`user_entitlements` currently stores both manual/admin grants and Creem-derived webhook state in the same row. That is acceptable for the current implementation, but if the product later adds true manual grants or admin overrides, the read path should become source-aware or the models should be split so webhook updates cannot mask separately managed entitlements.
+
 ## Open-Core Boundary
 
 - The code and public-core materials in this repository are licensed under [`AGPL-3.0-only`](LICENSE).

@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 
 import {
 	extractSubscriptionFields,
+	isActiveSubscriptionStatus,
 	parseCreemWebhookEvent,
 	resolveBillingLifecycleEmailType,
 	resolvePlanKeyFromProductId,
+	resolveTierFromSubscription,
 	resolveTierFromPlanKey,
 	verifyCreemWebhookSignature,
 } from "./creem";
@@ -66,6 +68,49 @@ describe("resolveTierFromPlanKey", () => {
 		expect(resolveTierFromPlanKey("pro_monthly")).toBe("pro");
 		expect(resolveTierFromPlanKey("enterprise")).toBe("enterprise");
 		expect(resolveTierFromPlanKey(null)).toBe("free");
+	});
+});
+
+describe("resolveTierFromSubscription", () => {
+	it("keeps paid tiers for active or trialing subscriptions", () => {
+		expect(
+			resolveTierFromSubscription({
+				planKey: "pro_monthly",
+				status: "active",
+			})
+		).toBe("pro");
+
+		expect(
+			resolveTierFromSubscription({
+				planKey: "enterprise",
+				status: "trialing",
+			})
+		).toBe("enterprise");
+	});
+
+	it("downgrades inactive subscriptions to free", () => {
+		expect(
+			resolveTierFromSubscription({
+				planKey: "pro_annual",
+				status: "canceled",
+			})
+		).toBe("free");
+
+		expect(
+			resolveTierFromSubscription({
+				planKey: "pro_monthly",
+				status: "past_due",
+			})
+		).toBe("free");
+	});
+});
+
+describe("isActiveSubscriptionStatus", () => {
+	it("recognizes active statuses only", () => {
+		expect(isActiveSubscriptionStatus("active")).toBe(true);
+		expect(isActiveSubscriptionStatus("trialing")).toBe(true);
+		expect(isActiveSubscriptionStatus("unpaid")).toBe(false);
+		expect(isActiveSubscriptionStatus(null)).toBe(false);
 	});
 });
 

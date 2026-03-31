@@ -5,6 +5,7 @@
 
 import { useEffect, useRef } from "react";
 import { authClient } from "@/lib/auth/client";
+import { shouldReplaceLocalProgress } from "@/lib/progress/progress.hydration";
 import { mergeAnonymousProgressOnSignIn } from "@/lib/progress/progress.sync";
 import {
 	getProgressSnapshot,
@@ -52,12 +53,11 @@ export function ProgressHydrator() {
 					return;
 				}
 
-				if (!initial.requiresDecision) {
+				if (shouldReplaceLocalProgress(initial)) {
 					replaceProgress(initial.progress);
 					return;
 				}
 
-				replaceProgress(initial.progress);
 				console.info(
 					"Progress sync requires explicit merge decision. UI prompt wiring is pending."
 				);

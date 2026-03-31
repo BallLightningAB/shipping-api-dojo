@@ -87,6 +87,24 @@ export function resolveTierFromPlanKey(
 	return "free";
 }
 
+export function isActiveSubscriptionStatus(
+	status: string | null | undefined
+): boolean {
+	const normalizedStatus = status?.toLowerCase();
+	return normalizedStatus === "active" || normalizedStatus === "trialing";
+}
+
+export function resolveTierFromSubscription(params: {
+	planKey: string | null;
+	status: string | null;
+}): "free" | "pro" | "enterprise" {
+	if (!isActiveSubscriptionStatus(params.status)) {
+		return "free";
+	}
+
+	return resolveTierFromPlanKey(params.planKey);
+}
+
 export function parseCreemWebhookEvent(payload: string): CreemWebhookEvent {
 	const parsed = JSON.parse(payload) as Partial<CreemWebhookEvent>;
 	if (!(parsed?.id && parsed.type)) {

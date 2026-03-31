@@ -63,9 +63,12 @@ function SettingsPanel() {
 		source: string;
 		tier: string;
 	} | null>(null);
+	const debugSessionKey = session.isPending
+		? "pending"
+		: (session.data?.user?.id ?? "anonymous");
 
 	useEffect(() => {
-		if (!import.meta.env.DEV) {
+		if (!import.meta.env.DEV || debugSessionKey === "pending") {
 			return;
 		}
 
@@ -76,7 +79,7 @@ function SettingsPanel() {
 			.catch((error: unknown) => {
 				console.error("Failed to load entitlement debug info", error);
 			});
-	}, []);
+	}, [debugSessionKey]);
 
 	const completedLessons = Object.values(lessonsProgress).filter(
 		(l) => l.completed

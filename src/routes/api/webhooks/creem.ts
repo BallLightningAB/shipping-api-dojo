@@ -3,9 +3,10 @@ import { and, eq } from "drizzle-orm";
 
 import {
 	extractSubscriptionFields,
+	isActiveSubscriptionStatus,
 	parseCreemWebhookEvent,
 	resolveBillingLifecycleEmailType,
-	resolveTierFromPlanKey,
+	resolveTierFromSubscription,
 	verifyCreemWebhookSignature,
 } from "@/lib/billing/creem";
 import { getCreemEnv } from "@/lib/billing/creem.env";
@@ -116,13 +117,19 @@ export const Route = createFileRoute("/api/webhooks/creem")({
 							},
 						});
 
-					const resolvedTier = resolveTierFromPlanKey(fields.planKey);
+					const resolvedTier = resolveTierFromSubscription({
+						planKey: fields.planKey,
+						status: fields.status,
+					});
+					const entitlementSource = isActiveSubscriptionStatus(fields.status)
+						? "creem_webhook"
+						: "creem_webhook_inactive";
 
 					await db
 						.insert(userEntitlements)
 						.values({
 							capabilities: CAPABILITY_BUNDLES[resolvedTier],
-							source: "creem_webhook",
+							source: entitlementSource,
 							tier: resolvedTier,
 							userId: fields.userId,
 						})
@@ -130,7 +137,7 @@ export const Route = createFileRoute("/api/webhooks/creem")({
 							target: userEntitlements.userId,
 							set: {
 								capabilities: CAPABILITY_BUNDLES[resolvedTier],
-								source: "creem_webhook",
+								source: entitlementSource,
 								tier: resolvedTier,
 								updatedAt: new Date(),
 							},

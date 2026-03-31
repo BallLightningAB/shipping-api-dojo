@@ -1,5 +1,23 @@
 entries:
   - date: "2026-03-31"
+    version: "1.0.25"
+    commit: TBD
+    status: in-progress
+    title: "docs(readme): record entitlement caveat from issue #11 review follow-up"
+    details: |-
+      Added the remaining architectural caveat from the PR review follow-up to
+      the repository README and the completed issue #11 handoff so future work
+      does not accidentally treat user_entitlements as source-isolated.
+
+      - Documented that `user_entitlements` currently co-mingles manual/admin
+        and Creem-derived state in one row
+      - Noted that any future manual grant support should split the model or
+        make the read path source-aware
+      - Updated the issue #11 comment trail with the same cautionary note
+      - Preserved the current branch and PR state for another external review
+    refs:
+      - "I11D5"
+  - date: "2026-03-31"
     version: "1.0.24"
     commit: eae8c06
     status: in-progress
