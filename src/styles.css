@@ -9,7 +9,7 @@
    Based on: specs/shipping-api-dojo-pdd.yaml
    ============================================================================= */
 
-/* Typography: Big Shoulders Variable (primary), JetBrains Mono (code) */
+/* Typography: Big Shoulders (primary), JetBrains Mono (code) */
 
 html {
   scroll-behavior: smooth;
@@ -29,7 +29,7 @@ code {
   font-family: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-/* Headings use Big Shoulders Variable */
+/* Headings use Big Shoulders */
 h1,
 h2,
 h3,
@@ -180,7 +180,7 @@ h6 {
   --sidebar-ring: #3b82f6;
 
   /* Typography font families */
-  --font-primary: "Big Shoulders Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-primary: "Big Shoulders", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-jetbrains: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 

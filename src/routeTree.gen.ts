@@ -18,6 +18,9 @@ import { Route as WikiSlugRouteImport } from './routes/wiki/$slug'
 import { Route as LessonSlugRouteImport } from './routes/lesson/$slug'
 import { Route as LearnSoapRouteImport } from './routes/learn/soap'
 import { Route as LearnRestRouteImport } from './routes/learn/rest'
+import { Route as ApiWebhooksResendRouteImport } from './routes/api/webhooks/resend'
+import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -64,6 +67,21 @@ const LearnRestRoute = LearnRestRouteImport.update({
   path: '/learn/rest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWebhooksResendRoute = ApiWebhooksResendRouteImport.update({
+  id: '/api/webhooks/resend',
+  path: '/api/webhooks/resend',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWebhooksCreemRoute = ApiWebhooksCreemRouteImport.update({
+  id: '/api/webhooks/creem',
+  path: '/api/webhooks/creem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +93,9 @@ export interface FileRoutesByFullPath {
   '/wiki/$slug': typeof WikiSlugRoute
   '/arena/': typeof ArenaIndexRoute
   '/wiki/': typeof WikiIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
+  '/api/webhooks/resend': typeof ApiWebhooksResendRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +107,9 @@ export interface FileRoutesByTo {
   '/wiki/$slug': typeof WikiSlugRoute
   '/arena': typeof ArenaIndexRoute
   '/wiki': typeof WikiIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
+  '/api/webhooks/resend': typeof ApiWebhooksResendRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +122,9 @@ export interface FileRoutesById {
   '/wiki/$slug': typeof WikiSlugRoute
   '/arena/': typeof ArenaIndexRoute
   '/wiki/': typeof WikiIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
+  '/api/webhooks/resend': typeof ApiWebhooksResendRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +138,9 @@ export interface FileRouteTypes {
     | '/wiki/$slug'
     | '/arena/'
     | '/wiki/'
+    | '/api/auth/$'
+    | '/api/webhooks/creem'
+    | '/api/webhooks/resend'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +152,9 @@ export interface FileRouteTypes {
     | '/wiki/$slug'
     | '/arena'
     | '/wiki'
+    | '/api/auth/$'
+    | '/api/webhooks/creem'
+    | '/api/webhooks/resend'
   id:
     | '__root__'
     | '/'
@@ -133,6 +166,9 @@ export interface FileRouteTypes {
     | '/wiki/$slug'
     | '/arena/'
     | '/wiki/'
+    | '/api/auth/$'
+    | '/api/webhooks/creem'
+    | '/api/webhooks/resend'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +181,9 @@ export interface RootRouteChildren {
   WikiSlugRoute: typeof WikiSlugRoute
   ArenaIndexRoute: typeof ArenaIndexRoute
   WikiIndexRoute: typeof WikiIndexRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiWebhooksCreemRoute: typeof ApiWebhooksCreemRoute
+  ApiWebhooksResendRoute: typeof ApiWebhooksResendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +251,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnRestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/webhooks/resend': {
+      id: '/api/webhooks/resend'
+      path: '/api/webhooks/resend'
+      fullPath: '/api/webhooks/resend'
+      preLoaderRoute: typeof ApiWebhooksResendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/webhooks/creem': {
+      id: '/api/webhooks/creem'
+      path: '/api/webhooks/creem'
+      fullPath: '/api/webhooks/creem'
+      preLoaderRoute: typeof ApiWebhooksCreemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,6 +285,9 @@ const rootRouteChildren: RootRouteChildren = {
   WikiSlugRoute: WikiSlugRoute,
   ArenaIndexRoute: ArenaIndexRoute,
   WikiIndexRoute: WikiIndexRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiWebhooksCreemRoute: ApiWebhooksCreemRoute,
+  ApiWebhooksResendRoute: ApiWebhooksResendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
