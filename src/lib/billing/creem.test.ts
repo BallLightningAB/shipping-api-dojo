@@ -2,6 +2,7 @@ import { createHmac } from "node:crypto";
 import { describe, expect, it } from "vitest";
 
 import {
+	extractPreviousSubscriptionStatus,
 	extractSubscriptionFields,
 	isActiveSubscriptionStatus,
 	parseCreemWebhookEvent,
@@ -141,16 +142,55 @@ describe("parse/extract helpers", () => {
 		expect(fields.planKey).toBe("pro_monthly");
 		expect(fields.status).toBe("active");
 	});
+
+	it("extracts previous subscription status when available", () => {
+		const payload = JSON.stringify({
+			data: {
+				previous_attributes: {
+					status: "past_due",
+				},
+				subscription: {
+					id: "sub_999",
+					plan_key: "pro_monthly",
+					status: "active",
+				},
+			},
+			id: "evt_prev_1",
+			type: "subscription.updated",
+		});
+
+		const event = parseCreemWebhookEvent(payload);
+		expect(extractPreviousSubscriptionStatus(event)).toBe("past_due");
+	});
 });
 
 describe("resolveBillingLifecycleEmailType", () => {
-	it("classifies active subscription events as confirmations", () => {
+	it("classifies checkout completion as confirmation", () => {
+		expect(
+			resolveBillingLifecycleEmailType({
+				eventType: "checkout.completed",
+				status: "active",
+			})
+		).toBe("subscription_confirmation");
+	});
+
+	it("classifies inactive-to-active transition as confirmation", () => {
+		expect(
+			resolveBillingLifecycleEmailType({
+				eventType: "subscription.updated",
+				previousStatus: "past_due",
+				status: "active",
+			})
+		).toBe("subscription_confirmation");
+	});
+
+	it("does not classify routine active updates as confirmation", () => {
 		expect(
 			resolveBillingLifecycleEmailType({
 				eventType: "subscription.updated",
 				status: "active",
 			})
-		).toBe("subscription_confirmation");
+		).toBeNull();
 	});
 
 	it("classifies failed payments", () => {

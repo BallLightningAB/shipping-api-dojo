@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { and, eq } from "drizzle-orm";
 
 import {
+	extractPreviousSubscriptionStatus,
 	extractSubscriptionFields,
 	isActiveSubscriptionStatus,
 	parseCreemWebhookEvent,
@@ -151,6 +152,7 @@ export const Route = createFileRoute("/api/webhooks/creem")({
 
 					const lifecycleEmailType = resolveBillingLifecycleEmailType({
 						eventType: event.type,
+						previousStatus: extractPreviousSubscriptionStatus(event),
 						status: fields.status,
 					});
 

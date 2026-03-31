@@ -172,18 +172,39 @@ export function extractSubscriptionFields(
 	};
 }
 
+export function extractPreviousSubscriptionStatus(
+	event: CreemWebhookEvent
+): string | null {
+	const eventData = getObject(event.data);
+	const subscription = getObject(eventData?.subscription);
+	const previousAttributes = getObject(eventData?.previous_attributes);
+
+	return (
+		getString(subscription, "previous_status") ??
+		getString(eventData, "previous_status") ??
+		getString(previousAttributes, "status")
+	);
+}
+
 export function resolveBillingLifecycleEmailType(params: {
 	eventType: string;
+	previousStatus?: string | null;
 	status: string | null;
 }): BillingLifecycleEmailType | null {
 	const status = params.status?.toLowerCase();
+	const previousStatus = params.previousStatus?.toLowerCase();
 	const eventType = params.eventType.toLowerCase();
-
-	if (
-		status === "active" ||
+	const transitionedToActive =
+		isActiveSubscriptionStatus(status) &&
+		previousStatus !== null &&
+		previousStatus !== undefined &&
+		!isActiveSubscriptionStatus(previousStatus);
+	const explicitConfirmationEvent =
 		eventType.includes("subscription.created") ||
-		eventType.includes("checkout.completed")
-	) {
+		eventType.includes("checkout.completed") ||
+		eventType.includes("subscription.activated");
+
+	if (explicitConfirmationEvent || transitionedToActive) {
 		return "subscription_confirmation";
 	}
 

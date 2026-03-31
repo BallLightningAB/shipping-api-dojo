@@ -1,5 +1,23 @@
 entries:
   - date: "2026-03-31"
+    version: "1.0.26"
+    commit: TBD
+    status: in-progress
+    title: "fix(email-lifecycle): prevent duplicate confirmation emails on routine active updates"
+    details: |-
+      Addressed the final external-review blocker on PR #14 by tightening
+      billing lifecycle email classification.
+
+      - Stopped treating all `subscription.updated + active` events as
+        confirmation triggers
+      - Added support for explicit activation signals and inactive-to-active
+        transitions using previous subscription status when available
+      - Updated webhook usage and billing helper tests to enforce the narrower
+        confirmation behavior
+      - Revalidated with pre-commit, format, lint, typecheck, test, and build
+    refs:
+      - "I11D6"
+  - date: "2026-03-31"
     version: "1.0.25"
     commit: b581cd5
     status: in-progress
