@@ -1,8 +1,24 @@
 entries:
-  - date: "2026-03-25"
-    version: "1.0.23"
+  - date: "2026-03-31"
+    version: "1.0.24"
     commit: pending
     status: in-progress
+    title: "docs(memory-bank): close issue #11 auth foundation and archive handoff"
+    details: |-
+      Closed out issue #11 after preview validation, production env upload, and
+      documentation cleanup.
+
+      - Archived the issue #11 plan and phase logs into specs/archived/completed
+      - Marked issue #11 complete in the active memory-bank roadmap
+      - Bumped release metadata to 1.0.24 for the wrap-up commit
+      - Preserved the implementation history for phases 1-7 in the archive
+      - Kept the branch ready for merge to main before starting #8
+    refs:
+      - "I11D1, I11D2, I11D3, I11D4, I11D5, I11D6, I11D7"
+  - date: "2026-03-25"
+    version: "1.0.23"
+    commit: 599f945
+    status: completed
     title: "feat(auth-domain): start issue #11 phase 7 preview-safe auth domain readiness"
     details: |-
       Started Phase 7 of issue #11 by wiring Better Auth domain and cookie
