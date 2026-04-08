@@ -1,6 +1,6 @@
 entries:
   - date: "2026-04-08"
-    version: "1.0.16"
+    version: "1.0.27"
     commit: b62e33b
     status: in-progress
     title: "docs(env): preserve updated .env.example cleanup on main"
@@ -17,9 +17,195 @@ entries:
         review worktree and retiring the feature branch
     refs:
       - "I11Docs"
+  - date: "2026-03-31"
+    version: "1.0.26"
+    commit: TBD
+    status: in-progress
+    title: "fix(email-lifecycle): prevent duplicate confirmation emails on routine active updates"
+    details: |-
+      Addressed the final external-review blocker on PR #14 by tightening
+      billing lifecycle email classification.
+
+      - Stopped treating all `subscription.updated + active` events as
+        confirmation triggers
+      - Added support for explicit activation signals and inactive-to-active
+        transitions using previous subscription status when available
+      - Updated webhook usage and billing helper tests to enforce the narrower
+        confirmation behavior
+      - Revalidated with pre-commit, format, lint, typecheck, test, and build
+    refs:
+      - "I11D6"
+  - date: "2026-03-31"
+    version: "1.0.25"
+    commit: b581cd5
+    status: in-progress
+    title: "docs(readme): record entitlement caveat from issue #11 review follow-up"
+    details: |-
+      Added the remaining architectural caveat from the PR review follow-up to
+      the repository README and the completed issue #11 handoff so future work
+      does not accidentally treat user_entitlements as source-isolated.
+
+      - Documented that `user_entitlements` currently co-mingles manual/admin
+        and Creem-derived state in one row
+      - Noted that any future manual grant support should split the model or
+        make the read path source-aware
+      - Updated the issue #11 comment trail with the same cautionary note
+      - Preserved the current branch and PR state for another external review
+    refs:
+      - "I11D5"
+  - date: "2026-03-31"
+    version: "1.0.24"
+    commit: eae8c06
+    status: in-progress
+    title: "docs(memory-bank): close issue #11 auth foundation and archive handoff"
+    details: |-
+      Closed out issue #11 after preview validation, production env upload, and
+      documentation cleanup.
+
+      - Archived the issue #11 plan and phase logs into specs/archived/completed
+      - Marked issue #11 complete in the active memory-bank roadmap
+      - Bumped release metadata to 1.0.24 for the wrap-up commit
+      - Preserved the implementation history for phases 1-7 in the archive
+      - Kept the branch ready for merge to main before starting #8
+    refs:
+      - "I11D1, I11D2, I11D3, I11D4, I11D5, I11D6, I11D7"
+  - date: "2026-03-25"
+    version: "1.0.23"
+    commit: 599f945
+    status: completed
+    title: "feat(auth-domain): start issue #11 phase 7 preview-safe auth domain readiness"
+    details: |-
+      Started Phase 7 of issue #11 by wiring Better Auth domain and cookie
+      readiness for preview and production environments.
+
+      - Added auth config helpers for dynamic base URL allowed-host derivation
+      - Added trusted proxy + secure-cookie wiring in Better Auth advanced config
+      - Added optional cross-subdomain cookie domain support via SESSION_COOKIE_DOMAIN
+      - Added welcome email trigger through Better Auth user-create database hook
+      - Added focused tests for auth host/cookie/security config behavior
+      - Updated issue #11 progress artifacts and memory-bank release metadata
+      - Revalidated with format, lint, typecheck, tests, and build
+    refs:
+      - "I11D1, I11D7"
+  - date: "2026-03-25"
+    version: "1.0.22"
+    commit: 82a3e83
+    status: in-progress
+    title: "feat(email-lifecycle): implement issue #11 phase 6 resend lifecycle flow"
+    details: |-
+      Implemented Phase 6 of issue #11 by adding Resend lifecycle email helpers,
+      tracked webhook ingestion, and billing-triggered transactional sends.
+
+      - Added shared lifecycle email copy/send helpers for welcome and billing states
+      - Added Resend webhook signature verification via Svix headers and SDK verify
+      - Added tracked-event filtering and idempotent event persistence for resend webhooks
+      - Added billing lifecycle classification helpers and webhook-triggered email dispatch
+      - Added unit tests for lifecycle email copy, resend webhook parsing, and billing classification
+      - Revalidated with format, lint, typecheck, tests, and production build
+    refs:
+      - "I11D6"
+  - date: "2026-03-25"
+    version: "1.0.21"
+    commit: d864f97
+    status: in-progress
+    title: "feat(billing): start issue #11 phase 5 creem webhook sync"
+    details: |-
+      Started Phase 5 of issue #11 by implementing Creem webhook verification and
+      idempotent subscription + entitlement synchronization.
+
+      - Added Creem webhook signature verification and payload parsing utilities
+      - Added webhook field extraction and plan/tier mapping helpers
+      - Added `/api/webhooks/creem` endpoint with idempotent billing-event handling
+      - Upserts subscription records and entitlement grants from validated webhook data
+      - Added unit tests for signature verification and payload extraction logic
+    refs:
+      - "I11D5"
+  - date: "2026-03-25"
+    version: "1.0.20"
+    commit: 098cb7a
+    status: in-progress
+    title: "feat(entitlements): start issue #11 phase 4 capability resolution and guards"
+    details: |-
+      Started Phase 4 of issue #11 by adding capability resolution and server-side
+      entitlement guards for free/pro/enterprise access control.
+
+      - Added entitlement tier/capability bundle resolver with tests
+      - Added server-side `getCurrentEntitlements` and `requireCapability` contracts
+      - Added development-only entitlement debug visibility in settings route
+      - Updated local issue #11 artifacts and memory-bank release metadata
+    refs:
+      - "I11D3"
+  - date: "2026-03-25"
+    version: "1.0.19"
+    commit: 422e194
+    status: in-progress
+    title: "feat(progress-sync): wire signed-in hydrator to phase 3 server contracts"
+    details: |-
+      Continued issue #11 Phase 3 by connecting the signed-in client progress
+      hydration flow to the server progress contracts introduced in the prior commit.
+
+      - Wired `ProgressHydrator` to call `mergeAnonymousProgressOnSignIn`
+      - Added safe no-write behavior when merge choice is required and no strategy is chosen yet
+      - Added progress-store helpers for snapshot and full-state replacement during sync
+      - Renamed server-function module to `progress.sync.ts` to satisfy TanStack import-protection
+      - Revalidated with lint, typecheck, tests, and production build
+    refs:
+      - "I11D4"
+  - date: "2026-03-25"
+    version: "1.0.18"
+    commit: ca23bb2
+    status: in-progress
+    title: "feat(progress): start issue #11 phase 3 server-backed progress contracts"
+    details: |-
+      Started Phase 3 of issue #11 with server-side progress contracts and
+      anonymous-to-account merge logic for signed-in users.
+
+      - Added server functions for signed-in progress read/write operations
+      - Added merge flow with explicit decision requirement when server progress exists
+      - Added tested merge utility that unions completed scenarios, keeps strongest drill
+        scores, and preserves latest activity metadata
+      - Added shared server session helper and updated issue/memory artifacts
+    refs:
+      - "I11D4"
+  - date: "2026-03-25"
+    version: "1.0.17"
+    commit: dd94c25
+    status: in-progress
+    title: "feat(auth-foundation): start issue #11 phase 2 better auth scaffolding"
+    details: |-
+      Started Phase 2 of issue #11 by wiring Better Auth into TanStack Start and
+      extending the Drizzle schema with Better Auth core tables.
+
+      - Added Better Auth server instance with Drizzle adapter, magic link plugin,
+        email/password mode, and TanStack Start cookies integration
+      - Added API handler route at `/api/auth/$` for GET/POST auth requests
+      - Added auth environment parsing helpers and tests for env/trusted origins
+      - Added Better Auth core schema tables (`user`, `session`, `account`,
+        `verification`) to Drizzle and generated migration `0001`
+      - Updated local issue #11 artifacts and memory-bank progress logs for Phase 2
+    refs:
+      - "I11D3"
+  - date: "2026-03-25"
+    version: "1.0.16"
+    commit: a90d495
+    status: in-progress
+    title: "feat(auth-foundation): implement issue #11 phase 1 neon and drizzle base"
+    details: |-
+      Implemented the first execution slice of issue #11 by shipping the Neon/Drizzle
+      database foundation and migration scaffolding, plus local verification coverage.
+
+      - Added Drizzle + Postgres dependencies and DB scripts for generate/migrate/push/studio
+      - Added `drizzle.config.ts` and generated initial SQL migration for core auth-foundation tables
+      - Added DB modules for env parsing, connection handling, and schema exports under `src/lib/db`
+      - Added Phase 1 tables for progress, entitlements, subscriptions, billing events,
+        certificates, email events, and progress-merge auditing
+      - Added unit tests for DB env parsing and schema exports
+      - Updated local issue #11 artifacts and posted an issue progress update on GitHub
+    refs:
+      - "I11D2"
   - date: "2026-03-25"
     version: "1.0.15"
-    commit: pending
+    commit: ebc7c83
     status: in-progress
     title: "docs(implementation): finalize auth foundation decisions and implementation path for issue #11"
     details: |-

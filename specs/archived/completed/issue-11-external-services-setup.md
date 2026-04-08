@@ -75,7 +75,6 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 ### Deferred (not needed for current scope)
 
 - `SESSION_COOKIE_DOMAIN` - Not needed during development
-- `RESEND_WEBHOOK_SECRET` - Resend webhooks not in current scope
 
 ## Implementation Notes
 
@@ -116,3 +115,16 @@ From issue-11-auth-foundation-plan.md, the following env vars are configured:
 - [x] Resend domain verification completed (mail.apidojo.app)
 - [x] Creem product configuration completed
 - [x] Neon DATABASE_URL added
+
+## Implementation Progress (2026-03-25)
+
+- [x] Phase 1 started and completed for Neon/Drizzle foundation
+- [x] Drizzle config and migration scripts added
+- [x] Initial schema and SQL migration generated
+- [x] DB env validation and DB client scaffolding added
+- [x] Phase 2 Better Auth server scaffolding started (auth routes, plugins, schema, migration)
+- [x] Phase 3 server-backed progress contracts and merge rules started (server functions + tested merge logic)
+- [x] Phase 4 entitlement resolution and server capability guards started
+- [x] Phase 5 Creem webhook verification and subscription/entitlement sync started
+- [x] Phase 6 Resend transactional template rendering, webhook verification, and event persistence started
+- [x] Phase 7 auth/domain readiness started (preview-safe Better Auth base URL host config + cookie domain support)
