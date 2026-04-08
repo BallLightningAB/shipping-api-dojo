@@ -1,4 +1,22 @@
 entries:
+  - date: "2026-04-08"
+    version: "1.0.16"
+    commit: pending
+    status: in-progress
+    title: "docs(env): preserve updated .env.example cleanup on main"
+    details: |-
+      Preserved the updated `.env.example` cleanup on `main` after the merged
+      issue #11 branch was retired.
+
+      - Kept `SESSION_COOKIE_DOMAIN` commented out in the example file with the
+        clearer `apidojo.app` format hint
+      - Kept the Creem enterprise product example commented out as not currently
+        used
+      - Preserved the split monthly/annual example product IDs for the pro tier
+      - Restored the intentional example-file cleanup after removing the temporary
+        review worktree and retiring the feature branch
+    refs:
+      - "I11Docs"
   - date: "2026-03-25"
     version: "1.0.15"
     commit: pending
