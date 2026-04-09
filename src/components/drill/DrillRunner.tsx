@@ -3,9 +3,9 @@
  */
 
 import type { Drill } from "@/content/types";
-import { McqDrill } from "./McqDrill";
-import { ClozeDrill } from "./ClozeDrill";
 import { BuilderDrill } from "./BuilderDrill";
+import { ClozeDrill } from "./ClozeDrill";
+import { McqDrill } from "./McqDrill";
 
 interface DrillRunnerProps {
 	drill: Drill;
@@ -14,7 +14,7 @@ interface DrillRunnerProps {
 
 export function DrillRunner({ drill, onComplete }: DrillRunnerProps) {
 	function handleComplete(score: number) {
-		onComplete(drill.id, score);
+		onComplete(drill.progressKey ?? drill.familyId ?? drill.id, score);
 	}
 
 	switch (drill.type) {

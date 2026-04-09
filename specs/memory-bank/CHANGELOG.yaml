@@ -1,5 +1,23 @@
 entries:
   - date: "2026-04-08"
+    version: "1.1"
+    commit: TBD
+    status: in-progress
+    title: "feat(content-runtime): complete issue #8 seeded family-model proof of concept"
+    details: |-
+      Completed the Issue #8 proof of concept by introducing a mixed legacy/family
+      runtime, deterministic seeded lesson/arena randomization, and canonical
+      progress mapping for the exemplar migrated content slice.
+
+      - Added deterministic randomization helpers and automated tests for seed derivation and stable shuffle behavior
+      - Added family-model lesson, drill-family, and scenario-family definitions for the REST, SOAP, and timeout-incident exemplars
+      - Added a mixed content runtime that renders migrated and unmigrated lessons through the same route API during the transition period
+      - Updated lesson and arena routes to use loader/search-param seeds plus reroll actions without hydration-risk randomization in SSR-visible content
+      - Kept migrated drill and scenario progress keyed to canonical family IDs and enabled signed-in server write-through after initial progress sync
+      - Validated with typecheck, tests, lint, build, and live dev-server route checks for the migrated lesson and arena pages
+    refs:
+      - "I8D1, I8D2, I8D3, I8D4"
+  - date: "2026-04-08"
     version: "1.0.27"
     commit: b62e33b
     status: in-progress

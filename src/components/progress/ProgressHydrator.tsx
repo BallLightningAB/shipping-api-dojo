@@ -3,20 +3,25 @@
  * Loads progress from localStorage and sets up cross-tab sync.
  */
 
-import { useEffect, useRef } from "react";
 import { authClient } from "@/lib/auth/client";
 import { shouldReplaceLocalProgress } from "@/lib/progress/progress.hydration";
-import { mergeAnonymousProgressOnSignIn } from "@/lib/progress/progress.sync";
 import {
 	getProgressSnapshot,
 	hydrateProgress,
+	progressStore,
 	replaceProgress,
 	setupCrossTabSync,
 } from "@/lib/progress/progress.store";
+import {
+	mergeAnonymousProgressOnSignIn,
+	writeServerProgress,
+} from "@/lib/progress/progress.sync";
+import { useEffect, useRef, useState } from "react";
 
 export function ProgressHydrator() {
 	const session = authClient.useSession();
 	const syncedUserIdRef = useRef<string | null>(null);
+	const [writeReadyUserId, setWriteReadyUserId] = useState<string | null>(null);
 
 	useEffect(() => {
 		hydrateProgress();
@@ -29,6 +34,7 @@ export function ProgressHydrator() {
 		const userId = session.data?.user?.id;
 		if (!userId) {
 			syncedUserIdRef.current = null;
+			setWriteReadyUserId(null);
 			return;
 		}
 
@@ -55,9 +61,11 @@ export function ProgressHydrator() {
 
 				if (shouldReplaceLocalProgress(initial)) {
 					replaceProgress(initial.progress);
+					setWriteReadyUserId(userId);
 					return;
 				}
 
+				setWriteReadyUserId(null);
 				console.info(
 					"Progress sync requires explicit merge decision. UI prompt wiring is pending."
 				);
@@ -74,6 +82,36 @@ export function ProgressHydrator() {
 			cancelled = true;
 		};
 	}, [session.data?.user?.id]);
+
+	useEffect(() => {
+		const userId = session.data?.user?.id;
+		if (!userId || writeReadyUserId !== userId) {
+			return;
+		}
+
+		let timeout: ReturnType<typeof setTimeout> | null = null;
+
+		const subscription = progressStore.subscribe(() => {
+			if (timeout) {
+				clearTimeout(timeout);
+			}
+
+			timeout = setTimeout(() => {
+				writeServerProgress({
+					data: getProgressSnapshot(),
+				}).catch((error) => {
+					console.error("Failed to write signed-in progress", error);
+				});
+			}, 350);
+		});
+
+		return () => {
+			if (timeout) {
+				clearTimeout(timeout);
+			}
+			subscription.unsubscribe();
+		};
+	}, [session.data?.user?.id, writeReadyUserId]);
 
 	return null;
 }

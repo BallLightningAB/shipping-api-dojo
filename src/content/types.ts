@@ -12,91 +12,154 @@ export interface DrillOption {
 }
 
 export interface McqDrill {
-	id: string;
-	type: "mcq";
-	question: string;
-	options: string[];
 	correctIndex: number;
 	explanation: string;
+	familyId?: string;
+	id: string;
+	options: string[];
+	progressKey?: string;
+	question: string;
+	type: "mcq";
+	variantId?: string;
 }
 
 export interface ClozeDrill {
-	id: string;
-	type: "cloze";
-	template: string;
 	answers: string[];
 	explanation: string;
+	familyId?: string;
+	id: string;
+	progressKey?: string;
+	template: string;
+	type: "cloze";
+	variantId?: string;
 }
 
 export interface BuilderRestDrill {
-	id: string;
-	type: "builder.rest";
-	prompt: string;
-	method: string;
-	url: string;
-	headers: Record<string, string>;
 	body?: string;
 	expectedOutput: string;
 	explanation: string;
+	familyId?: string;
+	headers: Record<string, string>;
+	id: string;
+	method: string;
+	progressKey?: string;
+	prompt: string;
+	type: "builder.rest";
+	url: string;
+	variantId?: string;
 }
 
 export interface BuilderSoapDrill {
-	id: string;
-	type: "builder.soap";
-	prompt: string;
-	soapAction: string;
-	namespace: string;
 	bodyFields: Record<string, string>;
 	expectedEnvelope: string;
 	explanation: string;
+	familyId?: string;
+	id: string;
+	namespace: string;
+	progressKey?: string;
+	prompt: string;
+	soapAction: string;
+	type: "builder.soap";
+	variantId?: string;
 }
 
 export type Drill = McqDrill | ClozeDrill | BuilderRestDrill | BuilderSoapDrill;
 
 export interface LessonSection {
-	heading: string;
 	body: string;
 	carrierReality?: string;
+	heading: string;
+	id?: string;
 }
 
 export interface Lesson {
+	drillFamilyIds?: string[];
+	drillIds: string[];
+	id?: string;
+	objectives?: string[];
+	order: number;
+	sections: LessonSection[];
 	slug: string;
+	summary: string;
 	title: string;
 	track: Track;
-	order: number;
-	summary: string;
-	sections: LessonSection[];
-	drillIds: string[];
 }
 
 export interface ScenarioStep {
+	choices: ScenarioChoice[];
 	id: string;
 	text: string;
-	choices: ScenarioChoice[];
 }
 
 export interface ScenarioChoice {
+	feedback: string;
+	id?: string;
+	isCorrect: boolean;
 	label: string;
 	nextStepId: string | null;
-	feedback: string;
-	isCorrect: boolean;
 }
 
 export interface Scenario {
-	id: string;
-	title: string;
-	summary: string;
 	difficulty: "beginner" | "intermediate" | "advanced";
+	evidence?: string[];
+	id: string;
+	progressKey?: string;
+	runSeed?: number;
+	scenarioFamilyId?: string;
 	steps: ScenarioStep[];
+	summary: string;
+	title: string;
+}
+
+export interface LessonDefinition {
+	drillFamilyIds: string[];
+	id: string;
+	objectives: string[];
+	order: number;
+	sections: LessonSection[];
+	slug: string;
+	summary: string;
+	title: string;
+	track: Track;
+}
+
+export interface DrillVariant {
+	drill: Drill;
+	variantId: string;
+}
+
+export interface DrillFamilyDefinition {
+	buildVariant: (seed: number) => DrillVariant;
+	concept: string;
+	difficulty: "beginner" | "intermediate" | "advanced";
+	id: string;
+	misconception: string;
+	tags: string[];
+	type: DrillType;
+}
+
+export interface ScenarioRun {
+	runId: string;
+	scenario: Scenario;
+}
+
+export interface ScenarioFamilyDefinition {
+	buildRun: (seed: number) => ScenarioRun;
+	concept: string;
+	difficulty: "beginner" | "intermediate" | "advanced";
+	id: string;
+	ladderLevel: 1 | 2 | 3 | 4;
+	summary: string;
+	title: string;
 }
 
 export interface WikiEntry {
-	slug: string;
-	title: string;
-	summary: string;
 	body: string;
-	sources: WikiSource[];
 	relatedSlugs: string[];
+	slug: string;
+	sources: WikiSource[];
+	summary: string;
+	title: string;
 }
 
 export interface WikiSource {
@@ -105,8 +168,8 @@ export interface WikiSource {
 }
 
 export interface DirectoryEntry {
+	category: "spec" | "tool" | "carrier" | "community";
+	description: string;
 	title: string;
 	url: string;
-	description: string;
-	category: "spec" | "tool" | "carrier" | "community";
 }

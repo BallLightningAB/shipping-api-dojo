@@ -1,15 +1,41 @@
-import { ClientOnly, createFileRoute } from "@tanstack/react-router";
-import { useStore } from "@tanstack/react-store";
-import { CheckCircle, Circle } from "lucide-react";
-import { useState } from "react";
 import { ScenarioPlayer } from "@/components/arena/ScenarioPlayer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { scenarios } from "@/content/scenarios";
+import {
+	getArenaScenarioCards,
+	getRouteSeed,
+	getScenarioProgressKey,
+	getScenarioRuntimeById,
+} from "@/content/runtime";
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
+import { makeClientSeed } from "@/lib/randomization";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
+import {
+	ClientOnly,
+	createFileRoute,
+	useNavigate,
+} from "@tanstack/react-router";
+import { useStore } from "@tanstack/react-store";
+import { CheckCircle, Circle } from "lucide-react";
+import { z } from "zod";
 
 export const Route = createFileRoute("/arena/")({
+	validateSearch: z.object({
+		runSeed: z.coerce.number().int().positive().optional(),
+		scenario: z.string().optional(),
+		seed: z.coerce.number().int().positive().optional(),
+	}),
+	loaderDeps: ({ search }) => ({
+		seed: search.seed,
+	}),
+	loader: ({ deps }) => {
+		const seed = getRouteSeed("arena:index", deps.seed);
+
+		return {
+			cards: getArenaScenarioCards(seed),
+			seed,
+		};
+	},
 	head: () => {
 		const title = "Shipping Incident Practice";
 		const description =
@@ -34,8 +60,57 @@ export const Route = createFileRoute("/arena/")({
 });
 
 function ArenaPage() {
-	const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
-	const activeScenario = scenarios.find((s) => s.id === activeScenarioId);
+	const navigate = useNavigate({ from: "/arena/" });
+	const { cards } = Route.useLoaderData();
+	const search = Route.useSearch();
+	const activeScenario =
+		search.scenario && search.runSeed
+			? getScenarioRuntimeById(search.scenario, search.runSeed)
+			: null;
+
+	function handleShuffleScenarios() {
+		navigate({
+			search: (prev) => ({
+				...prev,
+				seed: makeClientSeed("arena:index"),
+				scenario: undefined,
+				runSeed: undefined,
+			}),
+		});
+	}
+
+	function handleOpenScenario(scenarioId: string) {
+		navigate({
+			search: (prev) => ({
+				...prev,
+				runSeed: makeClientSeed(`arena:${scenarioId}`),
+				scenario: scenarioId,
+			}),
+		});
+	}
+
+	function handleBackToScenarios() {
+		navigate({
+			search: (prev) => ({
+				...prev,
+				runSeed: undefined,
+				scenario: undefined,
+			}),
+		});
+	}
+
+	function handleRerollScenario() {
+		if (!search.scenario) {
+			return;
+		}
+
+		navigate({
+			search: (prev) => ({
+				...prev,
+				runSeed: makeClientSeed(`arena:${search.scenario}`),
+			}),
+		});
+	}
 
 	return (
 		<div className="container mx-auto max-w-4xl px-4 py-16">
@@ -49,28 +124,49 @@ function ArenaPage() {
 				<div>
 					<button
 						className="mb-6 text-sm text-muted-foreground hover:text-foreground"
-						onClick={() => setActiveScenarioId(null)}
+						onClick={handleBackToScenarios}
 						type="button"
 					>
 						&larr; Back to scenarios
 					</button>
-					<h2 className="mb-6 text-2xl">{activeScenario.title}</h2>
+					<div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+						<h2 className="text-2xl">{activeScenario.title}</h2>
+						<button
+							className="text-sm text-muted-foreground hover:text-foreground"
+							onClick={handleRerollScenario}
+							type="button"
+						>
+							New Scenario Run
+						</button>
+					</div>
 					<ClientOnly
 						fallback={<p className="text-muted-foreground">Loading...</p>}
 					>
 						<ScenarioPlayer
-							onComplete={() => completeScenario(activeScenario.id)}
+							key={`${activeScenario.id}:${activeScenario.runSeed ?? "legacy"}`}
+							onComplete={() =>
+								completeScenario(getScenarioProgressKey(activeScenario))
+							}
 							scenario={activeScenario}
 						/>
 					</ClientOnly>
 				</div>
 			) : (
 				<div className="space-y-4">
-					{scenarios.map((scenario) => (
+					<div className="flex justify-end">
+						<button
+							className="text-sm text-muted-foreground hover:text-foreground"
+							onClick={handleShuffleScenarios}
+							type="button"
+						>
+							Shuffle Scenario Order
+						</button>
+					</div>
+					{cards.map((scenario) => (
 						<button
 							className="w-full text-left"
 							key={scenario.id}
-							onClick={() => setActiveScenarioId(scenario.id)}
+							onClick={() => handleOpenScenario(scenario.id)}
 							type="button"
 						>
 							<Card className="group transition-all duration-200 hover:-translate-y-0.5 hover:border-bl-red/30">
@@ -86,7 +182,9 @@ function ArenaPage() {
 										</div>
 									</div>
 									<ClientOnly fallback={null}>
-										<ScenarioStatus scenarioId={scenario.id} />
+										<ScenarioStatus
+											scenarioId={getScenarioProgressKey(scenario)}
+										/>
 									</ClientOnly>
 								</CardHeader>
 								<CardContent>
