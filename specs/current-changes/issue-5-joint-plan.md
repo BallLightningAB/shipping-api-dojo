@@ -1,8 +1,8 @@
 # Issue 5 Joint Plan
 
-Date: 2026-03-17
+Date: 2026-04-12
 Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
-Scope: Coordination plan for the full web-v2 program anchored by `#5`, with core execution across `#7`, `#11`, `#8`, `#9`, and `#10`, plus required supporting issues `#12` and `#13`.
+Scope: Coordination plan for the full web-v2 program anchored by `#5`, with core execution across `#7`, `#11`, `#8`, `#9`, and `#10`, plus required supporting issues `#12`, `#13`, `#15`, and `#16`.
 
 ## Goal
 
@@ -15,6 +15,8 @@ Deliver issue `#5` through a strict sequence that separates:
 - later higher-value randomization and certificate work
 - launch-readiness privacy/compliance work
 - mobile-readiness guardrails for the future native path
+- deeper wiki expansion beyond the core curriculum
+- a future sibling EDI product strategy under API Dojo
 
 Issue `#5` provides the global instructions and guardrails for the whole web-v2 implementation chain. Subplans should not reinterpret its product boundary, testing standard, or SEO posture independently.
 
@@ -33,16 +35,19 @@ Issue `#5` provides the global instructions and guardrails for the whole web-v2 
 - Public-repo licensing is `AGPL-3.0-only`; trademarks remain reserved and private premium materials stay outside the public repo.
 - Lessons, wiki, and directory surfaces are SEO-critical and must remain crawlable, SSR-visible, and internally linked throughout v2.
 - Every implementation issue must add or update automated tests wherever the behavior can be covered mechanically, then use browser-control validation for route and auth flows that still require end-to-end confirmation.
+- Broad carrier-reference expansion belongs in `#15`, not `#9`.
+- EDI should be treated as a sibling-product strategy issue in `#16`, not as a third track inside Shipping API Dojo.
 
 ## Current Execution Notes
 
 - The public product identity is now `Shipping API Dojo`, with `API Dojo` treated as the umbrella brand for future sibling products.
 - Public SEO copy should prefer keyword phrases like `shipping API training`, `carrier APIs`, and `carrier integrations` instead of reviving the old `API Trainer` product label.
-- A repository rename to `shipping-api-dojo` is planned before `#7` implementation starts, so repo-path and GitHub-link cleanup should happen immediately after that rename rather than drifting into later branches.
+- Issue `#9` is now the active execution issue.
+- Before any issue-9 coding wave, run a documentation-sync pass so GitHub issue `#9`, the issue-9 local plan, and `active-context.yaml` can be used as handoff artifacts if implementation pauses mid-stream.
 
 ## Execution Order
 
-Do not start the next branch until the previous one is completed, reviewed, and merged/prepared.
+Do not start the next branch until the previous one is completed, reviewed, and merged or documented as the current active branch.
 
 1. `#7` on `codex/issue-7-scoping`
 2. `#11` on `codex/issue-11-auth-foundation`
@@ -54,6 +59,8 @@ Additional v2 support issues:
 
 - `#12` must complete before production auth and paid features are enabled.
 - `#13` stays follow-on strategy work, but its guardrails apply immediately to `#7`, `#11`, `#8`, and `#9`.
+- `#15` is the follow-on deep wiki expansion after issue `#9` completes the curriculum-linked wiki surface.
+- `#16` is the follow-on EDI sibling-product strategy issue.
 
 ## Issue Graph
 
@@ -66,6 +73,8 @@ Additional v2 support issues:
 - `#10` stays follow-on and outline-only for now.
 - `#12` covers EU privacy/storage/launch compliance before hosted auth and paid rollout.
 - `#13` covers mobile-readiness and future native app strategy after the web v2 path is complete.
+- `#15` expands the wiki beyond curriculum-linked support pages into a vendor/business-unit/region/protocol library.
+- `#16` defines the EDI sibling-product strategy under API Dojo.
 
 ## SEO And Knowledge-Surface Guardrails
 
@@ -74,6 +83,8 @@ Additional v2 support issues:
 - Preserve stable slugs, canonical URLs, sitemap coverage, and internal-link hubs while the content-family migration is underway.
 - Treat the domain cutover to `shipping.apidojo.app` as a controlled site move: prefer one major variable at a time and avoid coupling it to avoidable information-architecture churn.
 - Avoid spawning large numbers of thin indexable pages; any new filter, credential, or low-content page type should default to conservative indexation until it proves real user value.
+- In issue `#9`, keep wiki and directory work narrowly tied to the curriculum and SEO support needs of the 20/20/20 rollout.
+- In issue `#15`, expand the documentation taxonomy by vendor, business unit, region, and protocol instead of writing generic “carrier” summaries.
 
 ## Deliverable Mapping
 
@@ -85,7 +96,7 @@ Additional v2 support issues:
 | `I5D4` 20 lessons | `#9` | Editorial lessons remain authored, not AI-generated. |
 | `I5D5` 20 drill families | `#9` | Existing drills are regrouped into the family taxonomy. |
 | `I5D6` 20 scenario families | `#9` | Existing scenarios are absorbed into the family taxonomy. |
-| `I5D7` linked sub-issue execution plan | `#7`, `#11`, `#8`, `#9` | Satisfied when the issue graph and plan set are in place. |
+| `I5D7` linked sub-issue execution plan | `#7`, `#11`, `#8`, `#9`, `#15`, `#16` | Satisfied when the issue graph and plan set are in place. |
 | `I5D8` separate higher-value randomization track | `#10` | Outline only in this phase. |
 
 ## Rough Estimates
@@ -99,8 +110,10 @@ Additional v2 support issues:
 | `#10` | higher-value follow-on outline | 6h | 2h |
 | `#12` | EU privacy/storage/launch compliance | 8h | 4h |
 | `#13` | mobile-readiness/native strategy | 6h | 3h |
+| `#15` | deep wiki expansion | 14h | 6h |
+| `#16` | EDI product strategy | 8h | 3h |
 | Core chain total | `#5` umbrella rollup (`#7/#11/#8/#9/#10`) | 100h | 52h |
-| Full v2 program total | core chain plus `#12/#13` | 114h | 59h |
+| Full v2 + follow-on program total | core chain plus `#12/#13/#15/#16` | 128h | 68h |
 
 ## Dependencies
 
@@ -121,6 +134,7 @@ Additional v2 support issues:
 ### Hard prerequisites before `#9`
 
 - `#8` must validate the content-family and seeded-randomization approach.
+- Phase 0 documentation sync must complete so the umbrella issue, local plan, and memory-bank reflect the current execution state.
 
 ## Risks and Dependency Handling
 
@@ -131,12 +145,7 @@ Additional v2 support issues:
 | Creem product/pricing setup is delayed | Pro checkout blocks | Finish entitlement plumbing with stubs and validate in test mode first. |
 | Schema/progress migration is harder than expected | `#8` and `#9` slip | Lock v1-to-v2 migration rules in `#7` before coding begins. |
 | Scenario authoring scope grows faster than expected | `#9` expands materially | Deliver in waves and validate each wave before opening the next. |
-
-## Resend Free-Tier Working Assumption
-
-- Resend Free currently supports a single verified domain per team, so the dedicated API Trainer account remains the right direction.
-- Multiple sender identities on that verified domain are acceptable, so `auth@`, `billing@`, `hello@`, and `certificates@` can coexist on `shipping.apidojo.app`.
-- If `hello@shipping.apidojo.app` should receive replies, provision mailbox or forwarding separately from the outbound sending setup.
+| Carrier wiki scope expands inside `#9` | `#9` loses focus | Defer the broader taxonomy and reference-library work to `#15`. |
 
 ## Shared Product Boundaries
 
@@ -155,6 +164,11 @@ Additional v2 support issues:
 - certificates and shareable credential pages
 - team and enterprise reporting
 
+### Sibling-product surface
+
+- future EDI product strategy stays outside Shipping API Dojo’s lesson-track model
+- product-specific SEO and curriculum boundaries should stay separate even when shared systems are reused
+
 ## Future Platform Guardrails
 
 The current implementation stays web-first, but it should not hard-code browser-only assumptions into the product core.
@@ -163,6 +177,7 @@ The current implementation stays web-first, but it should not hard-code browser-
 - keep server contracts reusable by future native clients
 - treat local browser storage as a client detail, not the long-term source of truth
 - keep certificate and challenge-run outputs stable enough to be reused across web and native surfaces
+- keep the future EDI sibling-product direction in mind when deciding which systems stay shared and which remain SEO or curriculum specific
 
 ## Validation Rule
 
@@ -178,8 +193,8 @@ Every implementation issue in this chain must include iterative validation, not 
 
 This planning package is complete when:
 
-- all eight v2 issue plans or outline artifacts exist in `specs/current-changes`
-- GitHub issues `#5`, `#7`, `#11`, `#8`, `#9`, `#10`, `#12`, and `#13` match this structure
+- the v2 issue plans and follow-on outline artifacts exist in `specs/current-changes`
+- GitHub issues `#5`, `#7`, `#11`, `#8`, `#9`, `#10`, `#12`, `#13`, `#15`, and `#16` match this structure
 - the memory-bank reflects the new order and scope
 - the repo is ready to execute work in branch order without inventing architecture mid-stream
-- the SEO, licensing, privacy, and mobile-readiness guardrails are explicit enough that later issues do not accidentally undermine them
+- the SEO, licensing, privacy, mobile-readiness, wiki-expansion, and sibling-product guardrails are explicit enough that later issues do not accidentally undermine them

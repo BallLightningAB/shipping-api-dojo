@@ -1,9 +1,10 @@
 # Issue 9 Migration Plan
 
-Date: 2026-03-17
+Date: 2026-04-12
 Issue: [#9](https://github.com/BallLightningAB/shipping-api-dojo/issues/9)
 Branch: `codex/issue-9-migration`
-Scope: Full migration from the legacy static model to the new 20/20/20 content-family model.
+Scope: Full migration from the mixed legacy/family runtime to the final 20/20/20 content-family model, plus targeted wiki and directory support required by that curriculum.
+Status: In progress. Phase 0 documentation sync is part of this issue before curriculum implementation resumes.
 
 ## Deliverable Mapping
 
@@ -11,12 +12,39 @@ Scope: Full migration from the legacy static model to the new 20/20/20 content-f
 - `I9D2`: expand the drill catalog to 20 authored drill families and regroup current drills into that taxonomy
 - `I9D3`: expand the scenario catalog to 20 total scenario families and regroup current scenarios into that taxonomy
 - `I9D4`: migrate the current lessons, drills, and scenarios to the new content-family model and retire the legacy shapes
-- `I9D5`: review and revise the full content set so it matches the new quality rules, data model, and scenario structure
+- `I9D5`: review and revise the full content set so it matches the new quality rules, data model, scenario structure, and SEO guardrails
 
 ## Rough Estimate
 
 - Dev: 42h
 - Test/validation: 22h
+
+## Phase 0: Documentation Sync
+
+Before coding the curriculum waves:
+
+- update this file, the issue-5 joint plan, and `specs/memory-bank/active-context.yaml`
+- sync GitHub issues `#5`, `#9`, `#10`, `#12`, and `#13` to the current execution state
+- create and document follow-on issues `#15` and `#16`
+- record end-of-wave status updates in GitHub issue `#9`, this file, and `active-context.yaml` so the issue remains resumable if work pauses mid-stream
+
+## Locked Alignment With Issue 8
+
+Issue `#9` extends the completed proof of concept from `#8`. It does not recreate the runtime architecture.
+
+Keep:
+
+- route-seeded deterministic lesson and arena randomization
+- canonical family progress keys
+- the current lesson and arena reroll pattern
+- the mixed-model runtime only as a temporary transition layer
+- the current family-model primitives (`LessonDefinition`, `DrillFamilyDefinition.buildVariant`, `ScenarioFamilyDefinition.buildRun`)
+
+Do not:
+
+- redesign the seed strategy
+- replace the canonical family-progress semantics
+- invent a second family model parallel to the issue-8 shape
 
 ## Goal
 
@@ -25,8 +53,9 @@ Ship the full authored content expansion with:
 - 20 total lessons
 - 20 total drill families
 - 20 total scenario families
-- all existing content regrouped into the shared family taxonomy
-- SSR-visible, crawlable lesson surfaces that strengthen the wiki and directory knowledge graph instead of weakening it
+- a dedicated `cross-track` lesson hub
+- targeted wiki and directory additions that directly support the migrated curriculum
+- SSR-visible, crawlable lesson and wiki surfaces that strengthen the site knowledge graph instead of weakening it
 
 The migration should use the archived `#7` handoff in `specs/archived/completed/issue-7-scoping-plan.md` as the contract source for family IDs, seeded randomization, and progress boundaries.
 
@@ -60,7 +89,7 @@ The migration should use the archived `#7` handoff in `specs/archived/completed/
 
 ## Final Drill Family Target
 
-The 17 current drills are not preserved as standalone legacy units. They are absorbed into these 20 families.
+The current static drills are regrouped into these 20 canonical families.
 
 1. Detect body-level errors despite HTTP 200
 2. Classify safe, idempotent, and unsafe operations
@@ -85,7 +114,7 @@ The 17 current drills are not preserved as standalone legacy units. They are abs
 
 ## Final Scenario Family Target
 
-The 5 current scenarios are absorbed and expanded into these 20 families.
+The current 5 scenarios are absorbed and expanded into these 20 canonical families.
 
 1. Timeout on Create Shipment
 2. 429 Rate Limiting Storm
@@ -97,7 +126,7 @@ The 5 current scenarios are absorbed and expanded into these 20 families.
 8. Out-of-Order Tracking Events
 9. Partial Label Generation with Downstream Persistence Failure
 10. Sandbox Works but Production Rejects the Request
-11. Address Validation Produces a False Assumption
+11. Legacy API Sunset Cutover
 12. Carrier Maintenance Window Breaks Scheduled Jobs
 13. Pagination Cursor Lost Mid-Sync
 14. Missing Correlation ID During Support Escalation
@@ -107,6 +136,38 @@ The 5 current scenarios are absorbed and expanded into these 20 families.
 18. Stale Token Cache Across Multiple Workers
 19. Dead-Letter Queue Triage After Permanent Failures
 20. Carrier Created the Label but Internal Save Failed
+
+## Targeted Wiki and Directory Scope
+
+Issue `#9` does not attempt a broad vendor documentation encyclopedia. It adds only the support surfaces required by the migrated curriculum and SEO.
+
+### Wiki additions in scope
+
+- `oauth-token-lifecycle`
+- `retry-after-and-backpressure`
+- `webhook-signatures`
+- `webhook-replay-and-ordering`
+- `partial-success-and-compensation`
+- `health-checks`
+- `dead-letter-queues`
+- `schema-validation`
+- `soap-headers-and-auth`
+- `contract-testing`
+- `wsdl-diff-monitoring`
+- `sandbox-vs-production`
+
+### Wiki rules
+
+- keep the teaching carrier-agnostic by default
+- use named carrier callouts only where they materially improve realism
+- never describe “DHL” as one unified surface when the relevant behavior belongs to a specific business unit, country, or protocol
+- prefer explicit references like `DHL Express`, `DHL Freight`, `DHL eCommerce`, or a named API/doc surface
+
+### Directory rules
+
+- add official provider docs only when they directly support a lesson or wiki page in this issue
+- favor official standards docs and official carrier docs over generic commentary
+- the deeper vendor/business-unit/region library belongs in follow-on issue `#15`
 
 ## Migration Rules
 
@@ -134,27 +195,33 @@ The 5 current scenarios are absorbed and expanded into these 20 families.
 
 ### Wave 1 (`I9D4`)
 
-- migrate the 8 current lessons
-- migrate the 17 current drills into the new family taxonomy
-- migrate the 5 current scenarios into the new family taxonomy
+- restructure content into canonical family modules and catalogs
+- migrate the 8 current lessons into the existing issue-8 runtime shape
+- regroup the current drills and scenarios into canonical family IDs
 - implement the v1-to-v2 local progress migration for legacy drill and scenario IDs
+- update GitHub issue `#9`, this file, and `active-context.yaml`
 
 ### Wave 2 (`I9D1`, `I9D2`, `I9D3`)
 
 - add the six new REST lessons
 - expand supporting drill families and scenario families around REST reliability
+- add the targeted REST-supporting wiki and directory entries
+- update GitHub issue `#9`, this file, and `active-context.yaml`
 
 ### Wave 3 (`I9D1`, `I9D2`, `I9D3`)
 
 - add the four new SOAP lessons
 - expand SOAP drill families and SOAP-heavy incident ladders
+- add the targeted SOAP-supporting wiki and directory entries
+- update GitHub issue `#9`, this file, and `active-context.yaml`
 
 ### Wave 4 (`I9D1`, `I9D3`, `I9D5`)
 
-- add the two cross-track lessons
+- add the two cross-track lessons and the `/learn/cross-track` hub
 - add the final cross-track and enterprise-relevant scenario families
-- run a full quality and consistency pass across the whole set
-- produce a separate drill-family authoring matrix with misconception, drill type, and lesson support mapping
+- remove the remaining mixed-model compatibility paths
+- run a full quality, taxonomy, migration, and SEO pass across the whole set
+- update GitHub issue `#9`, this file, and `active-context.yaml`
 
 ## Content Review Process
 
@@ -166,15 +233,17 @@ The 5 current scenarios are absorbed and expanded into these 20 families.
 ## Acceptance Criteria
 
 - the app ships 20 lessons, 20 drill families, and 20 scenario families
+- issue `#9` remains structurally aligned with the completed issue-8 proof of concept
+- targeted wiki and directory additions directly support the curriculum without expanding into the broader vendor-documentation program
 - legacy drill and scenario shapes are retired or reduced to temporary compatibility adapters only
 - existing content is visibly absorbed into one coherent taxonomy
 - the content quality rules are applied across migrated and new content
-- lesson pages remain crawlable and internally linked after the migration
+- lesson and wiki pages remain crawlable and internally linked after the migration
 
 ## Validation And Iteration
 
 - validate each wave before starting the next one
 - add or update automated tests and validation scripts in each wave rather than saving all coverage work for the end
-- use browser control at the end of each wave to verify lesson playback, drill progression, scenario progression, and progress persistence
+- use browser control at the end of each wave to verify lesson playback, drill progression, scenario progression, progress persistence, and internal-link integrity
 - inspect SSR HTML and sitemap outputs at the end of each wave to catch SEO regressions early
 - rerun the progress migration tests whenever canonical family IDs or mapping tables change
