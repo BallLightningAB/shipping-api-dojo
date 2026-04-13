@@ -1,7 +1,32 @@
 entries:
   - date: "2026-04-13"
-    version: "1.1.5"
+    version: "1.1.6"
     commit: TBD
+    status: in-progress
+    title: "feat(content-runtime): complete issue #9 wave 3 SOAP expansion"
+    details: |-
+      Completed Wave 3 of issue #9 by expanding the SOAP curriculum, finishing
+      the canonical drill-family target, and extending the checkpoint suite to
+      cover the new SOAP support surfaces.
+
+      - Added 4 new SOAP lessons covering schema validation, SOAP headers and
+        auth, WSDL drift monitoring and regeneration, and SOAP fault taxonomy
+      - Reached 20 canonical drill families by adding the schema-validation/XSD
+        mismatch family and extended the existing SOAP core families for header
+        and auth coverage
+      - Expanded the arena to 15 canonical scenario families with 5 new
+        SOAP-heavy incident families covering maintenance-window drift, header
+        mismatches, enum failures, token-cache skew, and sunset cutovers
+      - Added targeted SOAP-supporting wiki and directory entries for schema
+        validation, SOAP headers and auth, contract testing, and WSDL diff
+        monitoring
+      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
+        `pnpm typecheck`, `pnpm test:checkpoint`, and `pnpm build`
+    refs:
+      - "I9D1, I9D2, I9D3"
+  - date: "2026-04-13"
+    version: "1.1.5"
+    commit: 1d417ea
     status: in-progress
     title: "docs(planning): track issue #9 checkpoint progress before wave 3"
     details: |-

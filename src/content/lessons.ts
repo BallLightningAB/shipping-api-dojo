@@ -358,6 +358,106 @@ export const lessons: Lesson[] = [
 		],
 		drillIds: ["soap3-mcq-1", "soap3-cloze-1"],
 	},
+	{
+		slug: "soap-4-schema-validation-before-send",
+		title: "Schema Validation Before Send",
+		track: "soap",
+		order: 14,
+		summary:
+			"Catch XSD, enum, and type mismatches before a carrier turns them into cryptic SOAP faults.",
+		sections: [
+			{
+				heading: "Validate Before the Network Boundary",
+				body: "If the request already violates the contract, the carrier is the worst place to discover it. Validate generated XML against the XSD before sending so type mismatches, missing required elements, and invalid enums fail locally with faster, clearer feedback.",
+			},
+			{
+				heading: "XSD Restrictions Are Operational Rules",
+				body: "XSD simple types are not decoration. Enumerations, decimal formats, min/max ranges, and length restrictions are the actual carrier rules expressed in machine-readable form. If your mapping layer treats them as loose hints, production traffic will keep rediscovering the same avoidable validation faults.",
+				carrierReality:
+					"A carrier may accept ServiceLevel values like EXPRESS_SAVER and GROUND_HOME_DELIVERY exactly as defined in the schema. Sending a UI label such as 'Express Saver' can fail even though the business meaning looks identical.",
+			},
+			{
+				heading: "Preflight Validation Speeds Recovery",
+				body: "Preflight validation is not only about preventing errors. It also gives you a deterministic failure boundary, clearer internal alerts, and smaller incident blast radius. Engineers can fix a mapping bug before it reaches the carrier instead of triaging vague downstream faults after the queue backs up.",
+			},
+		],
+		drillIds: ["soap4-mcq-1", "soap4-mcq-2"],
+	},
+	{
+		slug: "soap-5-headers-auth-correlation-ids",
+		title: "SOAP Headers, Auth Tokens, and Correlation IDs",
+		track: "soap",
+		order: 15,
+		summary:
+			"Place auth and transaction metadata in the correct SOAP header shape so the carrier can authenticate, trace, and support the request.",
+		sections: [
+			{
+				heading: "Headers Carry the Operational Contract",
+				body: "SOAP headers hold metadata that should not be mixed into the business payload: auth tokens, transaction IDs, routing hints, and sometimes WS-Security blocks. If those fields drift into the body or the wrong namespace, the request may still look valid XML while the carrier rejects it immediately.",
+			},
+			{
+				heading: "Auth Tokens Must Live in the Right Namespace",
+				body: "SOAP auth is often expressed through a header contract, not a generic HTTP bearer token alone. Some carriers expect UsernameToken, API keys, access-license data, or a transaction block in specific namespaces and specific element order. Treat that structure as part of the contract, not as incidental boilerplate.",
+				carrierReality:
+					"Legacy carrier SOAP stacks often keep HTTP auth, WS-Security, and carrier-specific transaction headers as separate concerns. A request can reach the endpoint successfully while still failing application auth because one header block used the wrong namespace prefix or element name.",
+			},
+			{
+				heading: "Correlation IDs Turn Support Into Search",
+				body: "Support escalations move faster when the same request identifier appears in your logs, the carrier's logs, and the SOAP header contract. If correlation IDs are optional, inconsistently named, or omitted on retries, your incident evidence becomes fragmented precisely when you need it most.",
+			},
+		],
+		drillIds: ["soap5-mcq-1", "soap5-builder-1"],
+	},
+	{
+		slug: "soap-6-version-drift-wsdl-monitoring-regeneration",
+		title: "Version Drift, WSDL Monitoring, and Regeneration",
+		track: "soap",
+		order: 16,
+		summary:
+			"Detect contract drift early, regenerate safely, and roll out SOAP client updates without waiting for production breakage.",
+		sections: [
+			{
+				heading: "Contract Drift Rarely Announces Itself Well",
+				body: "SOAP integrations often break after a quiet carrier maintenance window, a refreshed endpoint, or a generated-client mismatch that nobody explicitly announced. The fault shows up as an unexpected element, a missing required field, or a signature error even though your own deploy pipeline never changed.",
+			},
+			{
+				heading: "Monitor the Contract, Not Just the Endpoint",
+				body: "Track WSDL downloads, checksums, generated client diffs, and endpoint metadata so you can see drift before the first live job fails. Availability checks alone are insufficient if the endpoint still responds while the contract has changed underneath your generated code.",
+				carrierReality:
+					"Some carriers refresh production WSDLs ahead of sandbox or documentation updates. If your contract monitoring only checks one environment, you can promote a stale generated client into a breaking production mismatch.",
+			},
+			{
+				heading: "Regeneration Needs a Controlled Rollout",
+				body: "Regenerating the client is step one, not the whole fix. Review the diff, update mapping code, run contract tests, and canary the new client against safe probes before reopening full traffic. SOAP contract changes are often operational migrations disguised as code generation chores.",
+			},
+		],
+		drillIds: ["soap6-mcq-1", "soap6-mcq-2"],
+	},
+	{
+		slug: "soap-7-fault-taxonomy-internal-error-mapping",
+		title: "Fault Taxonomy and Internal Error Mapping",
+		track: "soap",
+		order: 17,
+		summary:
+			"Turn SOAP faults into a consistent internal error taxonomy so retry, escalation, and customer messaging follow the right path.",
+		sections: [
+			{
+				heading: "Not Every SOAP Fault Means the Same Thing",
+				body: "SOAP faults bundle validation failures, auth mismatches, policy violations, and transient backend problems under one transport shape. If your integration treats them all as generic 'carrier error' events, you lose the ability to distinguish fast-fail, retry, and escalation-worthy incidents.",
+			},
+			{
+				heading: "Map Fault Detail to Internal Categories",
+				body: "The faultcode, detail block, and any nested carrier-specific codes should resolve to your internal taxonomy: validation, authentication, contract-drift, rate-limit or dependency failure, and ambiguous carrier outage. That boundary is what lets the rest of your platform handle SOAP problems as first-class operational events instead of bespoke XML trivia.",
+				carrierReality:
+					"Many carrier stacks emit a generic faultstring such as 'Processing Error' while the nested codes distinguish invalid credentials from invalid weight or a temporarily unavailable rating backend. Your mapping layer has to expose that distinction.",
+			},
+			{
+				heading: "Escalation Depends on Structured Evidence",
+				body: "Once you map the fault correctly, the follow-up becomes obvious: fix the payload, rotate credentials, regenerate the client, or escalate with precise evidence. If the logs only preserve the top-level faultstring, you turn solvable SOAP faults into slow manual investigations.",
+			},
+		],
+		drillIds: ["soap7-mcq-1", "soap7-cloze-1"],
+	},
 ];
 
 export function getLessonBySlug(slug: string): Lesson | undefined {

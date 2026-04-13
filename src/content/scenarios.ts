@@ -744,6 +744,414 @@ export const scenarios: Scenario[] = [
 			},
 		],
 	},
+	{
+		id: "carrier-maintenance-window-breaks-scheduled-jobs",
+		title: "Carrier Maintenance Window Breaks Scheduled Jobs",
+		summary:
+			"A carrier maintenance window changed the SOAP contract and your scheduled jobs started failing before anyone was online.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "At 05:10 the nightly shipment batch starts failing with 'Unexpected element' faults right after a carrier maintenance window ended. Your app did not deploy overnight. What is the best first move?",
+				choices: [
+					{
+						label:
+							"Download the current WSDL or schema contract, compare it with the generated version in production, and pause the failing job class",
+						nextStepId: "contract-check",
+						feedback:
+							"Correct — treat this as potential contract drift first and stop the scheduler from amplifying the breakage.",
+						isCorrect: true,
+					},
+					{
+						label: "Restart the workers repeatedly until one batch succeeds",
+						nextStepId: null,
+						feedback:
+							"Restarts add noise but do not address a changed external contract.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Reroute the scheduled jobs to sandbox because it is usually more stable",
+						nextStepId: null,
+						feedback:
+							"Sandbox is the wrong recovery target for production carrier work and may not match the production contract anyway.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "contract-check",
+				text: "The live WSDL checksum changed and the generated client in production is stale. What is the safest remediation path?",
+				choices: [
+					{
+						label:
+							"Regenerate the client, run contract tests on safe probes, and resume the scheduled jobs through a controlled reopen plan",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — regenerate from the contract, validate the new client, and resume traffic deliberately instead of replaying the entire queue blindly.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Patch the old XML templates in production until the faults disappear",
+						nextStepId: null,
+						feedback:
+							"Hand-patching SOAP templates under incident pressure is brittle and skips the real contract diff review.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "The queue is draining again. What should you add to prevent the next maintenance window from breaking jobs this quietly?",
+				choices: [
+					{
+						label:
+							"Add WSDL or schema checksum monitoring, maintenance-window canaries, and scheduler controls that can isolate one failing carrier workflow",
+						nextStepId: null,
+						feedback:
+							"Correct — contract monitoring plus operational isolation turns surprise drift into an early warning instead of a dawn outage.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Keep the current generated client pinned forever so the contract never changes again",
+						nextStepId: null,
+						feedback:
+							"Pinning only delays the next break. You need monitored regeneration, not permanent stasis.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "soap-header-auth-mismatch",
+		title: "SOAP Header/Auth Mismatch",
+		summary:
+			"The SOAP body is valid, but the auth and transaction headers are structured incorrectly for the carrier contract.",
+		difficulty: "intermediate",
+		steps: [
+			{
+				id: "start",
+				text: "A new SOAP shipment integration returns MustUnderstand and auth faults even though the body payload validates against the XSD. What do you inspect first?",
+				choices: [
+					{
+						label:
+							"Compare the outbound SOAP header structure, namespaces, and auth elements with the carrier's documented header contract",
+						nextStepId: "header-fix",
+						feedback:
+							"Correct — when the body is valid, header structure and namespace placement are the next contract boundary to inspect.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Move the auth token into the SOAP Body so the carrier sees it with the business payload",
+						nextStepId: null,
+						feedback:
+							"Auth metadata usually belongs in the Header contract, not in the body payload.",
+						isCorrect: false,
+					},
+					{
+						label: "Remove the transaction ID so the header becomes simpler",
+						nextStepId: null,
+						feedback:
+							"That would make support and traceability worse while ignoring the actual header mismatch.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "header-fix",
+				text: "You find a UsernameToken using the wrong namespace and a missing carrier transaction ID header. What is the correct repair?",
+				choices: [
+					{
+						label:
+							"Rebuild the shared SOAP header with the correct WS-Security namespace, required auth block, and transaction ID metadata",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — header placement and namespace accuracy are part of the integration contract.",
+						isCorrect: true,
+					},
+					{
+						label: "Disable strict header validation in the SOAP client",
+						nextStepId: null,
+						feedback:
+							"Client-side leniency will not fix what the carrier expects to receive.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "The request is now accepted. What hardening step best prevents a repeat?",
+				choices: [
+					{
+						label:
+							"Keep one shared SOAP header builder and add contract tests that assert auth and correlation headers before deployment",
+						nextStepId: null,
+						feedback:
+							"Correct — centralizing header construction and testing the output prevents silent drift across services.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Let each service handcraft its own SOAP header so teams can move faster",
+						nextStepId: null,
+						feedback:
+							"That increases drift and makes auth incidents harder to debug consistently.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "carrier-enum-change-causes-validation-failure",
+		title: "Carrier Enum Change Causes Validation Failure",
+		summary:
+			"A carrier schema update changed an enum value and now otherwise-correct SOAP requests fail validation.",
+		difficulty: "intermediate",
+		steps: [
+			{
+				id: "start",
+				text: "SOAP requests now fail with 'Invalid ServiceLevel' even though the UI label looks unchanged. What is the best first diagnostic step?",
+				choices: [
+					{
+						label:
+							"Compare the outbound value with the current XSD enum restrictions and the mapper that turns UI options into carrier values",
+						nextStepId: "mapping-fix",
+						feedback:
+							"Correct — enum drift is a mapping and schema-validation problem, not a transport problem.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Retry the same request later because validation faults are often transient",
+						nextStepId: null,
+						feedback:
+							"Validation faults are deterministic until the payload or contract changes.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Change the SOAPAction header and keep the rest of the payload untouched",
+						nextStepId: null,
+						feedback:
+							"The failing signal points to payload validation, not operation routing.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "mapping-fix",
+				text: "You confirm the carrier now expects EXPRESS_SAVER while your mapper still emits EXPRESS-SAVER. What is the correct repair?",
+				choices: [
+					{
+						label:
+							"Update the mapping to the schema-defined enum, regenerate affected types, and add preflight schema validation for the outbound payload",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — fix the contract value at the mapper boundary and verify it before sending.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Lowercase every enum so the carrier can normalize it automatically",
+						nextStepId: null,
+						feedback:
+							"SOAP schema validation is not case-insensitive by default. That would create a different invalid value.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "What longer-term guardrail best prevents the same enum drift from resurfacing quietly?",
+				choices: [
+					{
+						label:
+							"Add schema-diff alerts and generated contract tests that fail when the accepted enum set changes",
+						nextStepId: null,
+						feedback:
+							"Correct — contract-aware monitoring catches enum changes before production traffic rediscovers them.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Wait for carrier support tickets and update enums manually each time",
+						nextStepId: null,
+						feedback:
+							"That turns a predictable contract-management problem into repeated production incidents.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "stale-token-cache-across-multiple-workers",
+		title: "Stale Token Cache Across Multiple Workers",
+		summary:
+			"One worker pool still injects an expired auth token into SOAP headers while the rest of the fleet uses a fresh token.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "Only one regional worker pool is failing SOAP auth, and replaying the same job on another pool succeeds. What is the best first response?",
+				choices: [
+					{
+						label:
+							"Inspect token-cache ownership and invalidate the stale shard before replaying the failed jobs",
+						nextStepId: "token-fix",
+						feedback:
+							"Correct — this looks like cache skew, not a carrier-wide auth outage.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Make every worker refresh credentials independently right away",
+						nextStepId: null,
+						feedback:
+							"That can turn one stale shard into a refresh storm across the fleet.",
+						isCorrect: false,
+					},
+					{
+						label: "Remove the SOAP auth header until the carrier recovers",
+						nextStepId: null,
+						feedback:
+							"The carrier is not going to accept unauthenticated requests while you debug the cache.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "token-fix",
+				text: "You confirm that one regional cache namespace still serves an expired token. What is the correct remediation?",
+				choices: [
+					{
+						label:
+							"Move refresh back to one shared lifecycle path with expiry buffers and gate retries on fresh token metadata",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — one authoritative refresh path prevents divergent worker behavior.",
+						isCorrect: true,
+					},
+					{
+						label: "Increase the cache TTL so workers stop refreshing as often",
+						nextStepId: null,
+						feedback: "A longer TTL would keep stale tokens alive even longer.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "Traffic is healthy again. What should you add next?",
+				choices: [
+					{
+						label:
+							"Centralize token lifecycle telemetry by carrier credential set and alert on shard skew or independent refresh paths",
+						nextStepId: null,
+						feedback:
+							"Correct — shared ownership and telemetry surface the skew before it reaches production job failures.",
+						isCorrect: true,
+					},
+					{
+						label: "Clear all worker caches manually every morning",
+						nextStepId: null,
+						feedback:
+							"Manual cache hygiene is not a durable auth-lifecycle strategy.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "legacy-api-sunset-cutover",
+		title: "Legacy API Sunset Cutover",
+		summary:
+			"The carrier retired a legacy SOAP binding and you must cut traffic to the regenerated client without causing a broader outage.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "The carrier has turned off the legacy SOAP binding. Your regenerated client is available, but only limited production traffic has exercised it. What is the safest first move?",
+				choices: [
+					{
+						label:
+							"Identify the affected operations, shift traffic behind a feature flag, and use the regenerated client through a controlled cutover plan",
+						nextStepId: "cutover-plan",
+						feedback:
+							"Correct — you still need staged control even when the old endpoint is gone.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Wait for the carrier to restore the legacy binding temporarily",
+						nextStepId: null,
+						feedback:
+							"The sunset already happened. Recovery depends on your cutover plan, not on the old binding coming back.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Change DNS and hope the old client keeps working against the new binding",
+						nextStepId: null,
+						feedback:
+							"The contract and binding changed. DNS alone does not solve a client mismatch.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "cutover-plan",
+				text: "Some safe probe traffic passes with the new client, but shipment creation has downstream mapping differences. What is the best rollout approach?",
+				choices: [
+					{
+						label:
+							"Canary safe traffic first, migrate the write path incrementally, and keep an explicit rollback or isolation plan for each dependent workflow",
+						nextStepId: "aftermath",
+						feedback:
+							"Correct — even under deadline pressure, staged rollout is how you avoid turning one sunset into a multi-system outage.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Flip 100% of traffic immediately because partial rollout only delays the inevitable",
+						nextStepId: null,
+						feedback:
+							"An all-at-once cutover hides which dependent system failed and raises the cost of rollback.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "aftermath",
+				text: "The cutover completed. What follow-up hardening best prepares you for the next carrier sunset?",
+				choices: [
+					{
+						label:
+							"Maintain a deprecation watchlist, contract-monitoring alerts, and a runbook that treats sunset dates as operational migrations",
+						nextStepId: null,
+						feedback:
+							"Correct — deprecations need active tracking, not just a future calendar note.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Fork the integration permanently for every carrier version and never retire the old code",
+						nextStepId: null,
+						feedback:
+							"Permanent version forks increase maintenance burden and make future sunsets harder, not easier.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
 ];
 
 export function getScenarioById(id: string): Scenario | undefined {

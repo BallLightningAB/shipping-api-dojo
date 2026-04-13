@@ -82,6 +82,55 @@ export const lessonCatalog: LessonCatalogEntry[] = [
 		],
 	},
 	{
+		id: "lesson-soap-schema-validation",
+		slug: "soap-4-schema-validation-before-send",
+		objectives: [
+			"Validate outbound SOAP payloads against XSD constraints before the carrier receives them.",
+			"Treat enums, numeric types, and required elements as operational contract rules.",
+			"Use schema-validation failures to shorten incident feedback loops and reduce queue churn.",
+		],
+		drillFamilyIds: [
+			"soap-wsdl-contract-reading",
+			"repair-xsd-type-mismatches",
+		],
+	},
+	{
+		id: "lesson-soap-headers-auth",
+		slug: "soap-5-headers-auth-correlation-ids",
+		objectives: [
+			"Place SOAP auth and transaction metadata in the correct header contract.",
+			"Keep namespaces, auth blocks, and correlation IDs consistent across environments and retries.",
+			"Treat SOAP headers as operational evidence, not implementation trivia.",
+		],
+		drillFamilyIds: ["soap-envelope-builder", "incident-evidence-logging"],
+	},
+	{
+		id: "lesson-soap-version-drift",
+		slug: "soap-6-version-drift-wsdl-monitoring-regeneration",
+		objectives: [
+			"Detect WSDL and schema drift before production traffic breaks.",
+			"Regenerate SOAP clients from the contract instead of patching templates by hand.",
+			"Roll out contract-driven changes through diff review, tests, and canary traffic.",
+		],
+		drillFamilyIds: [
+			"detect-breaking-carrier-contract-changes",
+			"soap-wsdl-contract-reading",
+		],
+	},
+	{
+		id: "lesson-soap-fault-taxonomy",
+		slug: "soap-7-fault-taxonomy-internal-error-mapping",
+		objectives: [
+			"Classify SOAP faults into internal categories that drive the right operational response.",
+			"Map carrier-specific fault detail into retry, fast-fail, and escalation decisions.",
+			"Preserve the evidence required to explain SOAP failures outside the XML layer.",
+		],
+		drillFamilyIds: [
+			"soap-fault-detail-extraction",
+			"incident-evidence-logging",
+		],
+	},
+	{
 		id: "lesson-rest-idempotency-keys",
 		slug: "rest-5-idempotency-keys-deduplication",
 		objectives: [

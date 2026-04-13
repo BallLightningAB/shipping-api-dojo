@@ -47,6 +47,27 @@ export const directoryEntries: DirectoryEntry[] = [
 		category: "spec",
 	},
 	{
+		title: "W3C XML Schema Primer",
+		url: "https://www.w3.org/TR/xmlschema-0/",
+		description:
+			"Introductory XML Schema reference for type constraints, enums, and request validation in SOAP integrations.",
+		category: "spec",
+	},
+	{
+		title: "OASIS WS-Security SOAP Message Security 1.1.1",
+		url: "http://docs.oasis-open.org/wss-m/wss/v1.1.1/os/wss-SOAPMessageSecurity-v1.1.1-os.html",
+		description:
+			"Canonical SOAP message security reference for header-level auth and related metadata handling.",
+		category: "spec",
+	},
+	{
+		title: "OASIS UsernameToken Profile 1.1.1",
+		url: "http://docs.oasis-open.org/wss-m/wss/v1.1.1/os/wss-UsernameTokenProfile-v1.1.1-os.html",
+		description:
+			"WS-Security profile reference for UsernameToken-based SOAP auth flows still used by legacy carrier stacks.",
+		category: "spec",
+	},
+	{
 		title: "Postman",
 		url: "https://www.postman.com/",
 		description:
@@ -142,6 +163,13 @@ export const directoryEntries: DirectoryEntry[] = [
 		url: "https://docs.stripe.com/webhooks/signature",
 		description:
 			"Concrete reference for raw-body signature verification, replay handling, and webhook troubleshooting.",
+		category: "community",
+	},
+	{
+		title: "XMLUnit",
+		url: "https://www.xmlunit.org/",
+		description:
+			"XML diff and assertion tooling that is useful for SOAP contract tests and generated-envelope comparisons.",
 		category: "community",
 	},
 ];

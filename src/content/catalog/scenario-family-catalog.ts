@@ -206,4 +206,114 @@ export const scenarioFamilyCatalog: ScenarioFamilyCatalogEntry[] = [
 			],
 		],
 	},
+	{
+		id: "carrier-maintenance-window-breaks-scheduled-jobs",
+		sourceScenarioId: "carrier-maintenance-window-breaks-scheduled-jobs",
+		title: "Carrier Maintenance Window Breaks Scheduled Jobs",
+		summary:
+			"A quiet carrier maintenance window changed the SOAP contract and now scheduled jobs are failing before business hours.",
+		concept:
+			"Contract monitoring, maintenance-window fallout, and controlled SOAP recovery",
+		ladderLevel: 3,
+		evidenceOptions: [
+			[
+				"Nightly shipment jobs started failing minutes after the carrier maintenance window ended.",
+				"Your generated client checksum no longer matches the live WSDL download.",
+				"No application deploy occurred on your side overnight.",
+			],
+			[
+				"Health checks show the endpoint is reachable, but production jobs return unexpected-element faults.",
+				"The carrier status page only mentions 'planned maintenance complete' with no schema details.",
+				"Queue depth is rising because the scheduler keeps releasing new work into the failing job class.",
+			],
+		],
+	},
+	{
+		id: "soap-header-auth-mismatch",
+		sourceScenarioId: "soap-header-auth-mismatch",
+		title: "SOAP Header/Auth Mismatch",
+		summary:
+			"A SOAP request reaches the carrier, but the auth and transaction headers are structured incorrectly.",
+		concept:
+			"Header contracts, WS-Security placement, and correlation metadata discipline",
+		ladderLevel: 2,
+		evidenceOptions: [
+			[
+				"HTTP transport succeeds, but the carrier returns a MustUnderstand fault for the auth block.",
+				"Recent refactor moved transaction metadata out of the shared SOAP header builder.",
+				"Support cannot locate the failing request because the transaction ID never arrived in their logs.",
+			],
+			[
+				"Carrier responses alternate between auth failure and header-validation faults.",
+				"The outbound XML shows a UsernameToken in the wrong namespace prefix.",
+				"Operations reports that REST integrations still work with the same underlying credentials.",
+			],
+		],
+	},
+	{
+		id: "carrier-enum-change-causes-validation-failure",
+		sourceScenarioId: "carrier-enum-change-causes-validation-failure",
+		title: "Carrier Enum Change Causes Validation Failure",
+		summary:
+			"A schema-backed enum change broke outbound SOAP payloads even though the business meaning stayed the same.",
+		concept:
+			"Schema validation, enum drift, and preflight contract enforcement",
+		ladderLevel: 2,
+		evidenceOptions: [
+			[
+				"SOAP faults started citing an invalid ServiceLevel value after a quiet contract refresh.",
+				"The UI still displays the same shipping option names as before.",
+				"Only one enum-backed request path is failing; other payloads still validate.",
+			],
+			[
+				"Generated client types were refreshed in one service but not in another.",
+				"The carrier's XSD now expects EXPRESS_SAVER while your mapper still emits EXPRESS-SAVER.",
+				"Support confirms the service is healthy and points to request validation only.",
+			],
+		],
+	},
+	{
+		id: "stale-token-cache-across-multiple-workers",
+		sourceScenarioId: "stale-token-cache-across-multiple-workers",
+		title: "Stale Token Cache Across Multiple Workers",
+		summary:
+			"Different worker pools are sending different SOAP auth headers because one cache shard still serves an expired token.",
+		concept:
+			"Shared auth lifecycle, multi-worker cache skew, and controlled recovery under load",
+		ladderLevel: 3,
+		evidenceOptions: [
+			[
+				"One worker pool keeps sending an expired token in the SOAP header while newer workers succeed.",
+				"Token-refresh logs show two independent cache namespaces for the same carrier credential set.",
+				"Replaying failed jobs on a healthy worker succeeds without changing the payload body.",
+			],
+			[
+				"401 failures cluster by region even though all workers hit the same carrier endpoint.",
+				"The SOAP header builder reads auth state from a regional in-memory cache instead of the shared store.",
+				"Operations can trace the failure to one stale credential shard rather than a carrier-wide outage.",
+			],
+		],
+	},
+	{
+		id: "legacy-api-sunset-cutover",
+		sourceScenarioId: "legacy-api-sunset-cutover",
+		title: "Legacy API Sunset Cutover",
+		summary:
+			"The carrier turned off a legacy SOAP binding and you need to cut traffic to the regenerated client without creating a second outage.",
+		concept:
+			"Deprecation readiness, staged cutover, and rollback-aware client migration",
+		ladderLevel: 4,
+		evidenceOptions: [
+			[
+				"The legacy SOAP binding now returns deprecation faults while the new binding is live but not fully exercised in production.",
+				"Your regenerated client passed staging tests, but downstream systems still assume some old field names.",
+				"The carrier's sunset deadline already passed, so the old path is not coming back.",
+			],
+			[
+				"Canary traffic through the new client succeeds for rate checks but not yet for shipment creation.",
+				"Feature flags exist for client selection, but the rollback playbook was never finalized.",
+				"Business stakeholders want the cutover completed before the next scheduled pickup batch starts.",
+			],
+		],
+	},
 ];

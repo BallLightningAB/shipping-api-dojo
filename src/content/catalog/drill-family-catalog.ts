@@ -143,6 +143,17 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 		legacyDrillIds: ["soap3-mcq-1"],
 	},
 	{
+		id: "repair-xsd-type-mismatches",
+		type: "mcq",
+		concept:
+			"Repairing schema and type mismatches before they become carrier faults",
+		misconception:
+			"Assuming the carrier will coerce enum, numeric, and required-field mismatches instead of enforcing the XSD contract exactly.",
+		difficulty: "intermediate",
+		tags: ["soap", "xsd", "schema-validation"],
+		legacyDrillIds: ["soap4-mcq-1", "soap4-mcq-2"],
+	},
+	{
 		id: "incident-evidence-logging",
 		type: "cloze",
 		concept: "Logging the evidence required for escalation and recovery",

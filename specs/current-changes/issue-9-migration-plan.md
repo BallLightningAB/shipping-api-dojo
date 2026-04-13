@@ -4,7 +4,7 @@ Date: 2026-04-12
 Issue: [#9](https://github.com/BallLightningAB/shipping-api-dojo/issues/9)
 Branch: `codex/issue-9-migration`
 Scope: Full migration from the mixed legacy/family runtime to the final 20/20/20 content-family model, plus targeted wiki and directory support required by that curriculum.
-Status: In progress. Phase 0 and Wave 1 completed on 2026-04-12. Wave 2 completed on 2026-04-13. Wave 3 is the next coding slice.
+Status: In progress. Phase 0 and Wave 1 completed on 2026-04-12. Waves 2 and 3 completed on 2026-04-13. Wave 4 is the next coding slice.
 
 ## Execution Progress
 
@@ -16,19 +16,19 @@ Status: In progress. Phase 0 and Wave 1 completed on 2026-04-12. Wave 2 complete
 - [x] Implement and validate Wave 2 (`I9D1`, `I9D2`, `I9D3`) from the local migration plan
 - [x] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 2
 - [x] Add the low-cost browser smoke suite from issue `#17` and validate the current Wave 2 checkpoint with `pnpm test:checkpoint`
-- [ ] Implement and validate Wave 3 (`I9D1`, `I9D2`, `I9D3`)
-- [ ] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 3
+- [x] Implement and validate Wave 3 (`I9D1`, `I9D2`, `I9D3`)
+- [x] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 3
 - [ ] Implement and validate Wave 4 (`I9D1`, `I9D3`, `I9D5`)
 - [ ] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 4
 - [ ] Run the final issue `#9` wrap-up pass, archive the completed plan artifact, and prepare the branch for merge
 
 ## Current Totals
 
-- Lessons shipped so far: `14 / 20`
-- Canonical drill families shipped so far: `19 / 20`
-- Canonical scenario families shipped so far: `10 / 20`
+- Lessons shipped so far: `18 / 20`
+- Canonical drill families shipped so far: `20 / 20`
+- Canonical scenario families shipped so far: `15 / 20`
 - Browser checkpoint coverage: in place via issue `#17` (`pnpm test:checkpoint`)
-- Next implementation slice: Wave 3 SOAP expansion
+- Next implementation slice: Wave 4 cross-track completion and final scenario expansion
 
 ## Deliverable Mapping
 
@@ -71,12 +71,21 @@ Before coding the curriculum waves:
 - fixed arena-card deduplication so migrated canonical scenario families no longer reappear as legacy incident cards under their old IDs
 - validated the wave with `pnpm format`, `pnpm typecheck`, `pnpm test`, `pnpm lint`, and `pnpm build`
 
-### Wave 3 next
+### Wave 3 completed on 2026-04-13
 
-- add the four new SOAP lessons
-- expand the SOAP-heavy drill and scenario families
-- add the targeted SOAP-supporting wiki and directory entries
-- rerun the same validation suite after the SOAP curriculum content lands
+- added the four new SOAP lessons so the authored curriculum now reaches 18 of the final 20 lessons
+- completed the canonical drill-family target at 20 by adding the schema-validation/XSD mismatch family and reusing the existing SOAP core families for headers, auth, and fault-mapping lessons
+- expanded the SOAP-heavy arena coverage with 5 new canonical scenario families, bringing the current scenario total to 15
+- added the targeted SOAP-supporting wiki and directory entries for schema validation, SOAP headers/auth, contract testing, and WSDL diff monitoring
+- expanded the low-cost browser smoke suite so `pnpm test:checkpoint` now covers a representative Wave 3 SOAP lesson plus the new SOAP support surfaces
+- validated the wave with `pnpm format`, `pnpm typecheck`, `pnpm test`, `pnpm test:checkpoint`, `pnpm lint`, and `pnpm build`
+
+### Wave 4 next
+
+- add the two cross-track lessons
+- expand the remaining 5 scenario families to reach the full 20-family target
+- tighten the final curriculum copy, taxonomy, and SEO-facing support surfaces for the completed 20/20/20 migration
+- rerun the same validation suite and archive the finished implementation artifact after the final issue wrap-up
 
 ## Locked Alignment With Issue 8
 

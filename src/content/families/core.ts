@@ -298,6 +298,20 @@ const drillFamilies: DrillFamilyDefinition[] = [
 					explanation:
 						"Carrier upgrades often change service namespaces or operation bindings. If the request still uses the old namespace, the payload can look well-formed but still miss the contract target.",
 				},
+				{
+					key: "header-auth-placement",
+					question:
+						"A carrier expects WS-Security credentials and a transaction ID in the SOAP header. Why can putting them in the Body still fail even when the XML parses?",
+					options: [
+						"Because SOAP headers are optional, so the carrier ignores all metadata unless it is duplicated in the Body.",
+						"Because the contract binds auth and metadata to the Header namespace and processing rules, not to arbitrary payload fields.",
+						"Because SOAP bodies cannot contain strings that look like tokens.",
+						"Because the HTTP status code is computed before the body is parsed.",
+					],
+					correctIndex: 1,
+					explanation:
+						"SOAP treats metadata placement as part of the contract. Auth tokens and transaction IDs often have to appear in the Header with the right namespaces so the carrier stack processes them before the business payload.",
+				},
 			];
 			const variant = pickDeterministic(
 				variants,
@@ -377,6 +391,36 @@ const drillFamilies: DrillFamilyDefinition[] = [
       <car:DestinationPostalCode>10001</car:DestinationPostalCode>
       <car:WeightKg>2.4</car:WeightKg>
     </car:GetRates>
+  </soap:Body>
+</soap:Envelope>`,
+				},
+				{
+					key: "shipment-with-security-header",
+					carrierNamespace: "http://carrier.com/shipping/v2",
+					soapAction: "http://carrier.com/shipping/v2/CreateShipment",
+					operation: "CreateShipment",
+					bodyFields: {
+						Origin: "SE",
+						Destination: "NL",
+						ServiceLevel: "EXPRESS_SAVER",
+					},
+					expectedEnvelope: `<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:car="http://carrier.com/shipping/v2" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+  <soap:Header>
+    <wsse:Security>
+      <wsse:UsernameToken>
+        <wsse:Username>api-user</wsse:Username>
+        <wsse:Password>token-or-secret</wsse:Password>
+      </wsse:UsernameToken>
+    </wsse:Security>
+    <car:TransactionId>corr-12345</car:TransactionId>
+  </soap:Header>
+  <soap:Body>
+    <car:CreateShipment>
+      <car:Origin>SE</car:Origin>
+      <car:Destination>NL</car:Destination>
+      <car:ServiceLevel>EXPRESS_SAVER</car:ServiceLevel>
+    </car:CreateShipment>
   </soap:Body>
 </soap:Envelope>`,
 				},

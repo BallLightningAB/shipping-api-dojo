@@ -282,6 +282,70 @@ export const wikiEntries: WikiEntry[] = [
 		],
 	},
 	{
+		slug: "schema-validation",
+		title: "Schema Validation",
+		summary:
+			"Validate SOAP payloads against the carrier contract before the request leaves your system.",
+		body: "Schema validation is the fastest way to turn a vague downstream SOAP fault into a precise local failure. Validate generated XML against the XSD or generated type system before sending it to the carrier. That catches missing required elements, invalid enums, numeric-format drift, and namespace-bound type issues at a point where engineers still have deterministic context.\n\nTreat schema validation as an operational control, not just a developer convenience. It shortens incident loops, reduces retry noise, and makes contract drift visible earlier in the delivery pipeline.",
+		sources: [
+			{
+				label: "W3C XML Schema Primer",
+				url: "https://www.w3.org/TR/xmlschema-0/",
+			},
+			{ label: "W3C WSDL 1.1", url: "https://www.w3.org/TR/wsdl.html" },
+		],
+		relatedSlugs: ["xsd", "wsdl", "soap-fault"],
+	},
+	{
+		slug: "soap-headers-and-auth",
+		title: "SOAP Headers and Auth",
+		summary:
+			"Keep SOAP auth and transaction metadata in the header contract the carrier actually processes.",
+		body: "SOAP header structure is part of the carrier contract. Auth tokens, UsernameToken blocks, API credentials, and transaction identifiers often belong in specific namespaces and element positions that the carrier stack inspects before it touches the business payload. If those fields drift into the body or use the wrong namespace, the XML can remain well formed while authentication still fails.\n\nKeep one shared header builder, treat correlation IDs as first-class header data, and test header output explicitly. Header bugs are operational bugs because they break auth, traceability, and support workflows at the same time.",
+		sources: [
+			{
+				label: "OASIS WS-Security SOAP Message Security 1.1.1",
+				url: "http://docs.oasis-open.org/wss-m/wss/v1.1.1/os/wss-SOAPMessageSecurity-v1.1.1-os.html",
+			},
+			{
+				label: "W3C SOAP 1.2 Specification",
+				url: "https://www.w3.org/TR/soap12/",
+			},
+		],
+		relatedSlugs: ["soap-envelope", "correlation-id", "oauth-token-lifecycle"],
+	},
+	{
+		slug: "contract-testing",
+		title: "Contract Testing",
+		summary:
+			"Use contract-aware tests to prove your generated SOAP client still matches the carrier's live expectations.",
+		body: "SOAP contract testing sits between unit tests and live incident response. It proves that your generated client, mapping layer, and sample payloads still align with the carrier's current WSDL, XSD, and header expectations. Safe probes, golden-request validation, and generated-client smoke tests catch drift before the next scheduled batch rediscovers it in production.\n\nThe important point is scope: contract tests verify the external boundary. They are not just another copy of internal unit tests, and they are not a replacement for canary traffic when the carrier announces a sunset or schema refresh.",
+		sources: [
+			{ label: "W3C WSDL 1.1", url: "https://www.w3.org/TR/wsdl.html" },
+			{ label: "SoapUI Documentation", url: "https://www.soapui.org/docs/" },
+		],
+		relatedSlugs: [
+			"wsdl-diff-monitoring",
+			"schema-validation",
+			"health-checks",
+		],
+	},
+	{
+		slug: "wsdl-diff-monitoring",
+		title: "WSDL Diff Monitoring",
+		summary:
+			"Track WSDL and schema changes as operational events so regenerated SOAP clients never surprise production.",
+		body: "WSDL monitoring is contract observability. Capture a checksum or canonical diff of the live WSDL and any imported schemas, compare it with the version your client was generated from, and alert when the contract changes outside your planned deployment flow. That tells you whether a sudden SOAP incident is likely to be carrier drift rather than a local regression.\n\nDiff monitoring matters most around maintenance windows, endpoint migrations, and sunset deadlines. Pair it with generated-client review and safe contract tests so one changed element name does not silently break the next scheduled job.",
+		sources: [
+			{ label: "W3C WSDL 1.1", url: "https://www.w3.org/TR/wsdl.html" },
+			{
+				label: "W3C XML Schema Primer",
+				url: "https://www.w3.org/TR/xmlschema-0/",
+			},
+		],
+		relatedSlugs: ["wsdl", "contract-testing", "schema-validation"],
+	},
+	{
 		slug: "sandbox-vs-production",
 		title: "Sandbox vs Production",
 		summary:

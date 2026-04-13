@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.5"
+  release: "1.1.6"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -71,6 +71,8 @@ roadmap:
           status: in-progress
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/9"
+          progress_log:
+            - note: "Completed issue #9 Wave 3: added 4 new SOAP lessons, reached 20 canonical drill families and 15 canonical scenario families, expanded the SOAP-supporting wiki and directory entries, and validated the checkpoint with pnpm format, pnpm typecheck, pnpm test, pnpm test:checkpoint, pnpm lint, and pnpm build."
       remaining_deliverables:
         - "[I5D1] Implement minimum viable randomization for MCQ answer order so the correct answer is not fixed in one slot"
         - "[I5D2] Implement minimum viable randomization for lesson drill order"
@@ -92,6 +94,7 @@ roadmap:
         - note: "Started issue #9 Phase 0 documentation sync: updated the issue-9 local plan and issue-5 joint plan, moved issue #9 to in-progress, and created follow-on issues #15 (deep wiki expansion) and #16 (EDI product and subdomain strategy) so the active migration scope stays focused and resumable."
         - note: "Completed issue #9 Wave 1: moved the issue-8 family definitions into canonical family and catalog modules, migrated all 8 current lessons onto canonical lesson definitions, regrouped the current lesson drills into 16 canonical drill families and the current incidents into 5 canonical scenario families, added legacy-to-canonical local progress remapping for drill/scenario IDs, switched lesson navigation surfaces to the runtime catalog, and validated with pnpm typecheck, pnpm test, pnpm lint, and pnpm build."
         - note: "Completed issue #9 Wave 2 locally on codex/issue-9-migration after pushing the Wave 1 checkpoint: added the 6 new REST lessons, expanded the migration to 19 canonical drill families and 10 canonical scenario families, added the targeted REST-supporting wiki and directory entries, fixed arena-card deduplication for legacy scenario IDs, and validated with pnpm format, pnpm typecheck, pnpm test, pnpm lint, and pnpm build."
+        - note: "Completed issue #9 Wave 3 on codex/issue-9-migration: added the 4 new SOAP lessons, finished the 20-family drill taxonomy, expanded the arena to 15 canonical scenario families with 5 new SOAP-heavy incidents, extended the SOAP support wiki/directory surfaces, and validated with pnpm format, pnpm typecheck, pnpm test, pnpm test:checkpoint, pnpm lint, and pnpm build."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
