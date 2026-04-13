@@ -1,5 +1,5 @@
 /**
- * Lesson Content — 8 lessons (1 intro, 4 REST, 3 SOAP)
+ * Lesson Content — authored lesson source definitions for the canonical catalog
  */
 
 import type { Lesson } from "./types";
@@ -457,6 +457,56 @@ export const lessons: Lesson[] = [
 			},
 		],
 		drillIds: ["soap7-mcq-1", "soap7-cloze-1"],
+	},
+	{
+		slug: "cross-track-1-sandbox-vs-production-behavior",
+		title: "Sandbox vs Production Behavior",
+		track: "cross-track",
+		order: 18,
+		summary:
+			"Compare sandbox and production behavior without assuming the quieter environment proves production readiness.",
+		sections: [
+			{
+				heading: "A Passing Sandbox Test Is Not a Production Guarantee",
+				body: "Carrier sandboxes often validate less data, expose different accounts, lag contract updates, or omit rate-limit and entitlement behavior that exists in production. Treat sandbox success as a useful preflight, not as proof that the production integration is safe to trust blindly.",
+			},
+			{
+				heading: "Environment Drift Is Usually Multi-Dimensional",
+				body: "The differences are rarely just endpoint URLs. Credentials, enabled products, account entitlements, schema versions, and operational policies can all drift across environments at the same time. If you only compare payload bodies, you miss the environment context that explains why the same call succeeds in one place and fails in another.",
+				carrierReality:
+					"A carrier may expose the new WSDL in production before sandbox, or enable a shipping product for one production account but not the sandbox equivalent. The request shape can look identical while the environment contract is not.",
+			},
+			{
+				heading: "Runbooks Need Environment-Specific Evidence",
+				body: "A strong runbook captures environment-specific correlation IDs, contract versions, credentials in use, and the exact probe that passed or failed. That evidence is what turns 'works in sandbox' from an argument into a traceable fact that helps production debugging instead of distracting from it.",
+			},
+		],
+		drillIds: ["rest10-mcq-1", "rest10-mcq-2"],
+	},
+	{
+		slug: "cross-track-2-carrier-capability-matrix-integration-architecture",
+		title: "Carrier Capability Matrix & Integration Architecture",
+		track: "cross-track",
+		order: 19,
+		summary:
+			"Design integration boundaries around carrier capabilities instead of assuming every provider supports the same operations, protocols, and recovery guarantees.",
+		sections: [
+			{
+				heading: "Every Carrier Surface Has Different Capabilities",
+				body: "Some carriers expose idempotent write keys, some require SOAP headers for auth, some push tracking webhooks, and some still force polling or batch manifests. A capability matrix makes those differences explicit so your architecture reflects the real contract instead of a happy-path abstraction.",
+			},
+			{
+				heading: "Normalize the Workflow, Not the Raw API Shape",
+				body: "The right adapter boundary preserves one internal model for capabilities like create shipment, void label, fetch tracking, auth refresh, and evidence logging while still respecting protocol-specific details underneath. When teams normalize raw payloads too early, they either hide critical edge cases or leak carrier quirks everywhere else in the codebase.",
+				carrierReality:
+					"One carrier might support async webhook delivery and native idempotency while another only offers SOAP polling plus manual deduplication. If your internal architecture assumes both are equivalent writes, production failures become much harder to classify and recover.",
+			},
+			{
+				heading: "Capability Gaps Should Influence Runbooks and Roadmaps",
+				body: "A capability matrix is not a one-time design artifact. It should inform onboarding checklists, rollout plans, support expectations, and the sequence in which you add premium or enterprise features later. The carriers with the weakest guarantees deserve the strongest operational guardrails in your architecture.",
+			},
+		],
+		drillIds: ["rest1-mcq-1", "soap2-mcq-1"],
 	},
 ];
 

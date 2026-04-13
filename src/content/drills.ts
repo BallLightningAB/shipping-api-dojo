@@ -317,6 +317,36 @@ X-Correlation-ID: <uuid>`,
 			"WSDL is the complete service contract: services (endpoints), ports (bindings), operations (methods), messages (shapes), and types (XSD schemas).",
 	},
 	{
+		id: "soap2-mcq-3",
+		type: "mcq",
+		question:
+			"Why should a SOAP client treat the WSDL as the contract source instead of copying one sample XML request from documentation?",
+		options: [
+			"Because the WSDL captures operations, bindings, and types that a single sample request does not cover",
+			"Because WSDL files automatically generate production credentials",
+			"Because carriers reject any SOAP request not pasted directly from their docs",
+			"Because the WSDL is only needed for local development and not for production integrations",
+		],
+		correctIndex: 0,
+		explanation:
+			"A sample request is only one illustration. The WSDL defines the actual contract surface: operations, bindings, messages, and types that your generated client and validation logic should follow.",
+	},
+	{
+		id: "soap2-mcq-4",
+		type: "mcq",
+		question:
+			"Which WSDL detail most directly tells you how a SOAP operation is exposed on the wire?",
+		options: [
+			"The binding and port definitions that connect an operation to a protocol and endpoint",
+			"The carrier support email address",
+			"The HTTP cache headers returned by the last response",
+			"The XML comments at the top of the file",
+		],
+		correctIndex: 0,
+		explanation:
+			"The WSDL binding and port sections tell you how an operation is actually exposed, including the protocol details and endpoint association that your client must call correctly.",
+	},
+	{
 		id: "soap2-mcq-2",
 		type: "mcq",
 		question: "A carrier updates their WSDL. What should you do?",

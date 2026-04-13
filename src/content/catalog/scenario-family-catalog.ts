@@ -316,4 +316,114 @@ export const scenarioFamilyCatalog: ScenarioFamilyCatalogEntry[] = [
 			],
 		],
 	},
+	{
+		id: "sandbox-works-but-production-rejects-the-request",
+		sourceScenarioId: "sandbox-works-but-production-rejects-the-request",
+		title: "Sandbox Works but Production Rejects the Request",
+		summary:
+			"The same integration path passes in sandbox but fails in production because the environments do not actually share one contract.",
+		concept:
+			"Environment drift, production-readiness evidence, and controlled rollout assumptions",
+		ladderLevel: 3,
+		evidenceOptions: [
+			[
+				"Sandbox accepts the shipment request, but production returns a validation fault for the same order flow.",
+				"The production account recently enabled a new carrier product with stricter required fields.",
+				"Support asks for a production transaction ID that your sandbox probes never emitted.",
+			],
+			[
+				"The production WSDL checksum differs from the one sandbox still serves.",
+				"Sandbox credentials belong to a different account tier than the production tenant.",
+				"Operations confirms only live traffic is affected; replaying the same request in sandbox still passes.",
+			],
+		],
+	},
+	{
+		id: "pagination-cursor-lost-mid-sync",
+		sourceScenarioId: "pagination-cursor-lost-mid-sync",
+		title: "Pagination Cursor Lost Mid-Sync",
+		summary:
+			"A carrier sync lost its cursor state partway through a moving dataset and now records are missing or duplicated.",
+		concept:
+			"Cursor durability, sync resumability, and evidence-driven reconciliation on changing result sets",
+		ladderLevel: 2,
+		evidenceOptions: [
+			[
+				"The sync restarted after a worker crash and resumed from an older cursor snapshot.",
+				"Downstream reports show missing tracking updates for only one time window.",
+				"Carrier responses still expose a valid next cursor, but your last durable checkpoint is stale.",
+			],
+			[
+				"Two sync workers processed overlapping pages after a retry storm.",
+				"The carrier dataset changed while the backfill was still running.",
+				"Your metrics show duplicate page fetches but an incomplete internal reconciliation count.",
+			],
+		],
+	},
+	{
+		id: "bulk-shipment-job-restarts-mid-run",
+		sourceScenarioId: "bulk-shipment-job-restarts-mid-run",
+		title: "Bulk Shipment Job Restarts Mid-Run",
+		summary:
+			"A batch shipment job restarted in the middle of a partial run and now risks replaying writes without item-level checkpoints.",
+		concept:
+			"Bulk job resumability, idempotent checkpoints, and partial-run recovery",
+		ladderLevel: 3,
+		evidenceOptions: [
+			[
+				"A worker restart occurred after 120 of 300 parcel writes completed.",
+				"Some labels already exist at the carrier, but the batch ledger only marks the overall job as 'processing'.",
+				"The queue is about to replay the full job payload from the first item.",
+			],
+			[
+				"The batch controller stores one status row for the whole job and no per-item completion markers.",
+				"Operations can see duplicate candidate labels for parcels processed just before the restart.",
+				"A retry window is open now, but voiding duplicates later would create extra manual cleanup.",
+			],
+		],
+	},
+	{
+		id: "dead-letter-queue-triage-after-permanent-failures",
+		sourceScenarioId: "dead-letter-queue-triage-after-permanent-failures",
+		title: "Dead-Letter Queue Triage After Permanent Failures",
+		summary:
+			"Permanent carrier failures have accumulated in the DLQ and now need structured triage instead of blind replay.",
+		concept:
+			"Permanent-failure classification, DLQ evidence quality, and operational replay discipline",
+		ladderLevel: 3,
+		evidenceOptions: [
+			[
+				"DLQ entries cluster around 422 address-validation failures for one carrier product.",
+				"The messages preserve the request fingerprint and carrier field-level errors.",
+				"Operations wants to replay the queue immediately to clear the alert volume.",
+			],
+			[
+				"Some entries look retryable, but most contain stable validation faults that already exhausted safe retries.",
+				"The DLQ alert does not separate permanent failures from transient outage leftovers.",
+				"The runbook is unclear about when to replay versus when to escalate to manual correction.",
+			],
+		],
+	},
+	{
+		id: "carrier-created-the-label-but-internal-save-failed",
+		sourceScenarioId: "carrier-created-the-label-but-internal-save-failed",
+		title: "Carrier Created the Label but Internal Save Failed",
+		summary:
+			"The external label exists and is billable, but your internal workflow lost the write before persistence completed.",
+		concept:
+			"Split-brain shipment recovery, compensation boundaries, and replay keyed to one logical write",
+		ladderLevel: 4,
+		evidenceOptions: [
+			[
+				"The carrier response includes a tracking number and label artifact, but the internal transaction rolled back.",
+				"A retry worker is scheduled to resend the create request within minutes.",
+				"Support can confirm one live label exists for the client reference at the carrier.",
+			],
+			[
+				"Billing already reflects the external label, but no internal shipment record was persisted.",
+				"The queue only knows the original operation ID and last error as 'database timeout'.",
+				"Operations needs a safe answer now: replay the save, void the label, or hold the job for manual recovery.",
+			],
+		],
+	},
 ];

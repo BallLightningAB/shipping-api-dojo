@@ -1152,6 +1152,419 @@ export const scenarios: Scenario[] = [
 			},
 		],
 	},
+	{
+		id: "sandbox-works-but-production-rejects-the-request",
+		title: "Sandbox Works but Production Rejects the Request",
+		summary:
+			"The same request path still passes in sandbox, but production rejects it because the environments no longer behave the same way.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "The shipment request still passes in sandbox, but production now fails for the same flow. What is the safest first response?",
+				choices: [
+					{
+						label:
+							"Compare production and sandbox evidence side by side: credentials, contract version, enabled products, and correlation data",
+						nextStepId: "diff-env",
+						feedback:
+							"Correct — treat this as environment drift until evidence proves otherwise.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Promote the sandbox request body directly into production because it already passed there",
+						nextStepId: null,
+						feedback:
+							"A passing sandbox body does not prove the production environment shares the same rules or contract.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Ignore production for now and keep validating only in sandbox until the carrier catches up",
+						nextStepId: null,
+						feedback:
+							"Production is the live contract. Avoiding it only delays the real investigation.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "diff-env",
+				text: "You find that production uses a different WSDL version and a stricter product entitlement than sandbox. What should you do next?",
+				choices: [
+					{
+						label:
+							"Update the production-bound integration path for the current contract, then revalidate with production-safe probes before reopening writes",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — repair against the live environment instead of assuming sandbox parity.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Clone the sandbox credentials into production so both environments match exactly",
+						nextStepId: null,
+						feedback:
+							"Credential cloning is not a realistic or safe answer to environment-specific contract drift.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "What longer-term guardrail best reduces this class of incident?",
+				choices: [
+					{
+						label:
+							"Track production and sandbox contract or entitlement drift explicitly and keep environment-specific probes in the rollout checklist",
+						nextStepId: null,
+						feedback:
+							"Correct — environment-specific evidence should be part of the rollout discipline, not an ad hoc debugging step.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Rely on sandbox as the final source of truth because production should eventually converge",
+						nextStepId: null,
+						feedback:
+							"That assumption is exactly what caused the outage to persist.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "pagination-cursor-lost-mid-sync",
+		title: "Pagination Cursor Lost Mid-Sync",
+		summary:
+			"A carrier backfill lost cursor state halfway through the sync and now downstream records are missing or duplicated.",
+		difficulty: "intermediate",
+		steps: [
+			{
+				id: "start",
+				text: "A tracking backfill crashed mid-run. When it resumed, some records duplicated and others disappeared. What is the best first move?",
+				choices: [
+					{
+						label:
+							"Inspect the last durable cursor checkpoint and compare it with the replayed pages before resuming the sync",
+						nextStepId: "checkpoint",
+						feedback:
+							"Correct — establish where the cursor state diverged before you resume a moving dataset.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Restart the whole sync from page 1 every time a worker crashes",
+						nextStepId: null,
+						feedback:
+							"That increases duplicate risk and makes reconciliation harder on large moving datasets.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Ignore duplicates because the latest event will win eventually",
+						nextStepId: null,
+						feedback:
+							"Missing records and duplicate processing both matter in sync flows. You need deterministic recovery.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "checkpoint",
+				text: "You confirm the resumed worker used an older cursor snapshot while the dataset kept changing. What is the safest repair?",
+				choices: [
+					{
+						label:
+							"Reconcile from the last trustworthy checkpoint, reprocess the affected window idempotently, and persist the new cursor only after the page commits",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — cursor durability and idempotent replay are what turn backfills into resumable workflows.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Disable pagination and fetch the entire dataset in one request next time",
+						nextStepId: null,
+						feedback:
+							"Large carrier datasets rarely support or tolerate that approach. Cursor discipline is the right fix.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "What permanent hardening belongs in the sync design?",
+				choices: [
+					{
+						label:
+							"Durable cursor checkpoints, page-level idempotency, and reconciliation metrics that expose drift before customers see it",
+						nextStepId: null,
+						feedback:
+							"Correct — resume state and reconciliation visibility are the main controls for cursor-based sync correctness.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"One giant in-memory cursor object so the sync can restart faster on the same node",
+						nextStepId: null,
+						feedback:
+							"In-memory checkpoints vanish with the worker and do not solve replay correctness.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "bulk-shipment-job-restarts-mid-run",
+		title: "Bulk Shipment Job Restarts Mid-Run",
+		summary:
+			"A bulk shipment job restarted after partial success and now risks replaying writes without item-level checkpoints.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "A batch worker crashed after creating some of the labels in a 300-item job. The queue is about to replay the full batch from the beginning. What do you do first?",
+				choices: [
+					{
+						label:
+							"Inspect per-item completion state and stop the replay until you know which writes already succeeded",
+						nextStepId: "checkpoints",
+						feedback:
+							"Correct — a bulk restart is a partial-success problem first, not just a queue retry.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Replay the entire batch immediately so the queue catches up before operations notices",
+						nextStepId: null,
+						feedback:
+							"That can create duplicate labels for items that already succeeded before the crash.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Mark the job as failed permanently and let support rebuild the whole batch manually",
+						nextStepId: null,
+						feedback:
+							"You still need evidence about which items succeeded before choosing manual recovery.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "checkpoints",
+				text: "You discover the job stores one global status row but no per-item checkpoints. What is the safest immediate recovery?",
+				choices: [
+					{
+						label:
+							"Reconstruct item-level success from carrier evidence and replay only the unresolved items with the original operation keys",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — restore item-level state and keep replays keyed to the original logical writes.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Split the batch into smaller jobs only after replaying the original one unchanged",
+						nextStepId: null,
+						feedback:
+							"Replaying unchanged is still unsafe if you do not know which items already succeeded.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "What structural fix best prevents the same restart failure later?",
+				choices: [
+					{
+						label:
+							"Add durable per-item checkpoints and resume the batch from item-level state rather than one global job flag",
+						nextStepId: null,
+						feedback:
+							"Correct — bulk resumability depends on per-item state, not on one all-or-nothing batch marker.",
+						isCorrect: true,
+					},
+					{
+						label: "Increase the worker timeout so restarts happen less often",
+						nextStepId: null,
+						feedback:
+							"Longer runtimes do not solve the missing checkpoint model.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "dead-letter-queue-triage-after-permanent-failures",
+		title: "Dead-Letter Queue Triage After Permanent Failures",
+		summary:
+			"Permanent carrier failures have piled up in the DLQ and now need evidence-based triage instead of blind replay.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "A DLQ alert fires with hundreds of carrier failures. Most entries show 422-style validation errors, but operations wants to replay everything to clear the queue. What is the correct first response?",
+				choices: [
+					{
+						label:
+							"Classify the entries into permanent versus retryable groups using the stored request fingerprint and carrier error detail",
+						nextStepId: "triage",
+						feedback:
+							"Correct — replay is only safe after classification. DLQ entries are an evidence problem first.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Replay the whole DLQ immediately because the primary goal is lowering alert volume",
+						nextStepId: null,
+						feedback:
+							"That would recreate the same permanent failures and erase the chance for targeted triage.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Delete the DLQ messages because permanent failures should never be retried",
+						nextStepId: null,
+						feedback:
+							"You still need the evidence to fix root causes and decide which records need manual correction.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "triage",
+				text: "You confirm that most entries are permanent validation failures for one carrier product, while a minority are transient leftovers. What is the safest next step?",
+				choices: [
+					{
+						label:
+							"Replay only the transient subset and route the permanent failures into a manual-fix workflow with field-level evidence attached",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — classify, replay selectively, and keep the permanent failures actionable for humans.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Normalize every entry into one generic queue error so support has fewer categories to learn",
+						nextStepId: null,
+						feedback:
+							"Hiding the distinctions makes the DLQ harder to act on, not easier.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "What follow-up change makes the DLQ more useful next time?",
+				choices: [
+					{
+						label:
+							"Preserve request fingerprints, carrier error detail, and classification hints in every DLQ message and runbook",
+						nextStepId: null,
+						feedback:
+							"Correct — a DLQ is only useful if the next action is obvious from the stored evidence.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Keep only the raw payload body because the rest of the metadata is operational noise",
+						nextStepId: null,
+						feedback:
+							"Without classification context and request identity, replay and manual correction become guesswork.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "carrier-created-the-label-but-internal-save-failed",
+		title: "Carrier Created the Label but Internal Save Failed",
+		summary:
+			"The external label exists, but the internal workflow lost the write before persistence completed.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "The carrier response includes a valid tracking number and label artifact, but your database write timed out before the shipment record committed. A retry worker is queued. What is the safest first move?",
+				choices: [
+					{
+						label:
+							"Query by the original client reference, confirm whether the external label exists, and block blind retries until the state is resolved",
+						nextStepId: "resolve-state",
+						feedback:
+							"Correct — treat this as a split-brain write and resolve the external state before replaying anything.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Let the retry worker create a fresh label so the internal save has another chance",
+						nextStepId: null,
+						feedback:
+							"That risks duplicating the external artifact and charges.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Delete the failed internal job and assume the carrier will eventually notify you by webhook",
+						nextStepId: null,
+						feedback:
+							"You already have enough evidence to act. Passive waiting just extends the split-brain state.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "resolve-state",
+				text: "You confirm the label exists at the carrier and is billable. What is the correct recovery path?",
+				choices: [
+					{
+						label:
+							"Replay only the internal persistence path or run explicit compensation keyed to the original operation ID",
+						nextStepId: "prevention",
+						feedback:
+							"Correct — reuse the original logical operation so recovery does not create a second label.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Create a second label and void the first one later if support complains",
+						nextStepId: null,
+						feedback: "That makes the incident bigger before it gets smaller.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "prevention",
+				text: "What permanent fix best reduces the risk of this split-brain failure?",
+				choices: [
+					{
+						label:
+							"Use one durable operation key, persist external success evidence, and make replay paths recover the original write instead of issuing a new one",
+						nextStepId: null,
+						feedback:
+							"Correct — the workflow needs one authoritative operation identity across external and internal persistence.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Shorten the database timeout and keep the rest of the workflow unchanged",
+						nextStepId: null,
+						feedback:
+							"Timeout tuning alone does not fix split-brain recovery semantics.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
 ];
 
 export function getScenarioById(id: string): Scenario | undefined {

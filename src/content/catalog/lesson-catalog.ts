@@ -205,4 +205,30 @@ export const lessonCatalog: LessonCatalogEntry[] = [
 			"incident-evidence-logging",
 		],
 	},
+	{
+		id: "lesson-cross-track-sandbox-production",
+		slug: "cross-track-1-sandbox-vs-production-behavior",
+		objectives: [
+			"Treat sandbox success as one environment signal instead of proof that production is ready.",
+			"Compare contract, credential, and entitlement differences across environments before escalating.",
+			"Collect environment-specific evidence that makes sandbox-versus-production drift debuggable.",
+		],
+		drillFamilyIds: [
+			"rest-sandbox-production-drift",
+			"detect-breaking-carrier-contract-changes",
+		],
+	},
+	{
+		id: "lesson-cross-track-capability-matrix",
+		slug: "cross-track-2-carrier-capability-matrix-integration-architecture",
+		objectives: [
+			"Model carrier integrations around explicit capability differences instead of one generic happy-path abstraction.",
+			"Choose adapter boundaries that preserve protocol-specific guarantees and limitations where they matter.",
+			"Use a capability matrix to guide implementation, operations, and escalation design across carriers.",
+		],
+		drillFamilyIds: [
+			"rest-http-method-classification",
+			"soap-wsdl-contract-reading",
+		],
+	},
 ];

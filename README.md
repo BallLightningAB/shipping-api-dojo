@@ -8,6 +8,7 @@ The current public build includes:
 
 - **REST lessons** covering semantics, auth, error handling, pagination, and webhooks
 - **SOAP lessons** covering envelopes, namespaces, WSDL/XSD, and faults
+- **Cross-track lessons** covering environment drift and carrier integration architecture
 - **Incident Arena** scenario drills for troubleshooting shipping integration failures
 - **Wiki** reference content for shipping/API concepts
 - **Directory** curated links to specs, tools, and carrier resources
@@ -84,7 +85,7 @@ Install the Playwright browser once per machine with:
 pnpm exec playwright install chromium
 ```
 
-The browser suite is intentionally narrow: it smoke-tests the home page, learning hubs, a representative lesson route, the arena, wiki content, and the directory. Keep broader logic coverage in Vitest and grow the browser suite only when a route-level regression risk justifies it.
+The browser suite is intentionally narrow: it smoke-tests the home page, the learning hubs, a representative lesson route, the arena, wiki content, and the directory. Keep broader logic coverage in Vitest and grow the browser suite only when a route-level regression risk justifies it.
 
 ## Domains
 

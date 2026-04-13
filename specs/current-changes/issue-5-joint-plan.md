@@ -42,8 +42,8 @@ Issue `#5` provides the global instructions and guardrails for the whole web-v2 
 
 - The public product identity is now `Shipping API Dojo`, with `API Dojo` treated as the umbrella brand for future sibling products.
 - Public SEO copy should prefer keyword phrases like `shipping API training`, `carrier APIs`, and `carrier integrations` instead of reviving the old `API Trainer` product label.
-- Issue `#9` is now the active execution issue.
-- Before any issue-9 coding wave, run a documentation-sync pass so GitHub issue `#9`, the issue-9 local plan, and `active-context.yaml` can be used as handoff artifacts if implementation pauses mid-stream.
+- Issue `#9` is complete locally on `codex/issue-9-migration`; the next implementation issue after merge is the higher-value follow-on outline in `#10`.
+- During future implementation issues, keep GitHub, the issue-local plan artifact, and `active-context.yaml` aligned so resumability does not depend on terminal history.
 
 ## Execution Order
 

@@ -1,52 +1,53 @@
 import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { LessonStatus } from "@/components/progress/LessonStatus";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LessonStatus } from "@/components/progress/LessonStatus";
 import { getLessonsByTrackRuntime } from "@/content/runtime";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
-export const Route = createFileRoute("/learn/soap")({
+export const Route = createFileRoute("/learn/cross-track")({
 	head: () => {
-		const title = "SOAP Shipping API Training";
+		const title = "Cross-Track Shipping Integration Training";
 		const description =
-			"Learn SOAP envelopes, XML namespaces, WSDL contracts, and fault handling for legacy shipping and carrier integrations.";
+			"Compare sandbox and production behavior, capability matrices, and architecture decisions across shipping REST and SOAP integrations.";
 
 		return {
 			meta: [
 				...generateMeta({
 					title,
 					description,
-					url: "/learn/soap",
-					image: "/og-soap.png",
+					url: "/learn/cross-track",
+					image: "/og-home.png",
 					imageAlt:
-						"SOAP Track preview with XML envelope structure, WSDL focus, and SOAP fault cues.",
+						"Cross-track hub preview covering environment drift, carrier capability matrices, and integration architecture.",
 					type: "website",
 				}),
 			],
-			links: [generateCanonical("/learn/soap")],
+			links: [generateCanonical("/learn/cross-track")],
 		};
 	},
-	component: SoapTrackPage,
+	component: CrossTrackPage,
 });
 
-function SoapTrackPage() {
-	const soapLessons = getLessonsByTrackRuntime("soap");
+function CrossTrackPage() {
+	const crossTrackLessons = getLessonsByTrackRuntime("cross-track");
 
 	return (
 		<div className="container mx-auto max-w-4xl px-4 py-16">
-			<h1 className="mb-4">SOAP Track</h1>
+			<h1 className="mb-4">Cross-Track Hub</h1>
 			<p className="mb-10 max-w-2xl text-lg text-muted-foreground">
-				Navigate SOAP envelopes, XML namespaces, WSDL contracts, and fault
-				handling for legacy carrier integrations.
+				Compare sandbox and production behavior, capability matrices, and
+				integration architecture patterns that cut across both REST and SOAP
+				carrier work.
 			</p>
 
 			<div className="space-y-4">
-				{soapLessons.map((lesson, i) => (
+				{crossTrackLessons.map((lesson, i) => (
 					<Link
 						key={lesson.slug}
-						to="/lesson/$slug"
 						params={{ slug: lesson.slug }}
+						to="/lesson/$slug"
 					>
 						<Card className="group transition-all duration-200 hover:-translate-y-0.5 hover:border-bl-red/30">
 							<CardHeader className="flex flex-row items-center gap-4">
@@ -73,9 +74,9 @@ function SoapTrackPage() {
 			</div>
 
 			<div className="mt-10">
-				<Button asChild variant="outline" className="gap-2">
-					<Link to="/learn/cross-track">
-						Continue to Cross-Track Hub
+				<Button asChild className="gap-2" variant="outline">
+					<Link to="/arena">
+						Try the Incident Arena
 						<ArrowRight className="h-4 w-4" />
 					</Link>
 				</Button>

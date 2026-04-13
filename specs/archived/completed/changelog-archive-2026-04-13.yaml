@@ -1,0 +1,110 @@
+entries:
+  - date: "2026-03-17"
+    version: "1.0.4"
+    commit: TBD
+    status: in-progress
+    title: "fix(seo): remove duplicate canonical tags from key routes"
+    details: |-
+      Cleaned up canonical link emission after the OG rollout so the root route
+      no longer injects a second canonical tag into child pages.
+
+      - Removed the root-level canonical link from src/routes/__root.tsx
+      - Added the home canonical link directly to src/routes/index.tsx
+      - Verified locally that /, /learn/rest, /learn/soap, and /arena each emit
+        exactly one canonical link
+      - Re-ran lint and production build checks after the SEO fix
+    refs:
+      - "I6D4"
+  - date: "2026-03-17"
+    version: "1.0.3"
+    commit: 99c9fa9
+    status: in-progress
+    title: "feat(og): refresh Shipping API Dojo social preview assets"
+    details: |-
+      Replaced the leftover Ball Lightning social cards with route-specific
+      Shipping API Dojo OG images and wired the affected routes to publish
+      absolute Open Graph and Twitter metadata.
+
+      - Added a reproducible OG image generator at scripts/generate-og-images.mjs
+      - Generated new 1200x630 images for the landing page, REST track,
+        SOAP track, and Incident Arena
+      - Removed the unused Ball Lightning OG leftovers from public/
+      - Updated SEO helpers to emit absolute image URLs plus width, height,
+        type, and alt metadata
+      - Updated the root, REST, SOAP, and arena routes to publish the new
+        route-specific OG/Twitter image tags and canonical links
+      - Captured deployment-time social preview validation steps in
+        specs/current-changes/issue-6-og-images.md
+    refs:
+      - "I6D1, I6D2, I6D3, I6D4"
+  - date: "2026-03-16"
+    version: "1.0.2"
+    commit: 849c193
+    status: in-progress
+    title: "docs(memory-bank): plan issue 5 content expansion roadmap"
+    details: |-
+      Updated the issue #5 research/spec/roadmap direction so the content-expansion
+      work can move into a clearer implementation-planning phase.
+
+      - Updated the issue #5 research paper with a 20-lesson target, 20 drill-family target,
+        minimum-vs-higher randomization split, and a deeper scenario direction
+      - Added auth-backed progress and monetization guidance aligned with Better Auth,
+        Creem, Resend, and the shared Ball Lightning architecture direction
+      - Created GitHub issues #7, #8, and #9 as linked sub-issues of #5 for
+        technical scoping, proof of concept work, and full migration/content expansion
+      - Created GitHub issue #10 for higher-value randomization, review modes,
+        and premium challenge direction as follow-on work
+      - Updated GitHub issue #5 to reflect minimum viable randomization, 20 lessons,
+        20 drill families, and deeper scenarios
+      - Updated active-context.yaml to track the new issue structure and priorities
+      - Bumped release metadata to 1.0.2 in preparation for commit review
+    refs:
+      - "I5D4, I5D5, I5D6, I5D7, I5D8"
+  - date: "2026-02-25"
+    version: "1.0.1"
+    commit: TBD
+    status: planned
+    title: "feat: Add OG images issue to priority queue"
+    details: |-
+      Added new high priority issue for creating OG images to replace Ball Lightning branding
+      with API-Trainer specific visuals for improved social media presence.
+
+      - Created GitHub issue #6: "Create new OG images for Shipping API Dojo site"
+      - Added issue to front of current priority queue in active-context.yaml
+      - Defined 5 deliverables (I6D1-I6D5) for OG image creation and testing
+      - Estimated 2 hours development, 1 hour testing
+      - Bumped version to 1.0.1
+    refs:
+      - "I6D1, I6D2, I6D3, I6D4, I6D5"
+  - date: "2026-02-23"
+    version: "1.0.0"
+    commit: TBD
+    status: in-progress
+    title: "feat: Carrier API-Trainer MVP build"
+    details: |-
+      Full MVP build of the Carrier API-Trainer — an interactive learning tool
+      for carrier REST and SOAP API integration.
+
+      - Repo cleanse: removed all BL boilerplate (services, portfolio, contact, builder-coil, github)
+      - Rebranded to Carrier API-Trainer (package.json, meta, structured data, Header, Footer)
+      - Progress system: Zod schema, isomorphic localStorage storage, TanStack store,
+        debounced writes, cross-tab sync, XP/streak/drill/lesson/scenario actions
+      - Content data layer: 8 lessons (1 intro, 4 REST, 3 SOAP), 20+ drills (MCQ, cloze, builder),
+        5 incident scenarios, 13 wiki entries, 15 directory links — all as TypeScript data files
+      - UI components: LessonReader, McqDrill, ClozeDrill, BuilderDrill, DrillRunner,
+        ScenarioPlayer, WikiArticle, XpBadge, StreakBadge, ContinueBanner, LessonStatus
+      - Routes: /, /learn/rest, /learn/soap, /lesson/$slug, /arena, /wiki, /wiki/$slug,
+        /directory, /settings (with export/import/reset)
+      - SEO: JSON-LD (WebSite + WebApplication + Organization), meta tags, sitemap, robots.txt, manifest
+      - README rewrite with project structure and getting started
+      - Production build passes (pnpm build exit 0)
+      - Fixed TanStack Store crash: replaced custom useProgressStore with proper useStore hook from @tanstack/react-store
+      - Updated all component imports to use useStore(progressStore, selector) pattern
+      - Created comprehensive shipping-api-dojo-pdd.yaml replacing balllightning-pdd.yaml
+      - Updated color scheme: removed red (#DD3A28) in favor of blue (#3B82F6), green (#10B981), yellow (#F59E0B) from logo
+      - Updated theme-color meta tags, CSS variables, and chart colors
+      - About section already in place with 15+ years shipping/logistics experience
+      - All progress widgets, badges, and UI components now use correct TanStack Store API
+      - Fixed TanStack Router export: changed getRouter() function to direct router export to prevent "Cannot set property state" error
+      - Hardened progress hydration/cross-tab sync: validate+merge state, avoid full replacement, clean up listeners
+      - Swapped progress store to @tanstack/store atom API to align with latest router/store runtime

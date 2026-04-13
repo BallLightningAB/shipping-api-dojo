@@ -18,18 +18,25 @@ import {
 	useNavigate,
 } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/lesson/$slug")({
 	validateSearch: z.object({
+		exclude: z.string().optional(),
 		seed: z.coerce.number().int().positive().optional(),
 	}),
 	loaderDeps: ({ search }) => ({
+		exclude: search.exclude,
 		seed: search.seed,
 	}),
 	loader: ({ deps, params }) => {
 		const seed = getRouteSeed(`lesson:${params.slug}`, deps.seed);
-		const lessonRuntime = getLessonRuntimeBySlug(params.slug, seed);
+		const lessonRuntime = getLessonRuntimeBySlug(params.slug, seed, {
+			excludeDrillIds: deps.exclude
+				? deps.exclude.split(",").filter(Boolean)
+				: undefined,
+		});
 		if (!lessonRuntime) {
 			throw new Error(`Lesson not found: ${params.slug}`);
 		}
@@ -60,7 +67,9 @@ export const Route = createFileRoute("/lesson/$slug")({
 
 function LessonPage() {
 	const navigate = useNavigate({ from: "/lesson/$slug" });
-	const { lesson, drills } = Route.useLoaderData();
+	const { lesson, drills, seed } = Route.useLoaderData();
+	const [challengeSeed, setChallengeSeed] = useState(seed);
+	const [challengeDrills, setChallengeDrills] = useState(drills);
 	const lessonCatalog = getLessonCatalog();
 
 	const currentIndex = lessonCatalog.findIndex((l) => l.slug === lesson.slug);
@@ -69,6 +78,16 @@ function LessonPage() {
 		currentIndex < lessonCatalog.length - 1
 			? lessonCatalog[currentIndex + 1]
 			: null;
+	let trackRoute: {
+		to: "/learn/rest" | "/learn/soap" | "/learn/cross-track";
+		label: string;
+	} = { to: "/learn/rest", label: "REST Track" };
+
+	if (lesson.track === "soap") {
+		trackRoute = { to: "/learn/soap", label: "SOAP Track" };
+	} else if (lesson.track === "cross-track") {
+		trackRoute = { to: "/learn/cross-track", label: "Cross-Track Hub" };
+	}
 
 	function handleDrillComplete(drillProgressKey: string, score: number) {
 		completeDrill(getLessonProgressKey(lesson), drillProgressKey, score);
@@ -78,12 +97,31 @@ function LessonPage() {
 		completeLesson(getLessonProgressKey(lesson));
 	}
 
+	useEffect(() => {
+		setChallengeSeed(seed);
+		setChallengeDrills(drills);
+	}, [drills, seed]);
+
 	function handleNewVariantRun() {
+		const nextSeed = makeClientSeed(`lesson:${lesson.slug}`);
+		const rerolled = getLessonRuntimeBySlug(lesson.slug, nextSeed, {
+			excludeDrillIds: challengeDrills.map((drill) => drill.id),
+		});
+		if (!rerolled) {
+			return;
+		}
+
+		setChallengeSeed(rerolled.seed);
+		setChallengeDrills(rerolled.drills);
+
 		navigate({
+			params: { slug: lesson.slug },
 			search: (prev) => ({
 				...prev,
-				seed: makeClientSeed(`lesson:${lesson.slug}`),
+				exclude: challengeDrills.map((drill) => drill.id).join(","),
+				seed: nextSeed,
 			}),
+			to: "/lesson/$slug",
 		});
 	}
 
@@ -95,11 +133,8 @@ function LessonPage() {
 					Home
 				</Link>
 				<span>/</span>
-				<Link
-					className="hover:text-foreground"
-					to={lesson.track === "soap" ? "/learn/soap" : "/learn/rest"}
-				>
-					{lesson.track === "soap" ? "SOAP" : "REST"} Track
+				<Link className="hover:text-foreground" to={trackRoute.to}>
+					{trackRoute.label}
 				</Link>
 				<span>/</span>
 				<span className="text-foreground">{lesson.title}</span>
@@ -117,19 +152,27 @@ function LessonPage() {
 			<LessonReader lesson={lesson} />
 
 			{/* Drills */}
-			{drills.length > 0 && (
+			{challengeDrills.length > 0 && (
 				<section className="mt-16">
 					<div className="mb-6 flex flex-wrap items-center justify-between gap-3">
 						<h2 className="text-2xl">Practice Drills</h2>
-						<Button onClick={handleNewVariantRun} size="sm" variant="outline">
-							New Challenge
-						</Button>
+						<ClientOnly
+							fallback={
+								<Button disabled size="sm" variant="outline">
+									New Challenge
+								</Button>
+							}
+						>
+							<Button onClick={handleNewVariantRun} size="sm" variant="outline">
+								New Challenge
+							</Button>
+						</ClientOnly>
 					</div>
 					<div className="space-y-8">
-						{drills.map((drill) => (
+						{challengeDrills.map((drill) => (
 							<div
 								className="rounded-lg border border-border p-6"
-								key={drill.id}
+								key={`${challengeSeed}:${drill.id}`}
 							>
 								<DrillRunner drill={drill} onComplete={handleDrillComplete} />
 							</div>

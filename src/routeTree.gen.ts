@@ -18,6 +18,7 @@ import { Route as WikiSlugRouteImport } from './routes/wiki/$slug'
 import { Route as LessonSlugRouteImport } from './routes/lesson/$slug'
 import { Route as LearnSoapRouteImport } from './routes/learn/soap'
 import { Route as LearnRestRouteImport } from './routes/learn/rest'
+import { Route as LearnCrossTrackRouteImport } from './routes/learn/cross-track'
 import { Route as ApiWebhooksResendRouteImport } from './routes/api/webhooks/resend'
 import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -67,6 +68,11 @@ const LearnRestRoute = LearnRestRouteImport.update({
   path: '/learn/rest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearnCrossTrackRoute = LearnCrossTrackRouteImport.update({
+  id: '/learn/cross-track',
+  path: '/learn/cross-track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiWebhooksResendRoute = ApiWebhooksResendRouteImport.update({
   id: '/api/webhooks/resend',
   path: '/api/webhooks/resend',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/directory': typeof DirectoryRoute
   '/settings': typeof SettingsRoute
+  '/learn/cross-track': typeof LearnCrossTrackRoute
   '/learn/rest': typeof LearnRestRoute
   '/learn/soap': typeof LearnSoapRoute
   '/lesson/$slug': typeof LessonSlugRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/directory': typeof DirectoryRoute
   '/settings': typeof SettingsRoute
+  '/learn/cross-track': typeof LearnCrossTrackRoute
   '/learn/rest': typeof LearnRestRoute
   '/learn/soap': typeof LearnSoapRoute
   '/lesson/$slug': typeof LessonSlugRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/directory': typeof DirectoryRoute
   '/settings': typeof SettingsRoute
+  '/learn/cross-track': typeof LearnCrossTrackRoute
   '/learn/rest': typeof LearnRestRoute
   '/learn/soap': typeof LearnSoapRoute
   '/lesson/$slug': typeof LessonSlugRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/directory'
     | '/settings'
+    | '/learn/cross-track'
     | '/learn/rest'
     | '/learn/soap'
     | '/lesson/$slug'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/directory'
     | '/settings'
+    | '/learn/cross-track'
     | '/learn/rest'
     | '/learn/soap'
     | '/lesson/$slug'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/'
     | '/directory'
     | '/settings'
+    | '/learn/cross-track'
     | '/learn/rest'
     | '/learn/soap'
     | '/lesson/$slug'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DirectoryRoute: typeof DirectoryRoute
   SettingsRoute: typeof SettingsRoute
+  LearnCrossTrackRoute: typeof LearnCrossTrackRoute
   LearnRestRoute: typeof LearnRestRoute
   LearnSoapRoute: typeof LearnSoapRoute
   LessonSlugRoute: typeof LessonSlugRoute
@@ -251,6 +264,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnRestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn/cross-track': {
+      id: '/learn/cross-track'
+      path: '/learn/cross-track'
+      fullPath: '/learn/cross-track'
+      preLoaderRoute: typeof LearnCrossTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/webhooks/resend': {
       id: '/api/webhooks/resend'
       path: '/api/webhooks/resend'
@@ -279,6 +299,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DirectoryRoute: DirectoryRoute,
   SettingsRoute: SettingsRoute,
+  LearnCrossTrackRoute: LearnCrossTrackRoute,
   LearnRestRoute: LearnRestRoute,
   LearnSoapRoute: LearnSoapRoute,
   LessonSlugRoute: LessonSlugRoute,

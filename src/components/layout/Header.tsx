@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import {
 	BookOpen,
 	FolderOpen,
+	GitBranch,
 	Menu,
 	Settings,
 	Shield,
@@ -21,6 +22,7 @@ import {
 const navLinks = [
 	{ href: "/learn/rest", label: "REST", icon: BookOpen },
 	{ href: "/learn/soap", label: "SOAP", icon: BookOpen },
+	{ href: "/learn/cross-track", label: "Cross-Track", icon: GitBranch },
 	{ href: "/arena", label: "Arena", icon: Swords },
 	{ href: "/wiki", label: "Wiki", icon: Shield },
 	{ href: "/directory", label: "Directory", icon: FolderOpen },

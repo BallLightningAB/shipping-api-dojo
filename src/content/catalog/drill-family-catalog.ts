@@ -120,7 +120,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Treating the WSDL as optional documentation instead of the generated contract source.",
 		difficulty: "beginner",
 		tags: ["soap", "wsdl", "contracts"],
-		legacyDrillIds: ["soap2-mcq-1"],
+		legacyDrillIds: ["soap2-mcq-1", "soap2-mcq-3", "soap2-mcq-4"],
 	},
 	{
 		id: "detect-breaking-carrier-contract-changes",
