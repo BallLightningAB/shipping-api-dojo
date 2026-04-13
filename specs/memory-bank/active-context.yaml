@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.3"
+  release: "1.1.4"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -117,6 +117,27 @@ roadmap:
         - "[I10D4] Outline shareable, non-authoritative certificates and badges, including credential URLs and LinkedIn-compatible manual certification details"
         - "[I10D5] Reserve future AI-only challenge directions as explicit later work, not part of the current implementation"
       progress_log: []
+    - id: browser-smoke-suite
+      issue: "#17"
+      title: "Cost-efficient browser smoke suite for checkpoint validation and future mirror sites"
+      status: done
+      priority: high
+      links:
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/17"
+      deliverables:
+        - "[I17D1] Add a minimal Playwright-based browser smoke suite with a single Chromium project by default"
+        - "[I17D2] Expose easy local scripts for browser smoke runs and headed debugging"
+        - "[I17D3] Cover the current route-level checkpoint surfaces: home, learn hubs, a representative lesson, arena, wiki, and directory"
+        - "[I17D4] Keep the setup cheap enough to carry forward through issue #9 and future mirror sites such as the planned EDI sibling product"
+        - "[I17D5] Document the suite in the README and keep active-context/current-changes aligned with the shipped setup"
+      est:
+        dev_h: 4
+        test_h: 2
+      sub_issues: []
+      remaining_deliverables: []
+      progress_log:
+        - note: "Created GitHub issue #17 to add a low-cost browser smoke suite that complements the existing unit/integration coverage and stays reusable for future mirrored products such as EDI."
+        - note: "Implemented issue #17 with a Chromium-only Playwright smoke suite, easy local scripts, README guidance, and route-level checkpoint coverage for home, learn hubs, a representative Wave 2 lesson, arena, wiki, and directory."
     - id: eu-privacy-launch-compliance
       issue: "#12"
       title: "EU privacy, storage disclosure, and launch compliance"

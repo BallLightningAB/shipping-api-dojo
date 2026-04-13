@@ -1,7 +1,29 @@
 entries:
   - date: "2026-04-13"
-    version: "1.1.3"
+    version: "1.1.4"
     commit: TBD
+    status: completed
+    title: "test(browser-smoke): add issue #17 cost-efficient checkpoint suite"
+    details: |-
+      Added a low-cost browser smoke layer that complements the existing
+      Vitest coverage without turning route-level validation into a heavy
+      end-to-end program.
+
+      - Added Playwright Test with a single Chromium project and a dev-server
+        `webServer` setup so the suite is easy to run locally
+      - Added lightweight browser smoke coverage for the home page, learn hubs,
+        a representative Wave 2 lesson, arena, wiki content, and directory
+      - Added easy scripts for headless, headed, UI, and combined checkpoint
+        test runs
+      - Documented the suite in `README.md` and added a local plan artifact for
+        issue #17 so the setup remains reusable for future mirrored products
+      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
+        `pnpm typecheck`, `pnpm test:checkpoint`, and `pnpm build`
+    refs:
+      - "I17D1, I17D2, I17D3, I17D4, I17D5"
+  - date: "2026-04-13"
+    version: "1.1.3"
+    commit: be9a8ce
     status: in-progress
     title: "feat(content-runtime): complete issue #9 wave 2 REST reliability expansion"
     details: |-
