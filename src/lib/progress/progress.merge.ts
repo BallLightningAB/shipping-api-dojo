@@ -1,6 +1,7 @@
 import {
 	CURRENT_VERSION,
 	type LessonProgress,
+	normalizeProgressData,
 	type ProgressData,
 } from "./progress.schema";
 
@@ -58,20 +59,22 @@ export function mergeProgressSnapshots(
 	serverProgress: ProgressData,
 	localProgress: ProgressData
 ): ProgressData {
+	const normalizedServer = normalizeProgressData(serverProgress);
+	const normalizedLocal = normalizeProgressData(localProgress);
 	const mergedScenarios = new Set([
-		...serverProgress.scenariosCompleted,
-		...localProgress.scenariosCompleted,
+		...normalizedServer.scenariosCompleted,
+		...normalizedLocal.scenariosCompleted,
 	]);
 
 	return {
 		version: CURRENT_VERSION,
-		xp: Math.max(serverProgress.xp, localProgress.xp),
-		streak: Math.max(serverProgress.streak, localProgress.streak),
+		xp: Math.max(normalizedServer.xp, normalizedLocal.xp),
+		streak: Math.max(normalizedServer.streak, normalizedLocal.streak),
 		lastActiveDate: maxIsoDate(
-			serverProgress.lastActiveDate,
-			localProgress.lastActiveDate
+			normalizedServer.lastActiveDate,
+			normalizedLocal.lastActiveDate
 		),
-		lessons: mergeLessons(serverProgress.lessons, localProgress.lessons),
+		lessons: mergeLessons(normalizedServer.lessons, normalizedLocal.lessons),
 		scenariosCompleted: [...mergedScenarios],
 	};
 }

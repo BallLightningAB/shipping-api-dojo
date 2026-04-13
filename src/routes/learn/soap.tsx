@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LessonStatus } from "@/components/progress/LessonStatus";
-import { getLessonsByTrack } from "@/content/lessons";
+import { getLessonsByTrackRuntime } from "@/content/runtime";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/learn/soap")({
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/learn/soap")({
 });
 
 function SoapTrackPage() {
-	const soapLessons = getLessonsByTrack("soap");
+	const soapLessons = getLessonsByTrackRuntime("soap");
 
 	return (
 		<div className="container mx-auto max-w-4xl px-4 py-16">

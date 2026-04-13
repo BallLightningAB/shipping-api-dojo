@@ -1,7 +1,32 @@
 entries:
+  - date: "2026-04-13"
+    version: "1.1.2"
+    commit: TBD
+    status: in-progress
+    title: "feat(content-runtime): complete issue #9 wave 1 canonical migration"
+    details: |-
+      Completed Wave 1 of issue #9 by moving the current curriculum onto
+      canonical family and catalog modules without changing the issue #8 seeded
+      runtime contract.
+
+      - Moved the issue #8 family definitions into dedicated canonical modules
+        under `src/content/families/*` and added supporting catalogs under
+        `src/content/catalog/*`
+      - Migrated all 8 current lessons onto canonical lesson definitions while
+        preserving the seeded runtime behavior and canonical family progress keys
+      - Regrouped the current drills into 16 canonical drill families and the
+        current incident scenarios into 5 canonical scenario families
+      - Added legacy-to-canonical local progress remapping for drill and
+        scenario IDs plus automated coverage for schema parsing and snapshot
+        merging
+      - Switched lesson navigation surfaces to the runtime lesson catalog and
+        revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
+        `pnpm typecheck`, `pnpm test`, and `pnpm build`
+    refs:
+      - "I9D4"
   - date: "2026-04-12"
     version: "1.1.1"
-    commit: TBD
+    commit: c3d5de3
     status: in-progress
     title: "docs(planning): sync issue #9 execution scope and follow-on roadmap"
     details: |-

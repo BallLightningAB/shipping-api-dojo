@@ -5,13 +5,14 @@
 import { Link } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { ArrowRight } from "lucide-react";
+import { getLessonCatalog } from "@/content/runtime";
 import { Button } from "@/components/ui/button";
-import { lessons } from "@/content/lessons";
 import { progressStore } from "@/lib/progress/progress.store";
 
 export function ContinueBanner() {
 	const lessonsProgress = useStore(progressStore, (s) => s.lessons);
 	const xp = useStore(progressStore, (s) => s.xp);
+	const lessons = getLessonCatalog();
 
 	const nextLesson = lessons.find((l) => {
 		const lp = lessonsProgress[l.slug];

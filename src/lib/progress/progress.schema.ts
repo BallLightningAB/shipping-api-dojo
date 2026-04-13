@@ -5,8 +5,12 @@
  */
 
 import { z } from "zod";
+import {
+	remapLegacyDrillProgressKey,
+	remapLegacyScenarioProgressKey,
+} from "../../content/catalog/progress-migration";
 
-const CURRENT_VERSION = 1;
+const CURRENT_VERSION = 2;
 
 const LessonProgressSchema = z.object({
 	completed: z.boolean(),
@@ -35,6 +39,44 @@ export const DEFAULT_PROGRESS: ProgressData = {
 	scenariosCompleted: [],
 };
 
+function normalizeLessons(
+	lessons: ProgressData["lessons"]
+): ProgressData["lessons"] {
+	return Object.fromEntries(
+		Object.entries(lessons).map(([lessonSlug, lessonProgress]) => {
+			const remappedScores = Object.entries(lessonProgress.drillScores).reduce<
+				LessonProgress["drillScores"]
+			>((scores, [drillKey, score]) => {
+				const canonicalKey = remapLegacyDrillProgressKey(drillKey);
+				scores[canonicalKey] = Math.max(scores[canonicalKey] ?? 0, score);
+				return scores;
+			}, {});
+
+			return [
+				lessonSlug,
+				{
+					...lessonProgress,
+					drillScores: remappedScores,
+				},
+			];
+		})
+	);
+}
+
+export function normalizeProgressData(data: ProgressData): ProgressData {
+	return {
+		...data,
+		lessons: normalizeLessons(data.lessons),
+		scenariosCompleted: Array.from(
+			new Set(
+				data.scenariosCompleted.map((scenarioKey) =>
+					remapLegacyScenarioProgressKey(scenarioKey)
+				)
+			)
+		),
+	};
+}
+
 export function parseProgress(raw: unknown): ProgressData {
 	const result = ProgressDataSchema.safeParse(raw);
 	if (result.success) {
@@ -44,10 +86,12 @@ export function parseProgress(raw: unknown): ProgressData {
 }
 
 function migrate(data: ProgressData): ProgressData {
-	if (data.version < CURRENT_VERSION) {
-		return { ...DEFAULT_PROGRESS, ...data, version: CURRENT_VERSION };
-	}
-	return data;
+	const migrated =
+		data.version < CURRENT_VERSION
+			? { ...DEFAULT_PROGRESS, ...data, version: CURRENT_VERSION }
+			: data;
+
+	return normalizeProgressData(migrated);
 }
 
 export { ProgressDataSchema, CURRENT_VERSION };

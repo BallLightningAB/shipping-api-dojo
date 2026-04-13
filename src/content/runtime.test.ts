@@ -26,13 +26,19 @@ describe("content runtime", () => {
 	});
 
 	it("preserves legacy lessons through the same runtime API", () => {
+		const introRuntime = getLessonRuntimeBySlug(
+			"intro-carrier-integrations",
+			101
+		);
 		const runtime = getLessonRuntimeBySlug("rest-2-auth-headers", 101);
 
+		expect(introRuntime).not.toBeNull();
+		expect(introRuntime?.lesson.id).toBe("lesson-intro-carrier-integrations");
 		expect(runtime).not.toBeNull();
-		expect(runtime?.lesson.id).toBeUndefined();
-		expect(runtime?.drills.map((drill) => drill.id)).toEqual([
-			"rest2-mcq-1",
-			"rest2-builder-1",
+		expect(runtime?.lesson.id).toBe("lesson-rest-auth-headers");
+		expect(runtime?.drills.map((drill) => drill.progressKey).sort()).toEqual([
+			"rest-oauth-token-lifecycle",
+			"rest-required-headers-correlation-ids",
 		]);
 	});
 
@@ -72,6 +78,9 @@ describe("content runtime", () => {
 
 	it("returns a mixed lesson catalog with migrated canonical IDs in place", () => {
 		const catalog = getLessonCatalog();
+		const introLesson = catalog.find(
+			(lesson) => lesson.slug === "intro-carrier-integrations"
+		);
 		const restLesson = catalog.find(
 			(lesson) => lesson.slug === "rest-1-http-semantics"
 		);
@@ -79,7 +88,18 @@ describe("content runtime", () => {
 			(lesson) => lesson.slug === "rest-2-auth-headers"
 		);
 
+		expect(introLesson?.id).toBe("lesson-intro-carrier-integrations");
 		expect(restLesson?.id).toBe("lesson-rest-http-semantics");
-		expect(legacyLesson?.id).toBeUndefined();
+		expect(legacyLesson?.id).toBe("lesson-rest-auth-headers");
+		expect(catalog.every((lesson) => Boolean(lesson.id))).toBe(true);
+	});
+
+	it("publishes canonical scenario family ids for every arena card", () => {
+		const cards = getArenaScenarioCards(101);
+
+		expect(
+			cards.some((scenario) => scenario.id === "rate-limiting-storm")
+		).toBe(true);
+		expect(cards.every((scenario) => Boolean(scenario.progressKey))).toBe(true);
 	});
 });

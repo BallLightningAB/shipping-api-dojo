@@ -44,4 +44,42 @@ describe("parseProgress", () => {
 		expect(parsed.version).toBe(CURRENT_VERSION);
 		expect(parsed.xp).toBe(5);
 	});
+
+	it("remaps legacy drill and scenario progress keys to canonical families", () => {
+		const parsed = parseProgress({
+			version: 1,
+			xp: 24,
+			streak: 2,
+			lastActiveDate: "2026-04-11",
+			lessons: {
+				"rest-1-http-semantics": {
+					completed: false,
+					completedAt: null,
+					drillScores: {
+						"rest1-mcq-1": 60,
+					},
+				},
+				"rest-2-auth-headers": {
+					completed: false,
+					completedAt: null,
+					drillScores: {
+						"rest2-builder-1": 90,
+					},
+				},
+			},
+			scenariosCompleted: ["rate-limit-429"],
+		});
+
+		expect(
+			parsed.lessons["rest-1-http-semantics"]?.drillScores[
+				"rest-http-method-classification"
+			]
+		).toBe(60);
+		expect(
+			parsed.lessons["rest-2-auth-headers"]?.drillScores[
+				"rest-required-headers-correlation-ids"
+			]
+		).toBe(90);
+		expect(parsed.scenariosCompleted).toEqual(["rate-limiting-storm"]);
+	});
 });

@@ -4,7 +4,7 @@ Date: 2026-04-12
 Issue: [#9](https://github.com/BallLightningAB/shipping-api-dojo/issues/9)
 Branch: `codex/issue-9-migration`
 Scope: Full migration from the mixed legacy/family runtime to the final 20/20/20 content-family model, plus targeted wiki and directory support required by that curriculum.
-Status: In progress. Phase 0 documentation sync is part of this issue before curriculum implementation resumes.
+Status: In progress. Phase 0 and Wave 1 completed on 2026-04-12. Wave 2 is the next coding slice.
 
 ## Deliverable Mapping
 
@@ -27,6 +27,24 @@ Before coding the curriculum waves:
 - sync GitHub issues `#5`, `#9`, `#10`, `#12`, and `#13` to the current execution state
 - create and document follow-on issues `#15` and `#16`
 - record end-of-wave status updates in GitHub issue `#9`, this file, and `active-context.yaml` so the issue remains resumable if work pauses mid-stream
+
+## Current Wave Status
+
+### Wave 1 completed on 2026-04-12
+
+- moved the issue-8 family definitions into canonical family modules under `src/content/families/*` and added supporting catalogs under `src/content/catalog/*`
+- migrated all 8 current lessons onto canonical lesson definitions while preserving the existing issue-8 family IDs for `rest-1-http-semantics`, `soap-1-envelope-namespaces`, and `timeout-create-shipment`
+- regrouped the current lesson drills into 16 canonical drill families and the current arena incidents into 5 canonical scenario families
+- switched the lesson/track/continue surfaces to the runtime lesson catalog so the canonical lesson IDs now drive navigation and progress lookups
+- implemented local progress remapping from legacy drill and scenario IDs to canonical family IDs, then covered the migration path with progress-schema and merge tests
+- validated the wave with `pnpm typecheck`, `pnpm test`, `pnpm lint`, and `pnpm build`
+
+### Wave 2 next
+
+- add the six new REST lessons
+- expand the REST-heavy drill and scenario families beyond the migrated baseline set
+- add the targeted REST-supporting wiki and directory entries
+- rerun the same validation suite plus route-level/browser checks after the new curriculum content lands
 
 ## Locked Alignment With Issue 8
 

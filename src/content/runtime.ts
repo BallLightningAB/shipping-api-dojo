@@ -8,6 +8,8 @@ import {
 	getDrillFamilyById,
 	getLessonDefinitionBySlug,
 	getScenarioFamilyById,
+	lessonDefinitions,
+	scenarioFamilies,
 } from "./families";
 import { getLessonBySlug, lessons } from "./lessons";
 import { getScenarioById, scenarios } from "./scenarios";
@@ -124,25 +126,27 @@ export function getScenarioProgressKey(scenario: Scenario): string {
 }
 
 export function getArenaScenarioCards(seed: number): Scenario[] {
-	const mixedScenarios = scenarios.map((scenario) => {
-		const family = getScenarioFamilyById(scenario.id);
-		if (!family) {
-			return scenario;
-		}
-
-		return {
-			id: family.id,
-			progressKey: family.id,
-			scenarioFamilyId: family.id,
-			title: family.title,
-			summary: family.summary,
-			difficulty: family.difficulty,
-			steps: scenario.steps,
-		};
-	});
+	const canonicalScenarioIds = new Set(
+		scenarioFamilies.map((family) => family.id)
+	);
+	const canonicalCards = scenarioFamilies.map((family) => ({
+		id: family.id,
+		progressKey: family.id,
+		scenarioFamilyId: family.id,
+		title: family.title,
+		summary: family.summary,
+		difficulty: family.difficulty,
+		steps: [],
+	}));
+	const legacyCards = scenarios
+		.filter((scenario) => !canonicalScenarioIds.has(scenario.id))
+		.map((scenario) => ({
+			...scenario,
+			progressKey: scenario.progressKey ?? scenario.id,
+		}));
 
 	return shuffleDeterministic(
-		mixedScenarios,
+		[...canonicalCards, ...legacyCards],
 		deriveChildSeed(seed, "arena-cards")
 	);
 }
@@ -160,7 +164,19 @@ export function getScenarioRuntimeById(
 }
 
 export function getLessonCatalog(): Lesson[] {
-	return lessons.map((lesson) => adaptFamilyLesson(lesson.slug) ?? lesson);
+	const canonicalLessonSlugs = new Set(
+		lessonDefinitions.map((lesson) => lesson.slug)
+	);
+	const canonicalLessons = lessonDefinitions
+		.map((lesson) => adaptFamilyLesson(lesson.slug))
+		.filter(Boolean) as Lesson[];
+	const legacyLessons = lessons.filter(
+		(lesson) => !canonicalLessonSlugs.has(lesson.slug)
+	);
+
+	return [...canonicalLessons, ...legacyLessons].sort(
+		(left, right) => left.order - right.order
+	);
 }
 
 export function getLessonsByTrackRuntime(track: Track): Lesson[] {
