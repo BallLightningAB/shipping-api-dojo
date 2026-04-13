@@ -1,5 +1,5 @@
 /**
- * Wiki Entries — 12+ reference articles for carrier integration concepts
+ * Wiki Entries — reference articles for carrier integration concepts
  */
 
 import type { WikiEntry } from "./types";
@@ -167,6 +167,133 @@ export const wikiEntries: WikiEntry[] = [
 			},
 		],
 		relatedSlugs: ["retry-strategies", "problem-details", "circuit-breaker"],
+	},
+	{
+		slug: "oauth-token-lifecycle",
+		title: "OAuth Token Lifecycle",
+		summary:
+			"How to cache, refresh, and invalidate carrier access tokens without creating an auth outage.",
+		body: "Carrier OAuth flows are usually simple client-credentials exchanges, but the operational risk is in the lifecycle. Cache the token centrally, refresh with an expiry buffer, and prevent every worker from refreshing at once. A single-flight refresh path plus token-expiry metrics turns auth from a hidden dependency into something you can observe and control.\n\nWhen a token expires unexpectedly, treat the incident as both an auth failure and a traffic problem. Uncoordinated refresh storms can rate-limit the token endpoint and widen the outage.",
+		sources: [
+			{
+				label: "RFC 6749 — OAuth 2.0 Authorization Framework",
+				url: "https://www.rfc-editor.org/rfc/rfc6749",
+			},
+		],
+		relatedSlugs: ["correlation-id", "retry-after-and-backpressure"],
+	},
+	{
+		slug: "retry-after-and-backpressure",
+		title: "Retry-After & Backpressure",
+		summary:
+			"How to translate carrier throttling signals into queue-safe system behavior.",
+		body: "Retry-After is not just a retry timer. It is feedback that your system must slow down now. Honor the carrier's guidance, reduce worker throughput, and propagate backpressure to the code paths that enqueue new work. Without that propagation, the queue becomes the real outage even if the carrier is recovering.\n\nUse proactive throttles such as token buckets for steady-state control, then use exponential backoff only for exceptional failures. Dead-letter queues belong at the end of that flow, not in place of it.",
+		sources: [
+			{
+				label: "RFC 9110 — Retry-After",
+				url: "https://www.rfc-editor.org/rfc/rfc9110#name-retry-after",
+			},
+			{
+				label: "RFC 9331 — RateLimit Header Fields for HTTP",
+				url: "https://www.rfc-editor.org/rfc/rfc9331",
+			},
+		],
+		relatedSlugs: ["retry-strategies", "dead-letter-queues"],
+	},
+	{
+		slug: "webhook-signatures",
+		title: "Webhook Signatures",
+		summary:
+			"Verify webhook authenticity against the raw request body before you trust the event.",
+		body: "Webhook signature verification depends on exact bytes. Capture the raw body before parsing, compute the HMAC or signing payload the carrier specifies, and compare with a constant-time check. If verification happens after middleware rewrites the body, your signature logic is already untrustworthy.\n\nSignature validation only proves the carrier sent the event. It does not solve replays, ordering, or idempotent processing. Those need separate controls.",
+		sources: [
+			{
+				label: "RFC 2104 — HMAC",
+				url: "https://www.rfc-editor.org/rfc/rfc2104",
+			},
+			{
+				label: "Stripe — Resolve Webhook Signature Verification Errors",
+				url: "https://docs.stripe.com/webhooks/signature",
+			},
+		],
+		relatedSlugs: ["webhook-replay-and-ordering", "correlation-id"],
+	},
+	{
+		slug: "webhook-replay-and-ordering",
+		title: "Webhook Replay & Ordering",
+		summary:
+			"Protect webhook consumers against duplicate delivery and out-of-order carrier events.",
+		body: "Replay defense and ordering control are different jobs. Replays are handled with event IDs, deduplication ledgers, and idempotent consumers. Ordering is handled with timestamps, versions, sequence numbers, or a monotonic status projection. One control does not replace the other.\n\nCarrier webhooks are often eventually consistent, so your downstream state machine must tolerate valid status updates arriving late. Preserve the raw timeline for debugging even if your public shipment state stays monotonic.",
+		sources: [
+			{
+				label: "Postmark — How to Handle Duplicate Events in Your Code",
+				url: "https://postmarkapp.com/blog/why-idempotency-is-important",
+			},
+		],
+		relatedSlugs: ["webhook-signatures", "partial-success-and-compensation"],
+	},
+	{
+		slug: "partial-success-and-compensation",
+		title: "Partial Success & Compensation",
+		summary:
+			"Recover safely when the carrier completed part of the workflow and your system did not.",
+		body: "Partial success means the workflow is now distributed. A carrier may create the label while your persistence layer fails, or may accept some parcels in a bulk request and reject others. The fix is not 'retry everything.' The fix is item-level state, one logical operation key, and explicit compensation rules.\n\nCompensation can mean voiding the external artifact, replaying the internal save against the original operation ID, or parking the workflow for manual review. Choose one based on reversibility, billing exposure, and auditability.",
+		sources: [
+			{
+				label: "Azure Architecture Center — Compensating Transaction Pattern",
+				url: "https://learn.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction",
+			},
+		],
+		relatedSlugs: ["idempotency", "dead-letter-queues"],
+	},
+	{
+		slug: "health-checks",
+		title: "Health Checks",
+		summary:
+			"Use health checks and synthetic probes to tell carrier failures apart from your own regressions.",
+		body: "A good health check does more than confirm the process is alive. For carrier integrations, it should separate local health, dependency reachability, credential validity, and critical-path readiness. Lightweight synthetic probes against the safest carrier endpoints can reveal auth or routing failures before customers find them.\n\nDo not overload one endpoint with every possible dependency test. Split liveness, readiness, and deeper diagnostic probes so deploy systems and humans get the right signal.",
+		sources: [
+			{
+				label: "Kubernetes — Liveness, Readiness, and Startup Probes",
+				url: "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+			},
+			{
+				label: "OpenTelemetry Documentation",
+				url: "https://opentelemetry.io/docs/",
+			},
+		],
+		relatedSlugs: ["correlation-id", "sandbox-vs-production"],
+	},
+	{
+		slug: "dead-letter-queues",
+		title: "Dead-Letter Queues",
+		summary:
+			"Route permanently failing carrier work into a queue built for inspection and recovery.",
+		body: "A dead-letter queue is where work goes when the automated path has exhausted its safe retries. That makes it an operations tool, not a bin for forgotten messages. Preserve the request fingerprint, operation key, carrier error detail, and last retry reason so an engineer can tell whether the next action is replay, compensation, or escalation.\n\nIf the DLQ entry does not contain enough evidence to act, the queue is only hiding the outage. Pair it with runbooks and alerts that explain when to replay and when to stop.",
+		sources: [
+			{
+				label: "Amazon SQS Dead-Letter Queues",
+				url: "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+			},
+		],
+		relatedSlugs: [
+			"retry-after-and-backpressure",
+			"partial-success-and-compensation",
+		],
+	},
+	{
+		slug: "sandbox-vs-production",
+		title: "Sandbox vs Production",
+		summary:
+			"Why a carrier integration that passes in sandbox can still fail on the first real shipment.",
+		body: "Carrier sandboxes often drift from production. Credentials, data validation, enabled products, account entitlements, and even the freshness of the API contract can differ. A green sandbox test proves your code can speak to one environment, not that the production account is ready.\n\nCompare environments with explicit evidence: correlation IDs, captured requests, response detail, and contract versions. Runbooks should assume drift is possible until production behavior has been observed directly.",
+		sources: [
+			{
+				label: "Stripe — Testing vs Live Mode",
+				url: "https://docs.stripe.com/testing-use-cases",
+			},
+		],
+		relatedSlugs: ["health-checks", "oauth-token-lifecycle"],
 	},
 	{
 		slug: "xsd",

@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.2"
+  release: "1.1.3"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -91,6 +91,7 @@ roadmap:
         - note: "Completed issue #8: introduced a mixed legacy/family content runtime, migrated the REST and SOAP exemplar lessons plus the timeout scenario family, added deterministic seeded randomization for lesson drills/MCQ options/arena cards, kept progress keyed to canonical family IDs, and validated with typecheck, tests, lint, build, and live dev-server route checks."
         - note: "Started issue #9 Phase 0 documentation sync: updated the issue-9 local plan and issue-5 joint plan, moved issue #9 to in-progress, and created follow-on issues #15 (deep wiki expansion) and #16 (EDI product and subdomain strategy) so the active migration scope stays focused and resumable."
         - note: "Completed issue #9 Wave 1: moved the issue-8 family definitions into canonical family and catalog modules, migrated all 8 current lessons onto canonical lesson definitions, regrouped the current lesson drills into 16 canonical drill families and the current incidents into 5 canonical scenario families, added legacy-to-canonical local progress remapping for drill/scenario IDs, switched lesson navigation surfaces to the runtime catalog, and validated with pnpm typecheck, pnpm test, pnpm lint, and pnpm build."
+        - note: "Completed issue #9 Wave 2 locally on codex/issue-9-migration after pushing the Wave 1 checkpoint: added the 6 new REST lessons, expanded the migration to 19 canonical drill families and 10 canonical scenario families, added the targeted REST-supporting wiki and directory entries, fixed arena-card deduplication for legacy scenario IDs, and validated with pnpm format, pnpm typecheck, pnpm test, pnpm lint, and pnpm build."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

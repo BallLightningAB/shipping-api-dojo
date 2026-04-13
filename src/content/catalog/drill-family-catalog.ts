@@ -83,6 +83,36 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 		legacyDrillIds: ["rest4-mcq-2"],
 	},
 	{
+		id: "rest-rate-limits-backpressure",
+		type: "mcq",
+		concept: "Rate limiting, throttling, and internal backpressure",
+		misconception:
+			"Treating 429 handling as retries only instead of a combined throttle and queue-management problem.",
+		difficulty: "intermediate",
+		tags: ["rest", "rate-limits", "queues"],
+		legacyDrillIds: ["rest7-mcq-1", "rest7-mcq-2"],
+	},
+	{
+		id: "rest-partial-success-compensation",
+		type: "mcq",
+		concept: "Partial-success handling and compensation design",
+		misconception:
+			"Collapsing mixed outcomes into one success flag instead of modeling compensating actions explicitly.",
+		difficulty: "intermediate",
+		tags: ["rest", "bulk", "compensation"],
+		legacyDrillIds: ["rest8-mcq-1", "rest8-mcq-2"],
+	},
+	{
+		id: "rest-sandbox-production-drift",
+		type: "mcq",
+		concept: "Environment drift between carrier sandbox and production",
+		misconception:
+			"Assuming a sandbox pass guarantees production parity across credentials, rules, and data validation.",
+		difficulty: "intermediate",
+		tags: ["rest", "sandbox", "production"],
+		legacyDrillIds: ["rest10-mcq-1", "rest10-mcq-2"],
+	},
+	{
 		id: "soap-wsdl-contract-reading",
 		type: "mcq",
 		concept: "Reading WSDLs as the contract source",

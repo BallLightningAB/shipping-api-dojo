@@ -168,6 +168,96 @@ X-Correlation-ID: <uuid>`,
 		explanation:
 			"Return 200 quickly to prevent the carrier from retrying. Process the event asynchronously. If you take too long, carriers will retry and you'll get duplicates.",
 	},
+	{
+		id: "rest7-mcq-1",
+		type: "mcq",
+		question:
+			"A carrier is returning 429 with Retry-After: 45 during a bulk-label run. What is the best immediate response?",
+		options: [
+			"Retry each failed request in parallel after 45 seconds",
+			"Honor Retry-After, reduce the worker send rate, and let the queue drain under a throttle",
+			"Switch all requests to a different endpoint",
+			"Ignore Retry-After and continue until the carrier hard-blocks the account",
+		],
+		correctIndex: 1,
+		explanation:
+			"Retry-After is a direct traffic-control signal. You need to slow the system down at the worker and queue level, not simply replay the same burst later.",
+	},
+	{
+		id: "rest7-mcq-2",
+		type: "mcq",
+		question:
+			"Which design best prevents a 429 incident from becoming an internal queue outage?",
+		options: [
+			"Unlimited queue growth plus aggressive worker retries",
+			"A token bucket or similar throttle paired with queue-level backpressure and dead-letter handling",
+			"One giant cron job that restarts from the beginning after every failure",
+			"Disabling retries entirely so the workers fail fast",
+		],
+		correctIndex: 1,
+		explanation:
+			"Carrier throttling needs both a send-rate control and queue-level backpressure. Without both, the bottleneck just shifts and the queue keeps growing.",
+	},
+	{
+		id: "rest8-mcq-1",
+		type: "mcq",
+		question:
+			"A bulk shipment API created 8 labels, rejected 2 packages, and returned one overall 200 response. What should your integration do next?",
+		options: [
+			"Mark the entire batch successful because the HTTP status was 200",
+			"Store item-level outcomes, surface the rejected packages, and run compensation or retry only where needed",
+			"Retry the entire batch so every item ends in the same state",
+			"Delete the successful labels because the batch was not fully clean",
+		],
+		correctIndex: 1,
+		explanation:
+			"Partial success is a workflow result, not a transport bug. You need per-item state and selective compensation instead of all-or-nothing handling.",
+	},
+	{
+		id: "rest8-mcq-2",
+		type: "mcq",
+		question:
+			"The carrier created a label, but your internal save failed immediately afterward. Which response is safest?",
+		options: [
+			"Create a second label so the database record has a fresh identifier",
+			"Treat the operation as successful only if both systems committed together",
+			"Use compensation or replay keyed to the original operation ID so you do not create a second carrier artifact",
+			"Drop the job and let support discover it later",
+		],
+		correctIndex: 2,
+		explanation:
+			"When the carrier succeeded but your internal persistence failed, you need compensation or idempotent replay against the original operation. Creating a second label makes the split-brain state worse.",
+	},
+	{
+		id: "rest10-mcq-1",
+		type: "mcq",
+		question:
+			"Your shipment flow passes in sandbox but production rejects the same request body. What is the best first hypothesis?",
+		options: [
+			"The production carrier is definitely down",
+			"Sandbox and production differ in credentials, validation rules, or data requirements even when the endpoint shape matches",
+			"HTTP clients behave differently on weekdays",
+			"The request body must be compressed in production only",
+		],
+		correctIndex: 1,
+		explanation:
+			"Carrier sandboxes often lag production and may skip stricter validation, permissions, or account setup rules. You need environment-specific evidence before assuming an outage.",
+	},
+	{
+		id: "rest10-mcq-2",
+		type: "mcq",
+		question:
+			"Which telemetry pair is most useful when diagnosing sandbox-versus-production drift?",
+		options: [
+			"Browser console logs and CSS source maps",
+			"Correlation IDs plus environment-specific request or response evidence",
+			"Only the final user-facing error string",
+			"A screenshot of the carrier dashboard",
+		],
+		correctIndex: 1,
+		explanation:
+			"You need traceable evidence by environment. Correlation IDs and captured request or response detail let you compare sandbox and production behavior without guessing.",
+	},
 
 	// === SOAP-1 drills ===
 	{

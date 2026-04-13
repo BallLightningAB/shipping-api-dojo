@@ -1,7 +1,32 @@
 entries:
   - date: "2026-04-13"
-    version: "1.1.2"
+    version: "1.1.3"
     commit: TBD
+    status: in-progress
+    title: "feat(content-runtime): complete issue #9 wave 2 REST reliability expansion"
+    details: |-
+      Completed Wave 2 of issue #9 by expanding the REST curriculum, adding
+      new operational incident coverage, and tightening the mixed-runtime
+      transition behavior.
+
+      - Added 6 new REST lessons covering idempotency patterns, timeout
+        taxonomy, rate limits, partial success, webhook safety, and
+        observability/runbooks
+      - Expanded the authored content set to 14 lessons, 19 canonical drill
+        families, and 10 canonical scenario families
+      - Added targeted REST-supporting wiki and directory entries for token
+        lifecycle, backpressure, webhook safety, compensation, health checks,
+        dead-letter queues, and sandbox-versus-production drift
+      - Added 5 new REST-heavy arena incidents and fixed arena-card
+        deduplication so migrated canonical scenarios no longer surface under
+        their legacy IDs
+      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
+        `pnpm typecheck`, `pnpm test`, and `pnpm build`
+    refs:
+      - "I9D1, I9D2, I9D3"
+  - date: "2026-04-13"
+    version: "1.1.2"
+    commit: 55972ca
     status: in-progress
     title: "feat(content-runtime): complete issue #9 wave 1 canonical migration"
     details: |-

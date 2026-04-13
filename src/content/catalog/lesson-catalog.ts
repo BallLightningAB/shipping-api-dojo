@@ -81,4 +81,79 @@ export const lessonCatalog: LessonCatalogEntry[] = [
 			"incident-evidence-logging",
 		],
 	},
+	{
+		id: "lesson-rest-idempotency-keys",
+		slug: "rest-5-idempotency-keys-deduplication",
+		objectives: [
+			"Choose an idempotency strategy when a carrier supports keys natively and when it does not.",
+			"Use client references and lookup-ledger patterns to prevent duplicate writes after ambiguous outcomes.",
+			"Treat deduplication as a product and operations concern, not just a transport detail.",
+		],
+		drillFamilyIds: [
+			"rest-http-method-classification",
+			"rest-timeout-recovery",
+		],
+	},
+	{
+		id: "lesson-rest-timeout-taxonomy",
+		slug: "rest-6-timeout-taxonomy-ambiguous-outcomes",
+		objectives: [
+			"Separate connect, read, upstream, and worker timeouts before you automate retries.",
+			"Treat write timeouts as ambiguous outcomes until evidence resolves them.",
+			"Close the loop with idempotent recovery paths and explicit timeout runbooks.",
+		],
+		drillFamilyIds: ["rest-timeout-recovery", "rest-retry-policy-cloze"],
+	},
+	{
+		id: "lesson-rest-rate-limits",
+		slug: "rest-7-rate-limits-quotas-backpressure",
+		objectives: [
+			"Honor carrier rate-limit signals instead of blindly retrying until the queue melts down.",
+			"Use throttling and backpressure to protect both the carrier and your downstream workers.",
+			"Differentiate burst control, sustained quota management, and dead-letter escalation.",
+		],
+		drillFamilyIds: [
+			"rest-rate-limits-backpressure",
+			"rest-retry-policy-cloze",
+		],
+	},
+	{
+		id: "lesson-rest-partial-success",
+		slug: "rest-8-partial-success-bulk-compensation",
+		objectives: [
+			"Recognize partial-success responses before they poison internal state.",
+			"Choose compensation strategies that preserve idempotency and auditability.",
+			"Treat bulk operations as distributed workflows, not single all-or-nothing calls.",
+		],
+		drillFamilyIds: [
+			"rest-partial-success-compensation",
+			"rest-error-classification",
+		],
+	},
+	{
+		id: "lesson-rest-webhook-signatures",
+		slug: "rest-9-webhook-signatures-replay-ordering",
+		objectives: [
+			"Verify webhook signatures against the raw request body before trusting the event.",
+			"Use event IDs and timestamps to survive replay and out-of-order delivery.",
+			"Keep webhook handlers fast, deterministic, and independently observable.",
+		],
+		drillFamilyIds: [
+			"rest-webhook-receiver-behavior",
+			"incident-evidence-logging",
+		],
+	},
+	{
+		id: "lesson-rest-observability",
+		slug: "rest-10-observability-health-checks-runbooks",
+		objectives: [
+			"Define the minimum telemetry set required to debug carrier incidents quickly.",
+			"Use health checks and synthetic probes to separate carrier outage symptoms from local regressions.",
+			"Turn correlation IDs, traces, and runbooks into repeatable operational tooling.",
+		],
+		drillFamilyIds: [
+			"rest-sandbox-production-drift",
+			"incident-evidence-logging",
+		],
+	},
 ];

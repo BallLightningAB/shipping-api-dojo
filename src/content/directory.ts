@@ -19,6 +19,20 @@ export const directoryEntries: DirectoryEntry[] = [
 		category: "spec",
 	},
 	{
+		title: "RFC 6749 — OAuth 2.0 Authorization Framework",
+		url: "https://www.rfc-editor.org/rfc/rfc6749",
+		description:
+			"Baseline OAuth 2.0 reference for carrier auth flows, token expiry, and refresh behavior.",
+		category: "spec",
+	},
+	{
+		title: "RFC 9331 — RateLimit Header Fields for HTTP",
+		url: "https://www.rfc-editor.org/rfc/rfc9331",
+		description:
+			"Defines standard HTTP rate-limit fields that pair well with Retry-After and backpressure design.",
+		category: "spec",
+	},
+	{
 		title: "W3C SOAP 1.2 Specification",
 		url: "https://www.w3.org/TR/soap12/",
 		description:
@@ -58,6 +72,20 @@ export const directoryEntries: DirectoryEntry[] = [
 		url: "https://httpbin.org/",
 		description:
 			"HTTP request/response testing service. Great for testing retry logic and error handling.",
+		category: "tool",
+	},
+	{
+		title: "OpenTelemetry Documentation",
+		url: "https://opentelemetry.io/docs/",
+		description:
+			"Official observability guidance for traces, metrics, and logs that support carrier incident runbooks.",
+		category: "tool",
+	},
+	{
+		title: "Kubernetes Probe Documentation",
+		url: "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+		description:
+			"Reference for separating liveness, readiness, and deeper dependency checks in production systems.",
 		category: "tool",
 	},
 	{
@@ -107,6 +135,13 @@ export const directoryEntries: DirectoryEntry[] = [
 		url: "https://stripe.com/docs/api/idempotent_requests",
 		description:
 			"Best-in-class example of idempotency key implementation in a production API.",
+		category: "community",
+	},
+	{
+		title: "Stripe — Webhook Signature Verification",
+		url: "https://docs.stripe.com/webhooks/signature",
+		description:
+			"Concrete reference for raw-body signature verification, replay handling, and webhook troubleshooting.",
 		category: "community",
 	},
 ];

@@ -11,6 +11,7 @@ import {
 	lessonDefinitions,
 	scenarioFamilies,
 } from "./families";
+import { remapLegacyScenarioProgressKey } from "./catalog/progress-migration";
 import { getLessonBySlug, lessons } from "./lessons";
 import { getScenarioById, scenarios } from "./scenarios";
 import type { Drill, Lesson, Scenario, Track } from "./types";
@@ -139,7 +140,14 @@ export function getArenaScenarioCards(seed: number): Scenario[] {
 		steps: [],
 	}));
 	const legacyCards = scenarios
-		.filter((scenario) => !canonicalScenarioIds.has(scenario.id))
+		.filter(
+			(scenario) =>
+				!canonicalScenarioIds.has(
+					remapLegacyScenarioProgressKey(
+						scenario.progressKey ?? scenario.scenarioFamilyId ?? scenario.id
+					)
+				)
+		)
 		.map((scenario) => ({
 			...scenario,
 			progressKey: scenario.progressKey ?? scenario.id,

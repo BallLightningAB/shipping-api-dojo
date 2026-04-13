@@ -1,5 +1,5 @@
 /**
- * Incident Arena Scenarios — 5 realistic carrier integration incidents
+ * Incident Arena Scenarios — realistic carrier integration incidents
  */
 
 import type { Scenario } from "./types";
@@ -416,6 +416,328 @@ export const scenarios: Scenario[] = [
 						nextStepId: null,
 						feedback:
 							"Calendar reminders are unreliable. Automated monitoring and health checks are the professional solution.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "auth-token-expires-over-weekend",
+		title: "Auth Token Expires Over Weekend",
+		summary:
+			"Your production token cache served an expired carrier token all weekend and now every worker is failing auth.",
+		difficulty: "intermediate",
+		steps: [
+			{
+				id: "start",
+				text: "Saturday night shipment writes start failing with 401 invalid_token. Refresh logs stopped ten minutes earlier, and every worker is reusing the same cached bearer token. What do you do first?",
+				choices: [
+					{
+						label:
+							"Inspect the shared token cache and force one controlled refresh path before retrying writes",
+						nextStepId: "refresh-path",
+						feedback:
+							"Correct — confirm whether the cache is stale and recover the refresh path in a controlled way before every worker hammers the token endpoint.",
+						isCorrect: true,
+					},
+					{
+						label: "Have every worker request a fresh token immediately",
+						nextStepId: null,
+						feedback:
+							"That turns one auth failure into a refresh storm. Recover the shared lifecycle first.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Retry the same shipment requests until the carrier accepts them",
+						nextStepId: null,
+						feedback:
+							"Retrying with an expired token only adds noise. Fix auth before replaying work.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "refresh-path",
+				text: "You confirm the cache still holds an expired token and the refresh worker died. Which remediation is safest?",
+				choices: [
+					{
+						label:
+							"Invalidate the stale token, run a single-flight refresh, and gate worker retries on the fresh expiry metadata",
+						nextStepId: "system-fix",
+						feedback:
+							"Correct — one refresh path plus expiry-aware retry control restores traffic without creating a second outage.",
+						isCorrect: true,
+					},
+					{
+						label: "Increase the cache TTL so workers stop refreshing so often",
+						nextStepId: null,
+						feedback:
+							"A longer TTL would keep the expired token around even longer. The issue is lifecycle control, not refresh frequency alone.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "system-fix",
+				text: "Traffic is flowing again. What permanent fix best prevents a repeat?",
+				choices: [
+					{
+						label:
+							"Add expiry-buffer refresh logic, refresh-failure alerts, and one shared token lifecycle per carrier credential set",
+						nextStepId: null,
+						feedback:
+							"Correct — token lifecycle needs shared ownership, expiry skew, and telemetry so auth drift shows up before a weekend incident.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Move token refresh into the frontend so users trigger it naturally",
+						nextStepId: null,
+						feedback:
+							"Carrier auth belongs in the backend integration layer, not in a user-driven flow.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "duplicate-webhook-replay",
+		title: "Duplicate Webhook Replay",
+		summary:
+			"The carrier retried the same webhook event repeatedly and your consumer advanced the shipment state more than once.",
+		difficulty: "intermediate",
+		steps: [
+			{
+				id: "start",
+				text: "A tracking webhook timed out once, then the carrier replayed the same event ID 14 times. Your shipment timeline now contains duplicate status notes. What is the correct first response?",
+				choices: [
+					{
+						label:
+							"Verify the signature, look up the event ID in a deduplication ledger, and short-circuit duplicate processing",
+						nextStepId: "consumer-fix",
+						feedback:
+							"Correct — duplicates should be acknowledged as known events, not processed as new business actions.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Process every retry because the carrier would not resend valid events",
+						nextStepId: null,
+						feedback:
+							"Carriers absolutely resend valid events. Your consumer must be idempotent.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Block the carrier IP address until support resolves the incident",
+						nextStepId: null,
+						feedback:
+							"Blocking the source hides the symptom while losing legitimate updates. Fix consumer behavior first.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "consumer-fix",
+				text: "You confirm every retry has the same signed payload. What systemic change is now required?",
+				choices: [
+					{
+						label:
+							"Persist processed event IDs with retention, keep the consumer idempotent, and acknowledge duplicates without side effects",
+						nextStepId: null,
+						feedback:
+							"Correct — signature verification proves authenticity, while the event ledger and idempotent consumer prevent replays from mutating state twice.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Disable webhook retries by returning 500 so the carrier stops trusting your endpoint",
+						nextStepId: null,
+						feedback:
+							"Returning failures increases retries and makes the replay problem worse.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "out-of-order-tracking-events",
+		title: "Out-of-Order Tracking Events",
+		summary:
+			"A later shipment status reached your webhook first, and the public tracking page regressed when older events arrived afterward.",
+		difficulty: "intermediate",
+		steps: [
+			{
+				id: "start",
+				text: "A shipment shows Delivered at 09:01, then Out for Delivery at 09:03 because the carrier published the older event late. What should your consumer trust?",
+				choices: [
+					{
+						label:
+							"Carrier event timestamps or sequence metadata, not arrival order at your webhook",
+						nextStepId: "projection",
+						feedback:
+							"Correct — arrival order is not a reliable source of truth for carrier webhooks.",
+						isCorrect: true,
+					},
+					{
+						label: "Whichever event your queue processed first",
+						nextStepId: null,
+						feedback:
+							"Queue order is an infrastructure detail, not a carrier contract.",
+						isCorrect: false,
+					},
+					{
+						label: "The event with the longest payload body",
+						nextStepId: null,
+						feedback:
+							"Payload size has nothing to do with sequencing or business truth.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "projection",
+				text: "You have both events and their timestamps. How should the public status model behave?",
+				choices: [
+					{
+						label:
+							"Keep a monotonic projection for customer-facing status while preserving the raw event timeline for debugging",
+						nextStepId: null,
+						feedback:
+							"Correct — customers should not see status regressions, but engineers still need the raw timeline to diagnose ordering behavior.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Always overwrite the current status with the newest arriving event",
+						nextStepId: null,
+						feedback:
+							"That would recreate the regression every time an older event arrives late.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "partial-label-generation-downstream-persistence-failure",
+		title: "Partial Label Generation with Downstream Persistence Failure",
+		summary:
+			"The carrier created the label, but your internal write failed before the shipment record was committed.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "The carrier returned a tracking number and label URL, then your database transaction rolled back. A retry worker is about to replay the create-shipment request. What is the safest next step?",
+				choices: [
+					{
+						label:
+							"Search by the original client reference or operation key before issuing any new carrier write",
+						nextStepId: "reconcile",
+						feedback:
+							"Correct — the carrier may already hold the successful artifact, so you need evidence before any replay.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Let the retry worker run immediately so the internal record exists",
+						nextStepId: null,
+						feedback:
+							"That risks creating a second label and billing event for the same shipment.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Assume the carrier result is unusable because your database failed",
+						nextStepId: null,
+						feedback:
+							"The carrier artifact still exists and may need to be reconciled or voided explicitly.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "reconcile",
+				text: "You confirm there is already one label at the carrier for the original operation. What recovery path is safest?",
+				choices: [
+					{
+						label:
+							"Replay only the internal persistence step against the original operation ID, or compensate by voiding the existing label if policy requires it",
+						nextStepId: null,
+						feedback:
+							"Correct — recovery must stay attached to the original operation so you do not create a second external artifact.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Create a second label and mark the first one stale in a comment",
+						nextStepId: null,
+						feedback:
+							"That compounds the split-brain state and increases cost exposure.",
+						isCorrect: false,
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "missing-correlation-id-support-escalation",
+		title: "Missing Correlation ID During Support Escalation",
+		summary:
+			"A live carrier incident needs support escalation, but the request logs never captured a correlation or transaction ID.",
+		difficulty: "advanced",
+		steps: [
+			{
+				id: "start",
+				text: "Carrier support asks for the transaction ID tied to a failed shipment request. Your alert only contains the order number and a generic 422 response. What should you do now?",
+				choices: [
+					{
+						label:
+							"Reconstruct the request from time window, account, and payload evidence while patching the outbound path to enforce correlation IDs immediately",
+						nextStepId: "runbook-fix",
+						feedback:
+							"Correct — you still need enough evidence to work the incident, and you should stop the observability gap from repeating on the next request.",
+						isCorrect: true,
+					},
+					{
+						label:
+							"Tell support you cannot help until the carrier finds it themselves",
+						nextStepId: null,
+						feedback:
+							"That abandons the live incident and leaves the systemic gap untouched.",
+						isCorrect: false,
+					},
+					{
+						label:
+							"Retry the shipment until a new request returns a correlation ID",
+						nextStepId: null,
+						feedback:
+							"Blind retries create more noise and may duplicate the original write.",
+						isCorrect: false,
+					},
+				],
+			},
+			{
+				id: "runbook-fix",
+				text: "The incident is contained. Which long-term fix has the highest leverage?",
+				choices: [
+					{
+						label:
+							"Require correlation IDs on every outbound request, log them in structured events, and add them to support runbooks and alerts",
+						nextStepId: null,
+						feedback:
+							"Correct — correlation discipline is only useful when it is enforced in code, logs, alerts, and escalation docs together.",
+						isCorrect: true,
+					},
+					{
+						label: "Add longer stack traces to the error page",
+						nextStepId: null,
+						feedback:
+							"Longer stack traces do not replace a missing request identifier shared with the carrier.",
 						isCorrect: false,
 					},
 				],

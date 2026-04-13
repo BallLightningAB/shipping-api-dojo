@@ -50,7 +50,7 @@ const lessonDefinitions: LessonDefinition[] = [
 		slug: "soap-1-envelope-namespaces",
 		title: "SOAP Envelope & Namespaces",
 		track: "soap",
-		order: 5,
+		order: 11,
 		summary:
 			"Understand the SOAP envelope structure, XML namespaces, and how to construct valid SOAP requests.",
 		objectives: [

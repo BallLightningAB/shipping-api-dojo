@@ -4,7 +4,7 @@ Date: 2026-04-12
 Issue: [#9](https://github.com/BallLightningAB/shipping-api-dojo/issues/9)
 Branch: `codex/issue-9-migration`
 Scope: Full migration from the mixed legacy/family runtime to the final 20/20/20 content-family model, plus targeted wiki and directory support required by that curriculum.
-Status: In progress. Phase 0 and Wave 1 completed on 2026-04-12. Wave 2 is the next coding slice.
+Status: In progress. Phase 0 and Wave 1 completed on 2026-04-12. Wave 2 completed on 2026-04-13. Wave 3 is the next coding slice.
 
 ## Deliverable Mapping
 
@@ -39,12 +39,20 @@ Before coding the curriculum waves:
 - implemented local progress remapping from legacy drill and scenario IDs to canonical family IDs, then covered the migration path with progress-schema and merge tests
 - validated the wave with `pnpm typecheck`, `pnpm test`, `pnpm lint`, and `pnpm build`
 
-### Wave 2 next
+### Wave 2 completed on 2026-04-13
 
-- add the six new REST lessons
-- expand the REST-heavy drill and scenario families beyond the migrated baseline set
-- add the targeted REST-supporting wiki and directory entries
-- rerun the same validation suite plus route-level/browser checks after the new curriculum content lands
+- added the six new REST lessons so the REST track now covers lesson orders 1 through 10 before the SOAP track begins
+- expanded the REST-heavy curriculum support with 3 additional canonical drill families and 5 additional canonical scenario families, bringing the current migration totals to 14 lessons, 19 drill families, and 10 scenario families
+- added the targeted REST-supporting wiki and directory entries for token lifecycle, backpressure, webhook safety, partial success, health checks, dead-letter queues, and sandbox-versus-production drift
+- fixed arena-card deduplication so migrated canonical scenario families no longer reappear as legacy incident cards under their old IDs
+- validated the wave with `pnpm format`, `pnpm typecheck`, `pnpm test`, `pnpm lint`, and `pnpm build`
+
+### Wave 3 next
+
+- add the four new SOAP lessons
+- expand the SOAP-heavy drill and scenario families
+- add the targeted SOAP-supporting wiki and directory entries
+- rerun the same validation suite after the SOAP curriculum content lands
 
 ## Locked Alignment With Issue 8
 
