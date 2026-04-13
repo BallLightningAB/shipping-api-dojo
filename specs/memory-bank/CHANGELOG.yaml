@@ -1,7 +1,26 @@
 entries:
   - date: "2026-04-13"
-    version: "1.1.4"
+    version: "1.1.5"
     commit: TBD
+    status: in-progress
+    title: "docs(planning): track issue #9 checkpoint progress before wave 3"
+    details: |-
+      Updated the local issue #9 migration plan so the current branch state is
+      visible at a glance before the next implementation wave starts.
+
+      - Added an explicit execution-progress checklist covering Phase 0, Wave 1,
+        Wave 2, and the browser-smoke checkpoint from issue #17
+      - Added current shipped totals for lessons, canonical drill families, and
+        canonical scenario families
+      - Called out the current checkpoint runner and the next planned slice so
+        the issue can resume cleanly when work continues with Wave 3
+      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`, and
+        `pnpm typecheck`
+    refs:
+      - "I9D1, I9D2, I9D3, I9D4, I9D5"
+  - date: "2026-04-13"
+    version: "1.1.4"
+    commit: 4046b2f
     status: completed
     title: "test(browser-smoke): add issue #17 cost-efficient checkpoint suite"
     details: |-

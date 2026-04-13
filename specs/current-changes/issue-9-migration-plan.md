@@ -6,6 +6,30 @@ Branch: `codex/issue-9-migration`
 Scope: Full migration from the mixed legacy/family runtime to the final 20/20/20 content-family model, plus targeted wiki and directory support required by that curriculum.
 Status: In progress. Phase 0 and Wave 1 completed on 2026-04-12. Wave 2 completed on 2026-04-13. Wave 3 is the next coding slice.
 
+## Execution Progress
+
+- [x] Read the memory-bank and current-changes artifacts, confirm repo status, and align issue `#9` with the completed issue `#8` runtime direction
+- [x] Complete Phase 0 documentation sync for issue `#9`, including GitHub issue updates and resumability artifacts
+- [x] Implement and validate Wave 1 (`I9D4`) from the local migration plan
+- [x] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 1
+- [x] Run the commitprocess workflow for the Wave 1 checkpoint, then commit and push it on `codex/issue-9-migration`
+- [x] Implement and validate Wave 2 (`I9D1`, `I9D2`, `I9D3`) from the local migration plan
+- [x] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 2
+- [x] Add the low-cost browser smoke suite from issue `#17` and validate the current Wave 2 checkpoint with `pnpm test:checkpoint`
+- [ ] Implement and validate Wave 3 (`I9D1`, `I9D2`, `I9D3`)
+- [ ] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 3
+- [ ] Implement and validate Wave 4 (`I9D1`, `I9D3`, `I9D5`)
+- [ ] Update GitHub issue `#9`, this file, and `active-context.yaml` at the end of Wave 4
+- [ ] Run the final issue `#9` wrap-up pass, archive the completed plan artifact, and prepare the branch for merge
+
+## Current Totals
+
+- Lessons shipped so far: `14 / 20`
+- Canonical drill families shipped so far: `19 / 20`
+- Canonical scenario families shipped so far: `10 / 20`
+- Browser checkpoint coverage: in place via issue `#17` (`pnpm test:checkpoint`)
+- Next implementation slice: Wave 3 SOAP expansion
+
 ## Deliverable Mapping
 
 - `I9D1`: expand the editorial lesson set to 20 total lessons
