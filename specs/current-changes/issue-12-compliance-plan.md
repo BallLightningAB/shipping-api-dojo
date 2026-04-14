@@ -40,7 +40,7 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 ## Wave Checklist
 
 - [x] Wave 0: branch + artifact sync
-- [ ] Wave 1: inventory + public disclosures
+- [x] Wave 1: inventory + public disclosures
 - [ ] Wave 2: GDPR rights surfaces
 - [ ] Wave 3: consent-trigger matrix + launch review + wrap-up
 
@@ -87,6 +87,14 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 - The disclosure text matches the actual anonymous and signed-in storage model implemented in the repo.
 - Browser inspection confirms the observed local storage/cookie behavior is consistent with the published text.
 
+### Completed Checkpoint (2026-04-14)
+
+- Added public SSR-visible `/privacy` and `/cookies` routes with aligned auth, progress, billing, email, retention, and no-optional-tracking disclosures.
+- Added persistent footer links to both legal routes and linked them from settings.
+- Replaced the stale settings copy with anonymous-browser versus signed-in hosted-storage messaging.
+- Updated the PDD privacy/storage description so it no longer claims the product has no accounts or server-side records.
+- Extended the browser smoke suite to verify footer visibility and legal-route reachability.
+
 ## Wave 2: GDPR Rights Surfaces
 
 ### Objectives
@@ -130,8 +138,8 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 
 ## Launch-Readiness Checklist
 
-- [ ] Footer exposes public privacy-policy and cookie/storage links.
-- [ ] Settings/account copy distinguishes anonymous local progress from signed-in server-backed progress.
+- [x] Footer exposes public privacy-policy and cookie/storage links.
+- [x] Settings/account copy distinguishes anonymous local progress from signed-in server-backed progress.
 - [ ] Account rights surfaces include export/access, deletion request, support contact, and retention summary.
 - [ ] Auth/session disclosures match actual Better Auth behavior.
 - [ ] Billing and subscription disclosures match Creem-backed subscription records and webhook processing.
@@ -142,3 +150,4 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 ## Artifact Sync Log
 
 - 2026-04-14: Wave 0 synced across the branch, this local plan, `active-context.yaml`, GitHub issue `#12`, and the Codex progress checklist.
+- 2026-04-14: Wave 1 synced after shipping the public privacy/cookie routes, footer legal links, settings disclosure copy, PDD privacy/storage corrections, and browser smoke coverage for the new routes.

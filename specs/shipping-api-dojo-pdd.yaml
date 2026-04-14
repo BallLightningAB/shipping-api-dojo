@@ -2,7 +2,7 @@ shipping_api_dojo_pdd:
   meta:
     name: "Shipping API Dojo — Product PDD"
     code_name: "shipping-api-dojo"
-    version: "1.0.0"
+    version: "1.0.1"
     repo: "https://github.com/BallLightningAB/shipping-api-dojo"
     domain: "https://shipping.apidojo.app"
     owner:
@@ -14,13 +14,14 @@ shipping_api_dojo_pdd:
     kind: "learning_platform"
     description: >-
       Interactive carrier-integration learning tool for REST and SOAP interview prep
-      and troubleshooting. Browser-based, authless MVP with local progress storage.
-      Covers HTTP semantics, SOAP envelopes, WSDL/XSD, error handling, and real-world
-      incident scenarios from shipping/logistics integrations.
+      and troubleshooting. Public-core learning surfaces stay open and crawlable,
+      while hosted account features support signed-in progress, entitlement-aware
+      access, billing state, and transactional email for the production service.
     positioning: >-
-      Free educational tool for developers working with carrier APIs (FedEx, UPS, DHL, USPS).
-      Built by Nicolas Brulay, leveraging 15+ years of shipping/logistics industry experience.
-      No account required — all progress stored locally in browser.
+      Open-core educational tool for developers working with carrier APIs (FedEx, UPS,
+      DHL, USPS). Built by Nicolas Brulay, leveraging 15+ years of shipping/logistics
+      industry experience. Anonymous use remains available, while hosted account and
+      paid features build on the same public learning product.
 
   techstack:
     framework: "TanStack Start (React 19, file-based routing, SSR)"
@@ -30,7 +31,7 @@ shipping_api_dojo_pdd:
       css: "TailwindCSS v4"
       ui: "shadcn/ui, Lucide icons, Motion (Framer Motion)"
     state:
-      progress: "@tanstack/react-store (client-side, localStorage-backed)"
+      progress: "@tanstack/react-store for local progress plus hosted server-backed sync for signed-in users"
       validation: "Zod"
     tooling:
       lint_format: ["Biome 2.3.11", "Ultracite 7.0.8"]
@@ -87,16 +88,23 @@ shipping_api_dojo_pdd:
         purpose: "Curated links to carrier tools, specs, portals"
         ssr: true
       - path: "/settings"
-        purpose: "Export/import/reset progress"
+        purpose: "Progress management, privacy/support entry point, and account-rights surface"
+        ssr: true
+      - path: "/privacy"
+        purpose: "Public privacy policy for browser storage, signed-in records, billing, and transactional email"
+        ssr: true
+      - path: "/cookies"
+        purpose: "Public cookie and storage disclosure for necessary browser storage and hosted account records"
         ssr: true
 
   content:
     lessons:
-      count: 8
+      count: 20
       tracks:
-        rest: 4
-        soap: 3
+        rest: 9
+        soap: 8
         intro: 1
+        cross_track: 2
       format: "TypeScript data files in src/content/lessons/"
       structure:
         - "Concept explanation (5-10 min read)"
@@ -104,14 +112,14 @@ shipping_api_dojo_pdd:
         - "Carrier reality box (production gotchas + logging tips)"
         - "References section with sources"
     drills:
-      count: "20+"
+      count: 20
       types:
         - "MCQ (multiple choice with explanations)"
         - "Cloze (fill-in-the-blank for headers, status codes, SOAP tags)"
         - "Builder (REST: inputs → HTTP + cURL; SOAP: inputs → envelope + headers)"
       scoring: "0-100 per drill, bestScore + attempts tracked"
     scenarios:
-      count: 5
+      count: 20
       format: "Decision-tree incidents from carrier integration work"
       examples:
         - "Timeout on create shipment → idempotent retry strategy"
@@ -120,7 +128,7 @@ shipping_api_dojo_pdd:
         - "WSDL change breaks client → mitigation"
         - "200 with error payload → robust error detection"
     wiki:
-      count: 13
+      count: "Curriculum-supporting reference set, expanded through issue #9 and available for follow-on growth in issue #15"
       sections:
         - "Glossary (idempotency, correlation ID, SOAP fault, WSDL, XSD)"
         - "HTTP status codes cheat pages"
@@ -129,7 +137,7 @@ shipping_api_dojo_pdd:
         - "Auth patterns (API key, OAuth2, signing)"
       requirement: "All articles cite sources (RFCs, W3C/OASIS specs, MDN)"
     directory:
-      count: 15
+      count: "Curated curriculum-supporting directory, expanded with the content migration and ready for later deep reference growth"
       categories:
         - "HTTP RFCs and tooling"
         - "SOAP/WSDL tools and validators"
@@ -138,7 +146,7 @@ shipping_api_dojo_pdd:
 
   progress_system:
     storage:
-      type: "localStorage"
+      type: "hybrid: browser localStorage for anonymous progress plus hosted database records for signed-in progress"
       key: "shipping-api-dojo-progress"
       schema_version: 1
     data_model:
@@ -149,8 +157,9 @@ shipping_api_dojo_pdd:
     features:
       - "Debounced writes (300ms)"
       - "Cross-tab sync via storage event"
-      - "Export/import JSON for manual multi-device transfer"
+      - "Export/import JSON for local browser progress"
       - "Versioned schema with migration scaffold"
+      - "Signed-in server-backed progress sync with merge-event tracking"
     ssr_safety:
       - "All localStorage access via createIsomorphicFn"
       - "Progress UI wrapped in <ClientOnly>"
@@ -158,16 +167,29 @@ shipping_api_dojo_pdd:
 
   policies:
     data_privacy:
-      rule: "No user accounts, no server-side storage, no PII collection"
-      storage: "All progress in browser localStorage only"
+      rule: >-
+        Anonymous use remains available, but hosted auth, signed-in progress,
+        billing, and transactional email now require account and server-side records.
+      storage: >-
+        Anonymous progress stays in browser localStorage. Signed-in account,
+        session, progress, entitlement, billing-event, and email-event records
+        are stored on hosted services when those features are used.
+      public_disclosures:
+        - "Public privacy policy route"
+        - "Public cookie and storage disclosure route"
+      retention_model: >-
+        Anonymous browser progress can be cleared locally, while signed-in,
+        billing, and delivery-event records may be retained where security,
+        accounting, fraud-prevention, or legal obligations apply.
     secrets:
-      rule: "No API keys or secrets required for MVP"
-      repo: "Public repository, no sensitive data"
+      rule: "Hosted auth, billing, email, and database integrations require environment secrets outside the public repository"
+      repo: "Public repository, no production secrets committed"
     security:
       baseline:
         - "Gitleaks pre-commit hooks (detect-private-key)"
         - "GitHub Actions secret scanning on main branch"
-        - "No external API calls requiring credentials"
+        - "First-party auth/session cookies only for hosted account features"
+        - "Webhook signature verification for Creem and Resend routes"
 
   future_roadmap:
     auth_sync:

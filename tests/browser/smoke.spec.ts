@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 const HOME_HEADING = /shipping api dojo/i;
+const PRIVACY_POLICY = /privacy policy/i;
+const COOKIE_AND_STORAGE = /cookie & storage/i;
+const COOKIE_AND_STORAGE_DISCLOSURE = /cookie & storage disclosure/i;
 const START_REST_TRACK = /start rest track/i;
 const START_SOAP_TRACK = /start soap track/i;
 const INCIDENT_ARENA = /incident arena/i;
@@ -54,6 +57,34 @@ test("home page exposes the main learning surfaces", async ({ page }) => {
 	).toBeVisible();
 	await expect(
 		page.locator("main").getByRole("link", { name: WIKI_QUICK_REFERENCE })
+	).toBeVisible();
+	await expect(
+		page.locator("footer").getByRole("link", { name: PRIVACY_POLICY })
+	).toBeVisible();
+	await expect(
+		page.locator("footer").getByRole("link", { name: COOKIE_AND_STORAGE })
+	).toBeVisible();
+});
+
+test("public legal disclosure routes are reachable from the footer", async ({
+	page,
+}) => {
+	await page.goto("/");
+
+	await page
+		.locator("footer")
+		.getByRole("link", { name: PRIVACY_POLICY })
+		.click();
+	await expect(
+		page.getByRole("heading", { level: 1, name: PRIVACY_POLICY })
+	).toBeVisible();
+
+	await page.goto("/cookies");
+	await expect(
+		page.getByRole("heading", {
+			level: 1,
+			name: COOKIE_AND_STORAGE_DISCLOSURE,
+		})
 	).toBeVisible();
 });
 

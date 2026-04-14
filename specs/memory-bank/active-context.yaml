@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.11"
+  release: "1.1.12"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -155,8 +155,6 @@ roadmap:
         test_h: 4
       sub_issues: []
       remaining_deliverables:
-        - "[I12D1] Confirm and document which cookies and storage/access technologies are strictly necessary and confirm that no consent banner is required as long as analytics and other non-essential tracking remain disabled"
-        - "[I12D2] Create a privacy policy and cookie/storage disclosure covering auth/session cookies, local progress storage, server-backed progress, billing, payment-provider data flows, and transactional email"
         - "[I12D3] Define and implement the required GDPR user-rights surfaces for account data access, deletion, support contact, and retention disclosures"
         - "[I12D4] Define the trigger conditions for introducing a consent banner in the future, including analytics, marketing, personalization, or any other non-essential storage/access technologies"
         - "[I12D5] Run a launch-readiness compliance review for shipping.apidojo.app before enabling production auth and paid features"
@@ -165,6 +163,8 @@ roadmap:
         - note: "Added specs/current-changes/issue-12-compliance-plan.md to make the privacy/storage/compliance work part of the explicit local v2 planning set."
         - note: "Wave 0 started on branch `codex/issue-12-compliance`, which is now the active planned implementation branch after issue #10. The local plan, Codex wave checklist, and GitHub issue #12 were reworked into the same execution-ready wave structure before runtime changes begin."
         - note: "Current-state audit before Wave 1: anonymous progress uses browser localStorage, signed-in users rely on Better Auth cookie-backed sessions plus server-backed progress and merge-event records, Creem webhooks persist subscription and billing records, Resend lifecycle/webhook data persists email-event records, the settings page still incorrectly says all data is local-only, and no analytics or consent banner is currently implemented."
+        - covers: [I12D1, I12D2]
+          note: "Completed issue #12 Wave 1 on `codex/issue-12-compliance`: added public SSR-visible `/privacy` and `/cookies` legal routes, linked them from the footer and settings, replaced the stale local-only settings copy with anonymous-versus-signed-in storage messaging, updated the PDD privacy/storage description to match the implemented auth and hosted-data model, added browser smoke coverage for the legal routes, and validated with pre-commit, pnpm format, pnpm lint, pnpm typecheck, pnpm test:checkpoint, and pnpm build."
     - id: mobile-readiness-native-strategy
       issue: "#13"
       title: "Mobile readiness and native app strategy"

@@ -1,7 +1,32 @@
 entries:
   - date: "2026-04-14"
-    version: "1.1.11"
+    version: "1.1.12"
     commit: TBD
+    status: in-progress
+    title: "feat(compliance): ship public privacy and storage disclosures"
+    details: |-
+      Completed Wave 1 of issue #12 by replacing stale storage messaging and
+      shipping the public legal disclosure routes needed before hosted auth and
+      paid launch.
+
+      - Added public SSR-visible `/privacy` and `/cookies` routes describing
+        anonymous browser progress, signed-in account/session records, billing
+        events, transactional email, retention, and the current no-optional-
+        tracking position
+      - Added persistent footer links to the legal pages and linked them from
+        settings
+      - Reworked the settings page intro so it now distinguishes anonymous
+        local progress from signed-in hosted records instead of claiming all
+        data is local-only
+      - Updated the PDD privacy/storage model to reflect the implemented auth,
+        hosted-progress, billing, and email architecture
+      - Extended the Playwright smoke suite to verify footer legal links and
+        the new disclosure routes
+    refs:
+      - "I12D1, I12D2"
+  - date: "2026-04-14"
+    version: "1.1.11"
+    commit: 8020f63
     status: in-progress
     title: "docs(compliance): sync issue #12 wave plan and launch-compliance audit"
     details: |-

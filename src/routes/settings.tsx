@@ -1,8 +1,10 @@
-import { ClientOnly, createFileRoute } from "@tanstack/react-router";
+import { ClientOnly, Link, createFileRoute } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { Download, Trash2, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { SUPPORT_CONTACT_LABEL, SUPPORT_EMAIL } from "@/content/legal";
 import { authClient } from "@/lib/auth/client";
 import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
 import { resetProgress } from "@/lib/progress/progress.actions";
@@ -17,7 +19,7 @@ export const Route = createFileRoute("/settings")({
 			...generateMeta({
 				title: "Settings",
 				description:
-					"Manage local Shipping API Dojo progress data for export, import, and reset actions.",
+					"Manage Shipping API Dojo progress, privacy links, and account-related support surfaces.",
 				url: "/settings",
 			}),
 			{
@@ -35,8 +37,9 @@ function SettingsPage() {
 		<div className="container mx-auto max-w-4xl px-4 py-16">
 			<h1 className="mb-4">Settings</h1>
 			<p className="mb-10 max-w-2xl text-lg text-muted-foreground">
-				Export, import, or reset your progress data. All data is stored locally
-				in your browser.
+				Manage anonymous browser progress, review how signed-in account data is
+				handled, and reach the current privacy and support surfaces for Shipping
+				API Dojo.
 			</p>
 
 			<ClientOnly
@@ -63,6 +66,9 @@ function SettingsPanel() {
 		source: string;
 		tier: string;
 	} | null>(null);
+	const supportMailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+		"Shipping API Dojo support request"
+	)}`;
 	const debugSessionKey = session.isPending
 		? "pending"
 		: (session.data?.user?.id ?? "anonymous");
@@ -134,6 +140,68 @@ function SettingsPanel() {
 
 	return (
 		<div className="space-y-8">
+			<div className="grid gap-4 md:grid-cols-2">
+				<Card>
+					<CardHeader>
+						<CardTitle>Current storage model</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						{session.data?.user?.id ? (
+							<>
+								<p>
+									Anonymous progress can still exist in this browser, but your
+									account also uses hosted auth/session records and
+									server-backed progress sync while you are signed in.
+								</p>
+								<p>
+									Billing, entitlement, and transactional email records can also
+									be associated with your account when those features are used.
+								</p>
+							</>
+						) : (
+							<>
+								<p>
+									You are currently using the anonymous mode. Progress stays in
+									this browser unless you later choose to sign in and sync it
+									into an account.
+								</p>
+								<p>
+									Sign-in features rely on necessary account/session cookies and
+									hosted records. They are described in the public legal pages
+									below.
+								</p>
+							</>
+						)}
+					</CardContent>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardTitle>Privacy and support</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						<p>
+							Use the public legal pages to review the current privacy policy
+							and cookie/storage disclosure before you use account features.
+						</p>
+						<p>
+							For support, access, or deletion questions, contact{" "}
+							<a className="text-bl-red hover:underline" href={supportMailto}>
+								{SUPPORT_CONTACT_LABEL}
+							</a>
+							.
+						</p>
+						<div className="flex flex-wrap gap-3 pt-1">
+							<Button asChild size="sm" variant="outline">
+								<Link to="/privacy">Privacy Policy</Link>
+							</Button>
+							<Button asChild size="sm" variant="outline">
+								<Link to="/cookies">Cookie &amp; Storage</Link>
+							</Button>
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+
 			{/* Stats */}
 			<div className="grid gap-4 sm:grid-cols-4">
 				<StatCard label="XP" value={String(xp)} />
