@@ -4,7 +4,7 @@ Date: 2026-04-14
 Issue: [#12](https://github.com/BallLightningAB/shipping-api-dojo/issues/12)
 Branch: `codex/issue-12-compliance`
 Scope: Real implementation of the privacy, storage-disclosure, GDPR-rights, and launch-compliance work required before production auth and paid features are enabled on `shipping.apidojo.app`.
-Status: In progress on the branch above. Keep `status: planned` in `active-context.yaml` until the final wrap-up wave is complete.
+Status: Completed on `codex/issue-12-compliance`. This plan is ready to archive after the final push and GitHub issue closure.
 
 ## Summary
 
@@ -42,7 +42,7 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 - [x] Wave 0: branch + artifact sync
 - [x] Wave 1: inventory + public disclosures
 - [x] Wave 2: GDPR rights surfaces
-- [ ] Wave 3: consent-trigger matrix + launch review + wrap-up
+- [x] Wave 3: consent-trigger matrix + launch review + wrap-up
 
 ## Locked Decisions
 
@@ -143,19 +143,43 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 - The trigger matrix clearly states when future consent work becomes mandatory.
 - Final wrap-up clears issue `#12` from active planned work and archives this completed plan.
 
+### Completed Checkpoint (2026-04-14)
+
+- Added a public future consent-trigger matrix on `/cookies` covering analytics, remarketing pixels, non-essential personalization storage, session replay, and third-party tracking identifiers.
+- Extended the browser smoke suite to validate the anonymous launch baseline: no consent-banner buttons, no analytics cookies, no Better Auth session cookie before sign-in, and local progress persisted under `shipping-api-dojo-progress` without recreating the legacy key.
+- Completed the launch-readiness review by matching the public disclosures against the implemented Better Auth cookie posture, hosted billing/subscription records, and Resend lifecycle email-event storage.
+- Synced the local plan, `active-context.yaml`, changelog, and GitHub issue `#12` for final completion and closure.
+
 ## Launch-Readiness Checklist
 
 - [x] Footer exposes public privacy-policy and cookie/storage links.
 - [x] Settings/account copy distinguishes anonymous local progress from signed-in server-backed progress.
 - [x] Account rights surfaces include export/access, deletion request, support contact, and retention summary.
-- [ ] Auth/session disclosures match actual Better Auth behavior.
-- [ ] Billing and subscription disclosures match Creem-backed subscription records and webhook processing.
-- [ ] Email disclosures match Resend lifecycle sends and tracked webhook-event storage.
-- [ ] Browser-inspected cookies and storage keys match the published disclosure text.
-- [ ] No optional tracking or consent banner is present on the completed branch.
+- [x] Auth/session disclosures match actual Better Auth behavior.
+- [x] Billing and subscription disclosures match Creem-backed subscription records and webhook processing.
+- [x] Email disclosures match Resend lifecycle sends and tracked webhook-event storage.
+- [x] Browser-inspected cookies and storage keys match the published disclosure text.
+- [x] No optional tracking or consent banner is present on the completed branch.
+
+## Final Validation Notes
+
+- Browser validation on the implemented branch confirmed:
+  - anonymous progress persists under `shipping-api-dojo-progress`
+  - the legacy `api-trainer-progress` key does not reappear in a fresh browser session
+  - no Better Auth session cookie is present before sign-in
+  - no analytics-style cookies were observed
+  - no consent-banner controls were present
+- Auth/session disclosures remain aligned to the implemented Better Auth configuration:
+  - secure cookies are used on HTTPS
+  - optional cross-subdomain cookie scope remains gated behind `SESSION_COOKIE_DOMAIN`
+  - session-backed account access still relies on first-party Better Auth cookies rather than third-party identifiers
+- Billing and email disclosures remain aligned to the implemented hosted record model:
+  - Creem-backed subscription state and webhook audit records are stored in `subscriptions`, `user_entitlements`, and `billing_events`
+  - Resend lifecycle send/reporting flows persist tracked webhook records in `email_events`
 
 ## Artifact Sync Log
 
 - 2026-04-14: Wave 0 synced across the branch, this local plan, `active-context.yaml`, GitHub issue `#12`, and the Codex progress checklist.
 - 2026-04-14: Wave 1 synced after shipping the public privacy/cookie routes, footer legal links, settings disclosure copy, PDD privacy/storage corrections, and browser smoke coverage for the new routes.
 - 2026-04-14: Wave 2 synced after adding the signed-in account export path, manual deletion/support surfaces, retention summary, and settings smoke coverage for the rights UX.
+- 2026-04-14: Wave 3 synced after adding the public consent-trigger matrix, validating the anonymous browser storage baseline, marking the launch-readiness checklist complete, and preparing the branch, changelog, `active-context.yaml`, and GitHub issue `#12` for final closure.

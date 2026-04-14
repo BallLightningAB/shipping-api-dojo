@@ -1,6 +1,10 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { browserStorageItems, serverRecordItems } from "@/content/legal";
+import {
+	browserStorageItems,
+	consentTriggerItems,
+	serverRecordItems,
+} from "@/content/legal";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 
 export const Route = createFileRoute("/cookies")({
@@ -89,6 +93,47 @@ function CookieDisclosurePage() {
 				<div className="space-y-4">
 					{serverRecordItems.map((item) => (
 						<StorageCard item={item} key={item.name} />
+					))}
+				</div>
+			</section>
+
+			<section className="mb-12">
+				<h2 className="mb-4 text-2xl">Future consent-trigger matrix</h2>
+				<p className="mb-4 max-w-3xl text-sm text-muted-foreground">
+					The current no-banner position only holds while storage remains
+					limited to strictly necessary auth/session and requested-service
+					functionality. Any of the triggers below would require a fresh
+					compliance review before production rollout.
+				</p>
+				<div className="space-y-4">
+					{consentTriggerItems.map((item) => (
+						<Card key={item.trigger}>
+							<CardHeader>
+								<CardTitle>{item.trigger}</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-4 text-sm text-muted-foreground">
+								<div>
+									<p className="font-semibold text-foreground">Examples</p>
+									<ul className="list-disc space-y-2 pl-5">
+										{item.examples.map((example) => (
+											<li key={example}>{example}</li>
+										))}
+									</ul>
+								</div>
+								<div>
+									<p className="font-semibold text-foreground">
+										Why this changes the current position
+									</p>
+									<p>{item.whyItChangesThePosition}</p>
+								</div>
+								<div>
+									<p className="font-semibold text-foreground">
+										Required next step
+									</p>
+									<p>{item.requiredAction}</p>
+								</div>
+							</CardContent>
+						</Card>
 					))}
 				</div>
 			</section>

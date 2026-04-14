@@ -22,6 +22,13 @@ export interface RetentionSummaryItem {
 	notes: string[];
 }
 
+export interface ConsentTriggerItem {
+	trigger: string;
+	examples: string[];
+	whyItChangesThePosition: string;
+	requiredAction: string;
+}
+
 export const privacyOverviewSections: DisclosureCard[] = [
 	{
 		title: "Anonymous progress in your browser",
@@ -182,5 +189,63 @@ export const retentionSummaryItems: RetentionSummaryItem[] = [
 			"Bounce and complaint records may be retained even if other account data is removed.",
 			"This helps prevent repeated delivery attempts to unsafe or unavailable destinations.",
 		],
+	},
+];
+
+export const consentTriggerItems: ConsentTriggerItem[] = [
+	{
+		trigger: "Product analytics",
+		examples: [
+			"Page analytics, product analytics, or attribution tooling that stores identifiers beyond the requested service flow.",
+			"Examples include GA4, PostHog analytics mode, Mixpanel, Amplitude, or similar analytics SDKs.",
+		],
+		whyItChangesThePosition:
+			"These tools are not required to deliver the lesson, arena, account, billing, or transactional-email features the user explicitly requested.",
+		requiredAction:
+			"Add consent controls before enabling them in production, classify the related cookies or storage as optional, and block loading until consent is granted where required.",
+	},
+	{
+		trigger: "Remarketing and ad pixels",
+		examples: [
+			"Ad conversion pixels, audience syncing, retargeting tags, or affiliate tracking identifiers.",
+			"Examples include Meta Pixel, LinkedIn Insight Tag, Google Ads remarketing, or similar ad-tech tags.",
+		],
+		whyItChangesThePosition:
+			"These tools are marketing-oriented rather than strictly necessary to provide the requested service.",
+		requiredAction:
+			"Ship a consent banner or equivalent consent gate before deployment and keep the tags disabled until the user opts in.",
+	},
+	{
+		trigger: "Personalization storage beyond requested-service functionality",
+		examples: [
+			"Cross-session preference profiling, personalization experiments, or recommendation state that is not necessary to deliver the current requested feature.",
+			"Examples include marketing personalization profiles or non-essential remembered behavior across visits.",
+		],
+		whyItChangesThePosition:
+			"Once storage moves from core service operation into optimization or profiling, it stops fitting the current strictly-necessary stance.",
+		requiredAction:
+			"Assess the storage as optional, disclose the profiling purpose clearly, and add consent gating before enabling it for production users.",
+	},
+	{
+		trigger: "Session replay or behavioral tooling",
+		examples: [
+			"Replay tools, heatmaps, scroll tracking, rage-click detection, or similar behavioral observation systems.",
+			"Examples include Hotjar, FullStory, LogRocket replay mode, or Microsoft Clarity session capture.",
+		],
+		whyItChangesThePosition:
+			"These tools observe user behavior for optimization or diagnostics rather than providing the core requested learning/account service itself.",
+		requiredAction:
+			"Introduce consent controls before deployment, keep capture disabled until consent is recorded, and document the behavioral data category explicitly.",
+	},
+	{
+		trigger: "Third-party tracking identifiers",
+		examples: [
+			"Third-party tags, embedded widgets, or external scripts that set or read identifiers for their own tracking purposes.",
+			"Examples include social embeds with tracking cookies, marketing chat widgets, or externally hosted personalization tags.",
+		],
+		whyItChangesThePosition:
+			"Third-party identifiers create tracking exposure beyond the first-party, strictly necessary storage currently disclosed for auth and requested-service functionality.",
+		requiredAction:
+			"Block the third-party identifier until consent exists, update the disclosure pages, and re-check whether a consent banner becomes mandatory before launch.",
 	},
 ];

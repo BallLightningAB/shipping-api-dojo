@@ -1,7 +1,32 @@
 entries:
   - date: "2026-04-14"
-    version: "1.1.13"
+    version: "1.1.14"
     commit: TBD
+    status: completed
+    title: "feat(compliance): complete issue #12 launch review"
+    details: |-
+      Completed Wave 3 and the final wrap-up for issue #12 so the compliance
+      gate is in place before hosted auth and paid features are enabled on
+      shipping.apidojo.app.
+
+      - Added a public consent-trigger matrix on `/cookies` covering analytics,
+        remarketing, non-essential personalization storage, session replay, and
+        third-party tracking identifiers
+      - Browser-validated the anonymous launch baseline: no consent-banner
+        controls, no analytics cookies, no Better Auth session cookie before
+        sign-in, and local progress persisted under
+        `shipping-api-dojo-progress`
+      - Completed the launch-readiness review by matching the public privacy
+        and storage disclosures against the implemented Better Auth, Creem, and
+        Resend data flows
+      - Marked issue #12 done in `active-context.yaml`, completed the local
+        plan checklist, and prepared the plan for archival and GitHub issue
+        closure after the final push
+    refs:
+      - "I12D4, I12D5"
+  - date: "2026-04-14"
+    version: "1.1.13"
+    commit: 229741e
     status: in-progress
     title: "feat(compliance): add issue #12 account-rights surfaces"
     details: |-

@@ -4,6 +4,7 @@ const HOME_HEADING = /shipping api dojo/i;
 const PRIVACY_POLICY = /privacy policy/i;
 const COOKIE_AND_STORAGE = /cookie & storage/i;
 const COOKIE_AND_STORAGE_DISCLOSURE = /cookie & storage disclosure/i;
+const FUTURE_CONSENT_TRIGGER_MATRIX = /future consent-trigger matrix/i;
 const START_REST_TRACK = /start rest track/i;
 const START_SOAP_TRACK = /start soap track/i;
 const INCIDENT_ARENA = /incident arena/i;
@@ -29,6 +30,8 @@ const PRACTICE_DRILLS = /practice drills/i;
 const MARK_LESSON_COMPLETE = /mark lesson complete/i;
 const NEW_CHALLENGE = /new challenge/i;
 const CHECK_ANSWER = /check answer/i;
+const ACCEPT_COOKIES =
+	/accept cookies|accept all|allow analytics|manage cookies/i;
 const TRACKING_WEBHOOK_TIMED_OUT_ONCE = /tracking webhook timed out once/i;
 const DUPLICATE_WEBHOOK_REPLAY = /duplicate webhook replay/i;
 const SOAP_HEADER_AUTH_MISMATCH = /soap header\/auth mismatch/i;
@@ -92,6 +95,7 @@ test("public legal disclosure routes are reachable from the footer", async ({
 			name: COOKIE_AND_STORAGE_DISCLOSURE,
 		})
 	).toBeVisible();
+	await expect(page.getByText(FUTURE_CONSENT_TRIGGER_MATRIX)).toBeVisible();
 });
 
 test("settings exposes the privacy and account-rights surfaces", async ({
@@ -107,6 +111,46 @@ test("settings exposes the privacy and account-rights surfaces", async ({
 	await expect(page.getByText(DELETION_REQUESTS)).toBeVisible();
 	await expect(page.getByText(SUPPORT_CONTACT)).toBeVisible();
 	await expect(page.getByText(RETENTION_SUMMARY)).toBeVisible();
+});
+
+test("anonymous browser behavior matches the current disclosure baseline", async ({
+	page,
+}) => {
+	await page.goto(
+		"/lesson/cross-track-2-carrier-capability-matrix-integration-architecture"
+	);
+
+	await expect(
+		page.getByRole("button", { name: MARK_LESSON_COMPLETE })
+	).toBeVisible();
+	await expect(page.getByRole("button", { name: ACCEPT_COOKIES })).toHaveCount(
+		0
+	);
+
+	await page.getByRole("button", { name: MARK_LESSON_COMPLETE }).click();
+
+	await expect
+		.poll(() =>
+			page.evaluate(() =>
+				window.localStorage.getItem("shipping-api-dojo-progress")
+			)
+		)
+		.not.toBeNull();
+
+	const localStorageKeys = await page.evaluate(() =>
+		Object.keys(window.localStorage).sort()
+	);
+	expect(localStorageKeys).toContain("shipping-api-dojo-progress");
+	expect(localStorageKeys).not.toContain("api-trainer-progress");
+
+	const cookieNames = (await page.context().cookies()).map(
+		(cookie) => cookie.name
+	);
+	expect(cookieNames).not.toContain("better-auth.session_token");
+	expect(cookieNames).not.toContain("_ga");
+	expect(cookieNames).not.toContain("_gid");
+	expect(cookieNames).not.toContain("_fbp");
+	expect(cookieNames).not.toContain("_hjSessionUser");
 });
 
 test("rest track hub renders the migrated wave 2 lesson set", async ({
