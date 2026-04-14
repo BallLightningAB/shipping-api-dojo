@@ -1,7 +1,29 @@
 entries:
   - date: "2026-04-14"
-    version: "1.1.12"
+    version: "1.1.13"
     commit: TBD
+    status: in-progress
+    title: "feat(compliance): add issue #12 account-rights surfaces"
+    details: |-
+      Completed Wave 2 of issue #12 by adding the settings-based GDPR rights
+      surfaces needed before launch.
+
+      - Added a signed-in self-serve account export path that downloads a
+        structured JSON export of account, progress, entitlement,
+        subscription, billing-event, email-event, and merge-event data
+      - Added manual deletion-request, support-contact, and retention-summary
+        surfaces in settings without pretending a one-click irreversible
+        deletion flow already exists
+      - Kept the existing local browser progress export/import/reset actions
+        while clearly separating them from the signed-in account export
+      - Extended the Playwright smoke suite to validate the settings rights UI
+      - Synced the issue #12 plan, active-context, and GitHub issue state for
+        the Wave 2 checkpoint
+    refs:
+      - "I12D3"
+  - date: "2026-04-14"
+    version: "1.1.12"
+    commit: e186b95
     status: in-progress
     title: "feat(compliance): ship public privacy and storage disclosures"
     details: |-

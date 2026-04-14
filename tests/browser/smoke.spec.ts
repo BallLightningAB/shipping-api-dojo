@@ -7,6 +7,12 @@ const COOKIE_AND_STORAGE_DISCLOSURE = /cookie & storage disclosure/i;
 const START_REST_TRACK = /start rest track/i;
 const START_SOAP_TRACK = /start soap track/i;
 const INCIDENT_ARENA = /incident arena/i;
+const SETTINGS = /settings/i;
+const ACCOUNT_DATA_RIGHTS = /account data rights/i;
+const ACCESS_AND_EXPORT = /access and export/i;
+const DELETION_REQUESTS = /deletion requests/i;
+const SUPPORT_CONTACT = /support contact/i;
+const RETENTION_SUMMARY = /retention summary/i;
 const WIKI_QUICK_REFERENCE = /wiki quick-reference/i;
 const REST_TRACK = /rest track/i;
 const IDEMPOTENCY_KEYS = /idempotency keys & deduplication patterns/i;
@@ -86,6 +92,21 @@ test("public legal disclosure routes are reachable from the footer", async ({
 			name: COOKIE_AND_STORAGE_DISCLOSURE,
 		})
 	).toBeVisible();
+});
+
+test("settings exposes the privacy and account-rights surfaces", async ({
+	page,
+}) => {
+	await page.goto("/settings");
+
+	await expect(
+		page.getByRole("heading", { level: 1, name: SETTINGS })
+	).toBeVisible();
+	await expect(page.getByText(ACCOUNT_DATA_RIGHTS)).toBeVisible();
+	await expect(page.getByText(ACCESS_AND_EXPORT)).toBeVisible();
+	await expect(page.getByText(DELETION_REQUESTS)).toBeVisible();
+	await expect(page.getByText(SUPPORT_CONTACT)).toBeVisible();
+	await expect(page.getByText(RETENTION_SUMMARY)).toBeVisible();
 });
 
 test("rest track hub renders the migrated wave 2 lesson set", async ({

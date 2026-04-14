@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.12"
+  release: "1.1.13"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -155,7 +155,6 @@ roadmap:
         test_h: 4
       sub_issues: []
       remaining_deliverables:
-        - "[I12D3] Define and implement the required GDPR user-rights surfaces for account data access, deletion, support contact, and retention disclosures"
         - "[I12D4] Define the trigger conditions for introducing a consent banner in the future, including analytics, marketing, personalization, or any other non-essential storage/access technologies"
         - "[I12D5] Run a launch-readiness compliance review for shipping.apidojo.app before enabling production auth and paid features"
       progress_log:
@@ -165,6 +164,8 @@ roadmap:
         - note: "Current-state audit before Wave 1: anonymous progress uses browser localStorage, signed-in users rely on Better Auth cookie-backed sessions plus server-backed progress and merge-event records, Creem webhooks persist subscription and billing records, Resend lifecycle/webhook data persists email-event records, the settings page still incorrectly says all data is local-only, and no analytics or consent banner is currently implemented."
         - covers: [I12D1, I12D2]
           note: "Completed issue #12 Wave 1 on `codex/issue-12-compliance`: added public SSR-visible `/privacy` and `/cookies` legal routes, linked them from the footer and settings, replaced the stale local-only settings copy with anonymous-versus-signed-in storage messaging, updated the PDD privacy/storage description to match the implemented auth and hosted-data model, added browser smoke coverage for the legal routes, and validated with pre-commit, pnpm format, pnpm lint, pnpm typecheck, pnpm test:checkpoint, and pnpm build."
+        - covers: [I12D3]
+          note: "Completed issue #12 Wave 2 on `codex/issue-12-compliance`: added a signed-in self-serve account export path in settings, exposed manual deletion/support contact and retention-summary surfaces without adding unsafe one-click erasure, kept anonymous local progress management intact, extended browser smoke coverage for the rights UI, and validated with pnpm format, pre-commit, pnpm lint, pnpm typecheck, pnpm test:checkpoint, and pnpm build."
     - id: mobile-readiness-native-strategy
       issue: "#13"
       title: "Mobile readiness and native app strategy"

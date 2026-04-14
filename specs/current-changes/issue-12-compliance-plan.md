@@ -41,7 +41,7 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 
 - [x] Wave 0: branch + artifact sync
 - [x] Wave 1: inventory + public disclosures
-- [ ] Wave 2: GDPR rights surfaces
+- [x] Wave 2: GDPR rights surfaces
 - [ ] Wave 3: consent-trigger matrix + launch review + wrap-up
 
 ## Locked Decisions
@@ -115,6 +115,13 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 - Retention disclosures match the underlying auth, progress, billing, and email event model.
 - Automated coverage protects the added settings/legal behavior where practical.
 
+### Completed Checkpoint (2026-04-14)
+
+- Added a signed-in self-serve account export path in settings that downloads a structured JSON export of account, progress, entitlement, subscription, billing-event, email-event, and merge-event data.
+- Added visible settings surfaces for deletion requests, support contact, and retention summary without pretending a one-click irreversible deletion flow already exists.
+- Kept the local browser progress export/import/reset flow intact and explicitly distinguished it from the signed-in account export.
+- Extended the browser smoke suite to cover the settings privacy and account-rights surfaces.
+
 ## Wave 3: Consent Trigger Matrix, Launch Review, And Wrap-Up
 
 ### Objectives
@@ -140,7 +147,7 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 
 - [x] Footer exposes public privacy-policy and cookie/storage links.
 - [x] Settings/account copy distinguishes anonymous local progress from signed-in server-backed progress.
-- [ ] Account rights surfaces include export/access, deletion request, support contact, and retention summary.
+- [x] Account rights surfaces include export/access, deletion request, support contact, and retention summary.
 - [ ] Auth/session disclosures match actual Better Auth behavior.
 - [ ] Billing and subscription disclosures match Creem-backed subscription records and webhook processing.
 - [ ] Email disclosures match Resend lifecycle sends and tracked webhook-event storage.
@@ -151,3 +158,4 @@ Status: In progress on the branch above. Keep `status: planned` in `active-conte
 
 - 2026-04-14: Wave 0 synced across the branch, this local plan, `active-context.yaml`, GitHub issue `#12`, and the Codex progress checklist.
 - 2026-04-14: Wave 1 synced after shipping the public privacy/cookie routes, footer legal links, settings disclosure copy, PDD privacy/storage corrections, and browser smoke coverage for the new routes.
+- 2026-04-14: Wave 2 synced after adding the signed-in account export path, manual deletion/support surfaces, retention summary, and settings smoke coverage for the rights UX.
