@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.7"
+  release: "1.1.10"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -97,7 +97,7 @@ roadmap:
     - id: higher-value-randomization
       issue: "#10"
       title: "Higher-value randomization, review modes, and shareable certificates"
-      status: planned
+      status: done
       priority: medium
       links:
         issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/10"
@@ -111,13 +111,11 @@ roadmap:
         dev_h: 6
         test_h: 2
       sub_issues: []
-      remaining_deliverables:
-        - "[I10D1] Outline higher-value randomized variants beyond ordering changes: payloads, headers, error codes, evidence snippets, and misconception rotation"
-        - "[I10D2] Outline review-mode and challenge-mode surfaces such as daily or weekly seeded challenges, exam modes, and weak-area review"
-        - "[I10D3] Outline premium-ready randomization features, analytics hooks, and content-gating opportunities"
-        - "[I10D4] Outline shareable, non-authoritative certificates and badges, including credential URLs and LinkedIn-compatible manual certification details"
-        - "[I10D5] Reserve future AI-only challenge directions as explicit later work, not part of the current implementation"
-      progress_log: []
+      remaining_deliverables: []
+      progress_log:
+        - note: "Completed issue #10 Wave 1 on codex/issue-10-outline: converted the local outline into an execution-ready plan, locked the higher-value randomization taxonomy, documented the future review-mode surface names plus replay rules, and kept the issue scope outline-only with no runtime implementation."
+        - note: "Completed issue #10 Wave 2 on codex/issue-10-outline: defined the premium and enterprise packaging hooks, documented the future analytics taxonomy with issue #12 privacy gates, locked the certificate and badge surface matrix plus credential URL contract, and left README unchanged because the public roadmap text did not need correction."
+        - note: "Completed issue #10 end-to-end on codex/issue-10-outline: explicitly reserved the AI-only challenge direction for later work, added the future implementation breakdown for challenge runtime, certificates, premium gating, and AI follow-ons, archived the completed local plan, and marked issue #12 as the next recommended implementation issue after this outline branch."
     - id: browser-smoke-suite
       issue: "#17"
       title: "Cost-efficient browser smoke suite for checkpoint validation and future mirror sites"
