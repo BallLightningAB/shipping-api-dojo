@@ -1,5 +1,5 @@
 meta:
-  release: "1.1"
+  release: "1.1.7"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -13,7 +13,7 @@ roadmap:
     - id: content-expansion
       issue: "#5"
       title: "Content expansion: minimum viable randomization, 20 lessons, 20 drill families, and 20 scenario families"
-      status: in-progress
+      status: done
       priority: high
       links:
         issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/5"
@@ -68,16 +68,14 @@ roadmap:
         - id: content-expansion-migration
           issue: "#9"
           title: "Full content migration and expansion to 20 lessons, 20 drill families, and 20 scenario families"
-          status: planned
+          status: done
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/9"
-      remaining_deliverables:
-        - "[I5D1] Implement minimum viable randomization for MCQ answer order so the correct answer is not fixed in one slot"
-        - "[I5D2] Implement minimum viable randomization for lesson drill order"
-        - "[I5D3] Implement minimum viable randomization for arena scenario order"
-        - "[I5D4] Reach a target of 20 lessons through the new content-family direction"
-        - "[I5D5] Reach a target of 20 authored drill families with stronger explanations and stronger distractors"
-        - "[I5D6] Reach a target of 20 scenario families through the deeper scenario-family direction"
+          progress_log:
+            - note: "Completed issue #9 Wave 3: added 4 new SOAP lessons, reached 20 canonical drill families and 15 canonical scenario families, expanded the SOAP-supporting wiki and directory entries, and validated the checkpoint with pnpm format, pnpm typecheck, pnpm test, pnpm test:checkpoint, pnpm lint, and pnpm build."
+            - note: "Completed issue #9 Wave 4: added the 2 cross-track lessons and `/learn/cross-track` hub, expanded the arena to the full 20 canonical scenario families, removed the remaining legacy lesson/arena runtime fallbacks, updated navigation plus smoke coverage for the final 20/20/20 curriculum, hardened Playwright to use a dedicated non-reused dev-server port, and validated with pnpm typecheck, pnpm test, pnpm lint, pnpm test:checkpoint, and pnpm build."
+            - note: "Completed the issue #9 wrap-up pass: hardened lesson rerolls so New Challenge resets state locally, avoids the current drill IDs when alternatives exist, added extra SOAP WSDL drill variants plus reroll runtime coverage, made the reroll control hydration-safe with a ClientOnly fallback, and revalidated with pnpm typecheck, pnpm test, pnpm lint, pnpm test:checkpoint, and pnpm build before archiving the local migration plan."
+      remaining_deliverables: []
       progress_log:
         - note: "Research captured in specs/current-changes/issue-5-content-expansion-research.md and GitHub issue #5 was updated to target minimum viable randomization, 20 lessons, 20 drill families, and 20 scenario families."
         - note: "Created the issue-5 joint plan plus issue-specific plan artifacts for #7, #11, #8, #9, and #10; added GitHub issue #11 for auth/billing/email/domain foundation; and updated the roadmap to sequence work as #7 -> #11 -> #8 -> #9 with #10 as follow-on."
@@ -89,6 +87,12 @@ roadmap:
         - note: "Validated issue #7 scoping against the current codebase plus current TanStack Start, Better Auth, Resend, Neon, and Drizzle docs; clarified that SSR-visible seeds may come from loaders but secret or auth-bound logic must move to server functions/server routes; captured Resend Free's single-domain and single-webhook constraints; corrected the registrar checklist to apidojo.app; and marked the issue-7 plan as implementation-ready for #11 without implying that the v2 architecture already exists in code."
         - note: "Closed GitHub issue #7, archived the issue-7 scoping plan, and marked the #7 sub-issue in the roadmap as done so the remaining v2 sequence can proceed to #11."
         - note: "Completed issue #8: introduced a mixed legacy/family content runtime, migrated the REST and SOAP exemplar lessons plus the timeout scenario family, added deterministic seeded randomization for lesson drills/MCQ options/arena cards, kept progress keyed to canonical family IDs, and validated with typecheck, tests, lint, build, and live dev-server route checks."
+        - note: "Started issue #9 Phase 0 documentation sync: updated the issue-9 local plan and issue-5 joint plan, moved issue #9 to in-progress, and created follow-on issues #15 (deep wiki expansion) and #16 (EDI product and subdomain strategy) so the active migration scope stays focused and resumable."
+        - note: "Completed issue #9 Wave 1: moved the issue-8 family definitions into canonical family and catalog modules, migrated all 8 current lessons onto canonical lesson definitions, regrouped the current lesson drills into 16 canonical drill families and the current incidents into 5 canonical scenario families, added legacy-to-canonical local progress remapping for drill/scenario IDs, switched lesson navigation surfaces to the runtime catalog, and validated with pnpm typecheck, pnpm test, pnpm lint, and pnpm build."
+        - note: "Completed issue #9 Wave 2 locally on codex/issue-9-migration after pushing the Wave 1 checkpoint: added the 6 new REST lessons, expanded the migration to 19 canonical drill families and 10 canonical scenario families, added the targeted REST-supporting wiki and directory entries, fixed arena-card deduplication for legacy scenario IDs, and validated with pnpm format, pnpm typecheck, pnpm test, pnpm lint, and pnpm build."
+        - note: "Completed issue #9 Wave 3 on codex/issue-9-migration: added the 4 new SOAP lessons, finished the 20-family drill taxonomy, expanded the arena to 15 canonical scenario families with 5 new SOAP-heavy incidents, extended the SOAP support wiki/directory surfaces, and validated with pnpm format, pnpm typecheck, pnpm test, pnpm test:checkpoint, pnpm lint, and pnpm build."
+        - note: "Completed issue #9 Wave 4 on codex/issue-9-migration: shipped the 2 cross-track lessons and hub, reached the final 20 canonical scenario families, removed the remaining legacy lesson/arena runtime fallback paths, updated navigation plus checkpoint coverage for the completed curriculum, and fixed Playwright's local server isolation so pnpm test:checkpoint now consistently boots this repo on its own port."
+        - note: "Completed issue #9 end-to-end: fixed lesson rerolls so New Challenge resets and avoids immediate repeats, archived the local migration plan after the final validation pass, and satisfied the remaining issue #5 20/20/20 curriculum deliverables."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
@@ -114,6 +118,27 @@ roadmap:
         - "[I10D4] Outline shareable, non-authoritative certificates and badges, including credential URLs and LinkedIn-compatible manual certification details"
         - "[I10D5] Reserve future AI-only challenge directions as explicit later work, not part of the current implementation"
       progress_log: []
+    - id: browser-smoke-suite
+      issue: "#17"
+      title: "Cost-efficient browser smoke suite for checkpoint validation and future mirror sites"
+      status: done
+      priority: high
+      links:
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/17"
+      deliverables:
+        - "[I17D1] Add a minimal Playwright-based browser smoke suite with a single Chromium project by default"
+        - "[I17D2] Expose easy local scripts for browser smoke runs and headed debugging"
+        - "[I17D3] Cover the current route-level checkpoint surfaces: home, learn hubs, a representative lesson, arena, wiki, and directory"
+        - "[I17D4] Keep the setup cheap enough to carry forward through issue #9 and future mirror sites such as the planned EDI sibling product"
+        - "[I17D5] Document the suite in the README and keep active-context/current-changes aligned with the shipped setup"
+      est:
+        dev_h: 4
+        test_h: 2
+      sub_issues: []
+      remaining_deliverables: []
+      progress_log:
+        - note: "Created GitHub issue #17 to add a low-cost browser smoke suite that complements the existing unit/integration coverage and stays reusable for future mirrored products such as EDI."
+        - note: "Implemented issue #17 with a Chromium-only Playwright smoke suite, easy local scripts, README guidance, and route-level checkpoint coverage for home, learn hubs, a representative Wave 2 lesson, arena, wiki, and directory."
     - id: eu-privacy-launch-compliance
       issue: "#12"
       title: "EU privacy, storage disclosure, and launch compliance"
@@ -165,6 +190,56 @@ roadmap:
         - "[I13D5] Define the API, deep-linking, offline, and app-store readiness follow-up work that should happen after the web v2 is complete"
       progress_log:
         - note: "The current recommendation is web-first now, mobile later, with platform-neutral domain logic and backend contracts preserved during the v2 implementation."
+    - id: deep-wiki-expansion
+      issue: "#15"
+      title: "Deep wiki expansion by vendor, business unit, region, and protocol surface"
+      status: planned
+      priority: medium
+      links:
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/15"
+      deliverables:
+        - "[I15D1] Define the vendor documentation taxonomy using vendor -> business unit/product line -> country/region -> protocol/doc surface"
+        - "[I15D2] Expand the wiki into a durable reference library for major carriers and logistics platforms"
+        - "[I15D3] Add carrier-specific reference pages that avoid generic vendor claims when behavior differs by business unit, market, or API family"
+        - "[I15D4] Expand the directory with official documentation links, versioning/deprecation references, and protocol-specific operational tools"
+        - "[I15D5] Define SEO, internal-linking, and indexation rules so the expanded wiki remains a high-value knowledge surface"
+      est:
+        dev_h: 14
+        test_h: 6
+      sub_issues: []
+      remaining_deliverables:
+        - "[I15D1] Define the vendor documentation taxonomy using vendor -> business unit/product line -> country/region -> protocol/doc surface"
+        - "[I15D2] Expand the wiki into a durable reference library for major carriers and logistics platforms"
+        - "[I15D3] Add carrier-specific reference pages that avoid generic vendor claims when behavior differs by business unit, market, or API family"
+        - "[I15D4] Expand the directory with official documentation links, versioning/deprecation references, and protocol-specific operational tools"
+        - "[I15D5] Define SEO, internal-linking, and indexation rules so the expanded wiki remains a high-value knowledge surface"
+      progress_log:
+        - note: "Created as a follow-on issue during issue #9 Phase 0 so the broader vendor/business-unit/region/protocol reference-library work stays out of the core 20/20/20 migration scope."
+    - id: edi-product-strategy
+      issue: "#16"
+      title: "EDI product and subdomain strategy under API Dojo"
+      status: planned
+      priority: medium
+      links:
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/16"
+      deliverables:
+        - "[I16D1] Decide whether EDI should ship as a sibling product under API Dojo rather than as a track inside Shipping API Dojo"
+        - "[I16D2] Define the recommended product boundary, IA, naming, and domain strategy for an EDI-focused learning surface"
+        - "[I16D3] Outline the initial curriculum scope for EDI, including X12, EDIFACT, acknowledgements, mapping, and operational troubleshooting"
+        - "[I16D4] Define the shared-platform boundaries between Shipping API Dojo and a future EDI product so content, auth, entitlements, and SEO concerns stay coherent"
+        - "[I16D5] Decide the launch path for the first mirrored sibling product, including cross-linking and umbrella-brand positioning under apidojo.app"
+      est:
+        dev_h: 8
+        test_h: 3
+      sub_issues: []
+      remaining_deliverables:
+        - "[I16D1] Decide whether EDI should ship as a sibling product under API Dojo rather than as a track inside Shipping API Dojo"
+        - "[I16D2] Define the recommended product boundary, IA, naming, and domain strategy for an EDI-focused learning surface"
+        - "[I16D3] Outline the initial curriculum scope for EDI, including X12, EDIFACT, acknowledgements, mapping, and operational troubleshooting"
+        - "[I16D4] Define the shared-platform boundaries between Shipping API Dojo and a future EDI product so content, auth, entitlements, and SEO concerns stay coherent"
+        - "[I16D5] Decide the launch path for the first mirrored sibling product, including cross-linking and umbrella-brand positioning under apidojo.app"
+      progress_log:
+        - note: "Created as a follow-on strategy issue during issue #9 Phase 0 after deciding that EDI should be treated as a sibling product and likely first mirrored subdomain rather than as a third Shipping API Dojo track."
     - id: search-and-filtering
       title: "Wiki search, directory filtering"
       status: planned

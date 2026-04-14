@@ -63,4 +63,42 @@ describe("mergeProgressSnapshots", () => {
 		expect(merged.scenariosCompleted).toContain("timeout-create-shipment");
 		expect(merged.scenariosCompleted).toContain("wsdl-change-breaks-client");
 	});
+
+	it("normalizes legacy local progress before merging with server progress", () => {
+		const server = {
+			...DEFAULT_PROGRESS,
+			lessons: {
+				"rest-2-auth-headers": {
+					completed: false,
+					completedAt: null,
+					drillScores: {
+						"rest-required-headers-correlation-ids": 70,
+					},
+				},
+			},
+		};
+		const local = {
+			...DEFAULT_PROGRESS,
+			version: 1,
+			lessons: {
+				"rest-2-auth-headers": {
+					completed: false,
+					completedAt: null,
+					drillScores: {
+						"rest2-builder-1": 95,
+					},
+				},
+			},
+			scenariosCompleted: ["rate-limit-429"],
+		};
+
+		const merged = mergeProgressSnapshots(server, local);
+
+		expect(
+			merged.lessons["rest-2-auth-headers"]?.drillScores[
+				"rest-required-headers-correlation-ids"
+			]
+		).toBe(95);
+		expect(merged.scenariosCompleted).toContain("rate-limiting-storm");
+	});
 });

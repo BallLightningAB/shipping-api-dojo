@@ -8,6 +8,7 @@ The current public build includes:
 
 - **REST lessons** covering semantics, auth, error handling, pagination, and webhooks
 - **SOAP lessons** covering envelopes, namespaces, WSDL/XSD, and faults
+- **Cross-track lessons** covering environment drift and carrier integration architecture
 - **Incident Arena** scenario drills for troubleshooting shipping integration failures
 - **Wiki** reference content for shipping/API concepts
 - **Directory** curated links to specs, tools, and carrier resources
@@ -69,6 +70,22 @@ pnpm dev
 ```
 
 Open `http://localhost:3000`.
+
+## Testing
+
+- `pnpm test` runs the Vitest unit and integration suite.
+- `pnpm test:e2e` runs the low-cost Playwright Chromium smoke suite against a local dev server.
+- `pnpm test:checkpoint` runs `pnpm test` followed by `pnpm test:e2e` for issue checkpoint validation.
+- `pnpm test:e2e:headed` opens the smoke suite in a visible browser for local debugging.
+- `pnpm test:e2e:ui` opens Playwright UI mode for targeted reruns and trace inspection.
+
+Install the Playwright browser once per machine with:
+
+```bash
+pnpm exec playwright install chromium
+```
+
+The browser suite is intentionally narrow: it smoke-tests the home page, the learning hubs, a representative lesson route, the arena, wiki content, and the directory. Keep broader logic coverage in Vitest and grow the browser suite only when a route-level regression risk justifies it.
 
 ## Domains
 

@@ -2,7 +2,7 @@
  * Content Data Types for Shipping API Dojo
  */
 
-export type Track = "rest" | "soap" | "intro";
+export type Track = "rest" | "soap" | "intro" | "cross-track";
 
 export type DrillType = "mcq" | "cloze" | "builder.rest" | "builder.soap";
 

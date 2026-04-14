@@ -3,6 +3,7 @@ import {
 	ArrowRight,
 	BookOpen,
 	ExternalLink,
+	GitBranch,
 	Shield,
 	Swords,
 } from "lucide-react";
@@ -37,7 +38,13 @@ const tracks = [
 			"Envelopes, namespaces, WSDL/XSD, and fault handling for legacy shipping integrations.",
 		href: "/learn/soap",
 		icon: BookOpen,
-		lessons: 3,
+	},
+	{
+		title: "Cross-Track Hub",
+		description:
+			"Sandbox-versus-production drift, carrier capability matrices, and integration architecture patterns across protocols.",
+		href: "/learn/cross-track",
+		icon: GitBranch,
 	},
 	{
 		title: "Incident Arena",
@@ -45,7 +52,6 @@ const tracks = [
 			"Realistic troubleshooting scenarios: timeouts, rate limits, SOAP faults, and silent failures.",
 		href: "/arena",
 		icon: Swords,
-		scenarios: 5,
 	},
 	{
 		title: "Wiki",

@@ -1,5 +1,5 @@
 /**
- * Wiki Entries — 12+ reference articles for carrier integration concepts
+ * Wiki Entries — reference articles for carrier integration concepts
  */
 
 import type { WikiEntry } from "./types";
@@ -167,6 +167,197 @@ export const wikiEntries: WikiEntry[] = [
 			},
 		],
 		relatedSlugs: ["retry-strategies", "problem-details", "circuit-breaker"],
+	},
+	{
+		slug: "oauth-token-lifecycle",
+		title: "OAuth Token Lifecycle",
+		summary:
+			"How to cache, refresh, and invalidate carrier access tokens without creating an auth outage.",
+		body: "Carrier OAuth flows are usually simple client-credentials exchanges, but the operational risk is in the lifecycle. Cache the token centrally, refresh with an expiry buffer, and prevent every worker from refreshing at once. A single-flight refresh path plus token-expiry metrics turns auth from a hidden dependency into something you can observe and control.\n\nWhen a token expires unexpectedly, treat the incident as both an auth failure and a traffic problem. Uncoordinated refresh storms can rate-limit the token endpoint and widen the outage.",
+		sources: [
+			{
+				label: "RFC 6749 — OAuth 2.0 Authorization Framework",
+				url: "https://www.rfc-editor.org/rfc/rfc6749",
+			},
+		],
+		relatedSlugs: ["correlation-id", "retry-after-and-backpressure"],
+	},
+	{
+		slug: "retry-after-and-backpressure",
+		title: "Retry-After & Backpressure",
+		summary:
+			"How to translate carrier throttling signals into queue-safe system behavior.",
+		body: "Retry-After is not just a retry timer. It is feedback that your system must slow down now. Honor the carrier's guidance, reduce worker throughput, and propagate backpressure to the code paths that enqueue new work. Without that propagation, the queue becomes the real outage even if the carrier is recovering.\n\nUse proactive throttles such as token buckets for steady-state control, then use exponential backoff only for exceptional failures. Dead-letter queues belong at the end of that flow, not in place of it.",
+		sources: [
+			{
+				label: "RFC 9110 — Retry-After",
+				url: "https://www.rfc-editor.org/rfc/rfc9110#name-retry-after",
+			},
+			{
+				label: "RFC 9331 — RateLimit Header Fields for HTTP",
+				url: "https://www.rfc-editor.org/rfc/rfc9331",
+			},
+		],
+		relatedSlugs: ["retry-strategies", "dead-letter-queues"],
+	},
+	{
+		slug: "webhook-signatures",
+		title: "Webhook Signatures",
+		summary:
+			"Verify webhook authenticity against the raw request body before you trust the event.",
+		body: "Webhook signature verification depends on exact bytes. Capture the raw body before parsing, compute the HMAC or signing payload the carrier specifies, and compare with a constant-time check. If verification happens after middleware rewrites the body, your signature logic is already untrustworthy.\n\nSignature validation only proves the carrier sent the event. It does not solve replays, ordering, or idempotent processing. Those need separate controls.",
+		sources: [
+			{
+				label: "RFC 2104 — HMAC",
+				url: "https://www.rfc-editor.org/rfc/rfc2104",
+			},
+			{
+				label: "Stripe — Resolve Webhook Signature Verification Errors",
+				url: "https://docs.stripe.com/webhooks/signature",
+			},
+		],
+		relatedSlugs: ["webhook-replay-and-ordering", "correlation-id"],
+	},
+	{
+		slug: "webhook-replay-and-ordering",
+		title: "Webhook Replay & Ordering",
+		summary:
+			"Protect webhook consumers against duplicate delivery and out-of-order carrier events.",
+		body: "Replay defense and ordering control are different jobs. Replays are handled with event IDs, deduplication ledgers, and idempotent consumers. Ordering is handled with timestamps, versions, sequence numbers, or a monotonic status projection. One control does not replace the other.\n\nCarrier webhooks are often eventually consistent, so your downstream state machine must tolerate valid status updates arriving late. Preserve the raw timeline for debugging even if your public shipment state stays monotonic.",
+		sources: [
+			{
+				label: "Postmark — How to Handle Duplicate Events in Your Code",
+				url: "https://postmarkapp.com/blog/why-idempotency-is-important",
+			},
+		],
+		relatedSlugs: ["webhook-signatures", "partial-success-and-compensation"],
+	},
+	{
+		slug: "partial-success-and-compensation",
+		title: "Partial Success & Compensation",
+		summary:
+			"Recover safely when the carrier completed part of the workflow and your system did not.",
+		body: "Partial success means the workflow is now distributed. A carrier may create the label while your persistence layer fails, or may accept some parcels in a bulk request and reject others. The fix is not 'retry everything.' The fix is item-level state, one logical operation key, and explicit compensation rules.\n\nCompensation can mean voiding the external artifact, replaying the internal save against the original operation ID, or parking the workflow for manual review. Choose one based on reversibility, billing exposure, and auditability.",
+		sources: [
+			{
+				label: "Azure Architecture Center — Compensating Transaction Pattern",
+				url: "https://learn.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction",
+			},
+		],
+		relatedSlugs: ["idempotency", "dead-letter-queues"],
+	},
+	{
+		slug: "health-checks",
+		title: "Health Checks",
+		summary:
+			"Use health checks and synthetic probes to tell carrier failures apart from your own regressions.",
+		body: "A good health check does more than confirm the process is alive. For carrier integrations, it should separate local health, dependency reachability, credential validity, and critical-path readiness. Lightweight synthetic probes against the safest carrier endpoints can reveal auth or routing failures before customers find them.\n\nDo not overload one endpoint with every possible dependency test. Split liveness, readiness, and deeper diagnostic probes so deploy systems and humans get the right signal.",
+		sources: [
+			{
+				label: "Kubernetes — Liveness, Readiness, and Startup Probes",
+				url: "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+			},
+			{
+				label: "OpenTelemetry Documentation",
+				url: "https://opentelemetry.io/docs/",
+			},
+		],
+		relatedSlugs: ["correlation-id", "sandbox-vs-production"],
+	},
+	{
+		slug: "dead-letter-queues",
+		title: "Dead-Letter Queues",
+		summary:
+			"Route permanently failing carrier work into a queue built for inspection and recovery.",
+		body: "A dead-letter queue is where work goes when the automated path has exhausted its safe retries. That makes it an operations tool, not a bin for forgotten messages. Preserve the request fingerprint, operation key, carrier error detail, and last retry reason so an engineer can tell whether the next action is replay, compensation, or escalation.\n\nIf the DLQ entry does not contain enough evidence to act, the queue is only hiding the outage. Pair it with runbooks and alerts that explain when to replay and when to stop.",
+		sources: [
+			{
+				label: "Amazon SQS Dead-Letter Queues",
+				url: "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html",
+			},
+		],
+		relatedSlugs: [
+			"retry-after-and-backpressure",
+			"partial-success-and-compensation",
+		],
+	},
+	{
+		slug: "schema-validation",
+		title: "Schema Validation",
+		summary:
+			"Validate SOAP payloads against the carrier contract before the request leaves your system.",
+		body: "Schema validation is the fastest way to turn a vague downstream SOAP fault into a precise local failure. Validate generated XML against the XSD or generated type system before sending it to the carrier. That catches missing required elements, invalid enums, numeric-format drift, and namespace-bound type issues at a point where engineers still have deterministic context.\n\nTreat schema validation as an operational control, not just a developer convenience. It shortens incident loops, reduces retry noise, and makes contract drift visible earlier in the delivery pipeline.",
+		sources: [
+			{
+				label: "W3C XML Schema Primer",
+				url: "https://www.w3.org/TR/xmlschema-0/",
+			},
+			{ label: "W3C WSDL 1.1", url: "https://www.w3.org/TR/wsdl.html" },
+		],
+		relatedSlugs: ["xsd", "wsdl", "soap-fault"],
+	},
+	{
+		slug: "soap-headers-and-auth",
+		title: "SOAP Headers and Auth",
+		summary:
+			"Keep SOAP auth and transaction metadata in the header contract the carrier actually processes.",
+		body: "SOAP header structure is part of the carrier contract. Auth tokens, UsernameToken blocks, API credentials, and transaction identifiers often belong in specific namespaces and element positions that the carrier stack inspects before it touches the business payload. If those fields drift into the body or use the wrong namespace, the XML can remain well formed while authentication still fails.\n\nKeep one shared header builder, treat correlation IDs as first-class header data, and test header output explicitly. Header bugs are operational bugs because they break auth, traceability, and support workflows at the same time.",
+		sources: [
+			{
+				label: "OASIS WS-Security SOAP Message Security 1.1.1",
+				url: "http://docs.oasis-open.org/wss-m/wss/v1.1.1/os/wss-SOAPMessageSecurity-v1.1.1-os.html",
+			},
+			{
+				label: "W3C SOAP 1.2 Specification",
+				url: "https://www.w3.org/TR/soap12/",
+			},
+		],
+		relatedSlugs: ["soap-envelope", "correlation-id", "oauth-token-lifecycle"],
+	},
+	{
+		slug: "contract-testing",
+		title: "Contract Testing",
+		summary:
+			"Use contract-aware tests to prove your generated SOAP client still matches the carrier's live expectations.",
+		body: "SOAP contract testing sits between unit tests and live incident response. It proves that your generated client, mapping layer, and sample payloads still align with the carrier's current WSDL, XSD, and header expectations. Safe probes, golden-request validation, and generated-client smoke tests catch drift before the next scheduled batch rediscovers it in production.\n\nThe important point is scope: contract tests verify the external boundary. They are not just another copy of internal unit tests, and they are not a replacement for canary traffic when the carrier announces a sunset or schema refresh.",
+		sources: [
+			{ label: "W3C WSDL 1.1", url: "https://www.w3.org/TR/wsdl.html" },
+			{ label: "SoapUI Documentation", url: "https://www.soapui.org/docs/" },
+		],
+		relatedSlugs: [
+			"wsdl-diff-monitoring",
+			"schema-validation",
+			"health-checks",
+		],
+	},
+	{
+		slug: "wsdl-diff-monitoring",
+		title: "WSDL Diff Monitoring",
+		summary:
+			"Track WSDL and schema changes as operational events so regenerated SOAP clients never surprise production.",
+		body: "WSDL monitoring is contract observability. Capture a checksum or canonical diff of the live WSDL and any imported schemas, compare it with the version your client was generated from, and alert when the contract changes outside your planned deployment flow. That tells you whether a sudden SOAP incident is likely to be carrier drift rather than a local regression.\n\nDiff monitoring matters most around maintenance windows, endpoint migrations, and sunset deadlines. Pair it with generated-client review and safe contract tests so one changed element name does not silently break the next scheduled job.",
+		sources: [
+			{ label: "W3C WSDL 1.1", url: "https://www.w3.org/TR/wsdl.html" },
+			{
+				label: "W3C XML Schema Primer",
+				url: "https://www.w3.org/TR/xmlschema-0/",
+			},
+		],
+		relatedSlugs: ["wsdl", "contract-testing", "schema-validation"],
+	},
+	{
+		slug: "sandbox-vs-production",
+		title: "Sandbox vs Production",
+		summary:
+			"Why a carrier integration that passes in sandbox can still fail on the first real shipment.",
+		body: "Carrier sandboxes often drift from production. Credentials, data validation, enabled products, account entitlements, and even the freshness of the API contract can differ. A green sandbox test proves your code can speak to one environment, not that the production account is ready.\n\nCompare environments with explicit evidence: correlation IDs, captured requests, response detail, and contract versions. Runbooks should assume drift is possible until production behavior has been observed directly.",
+		sources: [
+			{
+				label: "Stripe — Testing vs Live Mode",
+				url: "https://docs.stripe.com/testing-use-cases",
+			},
+		],
+		relatedSlugs: ["health-checks", "oauth-token-lifecycle"],
 	},
 	{
 		slug: "xsd",

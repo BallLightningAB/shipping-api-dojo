@@ -3,54 +3,78 @@ import {
 	deriveRouteSeed,
 	shuffleDeterministic,
 } from "../lib/randomization";
-import { getDrillById, getDrillsByIds } from "./drills";
 import {
 	getDrillFamilyById,
 	getLessonDefinitionBySlug,
 	getScenarioFamilyById,
+	lessonDefinitions,
+	scenarioFamilies,
 } from "./families";
-import { getLessonBySlug, lessons } from "./lessons";
-import { getScenarioById, scenarios } from "./scenarios";
 import type { Drill, Lesson, Scenario, Track } from "./types";
 
-function materializeFamilyDrill(familyId: string, seed: number): Drill {
+const MAX_REROLL_ATTEMPTS = 8;
+
+function materializeFamilyDrill(
+	familyId: string,
+	seed: number,
+	excludedDrillIds: ReadonlySet<string> = new Set()
+): Drill {
 	const family = getDrillFamilyById(familyId);
 	if (!family) {
 		throw new Error(`Unknown drill family: ${familyId}`);
 	}
 
-	const variantSeed = deriveChildSeed(seed, familyId);
-	const variant = family.buildVariant(variantSeed);
-	const progressKey = variant.drill.progressKey ?? family.id;
-	const baseDrill = {
-		...variant.drill,
-		id: `${family.id}:${variant.variantId}`,
-		variantId: variant.variantId,
-		progressKey,
-		familyId: family.id,
-	};
+	let fallbackDrill: Drill | null = null;
 
-	if (baseDrill.type !== "mcq") {
-		return baseDrill;
+	for (let attempt = 0; attempt < MAX_REROLL_ATTEMPTS; attempt += 1) {
+		const variantSeed =
+			attempt === 0
+				? deriveChildSeed(seed, familyId)
+				: deriveChildSeed(seed, `${familyId}:reroll:${attempt}`);
+		const variant = family.buildVariant(variantSeed);
+		const progressKey = variant.drill.progressKey ?? family.id;
+		const baseDrill = {
+			...variant.drill,
+			id: `${family.id}:${variant.variantId}`,
+			variantId: variant.variantId,
+			progressKey,
+			familyId: family.id,
+		};
+
+		const nextDrill =
+			baseDrill.type !== "mcq"
+				? baseDrill
+				: (() => {
+						const orderedOptions = baseDrill.options.map((option, index) => ({
+							index,
+							option,
+						}));
+						const shuffledOptions = shuffleDeterministic(
+							orderedOptions,
+							deriveChildSeed(variantSeed, `${family.id}:options`)
+						);
+						const correctIndex = shuffledOptions.findIndex(
+							(entry) => entry.index === baseDrill.correctIndex
+						);
+
+						return {
+							...baseDrill,
+							options: shuffledOptions.map((entry) => entry.option),
+							correctIndex,
+						};
+					})();
+
+		fallbackDrill ??= nextDrill;
+		if (!excludedDrillIds.has(nextDrill.id)) {
+			return nextDrill;
+		}
 	}
 
-	const orderedOptions = baseDrill.options.map((option, index) => ({
-		index,
-		option,
-	}));
-	const shuffledOptions = shuffleDeterministic(
-		orderedOptions,
-		deriveChildSeed(variantSeed, `${family.id}:options`)
-	);
-	const correctIndex = shuffledOptions.findIndex(
-		(entry) => entry.index === baseDrill.correctIndex
-	);
+	if (!fallbackDrill) {
+		throw new Error(`Unable to materialize drill family: ${familyId}`);
+	}
 
-	return {
-		...baseDrill,
-		options: shuffledOptions.map((entry) => entry.option),
-		correctIndex,
-	};
+	return fallbackDrill;
 }
 
 function adaptFamilyLesson(slug: string): Lesson | undefined {
@@ -79,7 +103,10 @@ export function getRouteSeed(scope: string, explicitSeed?: number): number {
 
 export function getLessonRuntimeBySlug(
 	slug: string,
-	seed: number
+	seed: number,
+	options?: {
+		excludeDrillIds?: string[];
+	}
 ): {
 	lesson: Lesson;
 	seed: number;
@@ -88,8 +115,9 @@ export function getLessonRuntimeBySlug(
 	const familyLesson = adaptFamilyLesson(slug);
 	if (familyLesson?.drillFamilyIds?.length) {
 		const drillSeed = deriveChildSeed(seed, `${slug}:drill-order`);
+		const excludedDrillIds = new Set(options?.excludeDrillIds ?? []);
 		const drills = familyLesson.drillFamilyIds.map((familyId) =>
-			materializeFamilyDrill(familyId, deriveChildSeed(seed, familyId))
+			materializeFamilyDrill(familyId, seed, excludedDrillIds)
 		);
 
 		return {
@@ -99,16 +127,7 @@ export function getLessonRuntimeBySlug(
 		};
 	}
 
-	const lesson = getLessonBySlug(slug);
-	if (!lesson) {
-		return null;
-	}
-
-	return {
-		lesson,
-		seed,
-		drills: getDrillsByIds(lesson.drillIds),
-	};
+	return null;
 }
 
 export function getDrillProgressKey(drill: Drill): string {
@@ -124,25 +143,18 @@ export function getScenarioProgressKey(scenario: Scenario): string {
 }
 
 export function getArenaScenarioCards(seed: number): Scenario[] {
-	const mixedScenarios = scenarios.map((scenario) => {
-		const family = getScenarioFamilyById(scenario.id);
-		if (!family) {
-			return scenario;
-		}
-
-		return {
-			id: family.id,
-			progressKey: family.id,
-			scenarioFamilyId: family.id,
-			title: family.title,
-			summary: family.summary,
-			difficulty: family.difficulty,
-			steps: scenario.steps,
-		};
-	});
+	const canonicalCards = scenarioFamilies.map((family) => ({
+		id: family.id,
+		progressKey: family.id,
+		scenarioFamilyId: family.id,
+		title: family.title,
+		summary: family.summary,
+		difficulty: family.difficulty,
+		steps: [],
+	}));
 
 	return shuffleDeterministic(
-		mixedScenarios,
+		canonicalCards,
 		deriveChildSeed(seed, "arena-cards")
 	);
 }
@@ -152,23 +164,19 @@ export function getScenarioRuntimeById(
 	runSeed: number
 ): Scenario | null {
 	const family = getScenarioFamilyById(id);
-	if (family) {
-		return family.buildRun(runSeed).scenario;
-	}
-
-	return getScenarioById(id) ?? null;
+	return family ? family.buildRun(runSeed).scenario : null;
 }
 
 export function getLessonCatalog(): Lesson[] {
-	return lessons.map((lesson) => adaptFamilyLesson(lesson.slug) ?? lesson);
+	const catalog = lessonDefinitions
+		.map((lesson) => adaptFamilyLesson(lesson.slug))
+		.filter((lesson): lesson is Lesson => Boolean(lesson));
+
+	return catalog.sort((left, right) => left.order - right.order);
 }
 
 export function getLessonsByTrackRuntime(track: Track): Lesson[] {
 	return getLessonCatalog()
 		.filter((lesson) => lesson.track === track)
 		.sort((left, right) => left.order - right.order);
-}
-
-export function getLegacyDrillById(id: string): Drill | undefined {
-	return getDrillById(id);
 }

@@ -4,6 +4,7 @@ const footerLinks = {
 	learn: [
 		{ href: "/learn/rest", label: "REST Track" },
 		{ href: "/learn/soap", label: "SOAP Track" },
+		{ href: "/learn/cross-track", label: "Cross-Track Hub" },
 		{ href: "/arena", label: "Incident Arena" },
 	],
 	resources: [
