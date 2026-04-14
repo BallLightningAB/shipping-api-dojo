@@ -1,0 +1,442 @@
+entries:
+  - date: "2026-04-08"
+    version: "1.0.27"
+    commit: b62e33b
+    status: in-progress
+    title: "docs(env): preserve updated .env.example cleanup on main"
+    details: |-
+      Preserved the updated `.env.example` cleanup on `main` after the merged
+      issue #11 branch was retired.
+
+      - Kept `SESSION_COOKIE_DOMAIN` commented out in the example file with the
+        clearer `apidojo.app` format hint
+      - Kept the Creem enterprise product example commented out as not currently
+        used
+      - Preserved the split monthly/annual example product IDs for the pro tier
+      - Restored the intentional example-file cleanup after removing the temporary
+        review worktree and retiring the feature branch
+    refs:
+      - "I11Docs"
+
+  - date: "2026-03-31"
+    version: "1.0.26"
+    commit: TBD
+    status: in-progress
+    title: "fix(email-lifecycle): prevent duplicate confirmation emails on routine active updates"
+    details: |-
+      Addressed the final external-review blocker on PR #14 by tightening
+      billing lifecycle email classification.
+
+      - Stopped treating all `subscription.updated + active` events as
+        confirmation triggers
+      - Added support for explicit activation signals and inactive-to-active
+        transitions using previous subscription status when available
+      - Updated webhook usage and billing helper tests to enforce the narrower
+        confirmation behavior
+      - Revalidated with pre-commit, format, lint, typecheck, test, and build
+    refs:
+      - "I11D6"
+
+  - date: "2026-03-31"
+    version: "1.0.25"
+    commit: b581cd5
+    status: in-progress
+    title: "docs(readme): record entitlement caveat from issue #11 review follow-up"
+    details: |-
+      Added the remaining architectural caveat from the PR review follow-up to
+      the repository README and the completed issue #11 handoff so future work
+      does not accidentally treat user_entitlements as source-isolated.
+
+      - Documented that `user_entitlements` currently co-mingles manual/admin
+        and Creem-derived state in one row
+      - Noted that any future manual grant support should split the model or
+        make the read path source-aware
+      - Updated the issue #11 comment trail with the same cautionary note
+      - Preserved the current branch and PR state for another external review
+    refs:
+      - "I11D5"
+
+  - date: "2026-03-31"
+    version: "1.0.24"
+    commit: eae8c06
+    status: in-progress
+    title: "docs(memory-bank): close issue #11 auth foundation and archive handoff"
+    details: |-
+      Closed out issue #11 after preview validation, production env upload, and
+      documentation cleanup.
+
+      - Archived the issue #11 plan and phase logs into specs/archived/completed
+      - Marked issue #11 complete in the active memory-bank roadmap
+      - Bumped release metadata to 1.0.24 for the wrap-up commit
+      - Preserved the implementation history for phases 1-7 in the archive
+      - Kept the branch ready for merge to main before starting #8
+    refs:
+      - "I11D1, I11D2, I11D3, I11D4, I11D5, I11D6, I11D7"
+
+  - date: "2026-03-25"
+    version: "1.0.23"
+    commit: 599f945
+    status: completed
+    title: "feat(auth-domain): start issue #11 phase 7 preview-safe auth domain readiness"
+    details: |-
+      Started Phase 7 of issue #11 by wiring Better Auth domain and cookie
+      readiness for preview and production environments.
+
+      - Added auth config helpers for dynamic base URL allowed-host derivation
+      - Added trusted proxy + secure-cookie wiring in Better Auth advanced config
+      - Added optional cross-subdomain cookie domain support via SESSION_COOKIE_DOMAIN
+      - Added welcome email trigger through Better Auth user-create database hook
+      - Added focused tests for auth host/cookie/security config behavior
+      - Updated issue #11 progress artifacts and memory-bank release metadata
+      - Revalidated with format, lint, typecheck, tests, and build
+    refs:
+      - "I11D1, I11D7"
+
+  - date: "2026-03-25"
+    version: "1.0.22"
+    commit: 82a3e83
+    status: in-progress
+    title: "feat(email-lifecycle): implement issue #11 phase 6 resend lifecycle flow"
+    details: |-
+      Implemented Phase 6 of issue #11 by adding Resend lifecycle email helpers,
+      tracked webhook ingestion, and billing-triggered transactional sends.
+
+      - Added shared lifecycle email copy/send helpers for welcome and billing states
+      - Added Resend webhook signature verification via Svix headers and SDK verify
+      - Added tracked-event filtering and idempotent event persistence for resend webhooks
+      - Added billing lifecycle classification helpers and webhook-triggered email dispatch
+      - Added unit tests for lifecycle email copy, resend webhook parsing, and billing classification
+      - Revalidated with format, lint, typecheck, tests, and production build
+    refs:
+      - "I11D6"
+
+  - date: "2026-03-25"
+    version: "1.0.21"
+    commit: d864f97
+    status: in-progress
+    title: "feat(billing): start issue #11 phase 5 creem webhook sync"
+    details: |-
+      Started Phase 5 of issue #11 by implementing Creem webhook verification and
+      idempotent subscription + entitlement synchronization.
+
+      - Added Creem webhook signature verification and payload parsing utilities
+      - Added webhook field extraction and plan/tier mapping helpers
+      - Added `/api/webhooks/creem` endpoint with idempotent billing-event handling
+      - Upserts subscription records and entitlement grants from validated webhook data
+      - Added unit tests for signature verification and payload extraction logic
+    refs:
+      - "I11D5"
+
+  - date: "2026-03-25"
+    version: "1.0.20"
+    commit: 098cb7a
+    status: in-progress
+    title: "feat(entitlements): start issue #11 phase 4 capability resolution and guards"
+    details: |-
+      Started Phase 4 of issue #11 by adding capability resolution and server-side
+      entitlement guards for free/pro/enterprise access control.
+
+      - Added entitlement tier/capability bundle resolver with tests
+      - Added server-side `getCurrentEntitlements` and `requireCapability` contracts
+      - Added development-only entitlement debug visibility in settings route
+      - Updated local issue #11 artifacts and memory-bank release metadata
+    refs:
+      - "I11D3"
+
+  - date: "2026-03-25"
+    version: "1.0.19"
+    commit: 422e194
+    status: in-progress
+    title: "feat(progress-sync): wire signed-in hydrator to phase 3 server contracts"
+    details: |-
+      Continued issue #11 Phase 3 by connecting the signed-in client progress
+      hydration flow to the server progress contracts introduced in the prior commit.
+
+      - Wired `ProgressHydrator` to call `mergeAnonymousProgressOnSignIn`
+      - Added safe no-write behavior when merge choice is required and no strategy is chosen yet
+      - Added progress-store helpers for snapshot and full-state replacement during sync
+      - Renamed server-function module to `progress.sync.ts` to satisfy TanStack import-protection
+      - Revalidated with lint, typecheck, tests, and production build
+    refs:
+      - "I11D4"
+
+  - date: "2026-03-25"
+    version: "1.0.18"
+    commit: ca23bb2
+    status: in-progress
+    title: "feat(progress): start issue #11 phase 3 server-backed progress contracts"
+    details: |-
+      Started Phase 3 of issue #11 with server-side progress contracts and
+      anonymous-to-account merge logic for signed-in users.
+
+      - Added server functions for signed-in progress read/write operations
+      - Added merge flow with explicit decision requirement when server progress exists
+      - Added tested merge utility that unions completed scenarios, keeps strongest drill
+        scores, and preserves latest activity metadata
+      - Added shared server session helper and updated issue/memory artifacts
+    refs:
+      - "I11D4"
+
+  - date: "2026-03-25"
+    version: "1.0.17"
+    commit: dd94c25
+    status: in-progress
+    title: "feat(auth-foundation): start issue #11 phase 2 better auth scaffolding"
+    details: |-
+      Started Phase 2 of issue #11 by wiring Better Auth into TanStack Start and
+      extending the Drizzle schema with Better Auth core tables.
+
+      - Added Better Auth server instance with Drizzle adapter, magic link plugin,
+        email/password mode, and TanStack Start cookies integration
+      - Added API handler route at `/api/auth/$` for GET/POST auth requests
+      - Added auth environment parsing helpers and tests for env/trusted origins
+      - Added Better Auth core schema tables (`user`, `session`, `account`,
+        `verification`) to Drizzle and generated migration `0001`
+      - Updated local issue #11 artifacts and memory-bank progress logs for Phase 2
+    refs:
+      - "I11D3"
+
+  - date: "2026-03-25"
+    version: "1.0.16"
+    commit: a90d495
+    status: in-progress
+    title: "feat(auth-foundation): implement issue #11 phase 1 neon and drizzle base"
+    details: |-
+      Implemented the first execution slice of issue #11 by shipping the Neon/Drizzle
+      database foundation and migration scaffolding, plus local verification coverage.
+
+      - Added Drizzle + Postgres dependencies and DB scripts for generate/migrate/push/studio
+      - Added `drizzle.config.ts` and generated initial SQL migration for core auth-foundation tables
+      - Added DB modules for env parsing, connection handling, and schema exports under `src/lib/db`
+      - Added Phase 1 tables for progress, entitlements, subscriptions, billing events,
+        certificates, email events, and progress-merge auditing
+      - Added unit tests for DB env parsing and schema exports
+      - Updated local issue #11 artifacts and posted an issue progress update on GitHub
+    refs:
+      - "I11D2"
+
+  - date: "2026-03-25"
+    version: "1.0.15"
+    commit: ebc7c83
+    status: in-progress
+    title: "docs(implementation): finalize auth foundation decisions and implementation path for issue #11"
+    details: |-
+      Finalized all remaining decisions and clarified implementation path for #11:
+      - Better Auth strategy: Magic link + password (confirmed for web+mobile compatibility)
+      - Creem structure: Monthly and annual product IDs (separate products due to Creem limitations)
+      - Environment variables: All required envs configured with correct naming
+      - Implementation path: 7 phases clearly defined with technical details
+      - GitHub issues updated: #5, #7, #11 reflect current status and dependencies
+      - Documentation: Perfect clarity for future Cascade sessions on next steps
+
+  - date: "2026-03-24"
+    version: "1.0.14"
+    commit: pending
+    status: in-progress
+    title: "feat(external-services): configure auth foundation services for issue #11"
+    details: |-
+      Configured external services and environment setup for auth foundation:
+      - Creem billing: store created, API key with minimal permissions, webhooks configured
+      - Resend email: mail.apidojo.app domain verified, Cloudflare routing aligned
+      - Neon database: pooled connection string configured
+      - Environment variables: core auth and billing envs added to .env.local
+      - Product setup: Shipping - Pro tier at EUR 4.99/month configured
+      Note: Foundation setup complete, implementation work remaining
+
+  - date: "2026-03-21"
+    version: "1.0.13"
+    commit: 0257711
+    status: completed
+    title: "docs(memory-bank): close issue 7 and archive v2 scoping handoff"
+    details: |-
+      Closed the issue-7 scoping work after validating the repo and official
+      provider docs, then archived the handoff artifact so #11 can start from
+      a clean completed scope.
+
+      - Validated issue #7 against the current codebase and current TanStack
+        Start, Better Auth, Resend, Neon, and Drizzle guidance
+      - Tightened the scoping plan with explicit current-codebase deltas,
+        runtime-boundary notes, and provider constraints for #11
+      - Closed GitHub issue #7 and marked the roadmap sub-issue as done
+      - Archived the issue-7 scoping plan under specs/archived/completed
+      - Bumped release metadata to 1.0.13 in preparation for commit review
+    refs:
+      - "I7D1, I7D2, I7D3, I7D4, I7D5, I7D6"
+
+  - date: "2026-03-19"
+    version: "1.0.12"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): close issue 6 and finalize repo rename cleanup"
+    details: |-
+      Closed the remaining OG-image follow-up after validating the social
+      preview work, and finished the post-rename cleanup for the local specs,
+      issue links, and Vercel project linkage.
+
+      - Moved issue #6 from current work into recent_done and recorded the
+        completed OG-image validation in the archived issue artifact
+      - Renamed the remaining specs that still used the old api-trainer slug
+        and updated memory-bank/current-changes GitHub links to the renamed repo
+      - Restored the local `.vercel/project.json` link to the existing
+        `shipping-api-dojo` Vercel project
+      - Synced stale GitHub issue wording for #6 and #11 to the current
+        Shipping API Dojo naming
+      - Bumped release metadata to 1.0.12 in preparation for commit review
+    refs:
+      - "I6D5"
+
+  - date: "2026-03-18"
+    version: "1.0.11"
+    commit: 614b666
+    status: in-progress
+    title: "chore(branding): align public site with shipping api dojo"
+    details: |-
+      Aligned the public app, SEO surfaces, and local setup workflow with the
+      Shipping API Dojo product identity ahead of the planned repository rename.
+
+      - Unified public-facing brand copy around Shipping API Dojo while keeping
+        shipping API and carrier integration terminology in SEO-targeted text
+      - Added canonical/meta coverage for lesson, wiki, and directory routes
+        and expanded the sitemap to include real lesson and wiki URLs
+      - Removed the settings page from sitemap index targets and marked it
+        noindex in route metadata
+      - Migrated browser progress storage from the old api-trainer key to the
+        new shipping-api-dojo key without dropping existing local data
+      - Added a local .gitignored env/account rollout checklist and documented
+        the temporary Cloudflare email-routing plan in README.md
+      - Swapped the temporary public contact CTA to info@balllightning.cloud
+        until product-domain mailbox routing is configured
+    refs:
+      - "I5D7, I5D8"
+
+  - date: "2026-03-17"
+    version: "1.0.10"
+    commit: 614b666
+    status: in-progress
+    title: "docs(domain): move v2 planning to shipping.apidojo.app"
+    details: |-
+      Shifted the v2 planning and SEO target from the standalone
+      shippingapidojo.com domain to the apidojo.app umbrella strategy with
+      shipping.apidojo.app as the product hostname.
+
+      - Updated README.md, the v2 plan set, and memory-bank artifacts to use
+        shipping.apidojo.app and apidojo.app where relevant
+      - Updated SEO-facing runtime files including structured data, meta base
+        URL, robots.txt, sitemap.xml, the site manifest, and the landing-page
+        brand copy to align with the new domain strategy
+      - Updated the OG image generator and regenerated the social preview assets
+        with the new product URL
+      - Synced the affected GitHub issues to the new umbrella-domain plan
+      - Bumped release metadata to 1.0.10 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+
+  - date: "2026-03-17"
+    version: "1.0.9"
+    commit: TBD
+    status: in-progress
+    title: "docs(license): replace shortcut agpl notice with canonical text"
+    details: |-
+      Replaced the short AGPL boundary notice with the full canonical GNU AGPL
+      v3 text after deciding to keep the repo on a standard, scanner-friendly
+      license file.
+
+      - Replaced LICENSE with the official GNU Affero General Public License v3 text
+      - Kept the open-core boundary explanation in README.md and TRADEMARKS.md
+      - Bumped release metadata to 1.0.9 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+
+  - date: "2026-03-17"
+    version: "1.0.8"
+    commit: TBD
+    status: in-progress
+    title: "docs(v2): tighten licensing, seo, and validation guardrails"
+    details: |-
+      Refined the v2 planning and repo metadata so the implementation phase
+      starts from clearer legal, SEO, testing, and scope assumptions.
+
+      - Updated README.md, TRADEMARKS.md, package metadata, and LICENSE to
+        reflect the Shipping API Dojo open-core direction and AGPL boundary
+      - Added a local compliance plan for issue #12 and revised the issue #5
+        joint plan to treat #12 and #13 as explicit v2 support issues
+      - Tightened the #7, #8, #9, #10, #11, and #13 plans with SEO-first
+        guardrails, stronger automated-validation expectations, and revised
+        effort estimates
+      - Added a standalone Vitest config plus foundational unit tests for the
+        progress schema and SEO meta helpers so pnpm test now passes cleanly
+      - Refreshed active-context.yaml to track the heavier estimate rollup, the
+        new issue #12 planning artifact, and the updated documentation state
+      - Bumped release metadata to 1.0.8 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+
+  - date: "2026-03-17"
+    version: "1.0.7"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): add mobile-readiness follow-up"
+    details: |-
+      Added a future native-app strategy issue and tightened the local plan set
+      so the web-first v2 work does not paint the product into a browser-only
+      corner.
+
+      - Created GitHub issue #13 for mobile readiness and native app strategy
+      - Added a local outline plan for #13 in specs/current-changes
+      - Updated the issue #5 joint plan plus the #7, #9, and #11 plans to
+        preserve platform-neutral content, progress, entitlement, certificate,
+        and backend-contract boundaries for a future native client
+      - Updated GitHub issue #5 and the memory-bank roadmap to track #13 as a
+        follow-on after the web v2 path
+      - Bumped release metadata to 1.0.7 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+
+  - date: "2026-03-17"
+    version: "1.0.6"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): sync refined issue plans and add EU compliance follow-up"
+    details: |-
+      Synced the refined local plan set back into GitHub issues and added a
+      separate follow-up issue for EU privacy and launch-compliance work.
+
+      - Updated GitHub issues #5, #7, #8, #9, #10, and #11 to reflect the
+        reviewed implementation details, validation expectations, and refined
+        auth/billing/email/runtime decisions
+      - Created GitHub issue #12 for EU privacy, storage disclosure, and
+        launch-compliance work before the hosted auth/paid launch
+      - Updated active-context.yaml with the new #12 next-step issue, refreshed
+        progress notes, and bumped release metadata to 1.0.6
+      - Confirmed the current hosted scope does not require a cookie-consent
+        banner if storage remains strictly necessary only, while still tracking
+        the required privacy and storage-disclosure work separately
+    refs:
+      - "I5D7, I5D8"
+
+  - date: "2026-03-17"
+    version: "1.0.5"
+    commit: TBD
+    status: in-progress
+    title: "docs(memory-bank): finalize issue 5 execution plans"
+    details: |-
+      Finalized the issue #5 planning package so execution can proceed in a
+      strict branch order with the new auth, billing, email, and domain
+      foundation separated from the content proof of concept and migration work.
+
+      - Created six planning artifacts in specs/current-changes for the issue #5
+        joint plan plus issues #7, #11, #8, #9, and #10
+      - Created GitHub issue #11 for auth, entitlements, billing, email, and
+        domain foundation between #7 and #8
+      - Updated GitHub issues #5, #7, #8, #9, and #10 to match the new scope,
+        including 20 scenario families, dedicated Resend, and the initial shippingapidojo.com domain target
+      - Refined the plan set after external review with explicit deliverable
+        mappings, realistic issue estimates, typed variant/run contracts,
+        TanStack webhook strategy, progress migration planning, and iterative
+        validation guidance for each issue
+      - Updated active-context.yaml to track issue #11, the #7 -> #11 -> #8 -> #9
+        execution order, and the revised #10 certificate scope
+      - Bumped release metadata to 1.0.5 in preparation for commit review
+    refs:
+      - "I5D7, I5D8"
+

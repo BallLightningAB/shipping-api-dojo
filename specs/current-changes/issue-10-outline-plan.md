@@ -12,8 +12,8 @@ Scope: Outline only. No runtime, UI, backend, or analytics implementation in thi
 - [x] Wave 1: sync GitHub issue `#10`, `active-context.yaml`, and the checkpoint changelog entry
 - [x] Wave 1: run commitprocess checks, then stage, commit, and push the checkpoint
 - [ ] Wave 2: finish `I10D3` and `I10D4` in the local plan with premium, analytics, and certificate details
-- [ ] Wave 2: sync GitHub issue `#10`, `active-context.yaml`, and the checkpoint changelog entry
-- [ ] Wave 2: run commitprocess checks, then stage, commit, and push the checkpoint
+- [x] Wave 2: sync GitHub issue `#10`, `active-context.yaml`, and the checkpoint changelog entry
+- [x] Wave 2: run commitprocess checks, then stage, commit, and push the checkpoint
 - [ ] Wave 3: finish `I10D5`, add the future implementation breakdown, archive the completed local plan, and mark the issue done
 - [ ] Wave 3: sync GitHub issue `#10`, `active-context.yaml`, and the final changelog entry
 - [ ] Wave 3: run commitprocess checks, then stage, commit, push, and close GitHub issue `#10`
@@ -144,14 +144,121 @@ Future implementations should follow these rules:
 - Keep GitHub issue `#10`, this file, and `specs/memory-bank/active-context.yaml` aligned before each checkpoint commit.
 - Update `README.md` only if the public roadmap text becomes materially stale after Wave 2 or Wave 3.
 
-## Planned Wave 2 Additions
+## Wave 2: Premium Hooks, Analytics Taxonomy, And Certificate Contracts
 
-Wave 2 will add:
+Wave 2 owns `I10D3` and `I10D4`.
 
-- premium and enterprise packaging hooks for `I10D3`
-- analytics taxonomy and privacy-safe rollout gates for `I10D3`
-- certificate, credential, and LinkedIn-compatible sharing contracts for `I10D4`
-- certificate-related email and SEO/indexation rules for `I10D4`
+### Premium and enterprise entitlement mapping
+
+The current placeholder capability names should evolve later with this intent:
+
+| Capability placeholder | Free later | Pro later | Enterprise later | Notes |
+| --- | --- | --- | --- | --- |
+| `randomization.premium.full` | no change to current baseline rerolls | unlock authored premium variant banks and challenge-bank breadth | same as Pro plus private packs | keep the current free reroll path distinct from premium-run generation |
+| `review.mode.full` | limited or no access beyond any future signed-in daily challenge | unlock weak-area review, timed exam, and end-of-track assessment | same as Pro plus team overlays | do not split this into multiple capability keys until real implementation forces it |
+| `certificate.basic` | no | unlock self-serve completion and challenge certificates | yes | aligned to self-serve user issuance |
+| `certificate.branded` | no | no | unlock branded templates and enterprise cohort issuance | reserved for team/admin flows |
+| `reporting.team` | no | no | unlock cohort and assignment reporting | stays Enterprise-only |
+
+### Packaging stance
+
+| Tier | Randomization stance | Review-mode stance | Certificate stance |
+| --- | --- | --- | --- |
+| Anonymous sample | current baseline public sample only | none | none |
+| Signed-in free | current baseline rerolls plus any future narrow daily challenge if retained for activation | no weak-area or exam surfaces | none |
+| Pro | premium variant-bank breadth and challenge-run generation | weak-area review, timed exam, end-of-track assessment, and Pro-only recurring challenge surfaces | self-serve completion and challenge certificates |
+| Enterprise | Pro capabilities plus private content packs and branded runs | cohort overlays and assignment/reporting workflows | branded cohort certificates and admin-managed issuance |
+
+### Content-gating rules
+
+- Keep the current free lesson and arena rerolls public.
+- Gate future premium value through breadth, tracking, credential issuance, and reporting rather than by removing the current free baseline.
+- Treat saved challenge history, certificate eligibility, and weak-area review as hosted-account features even if some future recurring challenge remains free-signed-in.
+- Keep enterprise value concentrated in branding, reporting, assignment, and custom content packs.
+
+### Analytics taxonomy
+
+This issue defines event names and checkpoints only. It does not authorize implementation before issue `#12` confirms a compliant path for any non-essential tracking.
+
+| Event family | Example event names | Purpose later | Privacy gate |
+| --- | --- | --- | --- |
+| Challenge discovery | `challenge_daily_viewed`, `challenge_weekly_viewed`, `review_mode_seen` | see which review surfaces attract attention | do not ship before issue `#12` |
+| Challenge run lifecycle | `challenge_run_started`, `challenge_run_completed`, `challenge_run_abandoned` | measure run completion and friction | do not ship before issue `#12` |
+| Review quality | `weak_area_queue_generated`, `weak_area_item_mastered`, `exam_mode_passed` | measure whether review tooling improves retention | do not ship before issue `#12` |
+| Certificate lifecycle | `certificate_earned`, `certificate_viewed`, `certificate_shared` | measure certificate value and sharing behavior | do not ship before issue `#12` |
+| Upgrade pressure | `paywall_challenge_seen`, `paywall_certificate_seen`, `upgrade_cta_clicked` | see where premium value converts | do not ship before issue `#12` |
+
+### Analytics checkpoints
+
+Future implementation should answer these questions:
+
+- do recurring challenges increase signed-in activation and return rate
+- do weak-area and exam surfaces improve completion of lessons and tracks
+- do certificate surfaces drive social sharing or upgrade behavior
+- which premium gates create useful conversion pressure without harming the free baseline
+
+Until issue `#12` authorizes a compliant analytics path, these remain documentation only.
+
+### Certificate and badge surface matrix
+
+Certificates remain non-authoritative proof-of-completion or proof-of-proficiency signals. They are not accredited credentials.
+
+| Surface | Audience | Award trigger later | Capability gate |
+| --- | --- | --- | --- |
+| Course completion certificate | individual learner | complete a defined lesson or track path | `certificate.basic` |
+| Challenge-pass certificate | individual learner | pass a scored challenge or assessment threshold | `certificate.basic` |
+| Track mastery badge | individual learner | meet a higher proficiency threshold across a track | `certificate.basic` |
+| Enterprise cohort certificate | managed team/cohort | admin-issued or rules-based cohort completion | `certificate.branded` |
+
+### Credential data contract
+
+Every future certificate should keep these fields stable:
+
+- certificate title
+- issuing organization
+- issue date
+- optional expiry date
+- certificate type
+- human-readable credential ID
+- public credential URL
+- share slug for the public credential page
+- visibility state
+
+The human-readable credential ID and the public share slug should remain distinct so LinkedIn/manual entry and public page routing do not depend on the same identifier.
+
+### Credential URL and indexation policy
+
+- Public credential pages should use stable share-slug URLs under the main product domain later.
+- Credential pages should default to conservative indexation and should be treated as `noindex` until they prove enough standalone user value to justify search exposure.
+- Social-preview metadata is useful even when the page remains `noindex`.
+- Certificate pages should not become thin SEO surfaces whose only value is a claim badge.
+
+### LinkedIn-compatible manual certification details
+
+Future certificate issuance should provide a copyable detail block for the user to paste manually into LinkedIn's `Licenses & certifications` UI:
+
+- certification name
+- issuing organization
+- issue month and year
+- optional expiry month and year
+- credential ID
+- credential URL
+
+Do not assume any native LinkedIn provider integration or automated profile write access.
+
+### Certificate notification surfaces
+
+Future email surfaces should stay limited to:
+
+- certificate issued
+- share your certificate
+- enterprise cohort completion notification
+
+These remain later implementation work and should use the existing email/delivery foundations from issue `#11` rather than inventing a separate notification system.
+
+### README impact
+
+Wave 2 does not require a README change unless the public roadmap text starts implying that issue `#10` already shipped runtime certificate or challenge features. The current README remains accurate enough and should stay unchanged in this wave.
 
 ## Planned Wave 3 Additions
 
