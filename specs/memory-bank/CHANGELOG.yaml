@@ -1,7 +1,32 @@
 entries:
+  - date: "2026-04-14"
+    version: "1.1.8"
+    commit: TBD
+    status: in-progress
+    title: "docs(planning): lock issue #10 wave 1 randomization and review-mode outline"
+    details: |-
+      Completed Wave 1 of issue #10 by turning the existing follow-on outline
+      into a checkpointed execution plan and locking the product vocabulary for
+      higher-value randomization and review-mode surfaces.
+
+      - Reworked the local issue #10 plan into an execution-ready artifact with
+        explicit progress tracking, non-goals, and wave ownership
+      - Locked the higher-value randomization taxonomy across payload, header,
+        error-signaling, evidence-snippet, misconception, and context-wrapper
+        variation while keeping the issue outline-only
+      - Defined the future review-mode surface names, access expectations, seed
+        ownership, and replay boundaries for daily, weekly, weak-area, timed,
+        and end-of-track runs
+      - Updated `active-context.yaml` so issue #10 now records the completed
+        Wave 1 checkpoint and clears the first two deliverables from the
+        remaining list
+      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`, and
+        `pnpm typecheck`
+    refs:
+      - "I10D1, I10D2"
   - date: "2026-04-13"
     version: "1.1.7"
-    commit: TBD
+    commit: a069d52
     status: completed
     title: "feat(content-runtime): finalize issue #9 canonical curriculum migration"
     details: |-
