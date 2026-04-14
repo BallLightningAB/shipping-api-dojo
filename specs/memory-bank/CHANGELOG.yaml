@@ -1,7 +1,31 @@
 entries:
   - date: "2026-04-14"
-    version: "1.1.9"
+    version: "1.1.10"
     commit: TBD
+    status: completed
+    title: "docs(planning): complete and archive issue #10 follow-on outline"
+    details: |-
+      Completed the final wrap-up pass for issue #10 and closed the branch as a
+      decision-complete outline for later premium, certificate, and AI-adjacent
+      follow-on work.
+
+      - Reserved the AI-only challenge direction explicitly for a future issue
+        instead of widening the current outline branch
+      - Added the future implementation breakdown for challenge/review runtime,
+        certificate and credential pages, premium gating/reporting, and the
+        later AI layer
+      - Marked issue #10 done in `active-context.yaml`, cleared its remaining
+        deliverables, and updated the umbrella issue-5 joint plan so the next
+        recommended implementation issue is now `#12`
+      - Archived the completed issue #10 local plan into
+        `specs/archived/completed/issue-10-outline-plan.md`
+      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`, and
+        `pnpm typecheck`
+    refs:
+      - "I10D5"
+  - date: "2026-04-14"
+    version: "1.1.9"
+    commit: 026ddc8
     status: in-progress
     title: "docs(planning): define issue #10 premium and certificate contracts"
     details: |-

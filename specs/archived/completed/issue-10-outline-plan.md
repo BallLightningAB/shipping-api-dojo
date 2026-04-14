@@ -11,12 +11,12 @@ Scope: Outline only. No runtime, UI, backend, or analytics implementation in thi
 - [x] Wave 1: expand the local outline into an execution-ready planning artifact covering `I10D1` and `I10D2`
 - [x] Wave 1: sync GitHub issue `#10`, `active-context.yaml`, and the checkpoint changelog entry
 - [x] Wave 1: run commitprocess checks, then stage, commit, and push the checkpoint
-- [ ] Wave 2: finish `I10D3` and `I10D4` in the local plan with premium, analytics, and certificate details
+- [x] Wave 2: finish `I10D3` and `I10D4` in the local plan with premium, analytics, and certificate details
 - [x] Wave 2: sync GitHub issue `#10`, `active-context.yaml`, and the checkpoint changelog entry
 - [x] Wave 2: run commitprocess checks, then stage, commit, and push the checkpoint
-- [ ] Wave 3: finish `I10D5`, add the future implementation breakdown, archive the completed local plan, and mark the issue done
-- [ ] Wave 3: sync GitHub issue `#10`, `active-context.yaml`, and the final changelog entry
-- [ ] Wave 3: run commitprocess checks, then stage, commit, push, and close GitHub issue `#10`
+- [x] Wave 3: finish `I10D5`, add the future implementation breakdown, archive the completed local plan, and mark the issue done
+- [x] Wave 3: sync GitHub issue `#10`, `active-context.yaml`, and the final changelog entry
+- [x] Wave 3: run commitprocess checks, then stage, commit, push, and close GitHub issue `#10`
 
 ## Deliverable Mapping
 
@@ -260,10 +260,50 @@ These remain later implementation work and should use the existing email/deliver
 
 Wave 2 does not require a README change unless the public roadmap text starts implying that issue `#10` already shipped runtime certificate or challenge features. The current README remains accurate enough and should stay unchanged in this wave.
 
-## Planned Wave 3 Additions
+## Wave 3: AI Reservation And Future Implementation Breakdown
 
-Wave 3 will add:
+Wave 3 owns `I10D5` and the final wrap-up.
 
-- the explicit AI-only later-work reservation for `I10D5`
-- the future implementation breakdown for follow-on issues
-- final issue wrap-up, artifact archival, and closure notes
+### AI-only later work
+
+Reserve all of the following for a separate future issue. None belong in the current non-AI outline implementation track:
+
+- generated troubleshooting branches
+- adaptive difficulty tuned per user
+- open-ended answer grading
+- generated logs, payloads, or incident narratives
+- free-form evaluation of written operational responses
+
+The current issue should leave the non-AI architecture clean enough that a future AI tier can layer onto:
+
+- stable concept IDs
+- stable family IDs
+- stable run and variant semantics
+- stable certificate and entitlement boundaries
+
+### Future implementation breakdown
+
+This outline should hand off into later implementation issues rather than trying to absorb those builds here.
+
+| Future issue slice | Scope later | Depends on |
+| --- | --- | --- |
+| Challenge and review runtime | daily/weekly runs, weak-area queue generation, timed exam flows, end-of-track assessment rules, server-authored seeds | issue `#11` foundations already shipped, issue `#12` if tracking or extra storage changes are needed |
+| Certificate and credential pages | certificate issuance rules, shareable credential pages, metadata, email sends, account surfaces | issue `#11` email/data foundation, issue `#12` privacy/indexation review |
+| Premium gating and reporting | paywalls, upgrade prompts, challenge history, enterprise reporting, cohort overlays | issue `#11` entitlements and billing, issue `#12` compliance guardrails |
+| AI challenge layer | generated payloads, logs, adaptive practice, open-ended scoring | all non-AI surfaces above should exist first |
+
+### Follow-on sequencing recommendation
+
+The recommended follow-on order after issue `#10` is:
+
+1. complete issue `#12` so any future analytics, credential visibility, and user-data disclosures have a compliant foundation
+2. choose whether the next product build is the challenge/review runtime or certificate/share surfaces
+3. defer any AI-specific track until the non-AI premium surfaces prove enough user value to justify it
+
+### Final wrap-up rules
+
+- mark issue `#10` done in `active-context.yaml`
+- clear `remaining_deliverables` for issue `#10`
+- archive this local plan to `specs/archived/completed/issue-10-outline-plan.md`
+- update `specs/current-changes/issue-5-joint-plan.md` so its next-issue note no longer points at issue `#10`
+- close GitHub issue `#10` after the final checkpoint push
