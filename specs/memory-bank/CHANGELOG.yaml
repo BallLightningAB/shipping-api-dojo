@@ -1,7 +1,26 @@
 entries:
   - date: "2026-04-14"
-    version: "1.1.10"
+    version: "1.1.11"
     commit: TBD
+    status: in-progress
+    title: "docs(compliance): sync issue #12 wave plan and launch-compliance audit"
+    details: |-
+      Started issue #12 on the implementation branch and aligned the local,
+      GitHub, and memory-bank artifacts before runtime compliance changes begin.
+
+      - Reworked the local issue #12 artifact into an execution-ready wave plan
+        with current-state storage, auth, billing, email, and consent notes
+      - Updated GitHub issue #12 to the same wave structure, domain, and
+        validation checkpoints used locally
+      - Elevated issue #12 to the active planned implementation issue after
+        issue #10 and recorded the audited current state in active-context
+      - Kept issue #12 in `planned` status in `active-context.yaml` until the
+        final wrap-up wave is complete
+    refs:
+      - "I12D1, I12D2, I12D3, I12D4, I12D5"
+  - date: "2026-04-14"
+    version: "1.1.10"
+    commit: c64a052
     status: completed
     title: "docs(planning): complete and archive issue #10 follow-on outline"
     details: |-
