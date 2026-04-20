@@ -3,7 +3,7 @@
 Date: 2026-04-12
 Issue: [#15](https://github.com/BallLightningAB/shipping-api-dojo/issues/15)
 Branch: `codex/issue-15-wiki-expansion`
-Scope: Follow-on documentation expansion after issue `#9`.
+Scope: In-scope issue `#5` web-v2 knowledge-surface expansion after issue `#9`.
 
 ## Goal
 
@@ -17,7 +17,7 @@ Expand the Shipping API Dojo wiki from curriculum-supporting support pages into 
 ## Why This Is Separate From Issue 9
 
 - Issue `#9` only ships the wiki and directory additions required by the 20/20/20 curriculum.
-- Vendor documentation expansion is broader than the curriculum and must not bloat the migration issue.
+- Vendor documentation expansion is broader than the curriculum and must not bloat the migration issue, but it remains part of the issue `#5` v2 umbrella.
 - DHL, UPS, FedEx, USPS, and similar vendors should not be treated as single unified API surfaces when the real behavior varies by business unit, country, or protocol family.
 
 ## Outline
