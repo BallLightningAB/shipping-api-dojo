@@ -21,7 +21,7 @@ export interface AccountPrivacyExport {
 		emailVerified: boolean;
 		id: string;
 		image: string | null;
-		name: string;
+		name: string | null;
 		updatedAt: Date;
 	};
 	billingEvents: Array<{
@@ -88,106 +88,114 @@ export const getAccountPrivacyExport = createServerFn({
 	const db = getDb();
 	const userId = requestSession.user.id;
 
-	const [accountRow] = await db
-		.select({
-			createdAt: user.createdAt,
-			email: user.email,
-			emailVerified: user.emailVerified,
-			id: user.id,
-			image: user.image,
-			name: user.name,
-			updatedAt: user.updatedAt,
-		})
-		.from(user)
-		.where(eq(user.id, userId))
-		.limit(1);
+	const [
+		accountRows,
+		progressRows,
+		entitlementRows,
+		sessionRows,
+		subscriptionRows,
+		billingRows,
+		emailRows,
+		mergeEventRows,
+	] = await Promise.all([
+		db
+			.select({
+				createdAt: user.createdAt,
+				email: user.email,
+				emailVerified: user.emailVerified,
+				id: user.id,
+				image: user.image,
+				name: user.name,
+				updatedAt: user.updatedAt,
+			})
+			.from(user)
+			.where(eq(user.id, userId))
+			.limit(1),
+		db
+			.select({
+				progressJson: userProgress.progressJson,
+				updatedAt: userProgress.updatedAt,
+				version: userProgress.version,
+			})
+			.from(userProgress)
+			.where(eq(userProgress.userId, userId))
+			.limit(1),
+		db
+			.select({
+				capabilities: userEntitlements.capabilities,
+				effectiveFrom: userEntitlements.effectiveFrom,
+				effectiveTo: userEntitlements.effectiveTo,
+				source: userEntitlements.source,
+				tier: userEntitlements.tier,
+				updatedAt: userEntitlements.updatedAt,
+			})
+			.from(userEntitlements)
+			.where(eq(userEntitlements.userId, userId))
+			.limit(1),
+		db
+			.select({
+				createdAt: session.createdAt,
+				expiresAt: session.expiresAt,
+				id: session.id,
+				ipAddress: session.ipAddress,
+				userAgent: session.userAgent,
+			})
+			.from(session)
+			.where(eq(session.userId, userId))
+			.orderBy(desc(session.createdAt)),
+		db
+			.select({
+				cancelAtPeriodEnd: subscriptions.cancelAtPeriodEnd,
+				currentPeriodEnd: subscriptions.currentPeriodEnd,
+				currentPeriodStart: subscriptions.currentPeriodStart,
+				id: subscriptions.id,
+				planKey: subscriptions.planKey,
+				productId: subscriptions.productId,
+				provider: subscriptions.provider,
+				status: subscriptions.status,
+				updatedAt: subscriptions.updatedAt,
+			})
+			.from(subscriptions)
+			.where(eq(subscriptions.userId, userId))
+			.orderBy(desc(subscriptions.updatedAt)),
+		db
+			.select({
+				eventType: billingEvents.eventType,
+				id: billingEvents.id,
+				processedAt: billingEvents.processedAt,
+				provider: billingEvents.provider,
+				receivedAt: billingEvents.receivedAt,
+				subscriptionId: billingEvents.subscriptionId,
+			})
+			.from(billingEvents)
+			.where(eq(billingEvents.userId, userId))
+			.orderBy(desc(billingEvents.receivedAt)),
+		db
+			.select({
+				eventType: emailEvents.eventType,
+				id: emailEvents.id,
+				occurredAt: emailEvents.occurredAt,
+				provider: emailEvents.provider,
+				providerEventId: emailEvents.providerEventId,
+				recipient: emailEvents.recipient,
+			})
+			.from(emailEvents)
+			.where(eq(emailEvents.userId, userId))
+			.orderBy(desc(emailEvents.occurredAt)),
+		db
+			.select({
+				createdAt: progressMergeEvents.createdAt,
+				id: progressMergeEvents.id,
+				mergeStrategy: progressMergeEvents.mergeStrategy,
+			})
+			.from(progressMergeEvents)
+			.where(eq(progressMergeEvents.userId, userId))
+			.orderBy(desc(progressMergeEvents.createdAt)),
+	]);
 
-	const [progressRow] = await db
-		.select({
-			progressJson: userProgress.progressJson,
-			updatedAt: userProgress.updatedAt,
-			version: userProgress.version,
-		})
-		.from(userProgress)
-		.where(eq(userProgress.userId, userId))
-		.limit(1);
-
-	const [entitlementRow] = await db
-		.select({
-			capabilities: userEntitlements.capabilities,
-			effectiveFrom: userEntitlements.effectiveFrom,
-			effectiveTo: userEntitlements.effectiveTo,
-			source: userEntitlements.source,
-			tier: userEntitlements.tier,
-			updatedAt: userEntitlements.updatedAt,
-		})
-		.from(userEntitlements)
-		.where(eq(userEntitlements.userId, userId))
-		.limit(1);
-
-	const sessionRows = await db
-		.select({
-			createdAt: session.createdAt,
-			expiresAt: session.expiresAt,
-			id: session.id,
-			ipAddress: session.ipAddress,
-			userAgent: session.userAgent,
-		})
-		.from(session)
-		.where(eq(session.userId, userId))
-		.orderBy(desc(session.createdAt));
-
-	const subscriptionRows = await db
-		.select({
-			cancelAtPeriodEnd: subscriptions.cancelAtPeriodEnd,
-			currentPeriodEnd: subscriptions.currentPeriodEnd,
-			currentPeriodStart: subscriptions.currentPeriodStart,
-			id: subscriptions.id,
-			planKey: subscriptions.planKey,
-			productId: subscriptions.productId,
-			provider: subscriptions.provider,
-			status: subscriptions.status,
-			updatedAt: subscriptions.updatedAt,
-		})
-		.from(subscriptions)
-		.where(eq(subscriptions.userId, userId))
-		.orderBy(desc(subscriptions.updatedAt));
-
-	const billingRows = await db
-		.select({
-			eventType: billingEvents.eventType,
-			id: billingEvents.id,
-			processedAt: billingEvents.processedAt,
-			provider: billingEvents.provider,
-			receivedAt: billingEvents.receivedAt,
-			subscriptionId: billingEvents.subscriptionId,
-		})
-		.from(billingEvents)
-		.where(eq(billingEvents.userId, userId))
-		.orderBy(desc(billingEvents.receivedAt));
-
-	const emailRows = await db
-		.select({
-			eventType: emailEvents.eventType,
-			id: emailEvents.id,
-			occurredAt: emailEvents.occurredAt,
-			provider: emailEvents.provider,
-			providerEventId: emailEvents.providerEventId,
-			recipient: emailEvents.recipient,
-		})
-		.from(emailEvents)
-		.where(eq(emailEvents.userId, userId))
-		.orderBy(desc(emailEvents.occurredAt));
-
-	const mergeEventRows = await db
-		.select({
-			createdAt: progressMergeEvents.createdAt,
-			id: progressMergeEvents.id,
-			mergeStrategy: progressMergeEvents.mergeStrategy,
-		})
-		.from(progressMergeEvents)
-		.where(eq(progressMergeEvents.userId, userId))
-		.orderBy(desc(progressMergeEvents.createdAt));
+	const accountRow = accountRows[0];
+	const progressRow = progressRows[0];
+	const entitlementRow = entitlementRows[0];
 
 	if (!accountRow) {
 		throw new Error("ACCOUNT_EXPORT_USER_NOT_FOUND");
