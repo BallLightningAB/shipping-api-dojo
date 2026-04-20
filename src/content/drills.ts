@@ -36,6 +36,21 @@ export const drills: Drill[] = [
 		explanation:
 			"Some carriers return 200 for all responses, embedding errors in the body. Always parse and validate the response body, not just the HTTP status.",
 	},
+	{
+		id: "intro-mcq-3",
+		type: "mcq",
+		question:
+			"A carrier returns HTTP 202 Accepted for shipment creation, but the body contains a rejection code and no tracking identifier. What should your integration conclude?",
+		options: [
+			"The shipment definitely succeeded because 202 is a success-range status",
+			"The transport signal is not enough; inspect the body and treat the operation as failed or ambiguous until the carrier state is confirmed",
+			"202 responses can be ignored because the carrier will always send a webhook later",
+			"The only correct action is to retry immediately with a different payload",
+		],
+		correctIndex: 1,
+		explanation:
+			"Transport-level success signals do not override business-level error content. Carrier APIs often require you to inspect the body and downstream evidence before deciding whether the shipment exists.",
+	},
 
 	// === REST-1 drills ===
 	{
@@ -89,6 +104,36 @@ export const drills: Drill[] = [
 			"Carrier token endpoints have rate limits. Requesting a new token per call wastes quota and can get you throttled. Cache tokens and refresh proactively before expiry.",
 	},
 	{
+		id: "rest2-mcq-2",
+		type: "mcq",
+		question:
+			"Your OAuth access token expires every 30 minutes, but your workers can process long queues for hours. Which design is safest?",
+		options: [
+			"Refresh the token only after the carrier rejects a request with 401",
+			"Store token expiry metadata, reuse cached tokens, and refresh slightly before expiry under a shared lock or cache discipline",
+			"Generate one permanent token per worker at startup and never rotate it",
+			"Attach the refresh token directly to every carrier API request",
+		],
+		correctIndex: 1,
+		explanation:
+			"Production workers need a shared token lifecycle strategy. Waiting for 401s increases avoidable failures, while proactive refresh under coordination avoids token stampedes and stale-token races.",
+	},
+	{
+		id: "rest2-mcq-3",
+		type: "mcq",
+		question:
+			"Several workers notice the same token is near expiry at once. What failure mode are you trying to prevent with coordinated refresh?",
+		options: [
+			"Browsers automatically deleting local storage",
+			"A token refresh stampede that hammers the auth endpoint and can create inconsistent token state across workers",
+			"Problem Details errors becoming invalid JSON",
+			"Webhook retries from the carrier",
+		],
+		correctIndex: 1,
+		explanation:
+			"When many workers refresh simultaneously, they can overload the auth endpoint or race on which token version is current. Shared caching or a refresh lock prevents self-inflicted auth instability.",
+	},
+	{
 		id: "rest2-builder-1",
 		type: "builder.rest",
 		prompt:
@@ -111,6 +156,48 @@ X-Correlation-ID: <uuid>`,
 		explanation:
 			"A proper carrier request includes Content-Type, Accept, Authorization, and a correlation ID for traceability. The correlation ID links your logs to the carrier's logs.",
 	},
+	{
+		id: "rest2-builder-2",
+		type: "builder.rest",
+		prompt:
+			"Build a GET request to https://api.carrier.com/v1/shipments/abc123 that uses Bearer auth, Accept: application/json, and a correlation ID for traceability.",
+		method: "GET",
+		url: "https://api.carrier.com/v1/shipments/abc123",
+		headers: {
+			Accept: "application/json",
+			Authorization: "Bearer <token>",
+			"X-Correlation-ID": "<uuid>",
+		},
+		body: "",
+		expectedOutput: `GET /v1/shipments/abc123 HTTP/1.1
+Host: api.carrier.com
+Accept: application/json
+Authorization: Bearer <token>
+X-Correlation-ID: <uuid>`,
+		explanation:
+			"Even read calls should carry the auth token and correlation ID needed for traceability. GET requests typically omit the JSON content-type header because there is no request body.",
+	},
+	{
+		id: "rest2-builder-3",
+		type: "builder.rest",
+		prompt:
+			"Build a POST request to https://api.carrier.com/v1/tokens/refresh that sends JSON, accepts JSON, and includes a correlation ID without reusing the stale access token in the Authorization header.",
+		method: "POST",
+		url: "https://api.carrier.com/v1/tokens/refresh",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"X-Correlation-ID": "<uuid>",
+		},
+		body: '{"refreshToken": "<refresh-token>"}',
+		expectedOutput: `POST /v1/tokens/refresh HTTP/1.1
+Host: api.carrier.com
+Content-Type: application/json
+Accept: application/json
+X-Correlation-ID: <uuid>`,
+		explanation:
+			"Refresh flows still need clear request structure and traceability. They should not blindly reuse an expired access token in the request headers when the refresh token or refresh payload is the real credential path.",
+	},
 
 	// === REST-3 drills ===
 	{
@@ -128,6 +215,36 @@ X-Correlation-ID: <uuid>`,
 			"RFC 9457 Problem Details (application/problem+json) provides a standard error format with type, title, status, detail, and instance fields.",
 	},
 	{
+		id: "rest3-mcq-2",
+		type: "mcq",
+		question:
+			"A carrier returns `{ code: 'BAD_WEIGHT', message: 'Invalid parcel weight' }` with HTTP 400. What should your integration boundary do?",
+		options: [
+			"Expose the raw carrier payload directly to every upstream caller",
+			"Translate it once into your normalized error contract with stable category, status, and actionable detail",
+			"Retry automatically because the payload is not already in Problem Details format",
+			"Convert every carrier error into HTTP 500 to keep the contract simple",
+		],
+		correctIndex: 1,
+		explanation:
+			"Your integration boundary should normalize carrier-specific error shapes into one internal contract. That keeps upstream systems stable even when carriers disagree on field names or formatting.",
+	},
+	{
+		id: "rest3-mcq-3",
+		type: "mcq",
+		question:
+			"Why is one normalized problem taxonomy better than passing through each carrier's native error shape?",
+		options: [
+			"Because normalization lets you delete the original carrier evidence immediately",
+			"Because upstream retry, UX, and alerting rules can key off stable categories instead of reverse-engineering every carrier payload",
+			"Because normalized errors are always shorter than carrier payloads",
+			"Because HTTP clients cannot parse arbitrary JSON error bodies",
+		],
+		correctIndex: 1,
+		explanation:
+			"Normalization gives the rest of your system a stable contract for retry logic, user messaging, and observability. You can still retain the original carrier payload as evidence without forcing every caller to understand it.",
+	},
+	{
 		id: "rest3-cloze-1",
 		type: "cloze",
 		template:
@@ -135,6 +252,24 @@ X-Correlation-ID: <uuid>`,
 		answers: ["retryable", "permanent", "ambiguous"],
 		explanation:
 			"Retryable errors (503, 429) should be queued for retry. Permanent errors (400, 404) should fail fast. Ambiguous errors (500, timeout) need investigation.",
+	},
+	{
+		id: "rest3-cloze-2",
+		type: "cloze",
+		template:
+			"Classify a carrier timeout on POST as ___ until you confirm state, treat malformed input as ___, and treat a transient upstream 503 as ___.",
+		answers: ["ambiguous", "permanent", "retryable"],
+		explanation:
+			"Timeouts on write operations are ambiguous because the carrier may already have acted. Validation failures are permanent, while upstream outages such as 503 are retryable under controlled backoff.",
+	},
+	{
+		id: "rest3-cloze-3",
+		type: "cloze",
+		template:
+			"When normalizing carrier failures, separate ___ decisions, ___ decisions, and ___ decisions so every upstream caller is not forced to reinterpret raw payloads.",
+		answers: ["retry", "fail-fast", "investigation"],
+		explanation:
+			"A useful error taxonomy drives action. By splitting retry, fail-fast, and investigation paths once at the integration boundary, you stop error handling from becoming a carrier-by-carrier guessing game.",
 	},
 
 	// === REST-4 drills ===
@@ -154,6 +289,21 @@ X-Correlation-ID: <uuid>`,
 			"With offset pagination, new records shift the dataset, causing duplicates or missed items. Cursor pagination uses a stable pointer, making it reliable for real-time data.",
 	},
 	{
+		id: "rest4-mcq-3",
+		type: "mcq",
+		question:
+			"A polling job paginates through tracking events using `offset=0,100,200...` while new events are inserted continuously. What is the main risk?",
+		options: [
+			"Offset pagination becomes more secure because the dataset is active",
+			"Records can shift between pages, causing duplicates or skipped events during the same sync run",
+			"New events are automatically sorted into the final page only",
+			"Offset pagination stops working only when the HTTP status is 206",
+		],
+		correctIndex: 1,
+		explanation:
+			"When the underlying dataset changes during an offset-based scan, page boundaries drift. That can duplicate records or skip events that move between offsets while the sync is in flight.",
+	},
+	{
 		id: "rest4-mcq-2",
 		type: "mcq",
 		question:
@@ -167,6 +317,36 @@ X-Correlation-ID: <uuid>`,
 		correctIndex: 1,
 		explanation:
 			"Return 200 quickly to prevent the carrier from retrying. Process the event asynchronously. If you take too long, carriers will retry and you'll get duplicates.",
+	},
+	{
+		id: "rest9-mcq-1",
+		type: "mcq",
+		question:
+			"A carrier webhook includes a valid signature and a stable event ID, but the same event arrives again 90 seconds later. What should your receiver do first?",
+		options: [
+			"Re-run the full business workflow because a valid signature means the event is new",
+			"Check the event ID against a deduplication store, acknowledge quickly, and skip duplicate side effects if it was already processed",
+			"Reject the webhook with 401 so the carrier stops sending retries",
+			"Forward the event to the frontend before you decide whether it is a replay",
+		],
+		correctIndex: 1,
+		explanation:
+			"Signature verification only proves authenticity. Replay safety still depends on event-ID deduplication and a fast acknowledgement path that prevents duplicate downstream work.",
+	},
+	{
+		id: "rest9-mcq-2",
+		type: "mcq",
+		question:
+			"Your webhook handler verifies the signature, writes directly to three downstream systems, and only then returns 200. What is the main operational risk?",
+		options: [
+			"The signature becomes invalid once the body is parsed",
+			"The carrier may time out and retry, causing replay pressure or duplicate side effects while your slow inline work is still running",
+			"Returning 200 after downstream writes makes the webhook invisible to observability tools",
+			"Carriers require every webhook to be processed synchronously before acknowledgement",
+		],
+		correctIndex: 1,
+		explanation:
+			"Even valid events should be acknowledged quickly. Slow inline fan-out increases retry pressure and makes replay or duplicate-processing incidents much more likely.",
 	},
 	{
 		id: "rest7-mcq-1",
@@ -360,6 +540,36 @@ X-Correlation-ID: <uuid>`,
 		explanation:
 			"Regenerating from the WSDL and diffing catches breaking changes (renamed elements, new required fields, changed types) before they hit production.",
 	},
+	{
+		id: "soap2-mcq-5",
+		type: "mcq",
+		question:
+			"A carrier adds a new required element to the WSDL but your manually maintained XML template still validates locally against nothing. What is the safest response?",
+		options: [
+			"Keep sending the old template until the carrier rejects enough requests to prove the change matters",
+			"Regenerate from the updated WSDL or XSD, diff the new contract, and update validation before production traffic depends on the stale template",
+			"Copy only the new element name from the docs into the old template and skip regeneration",
+			"Switch the failing operation to REST because SOAP contract drift is unavoidable",
+		],
+		correctIndex: 1,
+		explanation:
+			"Contract drift needs a contract-driven response. Regeneration and diff review expose new required fields and type changes before they turn into production faults.",
+	},
+	{
+		id: "soap2-mcq-6",
+		type: "mcq",
+		question:
+			"Which signal most strongly suggests the carrier contract changed rather than the network simply flaking?",
+		options: [
+			"Repeated parser or validation faults against the same operation after a documented WSDL update",
+			"A single 504 timeout during peak traffic",
+			"One delayed webhook from another system",
+			"A frontend user refreshing the page twice",
+		],
+		correctIndex: 0,
+		explanation:
+			"Consistent schema or parser failures after a WSDL update usually point to contract drift. Timeouts and unrelated delivery delays are operational signals, not strong evidence that the contract changed.",
+	},
 
 	// === SOAP-3 drills ===
 	{
@@ -371,6 +581,21 @@ X-Correlation-ID: <uuid>`,
 		correctIndex: 3,
 		explanation:
 			"The detail element contains carrier-specific error codes, affected fields, and resolution hints. faultstring is often generic and not actionable.",
+	},
+	{
+		id: "soap3-mcq-2",
+		type: "mcq",
+		question:
+			"A SOAP fault returns `faultstring='Validation error'` and a `detail` block that names `PackageWeight` as invalid. Which field should drive the first repair step?",
+		options: [
+			"The generic faultstring because it is always the most human readable",
+			"The `detail` block because it identifies the concrete field or carrier code that failed",
+			"The HTTP status line because SOAP faults never include useful body detail",
+			"The XML declaration because version mismatches cause all validation errors",
+		],
+		correctIndex: 1,
+		explanation:
+			"SOAP fault detail is where the actionable evidence lives. Generic faultstrings may tell you the class of failure, but the `detail` block is what identifies which field, type, or contract rule actually broke.",
 	},
 	{
 		id: "soap3-cloze-1",
@@ -386,6 +611,24 @@ X-Correlation-ID: <uuid>`,
 		],
 		explanation:
 			"Complete logging of correlation ID, request, response, error codes, and endpoint URL gives you everything needed to diagnose production issues.",
+	},
+	{
+		id: "rest9-cloze-1",
+		type: "cloze",
+		template:
+			"When investigating webhook replay or ordering incidents, log the carrier ___ ID, your internal ___ ID, the signature-verification ___, the event ___, and the queue or worker ___ that handled it.",
+		answers: ["event", "correlation", "result", "timestamp", "attempt"],
+		explanation:
+			"Replay analysis needs both the carrier event identity and your internal processing trail. Without signature results, timestamps, and attempt metadata, you cannot reconstruct whether the replay was authentic, delayed, or duplicated internally.",
+	},
+	{
+		id: "rest9-cloze-2",
+		type: "cloze",
+		template:
+			"For asynchronous webhook handlers, log the raw-body hash, validated ___, downstream ___ status, deduplication ___, and the final acknowledgement ___ sent back to the carrier.",
+		answers: ["signature", "enqueue", "decision", "code"],
+		explanation:
+			"Webhook troubleshooting depends on the exact trust and processing path: whether the signature was valid, whether async handoff succeeded, whether deduplication suppressed the event, and what acknowledgement went back to the carrier.",
 	},
 	{
 		id: "soap4-mcq-1",

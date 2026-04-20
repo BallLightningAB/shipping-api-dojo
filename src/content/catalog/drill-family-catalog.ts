@@ -20,7 +20,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Assuming a healthy HTTP status means the carrier accepted and completed the operation.",
 		difficulty: "beginner",
 		tags: ["intro", "rest", "error-handling"],
-		legacyDrillIds: ["intro-mcq-1", "intro-mcq-2"],
+		legacyDrillIds: ["intro-mcq-1", "intro-mcq-2", "intro-mcq-3"],
 	},
 	{
 		id: "rest-oauth-token-lifecycle",
@@ -30,7 +30,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Treating auth token acquisition as a per-request concern instead of an operational cache.",
 		difficulty: "beginner",
 		tags: ["rest", "auth", "oauth"],
-		legacyDrillIds: ["rest2-mcq-1"],
+		legacyDrillIds: ["rest2-mcq-1", "rest2-mcq-2", "rest2-mcq-3"],
 	},
 	{
 		id: "rest-required-headers-correlation-ids",
@@ -40,7 +40,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Treating correlation IDs and carrier-required headers as optional request decoration.",
 		difficulty: "beginner",
 		tags: ["rest", "headers", "observability"],
-		legacyDrillIds: ["rest2-builder-1"],
+		legacyDrillIds: ["rest2-builder-1", "rest2-builder-2", "rest2-builder-3"],
 	},
 	{
 		id: "rest-problem-details-normalization",
@@ -50,7 +50,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Passing carrier-specific error shapes upstream instead of normalizing them once.",
 		difficulty: "beginner",
 		tags: ["rest", "errors", "problem-details"],
-		legacyDrillIds: ["rest3-mcq-1"],
+		legacyDrillIds: ["rest3-mcq-1", "rest3-mcq-2", "rest3-mcq-3"],
 	},
 	{
 		id: "rest-error-classification",
@@ -60,7 +60,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Using one retry rule for every failure instead of classifying retryable, permanent, and ambiguous outcomes.",
 		difficulty: "beginner",
 		tags: ["rest", "errors", "incident-response"],
-		legacyDrillIds: ["rest3-cloze-1"],
+		legacyDrillIds: ["rest3-cloze-1", "rest3-cloze-2", "rest3-cloze-3"],
 	},
 	{
 		id: "rest-pagination-drift",
@@ -70,7 +70,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Assuming offset pagination stays correct while the underlying result set changes.",
 		difficulty: "beginner",
 		tags: ["rest", "pagination", "sync"],
-		legacyDrillIds: ["rest4-mcq-1"],
+		legacyDrillIds: ["rest4-mcq-1", "rest4-mcq-3"],
 	},
 	{
 		id: "rest-webhook-receiver-behavior",
@@ -80,7 +80,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Doing heavy work inline before acknowledging carrier webhooks.",
 		difficulty: "beginner",
 		tags: ["rest", "webhooks", "operations"],
-		legacyDrillIds: ["rest4-mcq-2"],
+		legacyDrillIds: ["rest4-mcq-2", "rest9-mcq-1", "rest9-mcq-2"],
 	},
 	{
 		id: "rest-rate-limits-backpressure",
@@ -130,7 +130,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Trying to patch around carrier WSDL changes without regenerating and diffing the contract.",
 		difficulty: "intermediate",
 		tags: ["soap", "wsdl", "change-management"],
-		legacyDrillIds: ["soap2-mcq-2"],
+		legacyDrillIds: ["soap2-mcq-2", "soap2-mcq-5", "soap2-mcq-6"],
 	},
 	{
 		id: "soap-fault-detail-extraction",
@@ -140,7 +140,7 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Stopping at the human-readable faultstring instead of parsing structured fault detail.",
 		difficulty: "beginner",
 		tags: ["soap", "faults", "debugging"],
-		legacyDrillIds: ["soap3-mcq-1"],
+		legacyDrillIds: ["soap3-mcq-1", "soap3-mcq-2"],
 	},
 	{
 		id: "repair-xsd-type-mismatches",
@@ -161,6 +161,6 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Capturing incomplete logs that cannot reconstruct the carrier interaction during an incident.",
 		difficulty: "intermediate",
 		tags: ["soap", "logging", "incident-response"],
-		legacyDrillIds: ["soap3-cloze-1"],
+		legacyDrillIds: ["soap3-cloze-1", "rest9-cloze-1", "rest9-cloze-2"],
 	},
 ];

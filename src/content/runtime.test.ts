@@ -81,6 +81,70 @@ describe("content runtime", () => {
 		).toBe(true);
 	});
 
+	it("gives rest-9 real challenge depth beyond drill-order swaps", () => {
+		const uniqueChallenges = new Set<string>();
+
+		for (let seed = 1; seed <= 200; seed += 1) {
+			const runtime = getLessonRuntimeBySlug(
+				"rest-9-webhook-signatures-replay-ordering",
+				seed
+			);
+			uniqueChallenges.add(
+				runtime?.drills.map((drill) => drill.id).join("|") ?? "null"
+			);
+		}
+
+		expect(uniqueChallenges.size).toBeGreaterThan(10);
+	});
+
+	it("rerolls rest-9 into new drill variants instead of only reordering the same pair", () => {
+		const first = getLessonRuntimeBySlug(
+			"rest-9-webhook-signatures-replay-ordering",
+			101
+		);
+		const rerolled = getLessonRuntimeBySlug(
+			"rest-9-webhook-signatures-replay-ordering",
+			202,
+			{
+				excludeDrillIds: first?.drills.map((drill) => drill.id),
+			}
+		);
+
+		expect(first).not.toBeNull();
+		expect(rerolled).not.toBeNull();
+		expect(first?.drills.map((drill) => drill.id)).not.toEqual(
+			rerolled?.drills.map((drill) => drill.id)
+		);
+		expect(
+			rerolled?.drills.every(
+				(drill) => !first?.drills.some((previous) => previous.id === drill.id)
+			)
+		).toBe(true);
+	});
+
+	it("keeps every lesson above the low and medium challenge-depth floor", () => {
+		const depthFloor = 12;
+		const lessonDepths = getLessonCatalog().map((lesson) => {
+			const uniqueChallenges = new Set<string>();
+
+			for (let seed = 1; seed <= 400; seed += 1) {
+				const runtime = getLessonRuntimeBySlug(lesson.slug, seed);
+				uniqueChallenges.add(
+					runtime?.drills.map((drill) => drill.id).join("|") ?? "null"
+				);
+			}
+
+			return {
+				slug: lesson.slug,
+				count: uniqueChallenges.size,
+			};
+		});
+
+		expect(lessonDepths.filter((lesson) => lesson.count < depthFloor)).toEqual(
+			[]
+		);
+	});
+
 	it("keeps arena card order stable for the same seed", () => {
 		const first = getArenaScenarioCards(44).map((scenario) => scenario.id);
 		const second = getArenaScenarioCards(44).map((scenario) => scenario.id);

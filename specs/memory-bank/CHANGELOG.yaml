@@ -1,7 +1,26 @@
 entries:
+  - date: "2026-04-16"
+    version: "1.1.15"
+    commit: TBD
+    status: completed
+    title: "test(content): audit and deepen lesson rerolls"
+    details: |-
+      Completed issue #19 by auditing seeded lesson challenge depth and fixing
+      the shallow drill-family pools that made some rerolls feel repetitive.
+
+      - Swept every lesson across 400 seeds and recorded the distinct
+        challenge-outcome matrix in the current-changes artifact
+      - Expanded the lowest-depth reusable drill families across REST, SOAP,
+        intro, and cross-track lessons
+      - Added regression coverage so no lesson can fall below the 12-outcome
+        challenge-depth floor
+      - Created issue #20 for the remaining long-term two-variant family
+        expansion work
+    refs:
+      - "I19D1, I19D2, I19D3, I19D4"
   - date: "2026-04-14"
     version: "1.1.14"
-    commit: TBD
+    commit: 61c1c97
     status: completed
     title: "feat(compliance): complete issue #12 launch review"
     details: |-
