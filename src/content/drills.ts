@@ -304,6 +304,36 @@ X-Correlation-ID: <uuid>`,
 			"When the underlying dataset changes during an offset-based scan, page boundaries drift. That can duplicate records or skip events that move between offsets while the sync is in flight.",
 	},
 	{
+		id: "rest4-mcq-4",
+		type: "mcq",
+		question:
+			"A carrier's cursor token expires after five minutes, and your sync worker resumes with yesterday's stored cursor. What should the integration do?",
+		options: [
+			"Keep retrying the expired cursor because cursors are always permanent",
+			"Detect cursor invalidation, restart from a safe checkpoint, and deduplicate events already processed",
+			"Switch to offset pagination for the rest of the sync run",
+			"Delete the local checkpoint so the carrier decides where to resume",
+		],
+		correctIndex: 1,
+		explanation:
+			"Cursors can still expire or become invalid. A safe resume path needs a durable checkpoint, deduplication, and a controlled restart window instead of assuming the old cursor remains authoritative.",
+	},
+	{
+		id: "rest4-mcq-5",
+		type: "mcq",
+		question:
+			"Your tracking sync receives the same event on page 2 and page 3 after a carrier reorders recent updates. Which design handles this best?",
+		options: [
+			"Treat repeated events as a fatal sync error and stop polling permanently",
+			"Use stable event identifiers or hashes to deduplicate while continuing from the last safe cursor",
+			"Increase the page size until duplicates disappear",
+			"Discard every event after the first duplicate in the run",
+		],
+		correctIndex: 1,
+		explanation:
+			"Live carrier data can reorder while you page through it. Deduplicating by stable event identity lets the sync continue without double-applying state changes.",
+	},
+	{
 		id: "rest4-mcq-2",
 		type: "mcq",
 		question:
@@ -379,6 +409,36 @@ X-Correlation-ID: <uuid>`,
 			"Carrier throttling needs both a send-rate control and queue-level backpressure. Without both, the bottleneck just shifts and the queue keeps growing.",
 	},
 	{
+		id: "rest7-mcq-3",
+		type: "mcq",
+		question:
+			"A carrier allows 50 label requests per minute, but your queue workers can emit 500 per minute after a batch import. What should you change first?",
+		options: [
+			"Increase worker concurrency so the queue drains before the carrier notices",
+			"Throttle dispatch at or below the carrier quota and apply backpressure before the queue creates retry storms",
+			"Disable logging so the workers spend more time sending requests",
+			"Move all failed jobs straight to the dead-letter queue",
+		],
+		correctIndex: 1,
+		explanation:
+			"Backpressure needs to happen before the carrier is overwhelmed. Worker throughput should respect the external quota, and queue growth should be visible before it becomes an outage.",
+	},
+	{
+		id: "rest7-mcq-4",
+		type: "mcq",
+		question:
+			"After repeated 429 responses, the queue has thousands of delayed retries scheduled for the same minute. What risk should you address?",
+		options: [
+			"The retries may form a synchronized burst that hits the carrier again unless you spread them with jitter and retry budgets",
+			"The carrier will automatically serialize the retries for you",
+			"Delayed retries are always safer than queue throttles",
+			"The queue depth no longer matters once Retry-After is present",
+		],
+		correctIndex: 0,
+		explanation:
+			"Retry-After is not enough if every worker wakes at the same time. Jitter, retry budgets, and queue-level throttles prevent a second burst from recreating the incident.",
+	},
+	{
 		id: "rest8-mcq-1",
 		type: "mcq",
 		question:
@@ -409,6 +469,36 @@ X-Correlation-ID: <uuid>`,
 			"When the carrier succeeded but your internal persistence failed, you need compensation or idempotent replay against the original operation. Creating a second label makes the split-brain state worse.",
 	},
 	{
+		id: "rest8-mcq-3",
+		type: "mcq",
+		question:
+			"A bulk cancel request succeeds for three shipments, fails validation for two, and times out on one. Which result model is safest?",
+		options: [
+			"One batch-level failed flag because any non-success means the whole request failed",
+			"Item-level states that distinguish canceled, rejected, and ambiguous shipments with targeted compensation paths",
+			"One batch-level success flag because at least one cancellation worked",
+			"Delete the original shipment records so the next sync can rebuild state",
+		],
+		correctIndex: 1,
+		explanation:
+			"Partial success needs item-level state. Mixed outcomes require different next actions, especially when one item is ambiguous and others are already committed.",
+	},
+	{
+		id: "rest8-mcq-4",
+		type: "mcq",
+		question:
+			"A carrier accepts a manifest but rejects two parcels inside it because customs data is incomplete. What should the integration avoid?",
+		options: [
+			"Recording the accepted manifest identifier and rejected parcel details separately",
+			"Retrying only the corrected rejected parcels when the carrier contract allows it",
+			"Collapsing the response into a generic success and losing the rejected-item evidence",
+			"Surfacing item-level remediation to operations",
+		],
+		correctIndex: 2,
+		explanation:
+			"Collapsing partial success hides the work that remains. You need to preserve accepted artifacts and rejected-item evidence so compensation and retries stay precise.",
+	},
+	{
 		id: "rest10-mcq-1",
 		type: "mcq",
 		question:
@@ -437,6 +527,36 @@ X-Correlation-ID: <uuid>`,
 		correctIndex: 1,
 		explanation:
 			"You need traceable evidence by environment. Correlation IDs and captured request or response detail let you compare sandbox and production behavior without guessing.",
+	},
+	{
+		id: "rest10-mcq-3",
+		type: "mcq",
+		question:
+			"Sandbox accepts a shipment without a production-only billing account field, but production rejects it. What does this most likely indicate?",
+		options: [
+			"The production API is unrelated to the sandbox API",
+			"Environment-specific entitlement or validation requirements are missing from the production readiness checklist",
+			"The request should be retried until production accepts the sandbox-shaped payload",
+			"The carrier has disabled all production label creation",
+		],
+		correctIndex: 1,
+		explanation:
+			"Carrier sandboxes often relax account, entitlement, or data requirements. Production readiness needs environment-specific validation evidence, not just a sandbox pass.",
+	},
+	{
+		id: "rest10-mcq-4",
+		type: "mcq",
+		question:
+			"Your sandbox credentials can create labels, but production returns permission errors for the same service level. What is the best first check?",
+		options: [
+			"Whether the production account is entitled for that service level and region",
+			"Whether the frontend route uses the same CSS bundle",
+			"Whether the sandbox response was cached by the browser",
+			"Whether the production endpoint should be called without authentication",
+		],
+		correctIndex: 0,
+		explanation:
+			"Production permission failures often come from account setup, region, or service-level entitlements. Comparing environment credentials and entitlements is more useful than assuming the payload shape is the only variable.",
 	},
 
 	// === SOAP-1 drills ===
@@ -598,6 +718,36 @@ X-Correlation-ID: <uuid>`,
 			"SOAP fault detail is where the actionable evidence lives. Generic faultstrings may tell you the class of failure, but the `detail` block is what identifies which field, type, or contract rule actually broke.",
 	},
 	{
+		id: "soap3-mcq-3",
+		type: "mcq",
+		question:
+			"A SOAP response has `faultstring='Request failed'`, while `detail` contains carrier code `ADDR_204` and field `Consignee.PostalCode`. What should your parser preserve?",
+		options: [
+			"Only the faultstring because it is portable across carriers",
+			"The structured detail code and field path so support can repair the exact request data",
+			"Only the HTTP status because SOAP body content is optional",
+			"The XML namespace declarations but not the error content",
+		],
+		correctIndex: 1,
+		explanation:
+			"Carrier-specific detail often contains the real repair instruction. Preserving codes and field paths makes the fault actionable instead of reducing it to a generic message.",
+	},
+	{
+		id: "soap3-mcq-4",
+		type: "mcq",
+		question:
+			"A nested SOAP fault detail includes one top-level validation error and three child package errors. What is the safest diagnostic behavior?",
+		options: [
+			"Keep only the top-level fault because nested details are too carrier-specific",
+			"Parse and log the nested detail tree so each package-level problem remains visible",
+			"Drop the detail block after extracting the first XML element name",
+			"Retry the same payload because nested detail means the fault is transient",
+		],
+		correctIndex: 1,
+		explanation:
+			"Nested SOAP detail can identify multiple field or package failures. Flattening it to one generic error loses the evidence needed for precise repair.",
+	},
+	{
 		id: "soap3-cloze-1",
 		type: "cloze",
 		template:
@@ -659,6 +809,36 @@ X-Correlation-ID: <uuid>`,
 		correctIndex: 1,
 		explanation:
 			"Type restrictions still apply inside XML. Decimal content belongs in the typed element, while units belong in the separate contract field if the schema defines one.",
+	},
+	{
+		id: "soap4-mcq-3",
+		type: "mcq",
+		question:
+			"A generated SOAP request omits `ShipDate`, but the updated XSD marks it as required. What should fail first?",
+		options: [
+			"Local schema validation before the request leaves your system",
+			"The carrier's billing system after the label is created",
+			"The frontend renderer because required SOAP fields are UI-only",
+			"The retry queue after several duplicate submissions",
+		],
+		correctIndex: 0,
+		explanation:
+			"Required element mismatches should be caught in local preflight validation against the current schema. Letting the carrier reject them turns a deterministic contract issue into an avoidable production fault.",
+	},
+	{
+		id: "soap4-mcq-4",
+		type: "mcq",
+		question:
+			"Your SOAP client sends `<Weight unit='LB'>5.5</Weight>`, but the XSD expects the unit attribute in the carrier namespace. What is the correct repair?",
+		options: [
+			"Remove the namespace because attributes are never schema-bound",
+			"Generate the attribute with the namespace and name required by the XSD contract",
+			"Move the unit value into an XML comment",
+			"Round the decimal value so the namespace mismatch is ignored",
+		],
+		correctIndex: 1,
+		explanation:
+			"XSD validation applies to namespaced attributes as well as elements. The generated request must match the namespace-bound contract, not just the visible local name.",
 	},
 	{
 		id: "soap5-mcq-1",

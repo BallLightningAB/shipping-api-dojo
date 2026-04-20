@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.15"
+  release: "1.1.16"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -84,7 +84,7 @@ roadmap:
         - id: remaining-drill-family-depth
           issue: "#20"
           title: "Expand remaining two-variant drill families"
-          status: planned
+          status: done
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/20"
       remaining_deliverables: []
@@ -107,6 +107,7 @@ roadmap:
         - note: "Completed issue #9 end-to-end: fixed lesson rerolls so New Challenge resets and avoids immediate repeats, archived the local migration plan after the final validation pass, and satisfied the remaining issue #5 20/20/20 curriculum deliverables."
         - note: "Completed issue #19: audited every lesson across 400 seeded runs, expanded the shallow reusable drill families that made rerolls feel repetitive, added a runtime challenge-depth floor test, and recorded the post-fix depth matrix plus the remaining two-variant family watch list in specs/current-changes/challenge-depth-audit-2026-04-15.md."
         - note: "Created issue #20 as the follow-up for expanding the remaining two-variant drill families without changing family IDs, lesson slugs, progress keys, or route contracts."
+        - note: "Completed issue #20: expanded the six remaining two-variant drill families to four authored variants each, added runtime regression coverage for the watch-list family pool size and missing-drill references, updated the audit matrix so the former 12-outcome lessons now report 24 outcomes across 400 seeds, and archived the completed challenge-depth artifacts."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

@@ -1,7 +1,28 @@
 entries:
+  - date: "2026-04-20"
+    version: "1.1.16"
+    commit: TBD
+    status: completed
+    title: "test(content): expand remaining drill family depth"
+    details: |-
+      Completed issue #20 by turning the remaining two-variant drill-family
+      pools into healthier four-variant families.
+
+      - Added two authored variants each for pagination drift, partial success,
+        rate limits, sandbox-production drift, SOAP fault detail extraction,
+        and XSD type mismatch repair
+      - Extended the family catalog without changing family IDs, lesson slugs,
+        progress keys, or route contracts
+      - Added regression coverage for the watch-list family variant floor and
+        missing drill references
+      - Recomputed the 400-seed challenge-depth matrix so the former
+        12-outcome lessons now report 24 outcomes
+      - Updated and archived the completed challenge-depth artifacts
+    refs:
+      - "I20D1, I20D2, I20D3, I20D4, I20D5"
   - date: "2026-04-16"
     version: "1.1.15"
-    commit: TBD
+    commit: b3899e2
     status: completed
     title: "test(content): audit and deepen lesson rerolls"
     details: |-

@@ -70,7 +70,12 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Assuming offset pagination stays correct while the underlying result set changes.",
 		difficulty: "beginner",
 		tags: ["rest", "pagination", "sync"],
-		legacyDrillIds: ["rest4-mcq-1", "rest4-mcq-3"],
+		legacyDrillIds: [
+			"rest4-mcq-1",
+			"rest4-mcq-3",
+			"rest4-mcq-4",
+			"rest4-mcq-5",
+		],
 	},
 	{
 		id: "rest-webhook-receiver-behavior",
@@ -90,7 +95,12 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Treating 429 handling as retries only instead of a combined throttle and queue-management problem.",
 		difficulty: "intermediate",
 		tags: ["rest", "rate-limits", "queues"],
-		legacyDrillIds: ["rest7-mcq-1", "rest7-mcq-2"],
+		legacyDrillIds: [
+			"rest7-mcq-1",
+			"rest7-mcq-2",
+			"rest7-mcq-3",
+			"rest7-mcq-4",
+		],
 	},
 	{
 		id: "rest-partial-success-compensation",
@@ -100,7 +110,12 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Collapsing mixed outcomes into one success flag instead of modeling compensating actions explicitly.",
 		difficulty: "intermediate",
 		tags: ["rest", "bulk", "compensation"],
-		legacyDrillIds: ["rest8-mcq-1", "rest8-mcq-2"],
+		legacyDrillIds: [
+			"rest8-mcq-1",
+			"rest8-mcq-2",
+			"rest8-mcq-3",
+			"rest8-mcq-4",
+		],
 	},
 	{
 		id: "rest-sandbox-production-drift",
@@ -110,7 +125,12 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Assuming a sandbox pass guarantees production parity across credentials, rules, and data validation.",
 		difficulty: "intermediate",
 		tags: ["rest", "sandbox", "production"],
-		legacyDrillIds: ["rest10-mcq-1", "rest10-mcq-2"],
+		legacyDrillIds: [
+			"rest10-mcq-1",
+			"rest10-mcq-2",
+			"rest10-mcq-3",
+			"rest10-mcq-4",
+		],
 	},
 	{
 		id: "soap-wsdl-contract-reading",
@@ -140,7 +160,12 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Stopping at the human-readable faultstring instead of parsing structured fault detail.",
 		difficulty: "beginner",
 		tags: ["soap", "faults", "debugging"],
-		legacyDrillIds: ["soap3-mcq-1", "soap3-mcq-2"],
+		legacyDrillIds: [
+			"soap3-mcq-1",
+			"soap3-mcq-2",
+			"soap3-mcq-3",
+			"soap3-mcq-4",
+		],
 	},
 	{
 		id: "repair-xsd-type-mismatches",
@@ -151,7 +176,12 @@ export const drillFamilyCatalog: DrillFamilyCatalogEntry[] = [
 			"Assuming the carrier will coerce enum, numeric, and required-field mismatches instead of enforcing the XSD contract exactly.",
 		difficulty: "intermediate",
 		tags: ["soap", "xsd", "schema-validation"],
-		legacyDrillIds: ["soap4-mcq-1", "soap4-mcq-2"],
+		legacyDrillIds: [
+			"soap4-mcq-1",
+			"soap4-mcq-2",
+			"soap4-mcq-3",
+			"soap4-mcq-4",
+		],
 	},
 	{
 		id: "incident-evidence-logging",

@@ -7,6 +7,8 @@ import {
 	getLessonRuntimeBySlug,
 	getScenarioRuntimeById,
 } from "./runtime";
+import { drillFamilyCatalog } from "./catalog/drill-family-catalog";
+import { drills } from "./drills";
 
 describe("content runtime", () => {
 	it("adapts the migrated REST lesson through the family runtime", () => {
@@ -143,6 +145,42 @@ describe("content runtime", () => {
 		expect(lessonDepths.filter((lesson) => lesson.count < depthFloor)).toEqual(
 			[]
 		);
+	});
+
+	it("keeps the two-variant watch-list families expanded", () => {
+		const expandedFamilies = [
+			"repair-xsd-type-mismatches",
+			"rest-pagination-drift",
+			"rest-partial-success-compensation",
+			"rest-rate-limits-backpressure",
+			"rest-sandbox-production-drift",
+			"soap-fault-detail-extraction",
+		];
+		const drillIds = new Set(drills.map((drill) => drill.id));
+		const shallowFamilies = expandedFamilies.flatMap((familyId) => {
+			const family = drillFamilyCatalog.find((entry) => entry.id === familyId);
+			const missingDrills =
+				family?.legacyDrillIds.filter((drillId) => !drillIds.has(drillId)) ??
+				[];
+
+			if (
+				!family ||
+				family.legacyDrillIds.length < 4 ||
+				missingDrills.length > 0
+			) {
+				return [
+					{
+						familyId,
+						count: family?.legacyDrillIds.length ?? 0,
+						missingDrills,
+					},
+				];
+			}
+
+			return [];
+		});
+
+		expect(shallowFamilies).toEqual([]);
 	});
 
 	it("keeps arena card order stable for the same seed", () => {
