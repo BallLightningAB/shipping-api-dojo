@@ -251,5 +251,6 @@ describe("content runtime", () => {
 		expect(ids).not.toContain("soap-fault-detail");
 		expect(ids).not.toContain("wsdl-change-breaks");
 		expect(cards.every((scenario) => Boolean(scenario.progressKey))).toBe(true);
+		expect(cards.every((scenario) => Boolean(scenario.ladderLevel))).toBe(true);
 	});
 });

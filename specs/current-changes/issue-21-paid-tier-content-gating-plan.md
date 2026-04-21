@@ -6,6 +6,17 @@ Parent: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Branch: `codex/issue-21-paid-tier-gating`
 Scope: Implement the hosted/premium v2 surface that remains after the auth, billing, entitlement, and compliance foundations.
 
+## Execution Progress
+
+- [x] Align scope with `#5`: keep this issue focused on paid tiers and entitlement gating, keep `#15` separate, and keep `#13/#16` out of scope.
+- [x] Define and ship a concrete Free/Pro/Enterprise capability matrix in runtime code and settings UX.
+- [x] Gate premium depth and premium reroll actions through entitlement-aware checks while keeping lesson/wiki/directory pages publicly crawlable.
+- [x] Add locked-content and upgrade UX for premium lesson rerolls and advanced arena scenario depth.
+- [x] Add safe fallback behavior for missing/errored entitlement fetches and verify inactive/canceled subscription downgrades remain free.
+- [x] Add regression tests for access-policy helpers and entitlement downgrade behavior.
+- [x] Run full validation suite and fix any regressions.
+- [x] Update memory-bank release/changelog entries and open PR for review.
+
 ## Goal
 
 Turn the v2 paid-access direction from foundations and outline docs into user-visible, entitlement-aware product behavior.

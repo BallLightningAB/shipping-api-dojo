@@ -103,6 +103,7 @@ export interface Scenario {
 	difficulty: "beginner" | "intermediate" | "advanced";
 	evidence?: string[];
 	id: string;
+	ladderLevel?: 1 | 2 | 3 | 4;
 	progressKey?: string;
 	runSeed?: number;
 	scenarioFamilyId?: string;

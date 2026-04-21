@@ -27,6 +27,19 @@ describe("resolveEntitlements", () => {
 		);
 	});
 
+	it("downgrades canceled paid subscriptions to free access", () => {
+		const resolved = resolveEntitlements({
+			subscriptionPlanKey: "pro_monthly",
+			subscriptionStatus: "canceled",
+		});
+
+		expect(resolved.tier).toBe("free");
+		expect(resolved.source).toBe("fallback_free");
+		expect(hasCapability(resolved.capabilities, "content.premium.read")).toBe(
+			false
+		);
+	});
+
 	it("keeps highest tier when both manual and subscription are present", () => {
 		const resolved = resolveEntitlements({
 			manualTier: "enterprise",

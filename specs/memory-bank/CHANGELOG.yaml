@@ -1,4 +1,31 @@
 entries:
+  - date: "2026-04-21"
+    version: "1.1.18"
+    commit: TBD
+    status: in-progress
+    title: "feat(entitlements): ship issue #21 paid-tier gating slice"
+    details: |-
+      Started issue #21 with a concrete paid-tier implementation slice focused
+      on entitlement-aware access behavior and upgrade UX while keeping SEO
+      surfaces crawlable.
+
+      - Added a concrete Free/Pro/Enterprise capability matrix and centralized
+        access-policy helpers for premium lesson rerolls and advanced arena
+        scenario depth
+      - Wired lesson and arena route checks to entitlement capabilities with a
+        safe fallback to free access when paid state is missing or unavailable
+      - Added locked-content and upgrade UX for premium challenge actions
+        without hiding public lesson/wiki/directory pages
+      - Added a paid-access matrix surface in settings, including visibility of
+        current entitlement state and inactive/canceled subscription fallback
+        messaging
+      - Added regression coverage for the access-policy rules, canceled-subscription
+        downgrade behavior, runtime ladder metadata, and updated browser smoke
+        assertions for the new lock/upgrade flows
+      - Updated issue-21 current-changes and README paid-tier documentation to
+        match implemented behavior
+    refs:
+      - "I21D1, I21D2, I21D3, I21D4, I21D5, I21D6"
   - date: "2026-04-20"
     version: "1.1.17"
     commit: TBD

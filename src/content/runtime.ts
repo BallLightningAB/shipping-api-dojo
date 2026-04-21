@@ -145,6 +145,7 @@ export function getScenarioProgressKey(scenario: Scenario): string {
 export function getArenaScenarioCards(seed: number): Scenario[] {
 	const canonicalCards = scenarioFamilies.map((family) => ({
 		id: family.id,
+		ladderLevel: family.ladderLevel,
 		progressKey: family.id,
 		scenarioFamilyId: family.id,
 		title: family.title,
@@ -164,7 +165,14 @@ export function getScenarioRuntimeById(
 	runSeed: number
 ): Scenario | null {
 	const family = getScenarioFamilyById(id);
-	return family ? family.buildRun(runSeed).scenario : null;
+	if (!family) {
+		return null;
+	}
+
+	return {
+		...family.buildRun(runSeed).scenario,
+		ladderLevel: family.ladderLevel,
+	};
 }
 
 export function getLessonCatalog(): Lesson[] {

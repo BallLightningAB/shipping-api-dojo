@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.17"
+  release: "1.1.18"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -98,7 +98,7 @@ roadmap:
         - id: paid-tier-content-gating
           issue: "#21"
           title: "Implement paid tiers, entitlement gating, and premium access surfaces"
-          status: planned
+          status: in-progress
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/21"
       remaining_deliverables:
@@ -125,6 +125,7 @@ roadmap:
         - note: "Created issue #20 as the follow-up for expanding the remaining two-variant drill families without changing family IDs, lesson slugs, progress keys, or route contracts."
         - note: "Completed issue #20: expanded the six remaining two-variant drill families to four authored variants each, added runtime regression coverage for the watch-list family pool size and missing-drill references, updated the audit matrix so the former 12-outcome lessons now report 24 outcomes across 400 seeds, and archived the completed challenge-depth artifacts."
         - note: "Corrected issue #5 back to an open v2 umbrella: #10 remains outline-only, #12 remains compliance-only, #15 is now an in-scope v2 sub-issue, #21 tracks the missing paid-tier/content-gating implementation, and #13/#16 remain separate strategy follow-ons outside #5 closure criteria."
+        - note: "Started issue #21 on codex/issue-21-paid-tier-gating: shipped the first paid-tier slice with a concrete Free/Pro/Enterprise matrix, entitlement-aware gating for premium lesson rerolls plus advanced arena depth, locked/upgrade UX that keeps public educational pages crawlable, safe free fallback behavior for missing/inactive/canceled paid states, and regression coverage for the new access-policy logic."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

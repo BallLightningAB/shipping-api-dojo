@@ -13,6 +13,7 @@ The current public build includes:
 - **Wiki** reference content for shipping/API concepts
 - **Directory** curated links to specs, tools, and carrier resources
 - **Anonymous local progress** stored in the browser today
+- **Tier-aware gating** for premium challenge depth while keeping public educational pages crawlable
 
 ## V2 Direction
 
@@ -24,6 +25,23 @@ The active v2 plan is tracked in [`specs/current-changes`](specs/current-changes
 - hosted access tiers: anonymous sample -> signed-in free -> Pro -> Enterprise
 - Creem billing, Resend transactional email, and `shipping.apidojo.app` as the target production domain under the `apidojo.app` umbrella
 - stronger SEO-first knowledge architecture around lessons, wiki, and directory surfaces
+
+## Hosted Access Matrix (Current Slice)
+
+- **Free**
+  - Public lessons, wiki, and directory
+  - Core lesson drills and standard incident-arena scenarios
+  - Signed-in server-backed progress
+- **Pro**
+  - All Free surfaces
+  - Premium lesson and arena challenge rerolls
+  - Advanced review-depth scenario access
+  - Certificate-basic capability reserved for certificate implementation
+- **Enterprise**
+  - All Pro surfaces
+  - Branded certificate capability, team reporting, and custom premium-pack capability
+
+The current implementation gates premium actions and depth (for example rerolls and advanced arena ladders) instead of hiding public SEO-critical pages.
 
 ## Architectural Caveat
 
