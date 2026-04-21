@@ -1,8 +1,27 @@
 entries:
   - date: "2026-04-21"
-    version: "1.1.19"
+    version: "1.1.20"
     commit: TBD
     status: in-progress
+    title: "docs(planning): track issue #28 seed security"
+    details: |-
+      Added issue #28 to the local v2 planning and memory-bank state as a
+      critical seed-security blocker for certificate-safe randomized practice.
+
+      - Added a current-changes artifact for server-authoritative seed
+        ownership and URL seed removal
+      - Updated the issue #5 joint plan to include #28 in scope, risks,
+        estimates, and deliverable mapping
+      - Updated active-context so #28 is tracked under the #5 roadmap with
+        critical priority and an explicit remaining deliverable
+      - Prepared PR #25 for merge after resolving the observability review
+        comment
+    refs:
+      - "I5D7, I5D13"
+  - date: "2026-04-21"
+    version: "1.1.19"
+    commit: 40d0f63
+    status: completed
     title: "chore(observability): address paid-tier review feedback"
     details: |-
       Addressed PR review feedback on the issue #21 paid-tier gating branch

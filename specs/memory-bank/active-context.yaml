@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.19"
+  release: "1.1.20"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -30,9 +30,10 @@ roadmap:
         - "[I5D10] Expand the wiki and directory beyond curriculum support into the v2 carrier reference surface"
         - "[I5D11] Add privacy-safe Sentry Free-tier observability for hosted v2 error paths"
         - "[I5D12] Add dev-only tiered auth users, billing-shaped seed state, and Playwright auth helpers"
+        - "[I5D13] Remove URL-visible seeds from protected randomized practice flows before certificate launch"
       est:
-        dev_h: 150
-        test_h: 78
+        dev_h: 158
+        test_h: 83
       sub_issues:
         - id: content-expansion-scoping
           issue: "#7"
@@ -115,11 +116,19 @@ roadmap:
           status: planned
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/27"
+        - id: seed-security
+          issue: "#28"
+          title: "Security: Seed exposure in URLs undermines randomized practice and certificate validity"
+          status: planned
+          priority: critical
+          links:
+            issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/28"
       remaining_deliverables:
         - "[I5D9] Implement entitlement-aware paid tiers, content gating, premium access surfaces, and launch-ready upgrade behavior"
         - "[I5D10] Expand the wiki and directory beyond curriculum support into the v2 carrier reference surface"
         - "[I5D11] Add privacy-safe Sentry Free-tier observability for hosted v2 error paths"
         - "[I5D12] Add dev-only tiered auth users, billing-shaped seed state, and Playwright auth helpers"
+        - "[I5D13] Remove URL-visible seeds from protected randomized practice flows before certificate launch"
       progress_log:
         - note: "Research captured in specs/current-changes/issue-5-content-expansion-research.md and GitHub issue #5 was updated to target minimum viable randomization, 20 lessons, 20 drill families, and 20 scenario families."
         - note: "Created the issue-5 joint plan plus issue-specific plan artifacts for #7, #11, #8, #9, and #10; added GitHub issue #11 for auth/billing/email/domain foundation; and updated the roadmap to sequence work as #7 -> #11 -> #8 -> #9 with #10 as follow-on."
@@ -143,6 +152,7 @@ roadmap:
         - note: "Corrected issue #5 back to an open v2 umbrella: #10 remains outline-only, #12 remains compliance-only, #15 is now an in-scope v2 sub-issue, #21 tracks the missing paid-tier/content-gating implementation, and #13/#16 remain separate strategy follow-ons outside #5 closure criteria."
         - note: "Started issue #21 on codex/issue-21-paid-tier-gating: shipped the first paid-tier slice with a concrete Free/Pro/Enterprise matrix, entitlement-aware gating for premium lesson rerolls plus advanced arena depth, locked/upgrade UX that keeps public educational pages crawlable, safe free fallback behavior for missing/inactive/canceled paid states, and regression coverage for the new access-policy logic."
         - note: "Addressed PR #25 observability feedback by centralizing entitlement fallback exception capture in a shared logger, and created #26 plus #27 as v2 sub-issues under #5 for full Sentry integration and dev-only tiered seed users."
+        - note: "Added issue #28 to the v2 #5 planning graph as a critical seed-security sub-issue so URL-visible randomized seeds are removed before certificate-bearing or challenge-validity claims launch."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
