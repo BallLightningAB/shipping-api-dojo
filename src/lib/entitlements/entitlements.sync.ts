@@ -1,50 +1,54 @@
 import { createServerFn } from "@tanstack/react-start";
 import { desc, eq } from "drizzle-orm";
 
-import { getRequestSession, requireRequestSession } from "@/lib/auth/server";
-import { getDb } from "@/lib/db/client";
-import { subscriptions, userEntitlements } from "@/lib/db/schema";
 import {
 	hasCapability,
 	resolveEntitlements,
 } from "@/lib/entitlements/entitlements";
 
+export async function resolveEntitlementsForUserId(userId?: string | null) {
+	if (!userId) {
+		return resolveEntitlements({});
+	}
+
+	const { getDb } = await import("@/lib/db/client");
+	const { subscriptions, userEntitlements } = await import("@/lib/db/schema");
+	const db = getDb();
+
+	const [manualEntitlement] = await db
+		.select({
+			capabilities: userEntitlements.capabilities,
+			tier: userEntitlements.tier,
+		})
+		.from(userEntitlements)
+		.where(eq(userEntitlements.userId, userId))
+		.limit(1);
+
+	const [latestSubscription] = await db
+		.select({
+			planKey: subscriptions.planKey,
+			status: subscriptions.status,
+		})
+		.from(subscriptions)
+		.where(eq(subscriptions.userId, userId))
+		.orderBy(desc(subscriptions.updatedAt))
+		.limit(1);
+
+	return resolveEntitlements({
+		manualCapabilities: Array.isArray(manualEntitlement?.capabilities)
+			? (manualEntitlement.capabilities as string[])
+			: [],
+		manualTier: manualEntitlement?.tier ?? null,
+		subscriptionPlanKey: latestSubscription?.planKey ?? null,
+		subscriptionStatus: latestSubscription?.status ?? null,
+	});
+}
+
 export const getCurrentEntitlements = createServerFn({ method: "GET" }).handler(
 	async () => {
+		const { getRequestSession } = await import("@/lib/auth/server");
 		const session = await getRequestSession();
-		if (!session?.user?.id) {
-			return resolveEntitlements({});
-		}
-
-		const db = getDb();
-
-		const [manualEntitlement] = await db
-			.select({
-				capabilities: userEntitlements.capabilities,
-				tier: userEntitlements.tier,
-			})
-			.from(userEntitlements)
-			.where(eq(userEntitlements.userId, session.user.id))
-			.limit(1);
-
-		const [latestSubscription] = await db
-			.select({
-				planKey: subscriptions.planKey,
-				status: subscriptions.status,
-			})
-			.from(subscriptions)
-			.where(eq(subscriptions.userId, session.user.id))
-			.orderBy(desc(subscriptions.updatedAt))
-			.limit(1);
-
-		return resolveEntitlements({
-			manualCapabilities: Array.isArray(manualEntitlement?.capabilities)
-				? (manualEntitlement.capabilities as string[])
-				: [],
-			manualTier: manualEntitlement?.tier ?? null,
-			subscriptionPlanKey: latestSubscription?.planKey ?? null,
-			subscriptionStatus: latestSubscription?.status ?? null,
-		});
+		return resolveEntitlementsForUserId(session?.user?.id);
 	}
 );
 
@@ -61,6 +65,7 @@ export const requireCapability = createServerFn({ method: "GET" })
 		return { capability: data.capability };
 	})
 	.handler(async ({ data }) => {
+		const { requireRequestSession } = await import("@/lib/auth/server");
 		await requireRequestSession();
 		const entitlements = await getCurrentEntitlements();
 		if (!hasCapability(entitlements.capabilities, data.capability)) {

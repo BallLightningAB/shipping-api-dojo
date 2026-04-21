@@ -1,5 +1,27 @@
 entries:
   - date: "2026-04-21"
+    version: "1.1.21"
+    commit: TBD
+    status: in-progress
+    title: "fix(security): remove URL-visible practice seeds"
+    details: |-
+      Started issue #28 with the first seed-security implementation slice for
+      certificate-safe randomized practice.
+
+      - Mapped lesson and arena seed exposure across route search params,
+        loader data, and client reroll paths
+      - Added the `practice_seeds` table so signed-in lesson, arena-card, and
+        arena-scenario seeds are owned by `(user_id, surface, scope)`
+      - Removed seed-bearing route search state from lesson and arena practice,
+        including legacy URL cleanup for `seed`, `runSeed`, and `exclude`
+      - Moved Pro lesson rerolls and arena rerolls to server functions that
+        rotate owned seeds and return materialized practice data without the
+        seed
+      - Added regression coverage for stripped search params, seed-free
+        client-facing payloads, and seed-free public practice markup
+    refs:
+      - "I5D13"
+  - date: "2026-04-21"
     version: "1.1.20"
     commit: TBD
     status: in-progress

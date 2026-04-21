@@ -2,18 +2,20 @@ import { ScenarioPlayer } from "@/components/arena/ScenarioPlayer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	getArenaScenarioCards,
-	getRouteSeed,
 	getScenarioProgressKey,
-	getScenarioRuntimeById,
 } from "@/content/runtime";
+import type { Scenario } from "@/content/types";
+import { requiresPremiumScenarioDepth } from "@/lib/entitlements/access-policy";
+import type { ArenaScenarioCard } from "@/lib/practice/practice-runs";
 import {
-	canAccessScenarioRun,
-	canUseScenarioReroll,
-	fallbackFreeEntitlements,
-	requiresPremiumScenarioDepth,
-} from "@/lib/entitlements/access-policy";
-import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
-import { captureException } from "@/lib/observability/logger";
+	createArenaCardsRun,
+	createArenaScenarioRun,
+	getArenaPracticeRouteData,
+} from "@/lib/practice/practice-runs.sync";
+import {
+	arenaPracticeSearchSchema,
+	LEGACY_SEED_SEARCH_PARAMS,
+} from "@/lib/practice/seed-search";
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
 import { makeClientSeed } from "@/lib/randomization";
@@ -25,41 +27,15 @@ import {
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { CheckCircle, Circle, Lock } from "lucide-react";
-import { z } from "zod";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/arena/")({
-	validateSearch: z.object({
-		runSeed: z.coerce.number().int().positive().optional(),
-		scenario: z.string().optional(),
-		seed: z.coerce.number().int().positive().optional(),
-	}),
+	validateSearch: arenaPracticeSearchSchema,
 	loaderDeps: ({ search }) => ({
-		seed: search.seed,
+		scenario: search.scenario,
 	}),
-	loader: async ({ deps }) => {
-		const seed = getRouteSeed("arena:index", deps.seed);
-		let capabilities = fallbackFreeEntitlements().capabilities;
-		try {
-			const entitlements = await getCurrentEntitlements();
-			capabilities = entitlements.capabilities;
-		} catch (error) {
-			captureException(error, {
-				fallbackTier: "free",
-				operation: "resolve_entitlements",
-				route: "/arena",
-			});
-		}
-
-		return {
-			cards: getArenaScenarioCards(seed).map((card) => ({
-				...card,
-				isLocked: !canAccessScenarioRun(capabilities, card.ladderLevel),
-				requiresPremiumDepth: requiresPremiumScenarioDepth(card.ladderLevel),
-			})),
-			canRerollScenarioRuns: canUseScenarioReroll(capabilities),
-			seed,
-		};
-	},
+	loader: ({ deps }) =>
+		getArenaPracticeRouteData({ data: { scenario: deps.scenario } }),
 	head: () => {
 		const title = "Shipping Incident Practice";
 		const description =
@@ -84,34 +60,53 @@ export const Route = createFileRoute("/arena/")({
 });
 
 function ArenaPage() {
+	useStripLegacySeedParams();
+
 	const navigate = useNavigate({ from: "/arena/" });
-	const { canRerollScenarioRuns, cards } = Route.useLoaderData();
+	const {
+		activeScenario: loadedActiveScenario,
+		activeScenarioLocked,
+		canRerollScenarioRuns,
+		cards,
+		usesServerSeed,
+	} = Route.useLoaderData();
+	const [currentCards, setCurrentCards] = useState(cards);
+	const [currentActiveScenario, setCurrentActiveScenario] =
+		useState<Scenario | null>(loadedActiveScenario);
 	const search = Route.useSearch();
 	const activeCard = search.scenario
-		? cards.find((card) => card.id === search.scenario)
+		? currentCards.find((card) => card.id === search.scenario)
 		: null;
-	const activeScenarioLocked = Boolean(activeCard?.isLocked);
-	const activeScenario =
-		search.scenario && search.runSeed && !activeScenarioLocked
-			? getScenarioRuntimeById(search.scenario, search.runSeed)
-			: null;
 
-	function handleShuffleScenarios() {
-		navigate({
-			search: (prev) => ({
-				...prev,
-				seed: makeClientSeed("arena:index"),
-				scenario: undefined,
-				runSeed: undefined,
-			}),
-		});
+	useEffect(() => {
+		setCurrentCards(cards);
+		setCurrentActiveScenario(loadedActiveScenario);
+	}, [cards, loadedActiveScenario]);
+
+	async function handleShuffleScenarios() {
+		if (canRerollScenarioRuns) {
+			const run = await createArenaCardsRun({ data: {} });
+			setCurrentCards(run.cards);
+			setCurrentActiveScenario(null);
+			navigate({
+				search: () => ({
+					scenario: undefined,
+				}),
+			});
+			return;
+		}
+
+		if (usesServerSeed) {
+			return;
+		}
+
+		setCurrentCards((prev) => overlayArenaCardAccess(prev));
+		setCurrentActiveScenario(null);
 	}
 
 	function handleOpenScenario(scenarioId: string) {
 		navigate({
-			search: (prev) => ({
-				...prev,
-				runSeed: makeClientSeed(`arena:${scenarioId}`),
+			search: () => ({
 				scenario: scenarioId,
 			}),
 		});
@@ -119,30 +114,28 @@ function ArenaPage() {
 
 	function handleBackToScenarios() {
 		navigate({
-			search: (prev) => ({
-				...prev,
-				runSeed: undefined,
+			search: () => ({
 				scenario: undefined,
 			}),
 		});
 	}
 
-	function handleRerollScenario() {
+	async function handleRerollScenario() {
 		if (!(search.scenario && canRerollScenarioRuns)) {
 			return;
 		}
 
-		navigate({
-			search: (prev) => ({
-				...prev,
-				runSeed: makeClientSeed(`arena:${search.scenario}`),
-			}),
+		const run = await createArenaScenarioRun({
+			data: {
+				scenarioId: search.scenario,
+			},
 		});
+		setCurrentActiveScenario(run.activeScenario);
 	}
 
 	let arenaContent: React.ReactNode;
 
-	if (activeScenario) {
+	if (currentActiveScenario) {
 		arenaContent = (
 			<div>
 				<button
@@ -153,7 +146,7 @@ function ArenaPage() {
 					&larr; Back to scenarios
 				</button>
 				<div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-					<h2 className="text-2xl">{activeScenario.title}</h2>
+					<h2 className="text-2xl">{currentActiveScenario.title}</h2>
 					{canRerollScenarioRuns ? (
 						<button
 							className="text-sm text-muted-foreground hover:text-foreground"
@@ -175,11 +168,11 @@ function ArenaPage() {
 					fallback={<p className="text-muted-foreground">Loading...</p>}
 				>
 					<ScenarioPlayer
-						key={`${activeScenario.id}:${activeScenario.runSeed ?? "legacy"}`}
+						key={`${currentActiveScenario.id}:${currentActiveScenario.steps[0]?.text ?? "run"}`}
 						onComplete={() =>
-							completeScenario(getScenarioProgressKey(activeScenario))
+							completeScenario(getScenarioProgressKey(currentActiveScenario))
 						}
-						scenario={activeScenario}
+						scenario={currentActiveScenario}
 					/>
 				</ClientOnly>
 			</div>
@@ -218,15 +211,24 @@ function ArenaPage() {
 		arenaContent = (
 			<div className="space-y-4">
 				<div className="flex justify-end">
-					<button
-						className="text-sm text-muted-foreground hover:text-foreground"
-						onClick={handleShuffleScenarios}
-						type="button"
-					>
-						Shuffle Scenario Order
-					</button>
+					{canRerollScenarioRuns || !usesServerSeed ? (
+						<button
+							className="text-sm text-muted-foreground hover:text-foreground"
+							onClick={handleShuffleScenarios}
+							type="button"
+						>
+							Shuffle Scenario Order
+						</button>
+					) : (
+						<a
+							className="text-sm text-muted-foreground hover:text-foreground"
+							href="/settings#paid-access"
+						>
+							Unlock Scenario Shuffles (Pro)
+						</a>
+					)}
 				</div>
-				{cards.map((scenario) =>
+				{currentCards.map((scenario) =>
 					scenario.isLocked ? (
 						<Card className="border-border/70 bg-muted/30" key={scenario.id}>
 							<CardHeader className="flex flex-row items-center gap-4">
@@ -307,6 +309,47 @@ function ArenaPage() {
 			{arenaContent}
 		</div>
 	);
+}
+
+function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
+	const accessById = new Map(
+		cards.map((card) => [
+			card.id,
+			{
+				isLocked: card.isLocked,
+				requiresPremiumDepth: card.requiresPremiumDepth,
+			},
+		])
+	);
+
+	return getArenaScenarioCards(makeClientSeed("arena:index")).map((card) => ({
+		...card,
+		isLocked: accessById.get(card.id)?.isLocked ?? false,
+		requiresPremiumDepth:
+			accessById.get(card.id)?.requiresPremiumDepth ??
+			requiresPremiumScenarioDepth(card.ladderLevel),
+	}));
+}
+
+function useStripLegacySeedParams() {
+	useEffect(() => {
+		const url = new URL(window.location.href);
+		let changed = false;
+		for (const param of LEGACY_SEED_SEARCH_PARAMS) {
+			if (url.searchParams.has(param)) {
+				url.searchParams.delete(param);
+				changed = true;
+			}
+		}
+
+		if (changed) {
+			window.history.replaceState(
+				window.history.state,
+				"",
+				`${url.pathname}${url.search}${url.hash}`
+			);
+		}
+	}, []);
 }
 
 function ScenarioStatus({ scenarioId }: { scenarioId: string }) {

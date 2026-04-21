@@ -3,8 +3,19 @@
 Issue: [#28](https://github.com/BallLightningAB/shipping-api-dojo/issues/28)
 Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Milestone: v2
-Status: planned
+Status: in-progress
 Priority: critical
+
+## Execution Progress
+
+- [x] Start from merged `main` on `codex/issue-28-seed-security`.
+- [x] Read the memory-bank and current-changes artifacts through the memory-bank workflow.
+- [x] Review issue `#28`, parent issue `#5`, and the completed `#8/#9/#10` planning artifacts.
+- [x] Map current seed-bearing routes and client paths.
+- [x] Implement the first seed-security slice for lesson and arena practice flows.
+- [x] Add regression coverage for search-param stripping and seed-free client-facing run payloads.
+- [x] Run the full repo validation workflow.
+- [x] Open draft PR [#29](https://github.com/BallLightningAB/shipping-api-dojo/pull/29).
 
 ## Goal
 
@@ -42,3 +53,27 @@ The current v2 randomization model can expose seeds in route search params such 
 ## Implementation Notes
 
 Treat this as a security and product-integrity prerequisite before certificates or any claim of unique randomized challenge validity. The first implementation pass should map every current seed-bearing route/search param, decide which flows remain anonymous/demo-only, and then move signed-in and premium practice attempts behind server-authoritative state.
+
+## Current Seed Surface Map
+
+Before this branch:
+
+- `/lesson/$slug` accepted `?seed=` and `?exclude=`, used them in loader dependencies, returned `seed` to loader data, and wrote both values back to the URL when the Pro `New Challenge` action rerolled drills.
+- `/arena` accepted `?seed=`, `?runSeed=`, and `?scenario=`, returned the arena card `seed` from the loader, wrote `seed` during scenario shuffles, wrote `runSeed` when opening or rerolling a scenario, and materialized scenario runs client-side from the URL seed.
+- `src/content/runtime.ts` and the family builders still require numeric seeds internally; that is acceptable as long as the seed remains server-owned or anonymous-demo-only and is not exposed through shareable route state.
+
+After this branch:
+
+- `/lesson/$slug` no longer has seed-bearing route search state. Legacy `seed` and `exclude` query params are stripped from the browser URL, and the route returns only materialized lesson/drill data.
+- `/arena` keeps `?scenario=` as the only shareable practice selector. Legacy `seed`, `runSeed`, and `exclude` params are stripped from the browser URL, and active scenarios are materialized by the loader or server function without returning `runSeed`.
+- Signed-in lesson, arena-card, and arena-scenario seeds are stored in the new `practice_seeds` table under `(user_id, surface, scope)`.
+- Pro reroll actions now call server functions that rotate the signed-in user's owned seed and return materialized drills/cards/scenarios without exposing the seed.
+- Anonymous public/demo practice still uses deterministic internal seeds so public educational pages stay SSR-visible and crawlable, but those seeds are not written to route search params and are not certificate-bearing.
+
+## First Slice Summary
+
+- Added a database-backed `practice_seeds` ownership table and generated migration `0002_perpetual_cloak.sql`.
+- Split pure practice-run materialization from server-owned seed issuance so tests can assert that client-facing payloads do not include seeds.
+- Reworked lesson and arena routes to derive signed-in seeds server-side, preserve public content rendering, and remove legacy seed query params from visible URLs.
+- Added unit coverage for stripped search state and seed-free run payloads.
+- Added browser smoke coverage proving legacy seed params are removed from practice URLs and seed values do not appear in public page markup.

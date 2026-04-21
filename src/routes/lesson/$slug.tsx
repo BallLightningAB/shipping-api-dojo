@@ -2,68 +2,25 @@ import { DrillRunner } from "@/components/drill/DrillRunner";
 import { LessonReader } from "@/components/lesson/LessonReader";
 import { LessonStatus } from "@/components/progress/LessonStatus";
 import { Button } from "@/components/ui/button";
+import { getLessonCatalog, getLessonProgressKey } from "@/content/runtime";
 import {
-	getLessonCatalog,
-	getLessonProgressKey,
-	getLessonRuntimeBySlug,
-	getRouteSeed,
-} from "@/content/runtime";
+	createLessonPracticeRun,
+	getLessonPracticeRouteData,
+} from "@/lib/practice/practice-runs.sync";
 import {
-	canUseLessonChallengeReroll,
-	fallbackFreeEntitlements,
-} from "@/lib/entitlements/access-policy";
-import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
-import { captureException } from "@/lib/observability/logger";
+	LEGACY_SEED_SEARCH_PARAMS,
+	lessonPracticeSearchSchema,
+} from "@/lib/practice/seed-search";
 import { completeDrill, completeLesson } from "@/lib/progress/progress.actions";
-import { makeClientSeed } from "@/lib/randomization";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
-import {
-	ClientOnly,
-	createFileRoute,
-	Link,
-	useNavigate,
-} from "@tanstack/react-router";
+import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { z } from "zod";
 
 export const Route = createFileRoute("/lesson/$slug")({
-	validateSearch: z.object({
-		exclude: z.string().optional(),
-		seed: z.coerce.number().int().positive().optional(),
-	}),
-	loaderDeps: ({ search }) => ({
-		exclude: search.exclude,
-		seed: search.seed,
-	}),
-	loader: async ({ deps, params }) => {
-		const seed = getRouteSeed(`lesson:${params.slug}`, deps.seed);
-		const lessonRuntime = getLessonRuntimeBySlug(params.slug, seed, {
-			excludeDrillIds: deps.exclude
-				? deps.exclude.split(",").filter(Boolean)
-				: undefined,
-		});
-		if (!lessonRuntime) {
-			throw new Error(`Lesson not found: ${params.slug}`);
-		}
-
-		let capabilities = fallbackFreeEntitlements().capabilities;
-		try {
-			const entitlements = await getCurrentEntitlements();
-			capabilities = entitlements.capabilities;
-		} catch (error) {
-			captureException(error, {
-				fallbackTier: "free",
-				operation: "resolve_entitlements",
-				route: "/lesson/$slug",
-			});
-		}
-
-		return {
-			...lessonRuntime,
-			canUseChallengeReroll: canUseLessonChallengeReroll(capabilities),
-		};
-	},
+	validateSearch: lessonPracticeSearchSchema,
+	loader: ({ params }) =>
+		getLessonPracticeRouteData({ data: { slug: params.slug } }),
 	head: ({ loaderData }) => {
 		const lesson = loaderData?.lesson;
 		if (!lesson) {
@@ -87,9 +44,9 @@ export const Route = createFileRoute("/lesson/$slug")({
 });
 
 function LessonPage() {
-	const navigate = useNavigate({ from: "/lesson/$slug" });
-	const { canUseChallengeReroll, lesson, drills, seed } = Route.useLoaderData();
-	const [challengeSeed, setChallengeSeed] = useState(seed);
+	useStripLegacySeedParams();
+
+	const { canUseChallengeReroll, lesson, drills } = Route.useLoaderData();
 	const [challengeDrills, setChallengeDrills] = useState(drills);
 	const lessonCatalog = getLessonCatalog();
 
@@ -119,35 +76,22 @@ function LessonPage() {
 	}
 
 	useEffect(() => {
-		setChallengeSeed(seed);
 		setChallengeDrills(drills);
-	}, [drills, seed]);
+	}, [drills]);
 
-	function handleNewVariantRun() {
+	async function handleNewVariantRun() {
 		if (!canUseChallengeReroll) {
 			return;
 		}
 
-		const nextSeed = makeClientSeed(`lesson:${lesson.slug}`);
-		const rerolled = getLessonRuntimeBySlug(lesson.slug, nextSeed, {
-			excludeDrillIds: challengeDrills.map((drill) => drill.id),
+		const rerolled = await createLessonPracticeRun({
+			data: {
+				excludeDrillIds: challengeDrills.map((drill) => drill.id),
+				slug: lesson.slug,
+			},
 		});
-		if (!rerolled) {
-			return;
-		}
 
-		setChallengeSeed(rerolled.seed);
 		setChallengeDrills(rerolled.drills);
-
-		navigate({
-			params: { slug: lesson.slug },
-			search: (prev) => ({
-				...prev,
-				exclude: challengeDrills.map((drill) => drill.id).join(","),
-				seed: nextSeed,
-			}),
-			to: "/lesson/$slug",
-		});
 	}
 
 	return (
@@ -207,7 +151,7 @@ function LessonPage() {
 						{challengeDrills.map((drill) => (
 							<div
 								className="rounded-lg border border-border p-6"
-								key={`${challengeSeed}:${drill.id}`}
+								key={drill.id}
 							>
 								<DrillRunner drill={drill} onComplete={handleDrillComplete} />
 							</div>
@@ -246,4 +190,25 @@ function LessonPage() {
 			</div>
 		</div>
 	);
+}
+
+function useStripLegacySeedParams() {
+	useEffect(() => {
+		const url = new URL(window.location.href);
+		let changed = false;
+		for (const param of LEGACY_SEED_SEARCH_PARAMS) {
+			if (url.searchParams.has(param)) {
+				url.searchParams.delete(param);
+				changed = true;
+			}
+		}
+
+		if (changed) {
+			window.history.replaceState(
+				window.history.state,
+				"",
+				`${url.pathname}${url.search}${url.hash}`
+			);
+		}
+	}, []);
 }

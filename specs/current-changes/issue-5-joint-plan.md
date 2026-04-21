@@ -49,7 +49,7 @@ Issue `#5` provides the global instructions and guardrails for the whole web-v2 
 - The public product identity is now `Shipping API Dojo`, with `API Dojo` treated as the umbrella brand for future sibling products.
 - Public SEO copy should prefer keyword phrases like `shipping API training`, `carrier APIs`, and `carrier integrations` instead of reviving the old `API Trainer` product label.
 - Issues `#10`, `#12`, `#19`, and `#20` are complete, but `#10` was outline-only and does not mean paid tiers/content gating are implemented.
-- Issue `#5` remains open until `#15` and `#21` complete.
+- Issue `#21` is complete after PR `#25`; issue `#5` remains open until the remaining in-scope v2 items such as `#15`, `#26`, `#27`, and `#28` complete or are explicitly deferred.
 - Issues `#26`, `#27`, and `#28` are now in-scope v2 support sub-issues under `#5`.
 - Issues `#13` and `#16` are still useful strategy work, but they are not blockers for `#5`.
 - During future implementation issues, keep GitHub, the issue-local plan artifact, and `active-context.yaml` aligned so resumability does not depend on terminal history.
@@ -114,7 +114,7 @@ Additional v2 support issues:
 | `I5D6` 20 scenario families | `#9` | Existing scenarios are absorbed into the family taxonomy. |
 | `I5D7` linked sub-issue execution plan | `#7`, `#11`, `#8`, `#9`, `#15`, `#21`, `#26`, `#27`, `#28` | Satisfied when the in-scope issue graph and plan set are in place. |
 | `I5D8` separate higher-value randomization track | `#10` | Outline only in this phase. |
-| `I5D9` paid tiers, content gating, and premium access surfaces | `#21` | Implementation work remains open. |
+| `I5D9` paid tiers, content gating, and premium access surfaces | `#21` | First paid-tier gating slice shipped in PR `#25`. |
 | `I5D10` deep wiki and directory reference expansion | `#15` | In-scope v2 knowledge-surface expansion remains open. |
 | `I5D11` hosted error observability | `#26` | Add Sentry Free-tier reporting with privacy-safe context. |
 | `I5D12` tiered dev auth fixtures | `#27` | Add seeded Free/Pro/Enterprise/canceled states and Playwright auth helpers. |
@@ -170,7 +170,7 @@ Additional v2 support issues:
 | Schema/progress migration is harder than expected | `#8` and `#9` slip | Lock v1-to-v2 migration rules in `#7` before coding begins. |
 | Scenario authoring scope grows faster than expected | `#9` expands materially | Deliver in waves and validate each wave before opening the next. |
 | Carrier wiki scope expands inside `#9` | `#9` loses focus | Defer the broader taxonomy and reference-library work to `#15`. |
-| Paid tiers remain foundation-only | v2 launch lacks upgrade behavior and content gating | Complete `#21` before treating `#5` as done. |
+| Paid tiers remain foundation-only | v2 launch lacks upgrade behavior and content gating | PR `#25` shipped the first paid-tier gating slice; keep follow-up paid-tier refinements explicit instead of folding them into seed security. |
 | Hosted failures remain console-only | production entitlement or billing failures are missed | Complete `#26` before enabling paid hosted rollout. |
 | Paid-tier QA depends on ad hoc accounts | regressions slip across Free/Pro/Enterprise/canceled states | Complete `#27` before relying on browser validation for paid access. |
 | URL-visible seeds remain in protected flows | copied URLs can reproduce randomized attempts and undermine future certificate validity | Complete `#28` before certificates or challenge-validity claims launch. |
