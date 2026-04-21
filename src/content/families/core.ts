@@ -193,6 +193,20 @@ const drillFamilies: DrillFamilyDefinition[] = [
 					explanation:
 						"If the carrier lacks native idempotency support, you still need a deduplication ledger or query strategy keyed by your own reference so ambiguous retries do not create extra shipments.",
 				},
+				{
+					key: "webhook-before-retry",
+					question:
+						"A create-shipment call timed out, but the carrier normally emits a shipment-created webhook within seconds. What is the safest immediate move?",
+					options: [
+						"Retry the write immediately and reconcile duplicates later",
+						"Pause the write retry briefly, check for the webhook or a shipment lookup by client reference, and only retry if no creation evidence appears",
+						"Cancel the order entirely because webhook timing cannot be trusted",
+						"Convert the request to DELETE so the follow-up becomes idempotent",
+					],
+					correctIndex: 1,
+					explanation:
+						"When the carrier offers another evidence channel such as a creation webhook, use it before issuing another write. The goal is to resolve the ambiguous state without creating duplicate shipments.",
+				},
 			];
 			const variant = pickDeterministic(
 				variants,
@@ -239,6 +253,14 @@ const drillFamilies: DrillFamilyDefinition[] = [
 					answers: ["Retry-After", "backoff", "5", "429"],
 					explanation:
 						"429 handling should respect the carrier's stated wait time, then re-enter controlled backoff with jitter. Even rate-limit handling needs a cap and observability.",
+				},
+				{
+					key: "circuit-breaker-window",
+					template:
+						"After repeated carrier ___ failures, open a short ___ breaker, keep retries ___, and surface the incident through ___ so workers stop amplifying the outage.",
+					answers: ["503", "circuit", "bounded", "alerts"],
+					explanation:
+						"Backoff is not enough when the upstream is clearly failing. A bounded retry budget plus a short circuit-breaker window and alerting prevents workers from turning an outage into an internal retry storm.",
 				},
 			];
 			const variant = pickDeterministic(

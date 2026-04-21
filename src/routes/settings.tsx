@@ -1,8 +1,15 @@
-import { ClientOnly, createFileRoute } from "@tanstack/react-router";
+import { ClientOnly, Link, createFileRoute } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { Download, Trash2, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+	retentionSummaryItems,
+	SUPPORT_CONTACT_LABEL,
+	SUPPORT_EMAIL,
+} from "@/content/legal";
+import { getAccountPrivacyExport } from "@/lib/account/account-rights.sync";
 import { authClient } from "@/lib/auth/client";
 import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
 import { resetProgress } from "@/lib/progress/progress.actions";
@@ -17,7 +24,7 @@ export const Route = createFileRoute("/settings")({
 			...generateMeta({
 				title: "Settings",
 				description:
-					"Manage local Shipping API Dojo progress data for export, import, and reset actions.",
+					"Manage Shipping API Dojo progress, privacy links, and account-related support surfaces.",
 				url: "/settings",
 			}),
 			{
@@ -35,8 +42,9 @@ function SettingsPage() {
 		<div className="container mx-auto max-w-4xl px-4 py-16">
 			<h1 className="mb-4">Settings</h1>
 			<p className="mb-10 max-w-2xl text-lg text-muted-foreground">
-				Export, import, or reset your progress data. All data is stored locally
-				in your browser.
+				Manage anonymous browser progress, review how signed-in account data is
+				handled, and reach the current privacy and support surfaces for Shipping
+				API Dojo.
 			</p>
 
 			<ClientOnly
@@ -58,11 +66,23 @@ function SettingsPanel() {
 		(s) => s.scenariosCompleted
 	);
 	const [importStatus, setImportStatus] = useState<string | null>(null);
+	const [accountExportStatus, setAccountExportStatus] = useState<string | null>(
+		null
+	);
+	const [isExportingAccount, setIsExportingAccount] = useState(false);
 	const [entitlementDebug, setEntitlementDebug] = useState<{
 		capabilities: string[];
 		source: string;
 		tier: string;
 	} | null>(null);
+	const supportMailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+		"Shipping API Dojo support request"
+	)}`;
+	const deletionMailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+		"Shipping API Dojo deletion request"
+	)}&body=${encodeURIComponent(
+		`Please review my Shipping API Dojo deletion request.\n\nAccount email: ${session.data?.user?.email ?? ""}\nRequest details: `
+	)}`;
 	const debugSessionKey = session.isPending
 		? "pending"
 		: (session.data?.user?.id ?? "anonymous");
@@ -132,8 +152,98 @@ function SettingsPanel() {
 		}
 	}
 
+	async function handleAccountExport() {
+		setAccountExportStatus(null);
+		setIsExportingAccount(true);
+
+		try {
+			const exportData = await getAccountPrivacyExport();
+			const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+				type: "application/json",
+			});
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = `shipping-api-dojo-account-export-${new Date().toISOString().slice(0, 10)}.json`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+			setAccountExportStatus("Account export downloaded.");
+		} catch (error) {
+			console.error("Failed to export account data", error);
+			setAccountExportStatus(
+				"Could not export account data. Contact support if the problem persists."
+			);
+		} finally {
+			setIsExportingAccount(false);
+		}
+	}
+
 	return (
 		<div className="space-y-8">
+			<div className="grid gap-4 md:grid-cols-2">
+				<Card>
+					<CardHeader>
+						<CardTitle>Current storage model</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						{session.data?.user?.id ? (
+							<>
+								<p>
+									Anonymous progress can still exist in this browser, but your
+									account also uses hosted auth/session records and
+									server-backed progress sync while you are signed in.
+								</p>
+								<p>
+									Billing, entitlement, and transactional email records can also
+									be associated with your account when those features are used.
+								</p>
+							</>
+						) : (
+							<>
+								<p>
+									You are currently using the anonymous mode. Progress stays in
+									this browser unless you later choose to sign in and sync it
+									into an account.
+								</p>
+								<p>
+									Sign-in features rely on necessary account/session cookies and
+									hosted records. They are described in the public legal pages
+									below.
+								</p>
+							</>
+						)}
+					</CardContent>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardTitle>Privacy and support</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						<p>
+							Use the public legal pages to review the current privacy policy
+							and cookie/storage disclosure before you use account features.
+						</p>
+						<p>
+							For support, access, or deletion questions, contact{" "}
+							<a className="text-bl-red hover:underline" href={supportMailto}>
+								{SUPPORT_CONTACT_LABEL}
+							</a>
+							.
+						</p>
+						<div className="flex flex-wrap gap-3 pt-1">
+							<Button asChild size="sm" variant="outline">
+								<Link to="/privacy">Privacy Policy</Link>
+							</Button>
+							<Button asChild size="sm" variant="outline">
+								<Link to="/cookies">Cookie &amp; Storage</Link>
+							</Button>
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+
 			{/* Stats */}
 			<div className="grid gap-4 sm:grid-cols-4">
 				<StatCard label="XP" value={String(xp)} />
@@ -164,6 +274,110 @@ function SettingsPanel() {
 				{importStatus && (
 					<p className="text-sm text-muted-foreground">{importStatus}</p>
 				)}
+			</div>
+
+			<div className="space-y-4">
+				<h2 className="text-xl">Account Data Rights</h2>
+				<div className="grid gap-4 md:grid-cols-2">
+					<Card>
+						<CardHeader>
+							<CardTitle>Access and export</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3 text-sm text-muted-foreground">
+							{session.data?.user?.id ? (
+								<>
+									<p>
+										Export a structured copy of your signed-in account data,
+										server-backed progress, subscription summaries,
+										billing-event metadata, email-event metadata, and
+										merge-event history.
+									</p>
+									<p>
+										The local export above only covers browser progress. This
+										export covers the hosted records tied to your signed-in
+										account.
+									</p>
+									<Button
+										className="gap-2"
+										disabled={isExportingAccount}
+										onClick={handleAccountExport}
+										variant="outline"
+									>
+										<Download className="h-4 w-4" />
+										{isExportingAccount
+											? "Preparing export..."
+											: "Export Account Data"}
+									</Button>
+								</>
+							) : (
+								<p>
+									Self-serve account export becomes available when you are
+									signed in. Anonymous mode still lets you export the
+									browser-only progress file shown above.
+								</p>
+							)}
+
+							{accountExportStatus && (
+								<p className="text-sm text-muted-foreground">
+									{accountExportStatus}
+								</p>
+							)}
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle>Deletion requests</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3 text-sm text-muted-foreground">
+							<p>
+								Account deletion is currently handled as a manual support
+								request, not an irreversible one-click action.
+							</p>
+							<p>
+								This is intentional because linked data can span auth, progress,
+								subscriptions, billing events, email-event records, and
+								retention exceptions for legal, accounting, fraud, or
+								abuse-prevention reasons.
+							</p>
+							<a className="text-bl-red hover:underline" href={deletionMailto}>
+								Email a deletion request
+							</a>
+						</CardContent>
+					</Card>
+				</div>
+				<div className="grid gap-4 md:grid-cols-2">
+					<Card>
+						<CardHeader>
+							<CardTitle>Support contact</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3 text-sm text-muted-foreground">
+							<p>
+								Use {SUPPORT_CONTACT_LABEL} for access requests, deletion
+								questions, corrections, or retention clarifications.
+							</p>
+							<a className="text-bl-red hover:underline" href={supportMailto}>
+								Email {SUPPORT_EMAIL}
+							</a>
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle>Retention summary</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<ul className="space-y-3 text-sm text-muted-foreground">
+								{retentionSummaryItems.map((item) => (
+									<li key={item.category}>
+										<p className="font-semibold text-foreground">
+											{item.category}
+										</p>
+										<p>{item.retention}</p>
+									</li>
+								))}
+							</ul>
+						</CardContent>
+					</Card>
+				</div>
 			</div>
 
 			{import.meta.env.DEV && entitlementDebug && (

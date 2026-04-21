@@ -11,6 +11,8 @@ const footerLinks = {
 		{ href: "/wiki", label: "Wiki" },
 		{ href: "/directory", label: "Directory" },
 		{ href: "/settings", label: "Settings" },
+		{ href: "/privacy", label: "Privacy Policy" },
+		{ href: "/cookies", label: "Cookie & Storage" },
 	],
 };
 

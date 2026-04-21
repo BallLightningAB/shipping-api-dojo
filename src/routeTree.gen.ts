@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as DirectoryRouteImport } from './routes/directory'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WikiIndexRouteImport } from './routes/wiki/index'
 import { Route as ArenaIndexRouteImport } from './routes/arena/index'
@@ -28,9 +30,19 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DirectoryRoute = DirectoryRouteImport.update({
   id: '/directory',
   path: '/directory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -91,7 +103,9 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
   '/directory': typeof DirectoryRoute
+  '/privacy': typeof PrivacyRoute
   '/settings': typeof SettingsRoute
   '/learn/cross-track': typeof LearnCrossTrackRoute
   '/learn/rest': typeof LearnRestRoute
@@ -106,7 +120,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
   '/directory': typeof DirectoryRoute
+  '/privacy': typeof PrivacyRoute
   '/settings': typeof SettingsRoute
   '/learn/cross-track': typeof LearnCrossTrackRoute
   '/learn/rest': typeof LearnRestRoute
@@ -122,7 +138,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cookies': typeof CookiesRoute
   '/directory': typeof DirectoryRoute
+  '/privacy': typeof PrivacyRoute
   '/settings': typeof SettingsRoute
   '/learn/cross-track': typeof LearnCrossTrackRoute
   '/learn/rest': typeof LearnRestRoute
@@ -139,7 +157,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cookies'
     | '/directory'
+    | '/privacy'
     | '/settings'
     | '/learn/cross-track'
     | '/learn/rest'
@@ -154,7 +174,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cookies'
     | '/directory'
+    | '/privacy'
     | '/settings'
     | '/learn/cross-track'
     | '/learn/rest'
@@ -169,7 +191,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/cookies'
     | '/directory'
+    | '/privacy'
     | '/settings'
     | '/learn/cross-track'
     | '/learn/rest'
@@ -185,7 +209,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CookiesRoute: typeof CookiesRoute
   DirectoryRoute: typeof DirectoryRoute
+  PrivacyRoute: typeof PrivacyRoute
   SettingsRoute: typeof SettingsRoute
   LearnCrossTrackRoute: typeof LearnCrossTrackRoute
   LearnRestRoute: typeof LearnRestRoute
@@ -208,11 +234,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/directory': {
       id: '/directory'
       path: '/directory'
       fullPath: '/directory'
       preLoaderRoute: typeof DirectoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -297,7 +337,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CookiesRoute: CookiesRoute,
   DirectoryRoute: DirectoryRoute,
+  PrivacyRoute: PrivacyRoute,
   SettingsRoute: SettingsRoute,
   LearnCrossTrackRoute: LearnCrossTrackRoute,
   LearnRestRoute: LearnRestRoute,

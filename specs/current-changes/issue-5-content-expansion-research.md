@@ -25,6 +25,14 @@ Updated direction after review:
 - the next content target should be 20 lessons and 20 drill families
 - persistent progress should move toward auth-backed tracking so it can support paid gating
 
+Status correction on 2026-04-20:
+
+- The research direction above scoped the content/randomization slice, but issue `#5` later became the web-v2 umbrella in `issue-5-joint-plan.md`.
+- The minimum viable randomization and 20/20/20 curriculum work are complete, but `#5` should remain open until the in-scope deep wiki expansion (`#15`) and paid-tier/content-gating implementation (`#21`) are complete.
+- Issue `#10` is complete as an outline-only premium/randomization/certificate plan; it does not implement paid access.
+- Issue `#11` shipped the auth, billing, progress, and entitlement foundations; it does not complete the user-visible paid-tier gating surface.
+- Issues `#13` and `#16` remain separate strategy follow-ons outside `#5` closure criteria.
+
 ## Current Repo Audit
 
 The current product is structurally ready for expansion, but the content model is still fully static.
