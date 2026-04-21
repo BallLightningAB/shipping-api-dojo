@@ -16,6 +16,7 @@ Priority: critical
 - [x] Add regression coverage for search-param stripping and seed-free client-facing run payloads.
 - [x] Run the full repo validation workflow.
 - [x] Open draft PR [#29](https://github.com/BallLightningAB/shipping-api-dojo/pull/29).
+- [x] Address PR review feedback by adding explicit reroll remount nonces, centralizing legacy seed-param cleanup, using database-native update timestamps, and documenting the seed-security boundary in `README.md`.
 
 ## Goal
 
@@ -77,3 +78,10 @@ After this branch:
 - Reworked lesson and arena routes to derive signed-in seeds server-side, preserve public content rendering, and remove legacy seed query params from visible URLs.
 - Added unit coverage for stripped search state and seed-free run payloads.
 - Added browser smoke coverage proving legacy seed params are removed from practice URLs and seed values do not appear in public page markup.
+
+## Review Follow-Up
+
+- Added explicit lesson and arena reroll nonces so removing URL seed changes does not preserve stale drill or scenario component state across protected rerolls.
+- Centralized legacy seed-param stripping in `src/lib/practice/use-strip-legacy-seed-params.ts` for lesson and arena routes.
+- Switched practice-seed update timestamps to database `now()` for consistency with the Neon/Postgres clock.
+- Updated `README.md` to describe server-owned signed-in practice seeds, stripped legacy seed params, crawlable public surfaces, and anonymous/demo practice as non-certificate-bearing.

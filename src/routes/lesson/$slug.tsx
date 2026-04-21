@@ -7,10 +7,8 @@ import {
 	createLessonPracticeRun,
 	getLessonPracticeRouteData,
 } from "@/lib/practice/practice-runs.sync";
-import {
-	LEGACY_SEED_SEARCH_PARAMS,
-	lessonPracticeSearchSchema,
-} from "@/lib/practice/seed-search";
+import { lessonPracticeSearchSchema } from "@/lib/practice/seed-search";
+import { useStripLegacySeedParams } from "@/lib/practice/use-strip-legacy-seed-params";
 import { completeDrill, completeLesson } from "@/lib/progress/progress.actions";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
@@ -48,6 +46,7 @@ function LessonPage() {
 
 	const { canUseChallengeReroll, lesson, drills } = Route.useLoaderData();
 	const [challengeDrills, setChallengeDrills] = useState(drills);
+	const [rerollNonce, setRerollNonce] = useState(0);
 	const lessonCatalog = getLessonCatalog();
 
 	const currentIndex = lessonCatalog.findIndex((l) => l.slug === lesson.slug);
@@ -77,6 +76,7 @@ function LessonPage() {
 
 	useEffect(() => {
 		setChallengeDrills(drills);
+		setRerollNonce((nonce) => nonce + 1);
 	}, [drills]);
 
 	async function handleNewVariantRun() {
@@ -92,6 +92,7 @@ function LessonPage() {
 		});
 
 		setChallengeDrills(rerolled.drills);
+		setRerollNonce((nonce) => nonce + 1);
 	}
 
 	return (
@@ -151,7 +152,7 @@ function LessonPage() {
 						{challengeDrills.map((drill) => (
 							<div
 								className="rounded-lg border border-border p-6"
-								key={drill.id}
+								key={`${rerollNonce}:${drill.id}`}
 							>
 								<DrillRunner drill={drill} onComplete={handleDrillComplete} />
 							</div>
@@ -190,25 +191,4 @@ function LessonPage() {
 			</div>
 		</div>
 	);
-}
-
-function useStripLegacySeedParams() {
-	useEffect(() => {
-		const url = new URL(window.location.href);
-		let changed = false;
-		for (const param of LEGACY_SEED_SEARCH_PARAMS) {
-			if (url.searchParams.has(param)) {
-				url.searchParams.delete(param);
-				changed = true;
-			}
-		}
-
-		if (changed) {
-			window.history.replaceState(
-				window.history.state,
-				"",
-				`${url.pathname}${url.search}${url.hash}`
-			);
-		}
-	}, []);
 }

@@ -12,10 +12,8 @@ import {
 	createArenaScenarioRun,
 	getArenaPracticeRouteData,
 } from "@/lib/practice/practice-runs.sync";
-import {
-	arenaPracticeSearchSchema,
-	LEGACY_SEED_SEARCH_PARAMS,
-} from "@/lib/practice/seed-search";
+import { arenaPracticeSearchSchema } from "@/lib/practice/seed-search";
+import { useStripLegacySeedParams } from "@/lib/practice/use-strip-legacy-seed-params";
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
 import { makeClientSeed } from "@/lib/randomization";
@@ -73,6 +71,7 @@ function ArenaPage() {
 	const [currentCards, setCurrentCards] = useState(cards);
 	const [currentActiveScenario, setCurrentActiveScenario] =
 		useState<Scenario | null>(loadedActiveScenario);
+	const [rerollNonce, setRerollNonce] = useState(0);
 	const search = Route.useSearch();
 	const activeCard = search.scenario
 		? currentCards.find((card) => card.id === search.scenario)
@@ -81,6 +80,7 @@ function ArenaPage() {
 	useEffect(() => {
 		setCurrentCards(cards);
 		setCurrentActiveScenario(loadedActiveScenario);
+		setRerollNonce((nonce) => nonce + 1);
 	}, [cards, loadedActiveScenario]);
 
 	async function handleShuffleScenarios() {
@@ -88,6 +88,7 @@ function ArenaPage() {
 			const run = await createArenaCardsRun({ data: {} });
 			setCurrentCards(run.cards);
 			setCurrentActiveScenario(null);
+			setRerollNonce((nonce) => nonce + 1);
 			navigate({
 				search: () => ({
 					scenario: undefined,
@@ -102,6 +103,7 @@ function ArenaPage() {
 
 		setCurrentCards((prev) => overlayArenaCardAccess(prev));
 		setCurrentActiveScenario(null);
+		setRerollNonce((nonce) => nonce + 1);
 	}
 
 	function handleOpenScenario(scenarioId: string) {
@@ -131,6 +133,7 @@ function ArenaPage() {
 			},
 		});
 		setCurrentActiveScenario(run.activeScenario);
+		setRerollNonce((nonce) => nonce + 1);
 	}
 
 	let arenaContent: React.ReactNode;
@@ -168,7 +171,7 @@ function ArenaPage() {
 					fallback={<p className="text-muted-foreground">Loading...</p>}
 				>
 					<ScenarioPlayer
-						key={`${currentActiveScenario.id}:${currentActiveScenario.steps[0]?.text ?? "run"}`}
+						key={`${currentActiveScenario.id}:${rerollNonce}`}
 						onComplete={() =>
 							completeScenario(getScenarioProgressKey(currentActiveScenario))
 						}
@@ -329,27 +332,6 @@ function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
 			accessById.get(card.id)?.requiresPremiumDepth ??
 			requiresPremiumScenarioDepth(card.ladderLevel),
 	}));
-}
-
-function useStripLegacySeedParams() {
-	useEffect(() => {
-		const url = new URL(window.location.href);
-		let changed = false;
-		for (const param of LEGACY_SEED_SEARCH_PARAMS) {
-			if (url.searchParams.has(param)) {
-				url.searchParams.delete(param);
-				changed = true;
-			}
-		}
-
-		if (changed) {
-			window.history.replaceState(
-				window.history.state,
-				"",
-				`${url.pathname}${url.search}${url.hash}`
-			);
-		}
-	}, []);
 }
 
 function ScenarioStatus({ scenarioId }: { scenarioId: string }) {

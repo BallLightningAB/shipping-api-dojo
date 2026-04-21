@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -147,7 +147,7 @@ async function writeUserPracticeSeed(
 			],
 			set: {
 				seed,
-				updatedAt: new Date(),
+				updatedAt: sql`now()`,
 			},
 		});
 }

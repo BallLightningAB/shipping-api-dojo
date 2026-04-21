@@ -1,7 +1,25 @@
 entries:
   - date: "2026-04-21"
-    version: "1.1.21"
+    version: "1.1.22"
     commit: TBD
+    status: in-progress
+    title: "chore(security): address seed-security review feedback"
+    details: |-
+      Addressed PR #29 review feedback on the issue #28 seed-security branch
+      and aligned README with the implemented seed boundary.
+
+      - Added explicit reroll nonces so lesson drills and arena scenarios
+        remount cleanly now that rerolls no longer change URL-visible seeds
+      - Centralized legacy seed-param cleanup for lesson and arena routes
+      - Switched practice seed update timestamps to database-native `now()`
+      - Updated README to document server-owned signed-in seeds, stripped
+        legacy seed params, crawlable public content, and anonymous/demo
+        practice as non-certificate-bearing
+    refs:
+      - "I5D13"
+  - date: "2026-04-21"
+    version: "1.1.21"
+    commit: c1ff17b
     status: in-progress
     title: "fix(security): remove URL-visible practice seeds"
     details: |-

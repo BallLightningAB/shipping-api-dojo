@@ -14,6 +14,7 @@ The current public build includes:
 - **Directory** curated links to specs, tools, and carrier resources
 - **Anonymous local progress** stored in the browser today
 - **Tier-aware gating** for premium challenge depth while keeping public educational pages crawlable
+- **Server-owned practice seeds** for signed-in randomized practice flows
 
 ## V2 Direction
 
@@ -42,6 +43,12 @@ The active v2 plan is tracked in [`specs/current-changes`](specs/current-changes
   - Branded certificate capability, team reporting, and custom premium-pack capability
 
 The current implementation gates premium actions and depth (for example rerolls and advanced arena ladders) instead of hiding public SEO-critical pages.
+
+## Practice Seed Security
+
+Protected lesson and arena practice flows no longer expose randomization seeds in URLs or public markup. Signed-in practice runs use server-generated seeds stored in the `practice_seeds` table and scoped to the user, surface, and lesson or scenario. Legacy `seed`, `runSeed`, and `exclude` search params are stripped from lesson and arena URLs when encountered.
+
+Public lessons, wiki, and directory pages remain crawlable and SSR-visible. Anonymous/demo practice stays explicit as local, non-certificate-bearing behavior; it can randomize for learning value, but it is not treated as authoritative challenge state.
 
 ## Architectural Caveat
 
@@ -130,6 +137,7 @@ src/
 │   ├── layout/       # Header, Footer, Layout
 │   └── ui/           # Shared UI primitives
 ├── lib/
+│   ├── practice/     # Seed-safe practice run helpers and route contracts
 │   ├── progress/     # Progress schema, storage, store, actions
 │   └── seo/          # Meta tags, structured data, sitemap helpers
 ├── routes/           # TanStack file-based routes
