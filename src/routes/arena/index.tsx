@@ -13,6 +13,7 @@ import {
 	requiresPremiumScenarioDepth,
 } from "@/lib/entitlements/access-policy";
 import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
+import { captureException } from "@/lib/observability/logger";
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
 import { makeClientSeed } from "@/lib/randomization";
@@ -42,7 +43,11 @@ export const Route = createFileRoute("/arena/")({
 			const entitlements = await getCurrentEntitlements();
 			capabilities = entitlements.capabilities;
 		} catch (error) {
-			console.error("Failed to resolve arena entitlements", error);
+			captureException(error, {
+				fallbackTier: "free",
+				operation: "resolve_entitlements",
+				route: "/arena",
+			});
 		}
 
 		return {

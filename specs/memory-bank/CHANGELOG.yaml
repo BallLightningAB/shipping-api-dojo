@@ -1,8 +1,30 @@
 entries:
   - date: "2026-04-21"
-    version: "1.1.18"
+    version: "1.1.19"
     commit: TBD
     status: in-progress
+    title: "chore(observability): address paid-tier review feedback"
+    details: |-
+      Addressed PR review feedback on the issue #21 paid-tier gating branch
+      and split follow-up operational work into explicit v2 sub-issues.
+
+      - Added a shared observability logger for exception capture with
+        privacy-safe route and operation context
+      - Replaced route-local entitlement fallback console logging in lesson
+        and arena loaders with the shared logger
+      - Added unit coverage for logger normalization and context handling
+      - Created issue #26 for Sentry Free-tier hosted error observability
+        under parent issue #5 and milestone v2
+      - Created issue #27 for dev-only tiered seed users plus Playwright auth
+        states under parent issue #5 and milestone v2
+      - Updated issue #5 and issue #21 current-changes artifacts plus
+        memory-bank roadmap state to include the new v2 sub-issues
+    refs:
+      - "I5D7, I5D11, I5D12, I21D4, I21D5"
+  - date: "2026-04-21"
+    version: "1.1.18"
+    commit: 230a792
+    status: completed
     title: "feat(entitlements): ship issue #21 paid-tier gating slice"
     details: |-
       Started issue #21 with a concrete paid-tier implementation slice focused

@@ -16,6 +16,7 @@ import {
 	TIER_CAPABILITY_MATRIX,
 } from "@/lib/entitlements/access-policy";
 import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
+import { captureException } from "@/lib/observability/logger";
 import { resetProgress } from "@/lib/progress/progress.actions";
 import { parseProgress } from "@/lib/progress/progress.schema";
 import { saveProgress } from "@/lib/progress/progress.storage";
@@ -101,7 +102,11 @@ function SettingsPanel() {
 				setCurrentEntitlements(entitlements);
 			})
 			.catch((error: unknown) => {
-				console.error("Failed to load entitlement data", error);
+				captureException(error, {
+					fallbackTier: "free",
+					operation: "resolve_entitlements",
+					route: "/settings",
+				});
 				setCurrentEntitlements(fallbackFreeEntitlements());
 			});
 	}, [debugSessionKey]);
@@ -178,7 +183,10 @@ function SettingsPanel() {
 			URL.revokeObjectURL(url);
 			setAccountExportStatus("Account export downloaded.");
 		} catch (error) {
-			console.error("Failed to export account data", error);
+			captureException(error, {
+				operation: "account_privacy_export",
+				route: "/settings",
+			});
 			setAccountExportStatus(
 				"Could not export account data. Contact support if the problem persists."
 			);

@@ -16,6 +16,8 @@ Scope: Implement the hosted/premium v2 surface that remains after the auth, bill
 - [x] Add regression tests for access-policy helpers and entitlement downgrade behavior.
 - [x] Run full validation suite and fix any regressions.
 - [x] Update memory-bank release/changelog entries and open PR for review.
+- [x] Address PR review feedback by routing entitlement fallback failures through a shared observability wrapper instead of route-local console logging.
+- [x] Create v2 follow-up issues for full Sentry integration and dev-only tiered seed users.
 
 ## Goal
 
@@ -54,3 +56,8 @@ Turn the v2 paid-access direction from foundations and outline docs into user-vi
 - `pnpm test`
 - `pnpm test:checkpoint`
 - `pnpm build`
+
+## Follow-Up Issues
+
+- [#26](https://github.com/BallLightningAB/shipping-api-dojo/issues/26): Add Sentry Free-tier observability for hosted v2 errors.
+- [#27](https://github.com/BallLightningAB/shipping-api-dojo/issues/27): Add dev-only tiered seed users and Playwright auth states.

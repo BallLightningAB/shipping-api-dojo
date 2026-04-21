@@ -13,6 +13,7 @@ import {
 	fallbackFreeEntitlements,
 } from "@/lib/entitlements/access-policy";
 import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
+import { captureException } from "@/lib/observability/logger";
 import { completeDrill, completeLesson } from "@/lib/progress/progress.actions";
 import { makeClientSeed } from "@/lib/randomization";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
@@ -51,7 +52,11 @@ export const Route = createFileRoute("/lesson/$slug")({
 			const entitlements = await getCurrentEntitlements();
 			capabilities = entitlements.capabilities;
 		} catch (error) {
-			console.error("Failed to resolve lesson entitlements", error);
+			captureException(error, {
+				fallbackTier: "free",
+				operation: "resolve_entitlements",
+				route: "/lesson/$slug",
+			});
 		}
 
 		return {
