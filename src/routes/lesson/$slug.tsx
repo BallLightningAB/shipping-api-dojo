@@ -8,6 +8,12 @@ import {
 	getLessonRuntimeBySlug,
 	getRouteSeed,
 } from "@/content/runtime";
+import {
+	canUseLessonChallengeReroll,
+	fallbackFreeEntitlements,
+} from "@/lib/entitlements/access-policy";
+import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
+import { captureException } from "@/lib/observability/logger";
 import { completeDrill, completeLesson } from "@/lib/progress/progress.actions";
 import { makeClientSeed } from "@/lib/randomization";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
@@ -30,7 +36,7 @@ export const Route = createFileRoute("/lesson/$slug")({
 		exclude: search.exclude,
 		seed: search.seed,
 	}),
-	loader: ({ deps, params }) => {
+	loader: async ({ deps, params }) => {
 		const seed = getRouteSeed(`lesson:${params.slug}`, deps.seed);
 		const lessonRuntime = getLessonRuntimeBySlug(params.slug, seed, {
 			excludeDrillIds: deps.exclude
@@ -41,7 +47,22 @@ export const Route = createFileRoute("/lesson/$slug")({
 			throw new Error(`Lesson not found: ${params.slug}`);
 		}
 
-		return lessonRuntime;
+		let capabilities = fallbackFreeEntitlements().capabilities;
+		try {
+			const entitlements = await getCurrentEntitlements();
+			capabilities = entitlements.capabilities;
+		} catch (error) {
+			captureException(error, {
+				fallbackTier: "free",
+				operation: "resolve_entitlements",
+				route: "/lesson/$slug",
+			});
+		}
+
+		return {
+			...lessonRuntime,
+			canUseChallengeReroll: canUseLessonChallengeReroll(capabilities),
+		};
 	},
 	head: ({ loaderData }) => {
 		const lesson = loaderData?.lesson;
@@ -67,7 +88,7 @@ export const Route = createFileRoute("/lesson/$slug")({
 
 function LessonPage() {
 	const navigate = useNavigate({ from: "/lesson/$slug" });
-	const { lesson, drills, seed } = Route.useLoaderData();
+	const { canUseChallengeReroll, lesson, drills, seed } = Route.useLoaderData();
 	const [challengeSeed, setChallengeSeed] = useState(seed);
 	const [challengeDrills, setChallengeDrills] = useState(drills);
 	const lessonCatalog = getLessonCatalog();
@@ -103,6 +124,10 @@ function LessonPage() {
 	}, [drills, seed]);
 
 	function handleNewVariantRun() {
+		if (!canUseChallengeReroll) {
+			return;
+		}
+
 		const nextSeed = makeClientSeed(`lesson:${lesson.slug}`);
 		const rerolled = getLessonRuntimeBySlug(lesson.slug, nextSeed, {
 			excludeDrillIds: challengeDrills.map((drill) => drill.id),
@@ -163,9 +188,19 @@ function LessonPage() {
 								</Button>
 							}
 						>
-							<Button onClick={handleNewVariantRun} size="sm" variant="outline">
-								New Challenge
-							</Button>
+							{canUseChallengeReroll ? (
+								<Button
+									onClick={handleNewVariantRun}
+									size="sm"
+									variant="outline"
+								>
+									New Challenge
+								</Button>
+							) : (
+								<Button asChild size="sm" variant="outline">
+									<a href="/settings#paid-access">Unlock New Challenge (Pro)</a>
+								</Button>
+							)}
 						</ClientOnly>
 					</div>
 					<div className="space-y-8">

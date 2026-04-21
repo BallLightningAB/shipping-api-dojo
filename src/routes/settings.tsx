@@ -11,7 +11,12 @@ import {
 } from "@/content/legal";
 import { getAccountPrivacyExport } from "@/lib/account/account-rights.sync";
 import { authClient } from "@/lib/auth/client";
+import {
+	fallbackFreeEntitlements,
+	TIER_CAPABILITY_MATRIX,
+} from "@/lib/entitlements/access-policy";
 import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
+import { captureException } from "@/lib/observability/logger";
 import { resetProgress } from "@/lib/progress/progress.actions";
 import { parseProgress } from "@/lib/progress/progress.schema";
 import { saveProgress } from "@/lib/progress/progress.storage";
@@ -70,7 +75,7 @@ function SettingsPanel() {
 		null
 	);
 	const [isExportingAccount, setIsExportingAccount] = useState(false);
-	const [entitlementDebug, setEntitlementDebug] = useState<{
+	const [currentEntitlements, setCurrentEntitlements] = useState<{
 		capabilities: string[];
 		source: string;
 		tier: string;
@@ -88,22 +93,29 @@ function SettingsPanel() {
 		: (session.data?.user?.id ?? "anonymous");
 
 	useEffect(() => {
-		if (!import.meta.env.DEV || debugSessionKey === "pending") {
+		if (debugSessionKey === "pending") {
 			return;
 		}
 
 		getCurrentEntitlements()
 			.then((entitlements) => {
-				setEntitlementDebug(entitlements);
+				setCurrentEntitlements(entitlements);
 			})
 			.catch((error: unknown) => {
-				console.error("Failed to load entitlement debug info", error);
+				captureException(error, {
+					fallbackTier: "free",
+					operation: "resolve_entitlements",
+					route: "/settings",
+				});
+				setCurrentEntitlements(fallbackFreeEntitlements());
 			});
 	}, [debugSessionKey]);
 
 	const completedLessons = Object.values(lessonsProgress).filter(
 		(l) => l.completed
 	).length;
+	const activeTier = currentEntitlements?.tier ?? "free";
+	const hasPaidTier = activeTier === "pro" || activeTier === "enterprise";
 
 	function handleExport() {
 		const data = progressStore.state;
@@ -171,7 +183,10 @@ function SettingsPanel() {
 			URL.revokeObjectURL(url);
 			setAccountExportStatus("Account export downloaded.");
 		} catch (error) {
-			console.error("Failed to export account data", error);
+			captureException(error, {
+				operation: "account_privacy_export",
+				route: "/settings",
+			});
 			setAccountExportStatus(
 				"Could not export account data. Contact support if the problem persists."
 			);
@@ -274,6 +289,63 @@ function SettingsPanel() {
 				{importStatus && (
 					<p className="text-sm text-muted-foreground">{importStatus}</p>
 				)}
+			</div>
+
+			<div className="space-y-4" id="paid-access">
+				<h2 className="text-xl">Plans and Access</h2>
+				<p className="max-w-3xl text-sm text-muted-foreground">
+					Public lessons, wiki, and directory pages stay crawlable. Paid tiers
+					add challenge depth, review-mode access, and premium account surfaces
+					without blanketing public educational content.
+				</p>
+				<div className="grid gap-4 md:grid-cols-3">
+					{TIER_CAPABILITY_MATRIX.map((tier) => (
+						<Card key={tier.tier}>
+							<CardHeader>
+								<CardTitle>{tier.label}</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<ul className="space-y-2 text-sm text-muted-foreground">
+									{tier.surfaces.map((surface) => (
+										<li key={surface}>{surface}</li>
+									))}
+								</ul>
+							</CardContent>
+						</Card>
+					))}
+				</div>
+				<Card>
+					<CardHeader>
+						<CardTitle>Current entitlement state</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						<p>
+							Current tier:{" "}
+							<strong className="text-foreground">{activeTier}</strong>
+						</p>
+						<p>
+							Source:{" "}
+							<strong className="text-foreground">
+								{currentEntitlements?.source ?? "fallback_free"}
+							</strong>
+						</p>
+						{hasPaidTier ? (
+							<p>
+								Your account has paid-tier access enabled. Premium challenge
+								surfaces should be unlocked across lessons and arena.
+							</p>
+						) : (
+							<p>
+								No active paid entitlement is detected. Missing, inactive, or
+								canceled subscriptions safely remain on Free access until a paid
+								entitlement becomes active.
+							</p>
+						)}
+						<a className="text-bl-red hover:underline" href={supportMailto}>
+							Contact support for Pro or Enterprise access
+						</a>
+					</CardContent>
+				</Card>
 			</div>
 
 			<div className="space-y-4">
@@ -380,17 +452,17 @@ function SettingsPanel() {
 				</div>
 			</div>
 
-			{import.meta.env.DEV && entitlementDebug && (
+			{import.meta.env.DEV && currentEntitlements && (
 				<div className="space-y-3 rounded-lg border border-border p-4">
 					<h2 className="text-xl">Entitlement Debug</h2>
 					<p className="text-sm text-muted-foreground">
 						User: {session.data?.user?.email ?? "anonymous"}
 					</p>
 					<p className="text-sm text-muted-foreground">
-						Tier: {entitlementDebug.tier} ({entitlementDebug.source})
+						Tier: {currentEntitlements.tier} ({currentEntitlements.source})
 					</p>
 					<pre className="overflow-auto rounded bg-muted p-3 text-xs">
-						{JSON.stringify(entitlementDebug.capabilities, null, 2)}
+						{JSON.stringify(currentEntitlements.capabilities, null, 2)}
 					</pre>
 				</div>
 			)}

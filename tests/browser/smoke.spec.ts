@@ -9,6 +9,8 @@ const START_REST_TRACK = /start rest track/i;
 const START_SOAP_TRACK = /start soap track/i;
 const INCIDENT_ARENA = /incident arena/i;
 const SETTINGS = /settings/i;
+const PLANS_AND_ACCESS = /plans and access/i;
+const CURRENT_ENTITLEMENT_STATE = /current entitlement state/i;
 const ACCOUNT_DATA_RIGHTS = /account data rights/i;
 const ACCESS_AND_EXPORT = /access and export/i;
 const DELETION_REQUESTS = /deletion requests/i;
@@ -28,7 +30,7 @@ const CARRIER_CAPABILITY_MATRIX = /carrier capability matrix/i;
 const SANDBOX_VS_PRODUCTION_BEHAVIOR = /sandbox vs production behavior/i;
 const PRACTICE_DRILLS = /practice drills/i;
 const MARK_LESSON_COMPLETE = /mark lesson complete/i;
-const NEW_CHALLENGE = /new challenge/i;
+const UNLOCK_NEW_CHALLENGE_PRO = /unlock new challenge \(pro\)/i;
 const CHECK_ANSWER = /check answer/i;
 const ACCEPT_COOKIES =
 	/accept cookies|accept all|allow analytics|manage cookies/i;
@@ -37,6 +39,7 @@ const DUPLICATE_WEBHOOK_REPLAY = /duplicate webhook replay/i;
 const SOAP_HEADER_AUTH_MISMATCH = /soap header\/auth mismatch/i;
 const SANDBOX_WORKS_BUT_PRODUCTION_REJECTS =
 	/sandbox works but production rejects the request/i;
+const UNLOCK_ADVANCED_SCENARIO_DEPTH = /unlock advanced scenario depth/i;
 const BACK_TO_SCENARIOS = /back to scenarios/i;
 const SCHEMA_VALIDATION = /schema validation/i;
 const SOURCES_HEADING = /^Sources$/;
@@ -106,6 +109,8 @@ test("settings exposes the privacy and account-rights surfaces", async ({
 	await expect(
 		page.getByRole("heading", { level: 1, name: SETTINGS })
 	).toBeVisible();
+	await expect(page.getByText(PLANS_AND_ACCESS)).toBeVisible();
+	await expect(page.getByText(CURRENT_ENTITLEMENT_STATE)).toBeVisible();
 	await expect(page.getByText(ACCOUNT_DATA_RIGHTS)).toBeVisible();
 	await expect(page.getByText(ACCESS_AND_EXPORT)).toBeVisible();
 	await expect(page.getByText(DELETION_REQUESTS)).toBeVisible();
@@ -202,7 +207,7 @@ test("cross-track hub renders the final wave 4 lesson set", async ({
 	).toBeVisible();
 });
 
-test("wave 4 cross-track lesson route resets answers and rerolls new drill variants", async ({
+test("wave 4 cross-track lesson route keeps drills visible and gates premium rerolls for free tier", async ({
 	page,
 }) => {
 	await page.goto(
@@ -218,19 +223,9 @@ test("wave 4 cross-track lesson route resets answers and rerolls new drill varia
 	await expect(
 		page.getByRole("heading", { name: PRACTICE_DRILLS })
 	).toBeVisible();
-	const newChallengeButton = page.getByRole("button", { name: NEW_CHALLENGE });
-	await expect(newChallengeButton).toBeEnabled();
-	const questionPrompts = page.locator("main p.font-medium.text-foreground");
-	const beforeQuestions = await questionPrompts.allTextContents();
-
-	await newChallengeButton.click();
-	await expect(questionPrompts).toHaveCount(2);
-	await expect
-		.poll(async () => questionPrompts.allTextContents())
-		.not.toEqual(beforeQuestions);
-
-	const afterQuestions = await questionPrompts.allTextContents();
-	expect(afterQuestions).not.toEqual(beforeQuestions);
+	await expect(
+		page.getByRole("link", { name: UNLOCK_NEW_CHALLENGE_PRO })
+	).toBeVisible();
 	await expect(
 		page.getByRole("button", { name: CHECK_ANSWER }).first()
 	).toBeDisabled();
@@ -255,7 +250,10 @@ test("arena lists migrated scenario cards and opens a wave 2 incident", async ({
 		page.getByRole("button", { name: SOAP_HEADER_AUTH_MISMATCH })
 	).toBeVisible();
 	await expect(
-		page.getByRole("button", { name: SANDBOX_WORKS_BUT_PRODUCTION_REJECTS })
+		page.getByText(SANDBOX_WORKS_BUT_PRODUCTION_REJECTS)
+	).toBeVisible();
+	await expect(
+		page.getByRole("link", { name: UNLOCK_ADVANCED_SCENARIO_DEPTH }).first()
 	).toBeVisible();
 
 	await page.goto("/arena?scenario=duplicate-webhook-replay&runSeed=123");

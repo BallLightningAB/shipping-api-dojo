@@ -1,4 +1,72 @@
 entries:
+  - date: "2026-04-21"
+    version: "1.1.20"
+    commit: TBD
+    status: in-progress
+    title: "docs(planning): track issue #28 seed security"
+    details: |-
+      Added issue #28 to the local v2 planning and memory-bank state as a
+      critical seed-security blocker for certificate-safe randomized practice.
+
+      - Added a current-changes artifact for server-authoritative seed
+        ownership and URL seed removal
+      - Updated the issue #5 joint plan to include #28 in scope, risks,
+        estimates, and deliverable mapping
+      - Updated active-context so #28 is tracked under the #5 roadmap with
+        critical priority and an explicit remaining deliverable
+      - Prepared PR #25 for merge after resolving the observability review
+        comment
+    refs:
+      - "I5D7, I5D13"
+  - date: "2026-04-21"
+    version: "1.1.19"
+    commit: 40d0f63
+    status: completed
+    title: "chore(observability): address paid-tier review feedback"
+    details: |-
+      Addressed PR review feedback on the issue #21 paid-tier gating branch
+      and split follow-up operational work into explicit v2 sub-issues.
+
+      - Added a shared observability logger for exception capture with
+        privacy-safe route and operation context
+      - Replaced route-local entitlement fallback console logging in lesson
+        and arena loaders with the shared logger
+      - Added unit coverage for logger normalization and context handling
+      - Created issue #26 for Sentry Free-tier hosted error observability
+        under parent issue #5 and milestone v2
+      - Created issue #27 for dev-only tiered seed users plus Playwright auth
+        states under parent issue #5 and milestone v2
+      - Updated issue #5 and issue #21 current-changes artifacts plus
+        memory-bank roadmap state to include the new v2 sub-issues
+    refs:
+      - "I5D7, I5D11, I5D12, I21D4, I21D5"
+  - date: "2026-04-21"
+    version: "1.1.18"
+    commit: 230a792
+    status: completed
+    title: "feat(entitlements): ship issue #21 paid-tier gating slice"
+    details: |-
+      Started issue #21 with a concrete paid-tier implementation slice focused
+      on entitlement-aware access behavior and upgrade UX while keeping SEO
+      surfaces crawlable.
+
+      - Added a concrete Free/Pro/Enterprise capability matrix and centralized
+        access-policy helpers for premium lesson rerolls and advanced arena
+        scenario depth
+      - Wired lesson and arena route checks to entitlement capabilities with a
+        safe fallback to free access when paid state is missing or unavailable
+      - Added locked-content and upgrade UX for premium challenge actions
+        without hiding public lesson/wiki/directory pages
+      - Added a paid-access matrix surface in settings, including visibility of
+        current entitlement state and inactive/canceled subscription fallback
+        messaging
+      - Added regression coverage for the access-policy rules, canceled-subscription
+        downgrade behavior, runtime ladder metadata, and updated browser smoke
+        assertions for the new lock/upgrade flows
+      - Updated issue-21 current-changes and README paid-tier documentation to
+        match implemented behavior
+    refs:
+      - "I21D1, I21D2, I21D3, I21D4, I21D5, I21D6"
   - date: "2026-04-20"
     version: "1.1.17"
     commit: TBD
