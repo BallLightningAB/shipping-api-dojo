@@ -91,3 +91,4 @@ After this branch:
 - Kept signed-in Free scenario-order shuffles available as local, non-authoritative practice behavior while Pro continues to use server-backed rerolls.
 - Added a cascade foreign key from `practice_seeds.user_id` to `user.id` in the Drizzle schema, migration SQL, and snapshot metadata.
 - Changed local Free arena shuffles to use a fresh browser-local seed per click instead of the fixed anonymous route seed.
+- Stabilized the checkpoint smoke suite by making `/settings` privacy, access, entitlement, and retention surfaces visible in the `ClientOnly` fallback, so slow hydration no longer hides the review validation assertions.

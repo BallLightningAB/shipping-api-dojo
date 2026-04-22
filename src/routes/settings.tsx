@@ -52,11 +52,172 @@ function SettingsPage() {
 				API Dojo.
 			</p>
 
-			<ClientOnly
-				fallback={<p className="text-muted-foreground">Loading settings...</p>}
-			>
+			<ClientOnly fallback={<SettingsFallback />}>
 				<SettingsPanel />
 			</ClientOnly>
+		</div>
+	);
+}
+
+function SettingsFallback() {
+	const supportMailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+		"Shipping API Dojo support request"
+	)}`;
+	const deletionMailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+		"Shipping API Dojo deletion request"
+	)}`;
+
+	return (
+		<div className="space-y-8">
+			<div className="grid gap-4 md:grid-cols-2">
+				<Card>
+					<CardHeader>
+						<CardTitle>Current storage model</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						<p>
+							Anonymous progress stays in this browser unless you later choose
+							to sign in and sync it into an account.
+						</p>
+						<p>
+							Sign-in features rely on necessary account/session cookies and
+							hosted records described in the public legal pages below.
+						</p>
+					</CardContent>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardTitle>Privacy and support</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						<p>
+							Use the public legal pages to review the current privacy policy
+							and cookie/storage disclosure before you use account features.
+						</p>
+						<p>
+							For support, access, or deletion questions, contact{" "}
+							<a className="text-bl-red hover:underline" href={supportMailto}>
+								{SUPPORT_CONTACT_LABEL}
+							</a>
+							.
+						</p>
+						<div className="flex flex-wrap gap-3 pt-1">
+							<Button asChild size="sm" variant="outline">
+								<Link to="/privacy">Privacy Policy</Link>
+							</Button>
+							<Button asChild size="sm" variant="outline">
+								<Link to="/cookies">Cookie &amp; Storage</Link>
+							</Button>
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+
+			<div className="space-y-4" id="paid-access">
+				<h2 className="text-xl">Plans and Access</h2>
+				<p className="max-w-3xl text-sm text-muted-foreground">
+					Public lessons, wiki, and directory pages stay crawlable. Paid tiers
+					add challenge depth, review-mode access, and premium account surfaces
+					without blanketing public educational content.
+				</p>
+				<div className="grid gap-4 md:grid-cols-3">
+					{TIER_CAPABILITY_MATRIX.map((tier) => (
+						<Card key={tier.tier}>
+							<CardHeader>
+								<CardTitle>{tier.label}</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<ul className="space-y-2 text-sm text-muted-foreground">
+									{tier.surfaces.map((surface) => (
+										<li key={surface}>{surface}</li>
+									))}
+								</ul>
+							</CardContent>
+						</Card>
+					))}
+				</div>
+				<Card>
+					<CardHeader>
+						<CardTitle>Current entitlement state</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3 text-sm text-muted-foreground">
+						<p>
+							Current tier: <strong className="text-foreground">free</strong>
+						</p>
+						<p>
+							Source:{" "}
+							<strong className="text-foreground">browser_pending</strong>
+						</p>
+						<a className="text-bl-red hover:underline" href={supportMailto}>
+							Contact support for Pro or Enterprise access
+						</a>
+					</CardContent>
+				</Card>
+			</div>
+
+			<div className="space-y-4">
+				<h2 className="text-xl">Account Data Rights</h2>
+				<div className="grid gap-4 md:grid-cols-2">
+					<Card>
+						<CardHeader>
+							<CardTitle>Access and export</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3 text-sm text-muted-foreground">
+							<p>
+								Self-serve account export becomes available when you are signed
+								in. Anonymous mode still lets you export browser-only progress.
+							</p>
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle>Deletion requests</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3 text-sm text-muted-foreground">
+							<p>
+								Account deletion is currently handled as a manual support
+								request, not an irreversible one-click action.
+							</p>
+							<a className="text-bl-red hover:underline" href={deletionMailto}>
+								Email a deletion request
+							</a>
+						</CardContent>
+					</Card>
+				</div>
+				<div className="grid gap-4 md:grid-cols-2">
+					<Card>
+						<CardHeader>
+							<CardTitle>Support contact</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3 text-sm text-muted-foreground">
+							<p>
+								Use {SUPPORT_CONTACT_LABEL} for access requests, deletion
+								questions, corrections, or retention clarifications.
+							</p>
+							<a className="text-bl-red hover:underline" href={supportMailto}>
+								Email {SUPPORT_EMAIL}
+							</a>
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle>Retention summary</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<ul className="space-y-3 text-sm text-muted-foreground">
+								{retentionSummaryItems.map((item) => (
+									<li key={item.category}>
+										<p className="font-semibold text-foreground">
+											{item.category}
+										</p>
+										<p>{item.retention}</p>
+									</li>
+								))}
+							</ul>
+						</CardContent>
+					</Card>
+				</div>
+			</div>
 		</div>
 	);
 }
