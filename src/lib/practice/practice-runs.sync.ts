@@ -13,6 +13,8 @@ import {
 	buildArenaScenarioCards,
 	buildLessonPracticeRun,
 	buildScenarioPracticeRun,
+	createPracticeSeedId,
+	generatePracticeSeed,
 	getAnonymousArenaCardsSeed,
 	getAnonymousLessonSeed,
 	getAnonymousScenarioSeed,
@@ -87,24 +89,6 @@ async function getPracticeSeedStorage() {
 	};
 }
 
-function generateServerSeed(): number {
-	const values = new Uint32Array(1);
-	globalThis.crypto.getRandomValues(values);
-	return (values[0] % 2_147_483_646) + 1;
-}
-
-function createPracticeSeedId(): string {
-	if (globalThis.crypto.randomUUID) {
-		return globalThis.crypto.randomUUID();
-	}
-
-	const values = new Uint32Array(4);
-	globalThis.crypto.getRandomValues(values);
-	return Array.from(values, (value) =>
-		value.toString(16).padStart(8, "0")
-	).join("");
-}
-
 async function readUserPracticeSeed(
 	userId: string,
 	surface: PracticeSeedSurface,
@@ -166,7 +150,7 @@ export async function getOrCreateUserPracticeSeed(
 		return existingSeed;
 	}
 
-	const seed = generateServerSeed();
+	const seed = generatePracticeSeed();
 	await writeUserPracticeSeed(userId, surface, scope, seed);
 	return seed;
 }
@@ -176,7 +160,7 @@ export async function rotateUserPracticeSeed(
 	surface: PracticeSeedSurface,
 	scope: string
 ): Promise<number> {
-	const seed = generateServerSeed();
+	const seed = generatePracticeSeed();
 	await writeUserPracticeSeed(userId, surface, scope, seed);
 	return seed;
 }

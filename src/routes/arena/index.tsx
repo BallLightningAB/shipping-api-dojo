@@ -6,7 +6,10 @@ import {
 } from "@/content/runtime";
 import type { Scenario } from "@/content/types";
 import { requiresPremiumScenarioDepth } from "@/lib/entitlements/access-policy";
-import type { ArenaScenarioCard } from "@/lib/practice/practice-runs";
+import {
+	type ArenaScenarioCard,
+	generatePracticeSeed,
+} from "@/lib/practice/practice-runs";
 import {
 	createArenaCardsRun,
 	createArenaScenarioRun,
@@ -310,19 +313,13 @@ function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
 		])
 	);
 
-	return getArenaScenarioCards(makeLocalArenaShuffleSeed()).map((card) => ({
+	return getArenaScenarioCards(generatePracticeSeed()).map((card) => ({
 		...card,
 		isLocked: accessById.get(card.id)?.isLocked ?? false,
 		requiresPremiumDepth:
 			accessById.get(card.id)?.requiresPremiumDepth ??
 			requiresPremiumScenarioDepth(card.ladderLevel),
 	}));
-}
-
-function makeLocalArenaShuffleSeed(): number {
-	const values = new Uint32Array(1);
-	globalThis.crypto.getRandomValues(values);
-	return (values[0] % 2_147_483_646) + 1;
 }
 
 function ScenarioStatus({ scenarioId }: { scenarioId: string }) {

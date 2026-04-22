@@ -1,7 +1,26 @@
 entries:
   - date: "2026-04-22"
-    version: "1.1.25"
+    version: "1.1.26"
     commit: TBD
+    status: in-progress
+    title: "chore(security): address seed-utility review feedback"
+    details: |-
+      Addressed the fourth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Defensively stripped seed-like fields from arena card payloads before
+        returning client-facing cards
+      - Moved practice seed and seed-row ID generation into shared pure helpers
+        so server seed ownership and local Free shuffles reuse the same logic
+      - Replaced direct legacy seed-param history mutation with Router
+        navigation replacement
+      - Updated the issue #28 current-changes artifact and active context for
+        the latest review pass
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.25"
+    commit: 58614c0
     status: in-progress
     title: "test(settings): stabilize checkpoint hydration fallback"
     details: |-

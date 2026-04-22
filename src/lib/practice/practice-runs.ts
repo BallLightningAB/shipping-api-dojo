@@ -41,11 +41,21 @@ export function buildArenaScenarioCards(
 		requiresPremiumDepth: (ladderLevel: Scenario["ladderLevel"]) => boolean;
 	}
 ): ArenaScenarioCard[] {
-	return getArenaScenarioCards(seed).map((card) => ({
-		...card,
-		isLocked: !options.canAccessLadderLevel(card.ladderLevel),
-		requiresPremiumDepth: options.requiresPremiumDepth(card.ladderLevel),
-	}));
+	return getArenaScenarioCards(seed).map((card) => {
+		const {
+			runSeed: _runSeed,
+			seed: _seed,
+			...safeCard
+		} = card as Scenario & {
+			seed?: number;
+		};
+
+		return {
+			...safeCard,
+			isLocked: !options.canAccessLadderLevel(safeCard.ladderLevel),
+			requiresPremiumDepth: options.requiresPremiumDepth(safeCard.ladderLevel),
+		};
+	});
 }
 
 export function buildScenarioPracticeRun(
@@ -71,4 +81,22 @@ export function getAnonymousArenaCardsSeed(): number {
 
 export function getAnonymousScenarioSeed(scenarioId: string): number {
 	return getRouteSeed(`arena:${scenarioId}:anonymous-demo`);
+}
+
+export function generatePracticeSeed(): number {
+	const values = new Uint32Array(1);
+	globalThis.crypto.getRandomValues(values);
+	return (values[0] % 2_147_483_646) + 1;
+}
+
+export function createPracticeSeedId(): string {
+	if (globalThis.crypto.randomUUID) {
+		return globalThis.crypto.randomUUID();
+	}
+
+	const values = new Uint32Array(4);
+	globalThis.crypto.getRandomValues(values);
+	return Array.from(values, (value) =>
+		value.toString(16).padStart(8, "0")
+	).join("");
 }
