@@ -113,7 +113,7 @@ async function insertOrReadUserPracticeSeed(
 				practiceSeeds.scope,
 			],
 			set: {
-				seed: sql.raw('"seed"'),
+				seed: sql`${practiceSeeds.seed}`,
 			},
 		})
 		.returning({ seed: practiceSeeds.seed });

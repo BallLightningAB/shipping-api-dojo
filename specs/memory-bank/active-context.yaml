@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.32"
+  release: "1.1.33"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -167,6 +167,8 @@ roadmap:
           note: "Addressed the final two PR #29 review comments for issue #28: changed ArenaScenarioCard to extend Omit<Scenario, 'runSeed' | 'seed'> to align types with runtime stripping, verified sql.identifier is incompatible with drizzle-orm 0.45.1 onConflictDoUpdate set clauses and kept sql.raw('\"seed\"') as the correct pattern, and resolved both Gemini review threads."
         - covers: [I5D13]
           note: "Addressed the ninth PR #29 review comment for issue #28: stripped seed and runSeed from overlayArenaCardAccess in Free practice flows to align with the ArenaScenarioCard type and prevent seed leakage in client-side state and markup."
+        - covers: [I5D13]
+          note: "Addressed the tenth PR #29 review comment for issue #28: changed sql.raw('\"seed\"') to sql`${practiceSeeds.seed}`` in the no-op upsert set clause to provide type-safe column reference while preserving the first generated seed on conflicts."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
