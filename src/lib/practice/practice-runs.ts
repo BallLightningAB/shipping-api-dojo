@@ -61,7 +61,7 @@ export function buildArenaScenarioCards(
 export function buildScenarioPracticeRun(
 	scenarioId: string,
 	seed: number
-): Scenario | null {
+): Omit<Scenario, "runSeed"> | null {
 	const scenario = getScenarioRuntimeById(scenarioId, seed);
 	if (!scenario) {
 		return null;
