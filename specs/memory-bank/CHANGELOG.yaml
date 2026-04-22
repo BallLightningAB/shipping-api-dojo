@@ -1,7 +1,24 @@
 entries:
   - date: "2026-04-22"
-    version: "1.1.27"
+    version: "1.1.28"
     commit: TBD
+    status: in-progress
+    title: "fix(security): make practice seed issuance atomic"
+    details: |-
+      Addressed the sixth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Replaced read-then-write get-or-create seed issuance with an atomic
+        insert-or-read upsert
+      - Preserved the first generated owned seed on conflicts and returned the
+        persisted seed to concurrent callers
+      - Kept explicit reroll rotation as the only path that changes an owned
+        practice seed
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.27"
+    commit: eef145f
     status: in-progress
     title: "chore(security): address seed-cleanup navigation feedback"
     details: |-

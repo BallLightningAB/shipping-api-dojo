@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -89,25 +89,36 @@ async function getPracticeSeedStorage() {
 	};
 }
 
-async function readUserPracticeSeed(
+async function insertOrReadUserPracticeSeed(
 	userId: string,
 	surface: PracticeSeedSurface,
-	scope: string
-) {
+	scope: string,
+	seed: number
+): Promise<number> {
 	const { db, practiceSeeds } = await getPracticeSeedStorage();
-	const [row] = await db
-		.select({ seed: practiceSeeds.seed })
-		.from(practiceSeeds)
-		.where(
-			and(
-				eq(practiceSeeds.userId, userId),
-				eq(practiceSeeds.surface, surface),
-				eq(practiceSeeds.scope, scope)
-			)
-		)
-		.limit(1);
 
-	return row?.seed ?? null;
+	const [row] = await db
+		.insert(practiceSeeds)
+		.values({
+			id: createPracticeSeedId(),
+			scope,
+			seed,
+			surface,
+			userId,
+		})
+		.onConflictDoUpdate({
+			target: [
+				practiceSeeds.userId,
+				practiceSeeds.surface,
+				practiceSeeds.scope,
+			],
+			set: {
+				seed: sql`${practiceSeeds.seed}`,
+			},
+		})
+		.returning({ seed: practiceSeeds.seed });
+
+	return row?.seed ?? seed;
 }
 
 async function writeUserPracticeSeed(
@@ -115,10 +126,10 @@ async function writeUserPracticeSeed(
 	surface: PracticeSeedSurface,
 	scope: string,
 	seed: number
-) {
+): Promise<number> {
 	const { db, practiceSeeds } = await getPracticeSeedStorage();
 
-	await db
+	const [row] = await db
 		.insert(practiceSeeds)
 		.values({
 			id: createPracticeSeedId(),
@@ -137,32 +148,28 @@ async function writeUserPracticeSeed(
 				seed,
 				updatedAt: sql`now()`,
 			},
-		});
+		})
+		.returning({ seed: practiceSeeds.seed });
+
+	return row?.seed ?? seed;
 }
 
-export async function getOrCreateUserPracticeSeed(
-	userId: string,
-	surface: PracticeSeedSurface,
-	scope: string
-): Promise<number> {
-	const existingSeed = await readUserPracticeSeed(userId, surface, scope);
-	if (existingSeed) {
-		return existingSeed;
-	}
-
-	const seed = generatePracticeSeed();
-	await writeUserPracticeSeed(userId, surface, scope, seed);
-	return seed;
-}
-
-export async function rotateUserPracticeSeed(
+export function getOrCreateUserPracticeSeed(
 	userId: string,
 	surface: PracticeSeedSurface,
 	scope: string
 ): Promise<number> {
 	const seed = generatePracticeSeed();
-	await writeUserPracticeSeed(userId, surface, scope, seed);
-	return seed;
+	return insertOrReadUserPracticeSeed(userId, surface, scope, seed);
+}
+
+export function rotateUserPracticeSeed(
+	userId: string,
+	surface: PracticeSeedSurface,
+	scope: string
+): Promise<number> {
+	const seed = generatePracticeSeed();
+	return writeUserPracticeSeed(userId, surface, scope, seed);
 }
 
 export const getLessonPracticeRouteData = createServerFn({ method: "GET" })
