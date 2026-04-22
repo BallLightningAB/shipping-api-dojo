@@ -66,7 +66,6 @@ function ArenaPage() {
 		activeScenarioLocked,
 		canRerollScenarioRuns,
 		cards,
-		usesServerSeed,
 	} = Route.useLoaderData();
 	const [currentCards, setCurrentCards] = useState(cards);
 	const [currentActiveScenario, setCurrentActiveScenario] =
@@ -94,10 +93,6 @@ function ArenaPage() {
 					scenario: undefined,
 				}),
 			});
-			return;
-		}
-
-		if (usesServerSeed) {
 			return;
 		}
 
@@ -214,22 +209,13 @@ function ArenaPage() {
 		arenaContent = (
 			<div className="space-y-4">
 				<div className="flex justify-end">
-					{canRerollScenarioRuns || !usesServerSeed ? (
-						<button
-							className="text-sm text-muted-foreground hover:text-foreground"
-							onClick={handleShuffleScenarios}
-							type="button"
-						>
-							Shuffle Scenario Order
-						</button>
-					) : (
-						<a
-							className="text-sm text-muted-foreground hover:text-foreground"
-							href="/settings#paid-access"
-						>
-							Unlock Scenario Shuffles (Pro)
-						</a>
-					)}
+					<button
+						className="text-sm text-muted-foreground hover:text-foreground"
+						onClick={handleShuffleScenarios}
+						type="button"
+					>
+						Shuffle Scenario Order
+					</button>
 				</div>
 				{currentCards.map((scenario) =>
 					scenario.isLocked ? (

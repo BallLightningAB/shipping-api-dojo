@@ -93,12 +93,16 @@ function generateServerSeed(): number {
 	return (values[0] % 2_147_483_646) + 1;
 }
 
-function createPracticeSeedId(
-	userId: string,
-	surface: PracticeSeedSurface,
-	scope: string
-): string {
-	return `${userId}:${surface}:${scope}`;
+function createPracticeSeedId(): string {
+	if (globalThis.crypto.randomUUID) {
+		return globalThis.crypto.randomUUID();
+	}
+
+	const values = new Uint32Array(4);
+	globalThis.crypto.getRandomValues(values);
+	return Array.from(values, (value) =>
+		value.toString(16).padStart(8, "0")
+	).join("");
 }
 
 async function readUserPracticeSeed(
@@ -133,7 +137,7 @@ async function writeUserPracticeSeed(
 	await db
 		.insert(practiceSeeds)
 		.values({
-			id: createPracticeSeedId(userId, surface, scope),
+			id: createPracticeSeedId(),
 			scope,
 			seed,
 			surface,

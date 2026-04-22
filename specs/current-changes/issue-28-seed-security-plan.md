@@ -17,6 +17,7 @@ Priority: critical
 - [x] Run the full repo validation workflow.
 - [x] Open draft PR [#29](https://github.com/BallLightningAB/shipping-api-dojo/pull/29).
 - [x] Address PR review feedback by adding explicit reroll remount nonces, centralizing legacy seed-param cleanup, using database-native update timestamps, and documenting the seed-security boundary in `README.md`.
+- [x] Address the follow-up PR review by replacing delimiter-composed practice seed row IDs with random IDs and preserving signed-in Free scenario shuffles as local, non-authoritative practice behavior.
 
 ## Goal
 
@@ -85,3 +86,5 @@ After this branch:
 - Centralized legacy seed-param stripping in `src/lib/practice/use-strip-legacy-seed-params.ts` for lesson and arena routes.
 - Switched practice-seed update timestamps to database `now()` for consistency with the Neon/Postgres clock.
 - Updated `README.md` to describe server-owned signed-in practice seeds, stripped legacy seed params, crawlable public surfaces, and anonymous/demo practice as non-certificate-bearing.
+- Replaced colon-concatenated practice seed row IDs with random row IDs; `(user_id, surface, scope)` remains the ownership and upsert key.
+- Kept signed-in Free scenario-order shuffles available as local, non-authoritative practice behavior while Pro continues to use server-backed rerolls.

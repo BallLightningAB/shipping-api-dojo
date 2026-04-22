@@ -1,7 +1,25 @@
 entries:
+  - date: "2026-04-22"
+    version: "1.1.23"
+    commit: TBD
+    status: in-progress
+    title: "chore(security): address seed-storage review feedback"
+    details: |-
+      Addressed the second PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Replaced delimiter-composed practice seed row IDs with random row IDs
+        while keeping `(user_id, surface, scope)` as the ownership and upsert key
+      - Preserved signed-in Free arena scenario shuffles as local,
+        non-authoritative practice behavior without exposing URL seeds or
+        granting Pro server-backed rerolls
+      - Updated the issue #28 current-changes artifact and active context for
+        the follow-up review pass
+    refs:
+      - "I5D13"
   - date: "2026-04-21"
     version: "1.1.22"
-    commit: TBD
+    commit: fe4ecaa
     status: in-progress
     title: "chore(security): address seed-security review feedback"
     details: |-
