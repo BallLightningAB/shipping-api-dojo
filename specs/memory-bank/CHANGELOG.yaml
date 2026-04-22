@@ -1,4 +1,270 @@
 entries:
+  - date: "2026-04-22"
+    version: "1.1.35"
+    commit: e5ddc43
+    status: completed
+    title: "fix(seed-security): RFC 4122-compliant UUID fallback for practice seed IDs"
+    details: |-
+      Addressed the latest PR #29 review comment on the issue #28
+      seed-security branch.
+
+      - Reworked the `createPracticeSeedId` fallback to produce an RFC 4122-compliant
+        UUID v4 by masking `bytes[6]` and `bytes[8]` and formatting as
+        `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx` so persisted IDs stay interoperable
+        when `crypto.randomUUID` is unavailable
+      - Added a unit test that stubs `globalThis.crypto.randomUUID` to drive the
+        fallback path and asserts the output against the RFC 4122-v4 pattern
+      - Replied to and resolved the Gemini review thread on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.34"
+    commit: d134a08
+    status: completed
+    title: "fix(seed-security): align practice-run return types with stripped runSeed"
+    details: |-
+      Addressed the two newest high-priority PR #29 review comments on the
+      issue #28 seed-security branch.
+
+      - Changed `buildScenarioPracticeRun` return type from `Scenario | null`
+        to `Omit<Scenario, "runSeed"> | null` so the declared type matches the
+        runtime stripping of `runSeed`
+      - Matched the arena `currentActiveScenario` state type to the same
+        `Omit<Scenario, "runSeed"> | null` so loader-derived active scenarios
+        flow through without type drift
+      - Replied to both Gemini review threads on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.33"
+    commit: 1a75330
+    status: completed
+    title: "fix(drizzle): use type-safe sql template for no-op upsert"
+    details: |-
+      Addressed the tenth PR #29 review comment on the issue #28
+      seed-security branch.
+
+      - Changed `sql.raw('"seed"')` to `sql`${practiceSeeds.seed}`` in the
+        no-op upsert set clause to provide type-safe column reference while
+        preserving the first generated seed on conflicts
+      - Replied to and resolved the Gemini review thread on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.32"
+    commit: ed77aea
+    status: completed
+    title: "fix(security): strip seeds from overlayArenaCardAccess in Free flows"
+    details: |-
+      Addressed the final PR #29 review comment on the issue #28
+      seed-security branch.
+
+      - Stripped `runSeed` and `seed` from scenario objects in `overlayArenaCardAccess`
+        using the same pattern as `buildArenaScenarioCards` to align with the
+        `ArenaScenarioCard` type and prevent seed leakage in Free practice flows
+      - Replied to and resolved the Gemini review thread on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.31"
+    commit: 9f881dd
+    status: completed
+    title: "fix(types): align ArenaScenarioCard with runtime seed stripping"
+    details: |-
+      Addressed the final two PR #29 review comments on the issue #28
+      seed-security branch.
+
+      - Changed `ArenaScenarioCard extends Scenario` to
+        `ArenaScenarioCard extends Omit<Scenario, "runSeed" | "seed">` so the
+        type system matches the runtime behavior where `buildArenaScenarioCards`
+        strips seed-like fields before returning client-facing cards
+      - Verified `sql.identifier` is not compatible with drizzle-orm 0.45.1
+        `onConflictDoUpdate` set clauses; kept `sql.raw('"seed"')` as the
+        correct no-op upsert pattern for this Drizzle version
+      - Replied to and resolved both Gemini review threads on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.30"
+    commit: e53119e
+    status: completed
+    title: "fix(security): harden seed cleanup edge cases"
+    details: |-
+      Addressed the eighth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Removed the direct `window.location.origin` dependency from legacy
+        seed-param cleanup while keeping Router-driven replacement
+      - Made the insert-or-read no-op upsert use an explicit Postgres `"seed"`
+        column reference
+      - Cleared stale `?scenario=` search state when local Free arena shuffles
+        reset the active scenario
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.29"
+    commit: 1bba38f
+    status: in-progress
+    title: "chore(settings): share fallback compliance sections"
+    details: |-
+      Addressed the seventh PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Refactored the /settings SSR fallback and hydrated panel to share
+        storage, privacy/support, paid-access, and account-rights sections
+      - Preserved the server-visible fallback content that stabilizes smoke
+        coverage while reducing duplicated compliance and tier copy
+      - Rotated the memory-bank changelog after it exceeded the repo threshold
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.28"
+    commit: 3b689bc
+    status: in-progress
+    title: "fix(security): make practice seed issuance atomic"
+    details: |-
+      Addressed the sixth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Replaced read-then-write get-or-create seed issuance with an atomic
+        insert-or-read upsert
+      - Preserved the first generated owned seed on conflicts and returned the
+        persisted seed to concurrent callers
+      - Kept explicit reroll rotation as the only path that changes an owned
+        practice seed
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.27"
+    commit: eef145f
+    status: in-progress
+    title: "chore(security): address seed-cleanup navigation feedback"
+    details: |-
+      Addressed the fifth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Updated the legacy seed-param cleanup hook to observe Router
+        search-string changes
+      - Preserved Router-based `replace` cleanup while ensuring internal
+        navigations that introduce legacy seed params are stripped without a
+        full route remount
+      - Updated the issue #28 current-changes artifact and active context for
+        the latest review pass
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.26"
+    commit: 80c72c9
+    status: in-progress
+    title: "chore(security): address seed-utility review feedback"
+    details: |-
+      Addressed the fourth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Defensively stripped seed-like fields from arena card payloads before
+        returning client-facing cards
+      - Moved practice seed and seed-row ID generation into shared pure helpers
+        so server seed ownership and local Free shuffles reuse the same logic
+      - Replaced direct legacy seed-param history mutation with Router
+        navigation replacement
+      - Updated the issue #28 current-changes artifact and active context for
+        the latest review pass
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.25"
+    commit: 58614c0
+    status: in-progress
+    title: "test(settings): stabilize checkpoint hydration fallback"
+    details: |-
+      Stabilized the PR #29 checkpoint path after the settings smoke test
+      intermittently observed the ClientOnly loading fallback under concurrent
+      browser-test load.
+
+      - Replaced the `/settings` one-line ClientOnly fallback with a
+        server-visible static summary for privacy, access, entitlement, support,
+        deletion, and retention surfaces
+      - Kept the interactive export/import/reset and account-aware entitlement
+        behavior inside the hydrated settings panel
+      - Updated the issue #28 current-changes artifact and active context for
+        the checkpoint stability follow-up
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.24"
+    commit: 89a96d6
+    status: in-progress
+    title: "chore(security): address seed-integrity review feedback"
+    details: |-
+      Addressed the third PR #29 review pass on the issue #28 seed-security
+      branch.
+
+      - Added cascade ownership from `practice_seeds.user_id` to `user.id` in
+        the Drizzle schema, generated migration SQL, and migration snapshot
+      - Changed local Free arena shuffles to use a fresh browser-local seed per
+        click instead of reusing the fixed anonymous route seed
+      - Updated the issue #28 current-changes artifact and active context for
+        the latest review pass
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.23"
+    commit: 1bfb28e
+    status: in-progress
+    title: "chore(security): address seed-storage review feedback"
+    details: |-
+      Addressed the second PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Replaced delimiter-composed practice seed row IDs with random row IDs
+        while keeping `(user_id, surface, scope)` as the ownership and upsert key
+      - Preserved signed-in Free arena scenario shuffles as local,
+        non-authoritative practice behavior without exposing URL seeds or
+        granting Pro server-backed rerolls
+      - Updated the issue #28 current-changes artifact and active context for
+        the follow-up review pass
+    refs:
+      - "I5D13"
+  - date: "2026-04-21"
+    version: "1.1.22"
+    commit: fe4ecaa
+    status: in-progress
+    title: "chore(security): address seed-security review feedback"
+    details: |-
+      Addressed PR #29 review feedback on the issue #28 seed-security branch
+      and aligned README with the implemented seed boundary.
+
+      - Added explicit reroll nonces so lesson drills and arena scenarios
+        remount cleanly now that rerolls no longer change URL-visible seeds
+      - Centralized legacy seed-param cleanup for lesson and arena routes
+      - Switched practice seed update timestamps to database-native `now()`
+      - Updated README to document server-owned signed-in seeds, stripped
+        legacy seed params, crawlable public content, and anonymous/demo
+        practice as non-certificate-bearing
+    refs:
+      - "I5D13"
+  - date: "2026-04-21"
+    version: "1.1.21"
+    commit: c1ff17b
+    status: in-progress
+    title: "fix(security): remove URL-visible practice seeds"
+    details: |-
+      Started issue #28 with the first seed-security implementation slice for
+      certificate-safe randomized practice.
+
+      - Mapped lesson and arena seed exposure across route search params,
+        loader data, and client reroll paths
+      - Added the `practice_seeds` table so signed-in lesson, arena-card, and
+        arena-scenario seeds are owned by `(user_id, surface, scope)`
+      - Removed seed-bearing route search state from lesson and arena practice,
+        including legacy URL cleanup for `seed`, `runSeed`, and `exclude`
+      - Moved Pro lesson rerolls and arena rerolls to server functions that
+        rotate owned seeds and return materialized practice data without the
+        seed
+      - Added regression coverage for stripped search params, seed-free
+        client-facing payloads, and seed-free public practice markup
+    refs:
+      - "I5D13"
   - date: "2026-04-21"
     version: "1.1.20"
     commit: TBD
@@ -40,416 +306,3 @@ entries:
         memory-bank roadmap state to include the new v2 sub-issues
     refs:
       - "I5D7, I5D11, I5D12, I21D4, I21D5"
-  - date: "2026-04-21"
-    version: "1.1.18"
-    commit: 230a792
-    status: completed
-    title: "feat(entitlements): ship issue #21 paid-tier gating slice"
-    details: |-
-      Started issue #21 with a concrete paid-tier implementation slice focused
-      on entitlement-aware access behavior and upgrade UX while keeping SEO
-      surfaces crawlable.
-
-      - Added a concrete Free/Pro/Enterprise capability matrix and centralized
-        access-policy helpers for premium lesson rerolls and advanced arena
-        scenario depth
-      - Wired lesson and arena route checks to entitlement capabilities with a
-        safe fallback to free access when paid state is missing or unavailable
-      - Added locked-content and upgrade UX for premium challenge actions
-        without hiding public lesson/wiki/directory pages
-      - Added a paid-access matrix surface in settings, including visibility of
-        current entitlement state and inactive/canceled subscription fallback
-        messaging
-      - Added regression coverage for the access-policy rules, canceled-subscription
-        downgrade behavior, runtime ladder metadata, and updated browser smoke
-        assertions for the new lock/upgrade flows
-      - Updated issue-21 current-changes and README paid-tier documentation to
-        match implemented behavior
-    refs:
-      - "I21D1, I21D2, I21D3, I21D4, I21D5, I21D6"
-  - date: "2026-04-20"
-    version: "1.1.17"
-    commit: TBD
-    status: in-progress
-    title: "docs(planning): realign issue #5 v2 scope"
-    details: |-
-      Corrected the issue #5 v2 planning state after reviewing the joint plan
-      and content-expansion research artifacts.
-
-      - Reopened and retitled issue #5 as the active web-v2 umbrella for
-        content expansion, hosted access, and knowledge surfaces
-      - Moved issue #15 into the #5 completion path for deep wiki and
-        directory reference expansion
-      - Created issue #21 for the remaining paid-tier, entitlement-gating,
-        premium-access, and upgrade-UX implementation work
-      - Kept issues #13 and #16 outside #5 as separate mobile/native and EDI
-        sibling-product strategy follow-ons
-      - Archived the completed issue #17 browser smoke suite plan out of
-        current-changes
-    refs:
-      - "I5D7, I5D9, I5D10"
-  - date: "2026-04-20"
-    version: "1.1.16"
-    commit: 0731486
-    status: completed
-    title: "test(content): expand remaining drill family depth"
-    details: |-
-      Completed issue #20 by turning the remaining two-variant drill-family
-      pools into healthier four-variant families.
-
-      - Added two authored variants each for pagination drift, partial success,
-        rate limits, sandbox-production drift, SOAP fault detail extraction,
-        and XSD type mismatch repair
-      - Extended the family catalog without changing family IDs, lesson slugs,
-        progress keys, or route contracts
-      - Added regression coverage for the watch-list family variant floor and
-        missing drill references
-      - Recomputed the 400-seed challenge-depth matrix so the former
-        12-outcome lessons now report 24 outcomes
-      - Updated and archived the completed challenge-depth artifacts
-    refs:
-      - "I20D1, I20D2, I20D3, I20D4, I20D5"
-  - date: "2026-04-16"
-    version: "1.1.15"
-    commit: b3899e2
-    status: completed
-    title: "test(content): audit and deepen lesson rerolls"
-    details: |-
-      Completed issue #19 by auditing seeded lesson challenge depth and fixing
-      the shallow drill-family pools that made some rerolls feel repetitive.
-
-      - Swept every lesson across 400 seeds and recorded the distinct
-        challenge-outcome matrix in the current-changes artifact
-      - Expanded the lowest-depth reusable drill families across REST, SOAP,
-        intro, and cross-track lessons
-      - Added regression coverage so no lesson can fall below the 12-outcome
-        challenge-depth floor
-      - Created issue #20 for the remaining long-term two-variant family
-        expansion work
-    refs:
-      - "I19D1, I19D2, I19D3, I19D4"
-  - date: "2026-04-14"
-    version: "1.1.14"
-    commit: 61c1c97
-    status: completed
-    title: "feat(compliance): complete issue #12 launch review"
-    details: |-
-      Completed Wave 3 and the final wrap-up for issue #12 so the compliance
-      gate is in place before hosted auth and paid features are enabled on
-      shipping.apidojo.app.
-
-      - Added a public consent-trigger matrix on `/cookies` covering analytics,
-        remarketing, non-essential personalization storage, session replay, and
-        third-party tracking identifiers
-      - Browser-validated the anonymous launch baseline: no consent-banner
-        controls, no analytics cookies, no Better Auth session cookie before
-        sign-in, and local progress persisted under
-        `shipping-api-dojo-progress`
-      - Completed the launch-readiness review by matching the public privacy
-        and storage disclosures against the implemented Better Auth, Creem, and
-        Resend data flows
-      - Marked issue #12 done in `active-context.yaml`, completed the local
-        plan checklist, and prepared the plan for archival and GitHub issue
-        closure after the final push
-    refs:
-      - "I12D4, I12D5"
-  - date: "2026-04-14"
-    version: "1.1.13"
-    commit: 229741e
-    status: in-progress
-    title: "feat(compliance): add issue #12 account-rights surfaces"
-    details: |-
-      Completed Wave 2 of issue #12 by adding the settings-based GDPR rights
-      surfaces needed before launch.
-
-      - Added a signed-in self-serve account export path that downloads a
-        structured JSON export of account, progress, entitlement,
-        subscription, billing-event, email-event, and merge-event data
-      - Added manual deletion-request, support-contact, and retention-summary
-        surfaces in settings without pretending a one-click irreversible
-        deletion flow already exists
-      - Kept the existing local browser progress export/import/reset actions
-        while clearly separating them from the signed-in account export
-      - Extended the Playwright smoke suite to validate the settings rights UI
-      - Synced the issue #12 plan, active-context, and GitHub issue state for
-        the Wave 2 checkpoint
-    refs:
-      - "I12D3"
-  - date: "2026-04-14"
-    version: "1.1.12"
-    commit: e186b95
-    status: in-progress
-    title: "feat(compliance): ship public privacy and storage disclosures"
-    details: |-
-      Completed Wave 1 of issue #12 by replacing stale storage messaging and
-      shipping the public legal disclosure routes needed before hosted auth and
-      paid launch.
-
-      - Added public SSR-visible `/privacy` and `/cookies` routes describing
-        anonymous browser progress, signed-in account/session records, billing
-        events, transactional email, retention, and the current no-optional-
-        tracking position
-      - Added persistent footer links to the legal pages and linked them from
-        settings
-      - Reworked the settings page intro so it now distinguishes anonymous
-        local progress from signed-in hosted records instead of claiming all
-        data is local-only
-      - Updated the PDD privacy/storage model to reflect the implemented auth,
-        hosted-progress, billing, and email architecture
-      - Extended the Playwright smoke suite to verify footer legal links and
-        the new disclosure routes
-    refs:
-      - "I12D1, I12D2"
-  - date: "2026-04-14"
-    version: "1.1.11"
-    commit: 8020f63
-    status: in-progress
-    title: "docs(compliance): sync issue #12 wave plan and launch-compliance audit"
-    details: |-
-      Started issue #12 on the implementation branch and aligned the local,
-      GitHub, and memory-bank artifacts before runtime compliance changes begin.
-
-      - Reworked the local issue #12 artifact into an execution-ready wave plan
-        with current-state storage, auth, billing, email, and consent notes
-      - Updated GitHub issue #12 to the same wave structure, domain, and
-        validation checkpoints used locally
-      - Elevated issue #12 to the active planned implementation issue after
-        issue #10 and recorded the audited current state in active-context
-      - Kept issue #12 in `planned` status in `active-context.yaml` until the
-        final wrap-up wave is complete
-    refs:
-      - "I12D1, I12D2, I12D3, I12D4, I12D5"
-  - date: "2026-04-14"
-    version: "1.1.10"
-    commit: c64a052
-    status: completed
-    title: "docs(planning): complete and archive issue #10 follow-on outline"
-    details: |-
-      Completed the final wrap-up pass for issue #10 and closed the branch as a
-      decision-complete outline for later premium, certificate, and AI-adjacent
-      follow-on work.
-
-      - Reserved the AI-only challenge direction explicitly for a future issue
-        instead of widening the current outline branch
-      - Added the future implementation breakdown for challenge/review runtime,
-        certificate and credential pages, premium gating/reporting, and the
-        later AI layer
-      - Marked issue #10 done in `active-context.yaml`, cleared its remaining
-        deliverables, and updated the umbrella issue-5 joint plan so the next
-        recommended implementation issue is now `#12`
-      - Archived the completed issue #10 local plan into
-        `specs/archived/completed/issue-10-outline-plan.md`
-      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`, and
-        `pnpm typecheck`
-    refs:
-      - "I10D5"
-  - date: "2026-04-14"
-    version: "1.1.9"
-    commit: 026ddc8
-    status: in-progress
-    title: "docs(planning): define issue #10 premium and certificate contracts"
-    details: |-
-      Completed Wave 2 of issue #10 by documenting how the existing
-      entitlement and certificate placeholders should evolve into premium,
-      reporting, and shareable-credential surfaces later.
-
-      - Defined the Free, Pro, and Enterprise packaging stance for premium
-        randomization breadth, review modes, certificate access, and reporting
-      - Added an analytics taxonomy and rollout guard that explicitly defers
-        any non-essential tracking work until issue #12 permits it
-      - Locked the certificate and badge surface matrix, credential data
-        contract, LinkedIn-compatible manual-entry fields, and certificate
-        email surfaces as future implementation guidance
-      - Kept `README.md` unchanged because the public roadmap text did not
-        require correction after the Wave 2 planning pass
-      - Rotated the memory-bank changelog with `bash scripts/rotate-changelog.sh`
-        once it crossed the repository maintenance threshold
-      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`, and
-        `pnpm typecheck`
-    refs:
-      - "I10D3, I10D4"
-  - date: "2026-04-14"
-    version: "1.1.8"
-    commit: 543791e
-    status: in-progress
-    title: "docs(planning): lock issue #10 wave 1 randomization and review-mode outline"
-    details: |-
-      Completed Wave 1 of issue #10 by turning the existing follow-on outline
-      into a checkpointed execution plan and locking the product vocabulary for
-      higher-value randomization and review-mode surfaces.
-
-      - Reworked the local issue #10 plan into an execution-ready artifact with
-        explicit progress tracking, non-goals, and wave ownership
-      - Locked the higher-value randomization taxonomy across payload, header,
-        error-signaling, evidence-snippet, misconception, and context-wrapper
-        variation while keeping the issue outline-only
-      - Defined the future review-mode surface names, access expectations, seed
-        ownership, and replay boundaries for daily, weekly, weak-area, timed,
-        and end-of-track runs
-      - Updated `active-context.yaml` so issue #10 now records the completed
-        Wave 1 checkpoint and clears the first two deliverables from the
-        remaining list
-      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`, and
-        `pnpm typecheck`
-    refs:
-      - "I10D1, I10D2"
-  - date: "2026-04-13"
-    version: "1.1.7"
-    commit: a069d52
-    status: completed
-    title: "feat(content-runtime): finalize issue #9 canonical curriculum migration"
-    details: |-
-      Finalized issue #9 by shipping the completed 20/20/20 curriculum
-      migration, hardening lesson rerolls on the cross-track lesson surface,
-      and wrapping up the local execution artifacts for merge.
-
-      - Completed the cross-track/public-runtime finish line with the final
-        lesson hub, final scenario families, navigation updates, and the
-        remaining legacy runtime fallback removals
-      - Added exclusion-aware lesson rerolls plus extra SOAP WSDL drill
-        variants so New Challenge avoids immediately repeating the current
-        cross-track drill set when alternatives exist
-      - Moved the lesson reroll button to a hydration-safe ClientOnly fallback
-        so early clicks cannot silently no-op before the route hydrates
-      - Extended the browser smoke checkpoint to wait for the hydrated reroll
-        control and verify that the lesson prompts actually change on reroll
-      - Updated the issue #9 plan and active-context artifacts, then archived
-        the completed migration plan for handoff
-      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
-        `pnpm typecheck`, `pnpm test:checkpoint`, and `pnpm build`
-    refs:
-      - "I9D1, I9D2, I9D3, I9D4, I9D5"
-  - date: "2026-04-13"
-    version: "1.1.5"
-    commit: 1d417ea
-    status: in-progress
-    title: "docs(planning): track issue #9 checkpoint progress before wave 3"
-    details: |-
-      Updated the local issue #9 migration plan so the current branch state is
-      visible at a glance before the next implementation wave starts.
-
-      - Added an explicit execution-progress checklist covering Phase 0, Wave 1,
-        Wave 2, and the browser-smoke checkpoint from issue #17
-      - Added current shipped totals for lessons, canonical drill families, and
-        canonical scenario families
-      - Called out the current checkpoint runner and the next planned slice so
-        the issue can resume cleanly when work continues with Wave 3
-      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`, and
-        `pnpm typecheck`
-    refs:
-      - "I9D1, I9D2, I9D3, I9D4, I9D5"
-  - date: "2026-04-13"
-    version: "1.1.4"
-    commit: 4046b2f
-    status: completed
-    title: "test(browser-smoke): add issue #17 cost-efficient checkpoint suite"
-    details: |-
-      Added a low-cost browser smoke layer that complements the existing
-      Vitest coverage without turning route-level validation into a heavy
-      end-to-end program.
-
-      - Added Playwright Test with a single Chromium project and a dev-server
-        `webServer` setup so the suite is easy to run locally
-      - Added lightweight browser smoke coverage for the home page, learn hubs,
-        a representative Wave 2 lesson, arena, wiki content, and directory
-      - Added easy scripts for headless, headed, UI, and combined checkpoint
-        test runs
-      - Documented the suite in `README.md` and added a local plan artifact for
-        issue #17 so the setup remains reusable for future mirrored products
-      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
-        `pnpm typecheck`, `pnpm test:checkpoint`, and `pnpm build`
-    refs:
-      - "I17D1, I17D2, I17D3, I17D4, I17D5"
-  - date: "2026-04-13"
-    version: "1.1.3"
-    commit: be9a8ce
-    status: in-progress
-    title: "feat(content-runtime): complete issue #9 wave 2 REST reliability expansion"
-    details: |-
-      Completed Wave 2 of issue #9 by expanding the REST curriculum, adding
-      new operational incident coverage, and tightening the mixed-runtime
-      transition behavior.
-
-      - Added 6 new REST lessons covering idempotency patterns, timeout
-        taxonomy, rate limits, partial success, webhook safety, and
-        observability/runbooks
-      - Expanded the authored content set to 14 lessons, 19 canonical drill
-        families, and 10 canonical scenario families
-      - Added targeted REST-supporting wiki and directory entries for token
-        lifecycle, backpressure, webhook safety, compensation, health checks,
-        dead-letter queues, and sandbox-versus-production drift
-      - Added 5 new REST-heavy arena incidents and fixed arena-card
-        deduplication so migrated canonical scenarios no longer surface under
-        their legacy IDs
-      - Revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
-        `pnpm typecheck`, `pnpm test`, and `pnpm build`
-    refs:
-      - "I9D1, I9D2, I9D3"
-  - date: "2026-04-13"
-    version: "1.1.2"
-    commit: 55972ca
-    status: in-progress
-    title: "feat(content-runtime): complete issue #9 wave 1 canonical migration"
-    details: |-
-      Completed Wave 1 of issue #9 by moving the current curriculum onto
-      canonical family and catalog modules without changing the issue #8 seeded
-      runtime contract.
-
-      - Moved the issue #8 family definitions into dedicated canonical modules
-        under `src/content/families/*` and added supporting catalogs under
-        `src/content/catalog/*`
-      - Migrated all 8 current lessons onto canonical lesson definitions while
-        preserving the seeded runtime behavior and canonical family progress keys
-      - Regrouped the current drills into 16 canonical drill families and the
-        current incident scenarios into 5 canonical scenario families
-      - Added legacy-to-canonical local progress remapping for drill and
-        scenario IDs plus automated coverage for schema parsing and snapshot
-        merging
-      - Switched lesson navigation surfaces to the runtime lesson catalog and
-        revalidated with `pre-commit`, `pnpm format`, `pnpm lint`,
-        `pnpm typecheck`, `pnpm test`, and `pnpm build`
-    refs:
-      - "I9D4"
-  - date: "2026-04-12"
-    version: "1.1.1"
-    commit: c3d5de3
-    status: in-progress
-    title: "docs(planning): sync issue #9 execution scope and follow-on roadmap"
-    details: |-
-      Synced the local memory-bank and GitHub roadmap before starting the full
-      issue #9 implementation so the migration work can resume safely after any
-      pause or quota interruption.
-
-      - Updated the local issue #9 migration plan to align explicitly with the
-        completed issue #8 PoC architecture and wave-based execution model
-      - Updated the issue #5 joint plan to reflect that issues #7, #11, and #8
-        are complete and that issue #9 is the active execution issue
-      - Added follow-on outline artifacts for issue #15 (deep wiki expansion)
-        and issue #16 (EDI sibling-product strategy)
-      - Updated active-context.yaml to mark issue #9 in progress and add the
-        new follow-on issues to the roadmap
-      - Synced GitHub issues #5, #9, #10, #12, #13, #15, and #16 to match the
-        current execution state and scope boundaries
-      - Carried forward the existing removal of the stale
-        `specs/current-changes/issue-8-poc-plan.md` copy now that the issue #8
-        handoff lives under `specs/archived/completed`
-    refs:
-      - "I5D7, I5D8"
-  - date: "2026-04-08"
-    version: "1.1"
-    commit: 7799a29
-    status: in-progress
-    title: "feat(content-runtime): complete issue #8 seeded family-model proof of concept"
-    details: |-
-      Completed the Issue #8 proof of concept by introducing a mixed legacy/family
-      runtime, deterministic seeded lesson/arena randomization, and canonical
-      progress mapping for the exemplar migrated content slice.
-
-      - Added deterministic randomization helpers and automated tests for seed derivation and stable shuffle behavior
-      - Added family-model lesson, drill-family, and scenario-family definitions for the REST, SOAP, and timeout-incident exemplars
-      - Added a mixed content runtime that renders migrated and unmigrated lessons through the same route API during the transition period
-      - Updated lesson and arena routes to use loader/search-param seeds plus reroll actions without hydration-risk randomization in SSR-visible content
-      - Kept migrated drill and scenario progress keyed to canonical family IDs and enabled signed-in server write-through after initial progress sync
-      - Validated with typecheck, tests, lint, build, and live dev-server route checks for the migrated lesson and arena pages
-    refs:
-      - "I8D1, I8D2, I8D3, I8D4"

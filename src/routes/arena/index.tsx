@@ -2,21 +2,23 @@ import { ScenarioPlayer } from "@/components/arena/ScenarioPlayer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	getArenaScenarioCards,
-	getRouteSeed,
 	getScenarioProgressKey,
-	getScenarioRuntimeById,
 } from "@/content/runtime";
+import type { Scenario } from "@/content/types";
+import { requiresPremiumScenarioDepth } from "@/lib/entitlements/access-policy";
 import {
-	canAccessScenarioRun,
-	canUseScenarioReroll,
-	fallbackFreeEntitlements,
-	requiresPremiumScenarioDepth,
-} from "@/lib/entitlements/access-policy";
-import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
-import { captureException } from "@/lib/observability/logger";
+	type ArenaScenarioCard,
+	generatePracticeSeed,
+} from "@/lib/practice/practice-runs";
+import {
+	createArenaCardsRun,
+	createArenaScenarioRun,
+	getArenaPracticeRouteData,
+} from "@/lib/practice/practice-runs.sync";
+import { arenaPracticeSearchSchema } from "@/lib/practice/seed-search";
+import { useStripLegacySeedParams } from "@/lib/practice/use-strip-legacy-seed-params";
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
-import { makeClientSeed } from "@/lib/randomization";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 import {
 	ClientOnly,
@@ -25,41 +27,15 @@ import {
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { CheckCircle, Circle, Lock } from "lucide-react";
-import { z } from "zod";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/arena/")({
-	validateSearch: z.object({
-		runSeed: z.coerce.number().int().positive().optional(),
-		scenario: z.string().optional(),
-		seed: z.coerce.number().int().positive().optional(),
-	}),
+	validateSearch: arenaPracticeSearchSchema,
 	loaderDeps: ({ search }) => ({
-		seed: search.seed,
+		scenario: search.scenario,
 	}),
-	loader: async ({ deps }) => {
-		const seed = getRouteSeed("arena:index", deps.seed);
-		let capabilities = fallbackFreeEntitlements().capabilities;
-		try {
-			const entitlements = await getCurrentEntitlements();
-			capabilities = entitlements.capabilities;
-		} catch (error) {
-			captureException(error, {
-				fallbackTier: "free",
-				operation: "resolve_entitlements",
-				route: "/arena",
-			});
-		}
-
-		return {
-			cards: getArenaScenarioCards(seed).map((card) => ({
-				...card,
-				isLocked: !canAccessScenarioRun(capabilities, card.ladderLevel),
-				requiresPremiumDepth: requiresPremiumScenarioDepth(card.ladderLevel),
-			})),
-			canRerollScenarioRuns: canUseScenarioReroll(capabilities),
-			seed,
-		};
-	},
+	loader: ({ deps }) =>
+		getArenaPracticeRouteData({ data: { scenario: deps.scenario } }),
 	head: () => {
 		const title = "Shipping Incident Practice";
 		const description =
@@ -84,34 +60,59 @@ export const Route = createFileRoute("/arena/")({
 });
 
 function ArenaPage() {
+	useStripLegacySeedParams();
+
 	const navigate = useNavigate({ from: "/arena/" });
-	const { canRerollScenarioRuns, cards } = Route.useLoaderData();
+	const {
+		activeScenario: loadedActiveScenario,
+		activeScenarioLocked,
+		canRerollScenarioRuns,
+		cards,
+	} = Route.useLoaderData();
+	const [currentCards, setCurrentCards] = useState(cards);
+	const [currentActiveScenario, setCurrentActiveScenario] = useState<Omit<
+		Scenario,
+		"runSeed"
+	> | null>(loadedActiveScenario);
+	const [rerollNonce, setRerollNonce] = useState(0);
 	const search = Route.useSearch();
 	const activeCard = search.scenario
-		? cards.find((card) => card.id === search.scenario)
+		? currentCards.find((card) => card.id === search.scenario)
 		: null;
-	const activeScenarioLocked = Boolean(activeCard?.isLocked);
-	const activeScenario =
-		search.scenario && search.runSeed && !activeScenarioLocked
-			? getScenarioRuntimeById(search.scenario, search.runSeed)
-			: null;
 
-	function handleShuffleScenarios() {
+	useEffect(() => {
+		setCurrentCards(cards);
+		setCurrentActiveScenario(loadedActiveScenario);
+		setRerollNonce((nonce) => nonce + 1);
+	}, [cards, loadedActiveScenario]);
+
+	async function handleShuffleScenarios() {
+		if (canRerollScenarioRuns) {
+			const run = await createArenaCardsRun({ data: {} });
+			setCurrentCards(run.cards);
+			setCurrentActiveScenario(null);
+			setRerollNonce((nonce) => nonce + 1);
+			navigate({
+				search: () => ({
+					scenario: undefined,
+				}),
+			});
+			return;
+		}
+
+		setCurrentCards((prev) => overlayArenaCardAccess(prev));
+		setCurrentActiveScenario(null);
+		setRerollNonce((nonce) => nonce + 1);
 		navigate({
-			search: (prev) => ({
-				...prev,
-				seed: makeClientSeed("arena:index"),
+			search: () => ({
 				scenario: undefined,
-				runSeed: undefined,
 			}),
 		});
 	}
 
 	function handleOpenScenario(scenarioId: string) {
 		navigate({
-			search: (prev) => ({
-				...prev,
-				runSeed: makeClientSeed(`arena:${scenarioId}`),
+			search: () => ({
 				scenario: scenarioId,
 			}),
 		});
@@ -119,30 +120,29 @@ function ArenaPage() {
 
 	function handleBackToScenarios() {
 		navigate({
-			search: (prev) => ({
-				...prev,
-				runSeed: undefined,
+			search: () => ({
 				scenario: undefined,
 			}),
 		});
 	}
 
-	function handleRerollScenario() {
+	async function handleRerollScenario() {
 		if (!(search.scenario && canRerollScenarioRuns)) {
 			return;
 		}
 
-		navigate({
-			search: (prev) => ({
-				...prev,
-				runSeed: makeClientSeed(`arena:${search.scenario}`),
-			}),
+		const run = await createArenaScenarioRun({
+			data: {
+				scenarioId: search.scenario,
+			},
 		});
+		setCurrentActiveScenario(run.activeScenario);
+		setRerollNonce((nonce) => nonce + 1);
 	}
 
 	let arenaContent: React.ReactNode;
 
-	if (activeScenario) {
+	if (currentActiveScenario) {
 		arenaContent = (
 			<div>
 				<button
@@ -153,7 +153,7 @@ function ArenaPage() {
 					&larr; Back to scenarios
 				</button>
 				<div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-					<h2 className="text-2xl">{activeScenario.title}</h2>
+					<h2 className="text-2xl">{currentActiveScenario.title}</h2>
 					{canRerollScenarioRuns ? (
 						<button
 							className="text-sm text-muted-foreground hover:text-foreground"
@@ -175,11 +175,11 @@ function ArenaPage() {
 					fallback={<p className="text-muted-foreground">Loading...</p>}
 				>
 					<ScenarioPlayer
-						key={`${activeScenario.id}:${activeScenario.runSeed ?? "legacy"}`}
+						key={`${currentActiveScenario.id}:${rerollNonce}`}
 						onComplete={() =>
-							completeScenario(getScenarioProgressKey(activeScenario))
+							completeScenario(getScenarioProgressKey(currentActiveScenario))
 						}
-						scenario={activeScenario}
+						scenario={currentActiveScenario}
 					/>
 				</ClientOnly>
 			</div>
@@ -226,7 +226,7 @@ function ArenaPage() {
 						Shuffle Scenario Order
 					</button>
 				</div>
-				{cards.map((scenario) =>
+				{currentCards.map((scenario) =>
 					scenario.isLocked ? (
 						<Card className="border-border/70 bg-muted/30" key={scenario.id}>
 							<CardHeader className="flex flex-row items-center gap-4">
@@ -307,6 +307,34 @@ function ArenaPage() {
 			{arenaContent}
 		</div>
 	);
+}
+
+function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
+	const accessById = new Map(
+		cards.map((card) => [
+			card.id,
+			{
+				isLocked: card.isLocked,
+				requiresPremiumDepth: card.requiresPremiumDepth,
+			},
+		])
+	);
+
+	return getArenaScenarioCards(generatePracticeSeed()).map((card) => {
+		const {
+			runSeed: _runSeed,
+			seed: _seed,
+			...safeCard
+		} = card as Scenario & { seed?: number };
+
+		return {
+			...safeCard,
+			isLocked: accessById.get(card.id)?.isLocked ?? false,
+			requiresPremiumDepth:
+				accessById.get(card.id)?.requiresPremiumDepth ??
+				requiresPremiumScenarioDepth(card.ladderLevel),
+		};
+	});
 }
 
 function ScenarioStatus({ scenarioId }: { scenarioId: string }) {

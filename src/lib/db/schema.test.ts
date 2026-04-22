@@ -6,6 +6,7 @@ import {
 	billingEvents,
 	certificates,
 	emailEvents,
+	practiceSeeds,
 	progressMergeEvents,
 	session,
 	subscriptions,
@@ -23,6 +24,7 @@ describe("db schema", () => {
 		expect(getTableName(billingEvents)).toBe("billing_events");
 		expect(getTableName(certificates)).toBe("certificates");
 		expect(getTableName(emailEvents)).toBe("email_events");
+		expect(getTableName(practiceSeeds)).toBe("practice_seeds");
 		expect(getTableName(progressMergeEvents)).toBe("progress_merge_events");
 		expect(getTableName(user)).toBe("user");
 		expect(getTableName(session)).toBe("session");

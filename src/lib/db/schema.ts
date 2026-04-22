@@ -160,6 +160,28 @@ export const user = pgTable(
 	(table) => [uniqueIndex("user_email_unique").on(table.email)]
 );
 
+export const practiceSeeds = pgTable(
+	"practice_seeds",
+	{
+		id: text("id").primaryKey(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		surface: varchar("surface", { length: 32 }).notNull(),
+		scope: varchar("scope", { length: 256 }).notNull(),
+		seed: integer("seed").notNull(),
+		...timestamps,
+	},
+	(table) => [
+		index("practice_seeds_user_id_idx").on(table.userId),
+		uniqueIndex("practice_seeds_owner_scope_unique").on(
+			table.userId,
+			table.surface,
+			table.scope
+		),
+	]
+);
+
 export const session = pgTable(
 	"session",
 	{
@@ -232,6 +254,7 @@ export const schema = {
 	billingEvents,
 	certificates,
 	emailEvents,
+	practiceSeeds,
 	progressMergeEvents,
 	session,
 	subscriptions,

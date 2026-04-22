@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.20"
+  release: "1.1.35"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -101,7 +101,7 @@ roadmap:
         - id: paid-tier-content-gating
           issue: "#21"
           title: "Implement paid tiers, entitlement gating, and premium access surfaces"
-          status: in-progress
+          status: done
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/21"
         - id: sentry-observability
@@ -119,7 +119,7 @@ roadmap:
         - id: seed-security
           issue: "#28"
           title: "Security: Seed exposure in URLs undermines randomized practice and certificate validity"
-          status: planned
+          status: in-progress
           priority: critical
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/28"
@@ -153,6 +153,26 @@ roadmap:
         - note: "Started issue #21 on codex/issue-21-paid-tier-gating: shipped the first paid-tier slice with a concrete Free/Pro/Enterprise matrix, entitlement-aware gating for premium lesson rerolls plus advanced arena depth, locked/upgrade UX that keeps public educational pages crawlable, safe free fallback behavior for missing/inactive/canceled paid states, and regression coverage for the new access-policy logic."
         - note: "Addressed PR #25 observability feedback by centralizing entitlement fallback exception capture in a shared logger, and created #26 plus #27 as v2 sub-issues under #5 for full Sentry integration and dev-only tiered seed users."
         - note: "Added issue #28 to the v2 #5 planning graph as a critical seed-security sub-issue so URL-visible randomized seeds are removed before certificate-bearing or challenge-validity claims launch."
+        - note: "Started issue #28 on codex/issue-28-seed-security after PR #25 merged: mapped current lesson and arena seed surfaces, added database-backed signed-in practice seed ownership, removed seed-bearing search state from protected practice flows, and added regression coverage for seed-free URLs and client-facing payloads."
+        - note: "Addressed PR #29 review feedback for issue #28: lesson and arena rerolls now use explicit remount nonces after URL seeds were removed, legacy seed-param stripping is centralized, practice seed updates use database-native timestamps, and README documents the server-owned seed boundary."
+        - note: "Addressed the second PR #29 review pass for issue #28: practice seed row IDs no longer concatenate user/surface/scope with delimiters, and signed-in Free users retain local non-authoritative arena shuffles without receiving Pro server-backed rerolls."
+        - note: "Addressed the third PR #29 review pass for issue #28: practice seed ownership now cascades from user deletion through a foreign key, and local Free arena shuffles use fresh local seeds instead of the fixed anonymous route seed."
+        - note: "Stabilized the PR #29 checkpoint path by making the /settings privacy, access, entitlement, and retention surfaces server-visible in the ClientOnly fallback so slow hydration no longer hides the smoke-test assertions."
+        - note: "Addressed the fourth PR #29 review pass for issue #28: arena cards defensively strip seed-like fields, practice seed/id generation now lives in shared pure helpers, Free arena shuffle reuses the shared seed helper, and legacy seed-param cleanup now uses Router navigation replacement."
+        - note: "Addressed the fifth PR #29 review pass for issue #28: legacy seed-param cleanup now observes Router search-string changes so internal navigations that introduce legacy seed params are cleaned without a remount."
+        - note: "Addressed the sixth PR #29 review pass for issue #28: get-or-create practice seed ownership now uses an atomic insert-or-read upsert that preserves the first generated seed on conflicts and returns the persisted seed to concurrent callers."
+        - note: "Addressed the seventh PR #29 review pass for issue #28: /settings now shares its SSR fallback storage, privacy/support, paid-access, and account-rights sections with the hydrated panel to avoid duplicated compliance and tier copy."
+        - note: "Addressed the eighth PR #29 review pass for issue #28: legacy seed-param cleanup no longer reads window.location.origin, the no-op seed upsert uses an explicit Postgres column reference, and local Free arena shuffles clear stale scenario search state."
+        - covers: [I5D13]
+          note: "Addressed the final two PR #29 review comments for issue #28: changed ArenaScenarioCard to extend Omit<Scenario, 'runSeed' | 'seed'> to align types with runtime stripping, verified sql.identifier is incompatible with drizzle-orm 0.45.1 onConflictDoUpdate set clauses and kept sql.raw('\"seed\"') as the correct pattern, and resolved both Gemini review threads."
+        - covers: [I5D13]
+          note: "Addressed the ninth PR #29 review comment for issue #28: stripped seed and runSeed from overlayArenaCardAccess in Free practice flows to align with the ArenaScenarioCard type and prevent seed leakage in client-side state and markup."
+        - covers: [I5D13]
+          note: "Addressed the tenth PR #29 review comment for issue #28: changed sql.raw('\"seed\"') to sql`${practiceSeeds.seed}`` in the no-op upsert set clause to provide type-safe column reference while preserving the first generated seed on conflicts."
+        - covers: [I5D13]
+          note: "Addressed the eleventh PR #29 review pass for issue #28: aligned `buildScenarioPracticeRun` return type with its runtime stripping by changing `Scenario | null` to `Omit<Scenario, \"runSeed\"> | null`, and matched the arena `currentActiveScenario` state type to the same `Omit<Scenario, \"runSeed\"> | null` so loader-derived active scenarios flow through without type drift."
+        - covers: [I5D13]
+          note: "Addressed the twelfth PR #29 review comment for issue #28: reworked the `createPracticeSeedId` fallback to produce an RFC 4122-compliant UUID v4 via the standard version/variant bit masks, and added a unit test that stubs `globalThis.crypto.randomUUID` to drive the fallback path."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

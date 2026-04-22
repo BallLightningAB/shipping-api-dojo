@@ -18,6 +18,8 @@ const SUPPORT_CONTACT = /support contact/i;
 const RETENTION_SUMMARY = /retention summary/i;
 const WIKI_QUICK_REFERENCE = /wiki quick-reference/i;
 const REST_TRACK = /rest track/i;
+const HTTP_SEMANTICS_IDEMPOTENCY_AND_RETRIES =
+	/http semantics: safe, idempotent & retries/i;
 const IDEMPOTENCY_KEYS = /idempotency keys & deduplication patterns/i;
 const OBSERVABILITY_RUNBOOKS =
 	/observability, health checks & incident runbooks/i;
@@ -256,11 +258,34 @@ test("arena lists migrated scenario cards and opens a wave 2 incident", async ({
 		page.getByRole("link", { name: UNLOCK_ADVANCED_SCENARIO_DEPTH }).first()
 	).toBeVisible();
 
-	await page.goto("/arena?scenario=duplicate-webhook-replay&runSeed=123");
+	await page.goto("/arena?scenario=duplicate-webhook-replay");
 	await expect(page.getByText(TRACKING_WEBHOOK_TIMED_OUT_ONCE)).toBeVisible();
 	await expect(
 		page.getByRole("button", { name: BACK_TO_SCENARIOS })
 	).toBeVisible();
+});
+
+test("legacy seed params are stripped from practice URLs and markup", async ({
+	page,
+}) => {
+	await page.goto(
+		"/lesson/rest-1-http-semantics?seed=2147483646&exclude=rest-timeout-recovery%3Aknown"
+	);
+	await expect(
+		page.getByRole("heading", { name: HTTP_SEMANTICS_IDEMPOTENCY_AND_RETRIES })
+	).toBeVisible();
+	await expect.poll(() => page.url()).not.toContain("seed=2147483646");
+	await expect.poll(() => page.url()).not.toContain("exclude=");
+	expect(await page.content()).not.toContain("2147483646");
+
+	await page.goto(
+		"/arena?scenario=duplicate-webhook-replay&runSeed=2147483645&seed=2147483644"
+	);
+	await expect(page.getByText(TRACKING_WEBHOOK_TIMED_OUT_ONCE)).toBeVisible();
+	await expect.poll(() => page.url()).not.toContain("runSeed=2147483645");
+	await expect.poll(() => page.url()).not.toContain("seed=2147483644");
+	expect(await page.content()).not.toContain("2147483645");
+	expect(await page.content()).not.toContain("2147483644");
 });
 
 test("wave 3 wiki support content renders", async ({ page }) => {

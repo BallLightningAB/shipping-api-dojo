@@ -1,69 +1,24 @@
+import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { DrillRunner } from "@/components/drill/DrillRunner";
 import { LessonReader } from "@/components/lesson/LessonReader";
 import { LessonStatus } from "@/components/progress/LessonStatus";
 import { Button } from "@/components/ui/button";
+import { getLessonCatalog, getLessonProgressKey } from "@/content/runtime";
 import {
-	getLessonCatalog,
-	getLessonProgressKey,
-	getLessonRuntimeBySlug,
-	getRouteSeed,
-} from "@/content/runtime";
-import {
-	canUseLessonChallengeReroll,
-	fallbackFreeEntitlements,
-} from "@/lib/entitlements/access-policy";
-import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
-import { captureException } from "@/lib/observability/logger";
+	createLessonPracticeRun,
+	getLessonPracticeRouteData,
+} from "@/lib/practice/practice-runs.sync";
+import { lessonPracticeSearchSchema } from "@/lib/practice/seed-search";
+import { useStripLegacySeedParams } from "@/lib/practice/use-strip-legacy-seed-params";
 import { completeDrill, completeLesson } from "@/lib/progress/progress.actions";
-import { makeClientSeed } from "@/lib/randomization";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
-import {
-	ClientOnly,
-	createFileRoute,
-	Link,
-	useNavigate,
-} from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
-import { useEffect, useState } from "react";
-import { z } from "zod";
 
 export const Route = createFileRoute("/lesson/$slug")({
-	validateSearch: z.object({
-		exclude: z.string().optional(),
-		seed: z.coerce.number().int().positive().optional(),
-	}),
-	loaderDeps: ({ search }) => ({
-		exclude: search.exclude,
-		seed: search.seed,
-	}),
-	loader: async ({ deps, params }) => {
-		const seed = getRouteSeed(`lesson:${params.slug}`, deps.seed);
-		const lessonRuntime = getLessonRuntimeBySlug(params.slug, seed, {
-			excludeDrillIds: deps.exclude
-				? deps.exclude.split(",").filter(Boolean)
-				: undefined,
-		});
-		if (!lessonRuntime) {
-			throw new Error(`Lesson not found: ${params.slug}`);
-		}
-
-		let capabilities = fallbackFreeEntitlements().capabilities;
-		try {
-			const entitlements = await getCurrentEntitlements();
-			capabilities = entitlements.capabilities;
-		} catch (error) {
-			captureException(error, {
-				fallbackTier: "free",
-				operation: "resolve_entitlements",
-				route: "/lesson/$slug",
-			});
-		}
-
-		return {
-			...lessonRuntime,
-			canUseChallengeReroll: canUseLessonChallengeReroll(capabilities),
-		};
-	},
+	validateSearch: lessonPracticeSearchSchema,
+	loader: ({ params }) =>
+		getLessonPracticeRouteData({ data: { slug: params.slug } }),
 	head: ({ loaderData }) => {
 		const lesson = loaderData?.lesson;
 		if (!lesson) {
@@ -87,10 +42,11 @@ export const Route = createFileRoute("/lesson/$slug")({
 });
 
 function LessonPage() {
-	const navigate = useNavigate({ from: "/lesson/$slug" });
-	const { canUseChallengeReroll, lesson, drills, seed } = Route.useLoaderData();
-	const [challengeSeed, setChallengeSeed] = useState(seed);
+	useStripLegacySeedParams();
+
+	const { canUseChallengeReroll, lesson, drills } = Route.useLoaderData();
 	const [challengeDrills, setChallengeDrills] = useState(drills);
+	const [rerollNonce, setRerollNonce] = useState(0);
 	const lessonCatalog = getLessonCatalog();
 
 	const currentIndex = lessonCatalog.findIndex((l) => l.slug === lesson.slug);
@@ -119,35 +75,24 @@ function LessonPage() {
 	}
 
 	useEffect(() => {
-		setChallengeSeed(seed);
 		setChallengeDrills(drills);
-	}, [drills, seed]);
+		setRerollNonce((nonce) => nonce + 1);
+	}, [drills]);
 
-	function handleNewVariantRun() {
+	async function handleNewVariantRun() {
 		if (!canUseChallengeReroll) {
 			return;
 		}
 
-		const nextSeed = makeClientSeed(`lesson:${lesson.slug}`);
-		const rerolled = getLessonRuntimeBySlug(lesson.slug, nextSeed, {
-			excludeDrillIds: challengeDrills.map((drill) => drill.id),
+		const rerolled = await createLessonPracticeRun({
+			data: {
+				excludeDrillIds: challengeDrills.map((drill) => drill.id),
+				slug: lesson.slug,
+			},
 		});
-		if (!rerolled) {
-			return;
-		}
 
-		setChallengeSeed(rerolled.seed);
 		setChallengeDrills(rerolled.drills);
-
-		navigate({
-			params: { slug: lesson.slug },
-			search: (prev) => ({
-				...prev,
-				exclude: challengeDrills.map((drill) => drill.id).join(","),
-				seed: nextSeed,
-			}),
-			to: "/lesson/$slug",
-		});
+		setRerollNonce((nonce) => nonce + 1);
 	}
 
 	return (
@@ -207,7 +152,7 @@ function LessonPage() {
 						{challengeDrills.map((drill) => (
 							<div
 								className="rounded-lg border border-border p-6"
-								key={`${challengeSeed}:${drill.id}`}
+								key={`${rerollNonce}:${drill.id}`}
 							>
 								<DrillRunner drill={drill} onComplete={handleDrillComplete} />
 							</div>

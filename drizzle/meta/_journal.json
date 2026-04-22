@@ -15,6 +15,13 @@
       "when": 1774434843274,
       "tag": "0001_familiar_dreaming_celestial",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776774026919,
+      "tag": "0002_perpetual_cloak",
+      "breakpoints": true
     }
   ]
 }
