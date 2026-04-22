@@ -119,7 +119,7 @@ roadmap:
         - id: seed-security
           issue: "#28"
           title: "Security: Seed exposure in URLs undermines randomized practice and certificate validity"
-          status: in-progress
+          status: done
           priority: critical
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/28"
@@ -128,7 +128,6 @@ roadmap:
         - "[I5D10] Expand the wiki and directory beyond curriculum support into the v2 carrier reference surface"
         - "[I5D11] Add privacy-safe Sentry Free-tier observability for hosted v2 error paths"
         - "[I5D12] Add dev-only tiered auth users, billing-shaped seed state, and Playwright auth helpers"
-        - "[I5D13] Remove URL-visible seeds from protected randomized practice flows before certificate launch"
       progress_log:
         - note: "Research captured in specs/current-changes/issue-5-content-expansion-research.md and GitHub issue #5 was updated to target minimum viable randomization, 20 lessons, 20 drill families, and 20 scenario families."
         - note: "Created the issue-5 joint plan plus issue-specific plan artifacts for #7, #11, #8, #9, and #10; added GitHub issue #11 for auth/billing/email/domain foundation; and updated the roadmap to sequence work as #7 -> #11 -> #8 -> #9 with #10 as follow-on."
@@ -173,6 +172,8 @@ roadmap:
           note: "Addressed the eleventh PR #29 review pass for issue #28: aligned `buildScenarioPracticeRun` return type with its runtime stripping by changing `Scenario | null` to `Omit<Scenario, \"runSeed\"> | null`, and matched the arena `currentActiveScenario` state type to the same `Omit<Scenario, \"runSeed\"> | null` so loader-derived active scenarios flow through without type drift."
         - covers: [I5D13]
           note: "Addressed the twelfth PR #29 review comment for issue #28: reworked the `createPracticeSeedId` fallback to produce an RFC 4122-compliant UUID v4 via the standard version/variant bit masks, and added a unit test that stubs `globalThis.crypto.randomUUID` to drive the fallback path."
+        - covers: [I5D13]
+          note: "Closed GitHub issue #28 after PR #29 merged to main: removed URL-visible seeds from lesson and arena practice flows, added database-backed practice_seeds ownership keyed by (user_id, surface, scope) with cascade FK, moved Pro rerolls to server-authoritative seed rotation, preserved public lesson/arena content crawlability with anonymous demo practice as non-certificate-bearing, and shipped regression tests verifying seeds are absent from URLs, client payloads, and public page markup."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

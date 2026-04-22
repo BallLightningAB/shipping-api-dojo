@@ -3,7 +3,7 @@
 Issue: [#28](https://github.com/BallLightningAB/shipping-api-dojo/issues/28)
 Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Milestone: v2
-Status: in-progress
+Status: completed
 Priority: critical
 
 ## Execution Progress
