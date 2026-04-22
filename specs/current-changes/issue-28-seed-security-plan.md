@@ -95,3 +95,4 @@ After this branch:
 - Defensively stripped seed-like fields from arena card payloads, centralized practice seed/id generation in shared pure helpers, reused that seed helper for Free local arena shuffles, and changed legacy seed-param cleanup to use Router navigation replacement instead of direct history mutation.
 - Updated legacy seed-param cleanup to observe Router search-string changes so internal navigations that reintroduce `seed`, `runSeed`, or `exclude` are stripped without a full remount.
 - Replaced read-then-write get-or-create seed issuance with an atomic insert-or-read upsert that preserves the first generated seed on conflicts and returns the persisted seed to concurrent callers.
+- Refactored `/settings` so the SSR fallback and hydrated settings panel share storage, privacy/support, paid-access, and account-rights sections instead of duplicating compliance and tier copy.
