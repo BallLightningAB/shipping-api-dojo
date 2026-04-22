@@ -1,5 +1,41 @@
 entries:
   - date: "2026-04-22"
+    version: "1.1.35"
+    commit: pending
+    status: completed
+    title: "fix(seed-security): RFC 4122-compliant UUID fallback for practice seed IDs"
+    details: |-
+      Addressed the latest PR #29 review comment on the issue #28
+      seed-security branch.
+
+      - Reworked the `createPracticeSeedId` fallback to produce an RFC 4122-compliant
+        UUID v4 by masking `bytes[6]` and `bytes[8]` and formatting as
+        `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx` so persisted IDs stay interoperable
+        when `crypto.randomUUID` is unavailable
+      - Added a unit test that stubs `globalThis.crypto.randomUUID` to drive the
+        fallback path and asserts the output against the RFC 4122-v4 pattern
+      - Replied to and resolved the Gemini review thread on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.34"
+    commit: d134a08
+    status: completed
+    title: "fix(seed-security): align practice-run return types with stripped runSeed"
+    details: |-
+      Addressed the two newest high-priority PR #29 review comments on the
+      issue #28 seed-security branch.
+
+      - Changed `buildScenarioPracticeRun` return type from `Scenario | null`
+        to `Omit<Scenario, "runSeed"> | null` so the declared type matches the
+        runtime stripping of `runSeed`
+      - Matched the arena `currentActiveScenario` state type to the same
+        `Omit<Scenario, "runSeed"> | null` so loader-derived active scenarios
+        flow through without type drift
+      - Replied to both Gemini review threads on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
     version: "1.1.33"
     commit: 1a75330
     status: completed

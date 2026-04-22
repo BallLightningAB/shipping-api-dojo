@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.33"
+  release: "1.1.35"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -169,6 +169,10 @@ roadmap:
           note: "Addressed the ninth PR #29 review comment for issue #28: stripped seed and runSeed from overlayArenaCardAccess in Free practice flows to align with the ArenaScenarioCard type and prevent seed leakage in client-side state and markup."
         - covers: [I5D13]
           note: "Addressed the tenth PR #29 review comment for issue #28: changed sql.raw('\"seed\"') to sql`${practiceSeeds.seed}`` in the no-op upsert set clause to provide type-safe column reference while preserving the first generated seed on conflicts."
+        - covers: [I5D13]
+          note: "Addressed the eleventh PR #29 review pass for issue #28: aligned `buildScenarioPracticeRun` return type with its runtime stripping by changing `Scenario | null` to `Omit<Scenario, \"runSeed\"> | null`, and matched the arena `currentActiveScenario` state type to the same `Omit<Scenario, \"runSeed\"> | null` so loader-derived active scenarios flow through without type drift."
+        - covers: [I5D13]
+          note: "Addressed the twelfth PR #29 review comment for issue #28: reworked the `createPracticeSeedId` fallback to produce an RFC 4122-compliant UUID v4 via the standard version/variant bit masks, and added a unit test that stubs `globalThis.crypto.randomUUID` to drive the fallback path."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
