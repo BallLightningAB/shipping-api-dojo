@@ -1,3 +1,6 @@
+import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { DrillRunner } from "@/components/drill/DrillRunner";
 import { LessonReader } from "@/components/lesson/LessonReader";
 import { LessonStatus } from "@/components/progress/LessonStatus";
@@ -11,9 +14,6 @@ import { lessonPracticeSearchSchema } from "@/lib/practice/seed-search";
 import { useStripLegacySeedParams } from "@/lib/practice/use-strip-legacy-seed-params";
 import { completeDrill, completeLesson } from "@/lib/progress/progress.actions";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
-import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/lesson/$slug")({
 	validateSearch: lessonPracticeSearchSchema,

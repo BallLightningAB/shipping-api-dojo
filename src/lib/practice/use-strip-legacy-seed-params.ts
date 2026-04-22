@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { LEGACY_SEED_SEARCH_PARAMS } from "./seed-search";
 
