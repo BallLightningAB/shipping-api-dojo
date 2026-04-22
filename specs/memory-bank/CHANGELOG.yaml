@@ -1,8 +1,27 @@
 entries:
   - date: "2026-04-22"
-    version: "1.1.30"
+    version: "1.1.31"
     commit: TBD
     status: in-progress
+    title: "fix(types): align ArenaScenarioCard with runtime seed stripping"
+    details: |-
+      Addressed the final two PR #29 review comments on the issue #28
+      seed-security branch.
+
+      - Changed `ArenaScenarioCard extends Scenario` to
+        `ArenaScenarioCard extends Omit<Scenario, "runSeed" | "seed">` so the
+        type system matches the runtime behavior where `buildArenaScenarioCards`
+        strips seed-like fields before returning client-facing cards
+      - Verified `sql.identifier` is not compatible with drizzle-orm 0.45.1
+        `onConflictDoUpdate` set clauses; kept `sql.raw('"seed"')` as the
+        correct no-op upsert pattern for this Drizzle version
+      - Replied to and resolved both Gemini review threads on PR #29
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.30"
+    commit: e53119e
+    status: completed
     title: "fix(security): harden seed cleanup edge cases"
     details: |-
       Addressed the eighth PR #29 review pass on the issue #28

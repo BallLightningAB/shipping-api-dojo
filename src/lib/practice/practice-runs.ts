@@ -11,7 +11,7 @@ export interface LessonPracticeRun {
 	lesson: Lesson;
 }
 
-export interface ArenaScenarioCard extends Scenario {
+export interface ArenaScenarioCard extends Omit<Scenario, "runSeed" | "seed"> {
 	isLocked: boolean;
 	requiresPremiumDepth: boolean;
 }
