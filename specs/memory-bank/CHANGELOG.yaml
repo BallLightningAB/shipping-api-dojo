@@ -1,7 +1,25 @@
 entries:
   - date: "2026-04-22"
-    version: "1.1.26"
+    version: "1.1.27"
     commit: TBD
+    status: in-progress
+    title: "chore(security): address seed-cleanup navigation feedback"
+    details: |-
+      Addressed the fifth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Updated the legacy seed-param cleanup hook to observe Router
+        search-string changes
+      - Preserved Router-based `replace` cleanup while ensuring internal
+        navigations that introduce legacy seed params are stripped without a
+        full route remount
+      - Updated the issue #28 current-changes artifact and active context for
+        the latest review pass
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.26"
+    commit: 80c72c9
     status: in-progress
     title: "chore(security): address seed-utility review feedback"
     details: |-

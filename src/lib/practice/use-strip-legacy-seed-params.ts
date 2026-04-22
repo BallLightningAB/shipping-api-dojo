@@ -1,13 +1,16 @@
 import { useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 import { LEGACY_SEED_SEARCH_PARAMS } from "./seed-search";
 
 export function useStripLegacySeedParams() {
 	const navigate = useNavigate();
+	const href = useLocation({
+		select: (location) => location.href,
+	});
 
 	useEffect(() => {
-		const url = new URL(window.location.href);
+		const url = new URL(href, window.location.origin);
 		let changed = false;
 		for (const param of LEGACY_SEED_SEARCH_PARAMS) {
 			if (url.searchParams.has(param)) {
@@ -23,5 +26,5 @@ export function useStripLegacySeedParams() {
 				resetScroll: false,
 			});
 		}
-	}, [navigate]);
+	}, [href, navigate]);
 }

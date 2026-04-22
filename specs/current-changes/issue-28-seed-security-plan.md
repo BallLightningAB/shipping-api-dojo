@@ -93,3 +93,4 @@ After this branch:
 - Changed local Free arena shuffles to use a fresh browser-local seed per click instead of the fixed anonymous route seed.
 - Stabilized the checkpoint smoke suite by making `/settings` privacy, access, entitlement, and retention surfaces visible in the `ClientOnly` fallback, so slow hydration no longer hides the review validation assertions.
 - Defensively stripped seed-like fields from arena card payloads, centralized practice seed/id generation in shared pure helpers, reused that seed helper for Free local arena shuffles, and changed legacy seed-param cleanup to use Router navigation replacement instead of direct history mutation.
+- Updated legacy seed-param cleanup to observe Router search-string changes so internal navigations that reintroduce `seed`, `runSeed`, or `exclude` are stripped without a full remount.

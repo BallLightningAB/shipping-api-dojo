@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.26"
+  release: "1.1.27"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -159,6 +159,7 @@ roadmap:
         - note: "Addressed the third PR #29 review pass for issue #28: practice seed ownership now cascades from user deletion through a foreign key, and local Free arena shuffles use fresh local seeds instead of the fixed anonymous route seed."
         - note: "Stabilized the PR #29 checkpoint path by making the /settings privacy, access, entitlement, and retention surfaces server-visible in the ClientOnly fallback so slow hydration no longer hides the smoke-test assertions."
         - note: "Addressed the fourth PR #29 review pass for issue #28: arena cards defensively strip seed-like fields, practice seed/id generation now lives in shared pure helpers, Free arena shuffle reuses the shared seed helper, and legacy seed-param cleanup now uses Router navigation replacement."
+        - note: "Addressed the fifth PR #29 review pass for issue #28: legacy seed-param cleanup now observes Router search-string changes so internal navigations that introduce legacy seed params are cleaned without a remount."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
