@@ -1,11 +1,3 @@
-import {
-	ClientOnly,
-	createFileRoute,
-	useNavigate,
-} from "@tanstack/react-router";
-import { useStore } from "@tanstack/react-store";
-import { CheckCircle, Circle, Lock } from "lucide-react";
-import { useEffect, useState } from "react";
 import { ScenarioPlayer } from "@/components/arena/ScenarioPlayer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,6 +20,14 @@ import { useStripLegacySeedParams } from "@/lib/practice/use-strip-legacy-seed-p
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
+import {
+	ClientOnly,
+	createFileRoute,
+	useNavigate,
+} from "@tanstack/react-router";
+import { useStore } from "@tanstack/react-store";
+import { CheckCircle, Circle, Lock } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/arena/")({
 	validateSearch: arenaPracticeSearchSchema,
@@ -318,13 +318,21 @@ function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
 		])
 	);
 
-	return getArenaScenarioCards(generatePracticeSeed()).map((card) => ({
-		...card,
-		isLocked: accessById.get(card.id)?.isLocked ?? false,
-		requiresPremiumDepth:
-			accessById.get(card.id)?.requiresPremiumDepth ??
-			requiresPremiumScenarioDepth(card.ladderLevel),
-	}));
+	return getArenaScenarioCards(generatePracticeSeed()).map((card) => {
+		const {
+			runSeed: _runSeed,
+			seed: _seed,
+			...safeCard
+		} = card as Scenario & { seed?: number };
+
+		return {
+			...safeCard,
+			isLocked: accessById.get(card.id)?.isLocked ?? false,
+			requiresPremiumDepth:
+				accessById.get(card.id)?.requiresPremiumDepth ??
+				requiresPremiumScenarioDepth(card.ladderLevel),
+		};
+	});
 }
 
 function ScenarioStatus({ scenarioId }: { scenarioId: string }) {
