@@ -555,7 +555,17 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "practice_seeds_user_id_user_id_fk": {
+          "name": "practice_seeds_user_id_user_id_fk",
+          "tableFrom": "practice_seeds",
+          "tableTo": "user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

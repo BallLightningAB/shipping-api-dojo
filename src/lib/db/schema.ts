@@ -147,11 +147,26 @@ export const progressMergeEvents = pgTable(
 	(table) => [index("progress_merge_events_user_id_idx").on(table.userId)]
 );
 
+export const user = pgTable(
+	"user",
+	{
+		id: text("id").primaryKey(),
+		name: text("name").notNull(),
+		email: text("email").notNull(),
+		emailVerified: boolean("email_verified").default(false).notNull(),
+		image: text("image"),
+		...timestamps,
+	},
+	(table) => [uniqueIndex("user_email_unique").on(table.email)]
+);
+
 export const practiceSeeds = pgTable(
 	"practice_seeds",
 	{
 		id: text("id").primaryKey(),
-		userId: text("user_id").notNull(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
 		surface: varchar("surface", { length: 32 }).notNull(),
 		scope: varchar("scope", { length: 256 }).notNull(),
 		seed: integer("seed").notNull(),
@@ -165,19 +180,6 @@ export const practiceSeeds = pgTable(
 			table.scope
 		),
 	]
-);
-
-export const user = pgTable(
-	"user",
-	{
-		id: text("id").primaryKey(),
-		name: text("name").notNull(),
-		email: text("email").notNull(),
-		emailVerified: boolean("email_verified").default(false).notNull(),
-		image: text("image"),
-		...timestamps,
-	},
-	(table) => [uniqueIndex("user_email_unique").on(table.email)]
 );
 
 export const session = pgTable(

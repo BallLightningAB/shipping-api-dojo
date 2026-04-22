@@ -16,7 +16,6 @@ import { arenaPracticeSearchSchema } from "@/lib/practice/seed-search";
 import { useStripLegacySeedParams } from "@/lib/practice/use-strip-legacy-seed-params";
 import { completeScenario } from "@/lib/progress/progress.actions";
 import { progressStore } from "@/lib/progress/progress.store";
-import { makeClientSeed } from "@/lib/randomization";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 import {
 	ClientOnly,
@@ -311,13 +310,19 @@ function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
 		])
 	);
 
-	return getArenaScenarioCards(makeClientSeed("arena:index")).map((card) => ({
+	return getArenaScenarioCards(makeLocalArenaShuffleSeed()).map((card) => ({
 		...card,
 		isLocked: accessById.get(card.id)?.isLocked ?? false,
 		requiresPremiumDepth:
 			accessById.get(card.id)?.requiresPremiumDepth ??
 			requiresPremiumScenarioDepth(card.ladderLevel),
 	}));
+}
+
+function makeLocalArenaShuffleSeed(): number {
+	const values = new Uint32Array(1);
+	globalThis.crypto.getRandomValues(values);
+	return (values[0] % 2_147_483_646) + 1;
 }
 
 function ScenarioStatus({ scenarioId }: { scenarioId: string }) {

@@ -1,5 +1,5 @@
 meta:
-  release: "1.1.23"
+  release: "1.1.24"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -156,6 +156,7 @@ roadmap:
         - note: "Started issue #28 on codex/issue-28-seed-security after PR #25 merged: mapped current lesson and arena seed surfaces, added database-backed signed-in practice seed ownership, removed seed-bearing search state from protected practice flows, and added regression coverage for seed-free URLs and client-facing payloads."
         - note: "Addressed PR #29 review feedback for issue #28: lesson and arena rerolls now use explicit remount nonces after URL seeds were removed, legacy seed-param stripping is centralized, practice seed updates use database-native timestamps, and README documents the server-owned seed boundary."
         - note: "Addressed the second PR #29 review pass for issue #28: practice seed row IDs no longer concatenate user/surface/scope with delimiters, and signed-in Free users retain local non-authoritative arena shuffles without receiving Pro server-backed rerolls."
+        - note: "Addressed the third PR #29 review pass for issue #28: practice seed ownership now cascades from user deletion through a foreign key, and local Free arena shuffles use fresh local seeds instead of the fixed anonymous route seed."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
