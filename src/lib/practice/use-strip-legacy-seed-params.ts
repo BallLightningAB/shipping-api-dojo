@@ -10,7 +10,7 @@ export function useStripLegacySeedParams() {
 	});
 
 	useEffect(() => {
-		const url = new URL(href, window.location.origin);
+		const url = new URL(href, "http://shipping-api-dojo.local");
 		let changed = false;
 		for (const param of LEGACY_SEED_SEARCH_PARAMS) {
 			if (url.searchParams.has(param)) {

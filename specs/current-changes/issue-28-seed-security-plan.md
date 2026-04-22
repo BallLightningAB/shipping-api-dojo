@@ -96,3 +96,4 @@ After this branch:
 - Updated legacy seed-param cleanup to observe Router search-string changes so internal navigations that reintroduce `seed`, `runSeed`, or `exclude` are stripped without a full remount.
 - Replaced read-then-write get-or-create seed issuance with an atomic insert-or-read upsert that preserves the first generated seed on conflicts and returns the persisted seed to concurrent callers.
 - Refactored `/settings` so the SSR fallback and hydrated settings panel share storage, privacy/support, paid-access, and account-rights sections instead of duplicating compliance and tier copy.
+- Hardened the latest review edge cases by removing `window.location.origin` from legacy seed-param cleanup, using an explicit Postgres `"seed"` column reference for the no-op insert-or-read upsert, and clearing stale `?scenario=` state after local Free arena shuffles.

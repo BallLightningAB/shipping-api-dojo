@@ -1,7 +1,24 @@
 entries:
   - date: "2026-04-22"
-    version: "1.1.29"
+    version: "1.1.30"
     commit: TBD
+    status: in-progress
+    title: "fix(security): harden seed cleanup edge cases"
+    details: |-
+      Addressed the eighth PR #29 review pass on the issue #28
+      seed-security branch.
+
+      - Removed the direct `window.location.origin` dependency from legacy
+        seed-param cleanup while keeping Router-driven replacement
+      - Made the insert-or-read no-op upsert use an explicit Postgres `"seed"`
+        column reference
+      - Cleared stale `?scenario=` search state when local Free arena shuffles
+        reset the active scenario
+    refs:
+      - "I5D13"
+  - date: "2026-04-22"
+    version: "1.1.29"
+    commit: 1bba38f
     status: in-progress
     title: "chore(settings): share fallback compliance sections"
     details: |-

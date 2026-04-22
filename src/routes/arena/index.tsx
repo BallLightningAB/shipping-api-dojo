@@ -101,6 +101,11 @@ function ArenaPage() {
 		setCurrentCards((prev) => overlayArenaCardAccess(prev));
 		setCurrentActiveScenario(null);
 		setRerollNonce((nonce) => nonce + 1);
+		navigate({
+			search: () => ({
+				scenario: undefined,
+			}),
+		});
 	}
 
 	function handleOpenScenario(scenarioId: string) {
