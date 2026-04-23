@@ -1,5 +1,5 @@
 meta:
-  release: "1.2.1"
+  release: "1.2.2"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -177,6 +177,8 @@ roadmap:
           note: "Started issue #27 on codex/issue-27-dev-tier-seeded-users: added a guarded dev-only seed command (NODE_ENV development|test, blocks VERCEL_ENV production|preview, requires ENABLE_DEV_SEED=true + DATABASE_URL) that creates deterministic Free/Pro/Enterprise/canceled/past-due users via Better Auth signUpEmail and writes billing-shaped subscription rows so the real resolver path decides the tier. Shipped Playwright storage-state helpers + a tier-gated smoke spec that auto-skips when credentials are not seeded, unit coverage for the guard and fixture-to-resolver mapping, and README/.env.example documentation. This unblocks I5D9 paid-tier checkout and entitlement testing."
         - covers: [I5D12]
           note: "Addressed the four Gemini review comments on PR #30 for issue #27: made DEV_TIER_PASSWORD overridable via env; added a DEV_SEED_IN_PROGRESS signal + isDevSeedInProgress helper in src/lib/email/lifecycle.ts that suppresses the outbound Resend call in sendLifecycleEmail while keeping the Better Auth databaseHooks.user.create.after welcome hook flow intact; included priceId: null in the subscriptions onConflictDoUpdate set clause so reruns fully reset the billing shape; and parallelized seedDevUsers via Promise.all(DEV_TIER_KEYS.map(seedEntryForKey)) with unique per-fixture subscription ids keeping the atomic upserts contention-free. Added regression tests for the strict isDevSeedInProgress exact-match contract; replied to and resolved all four PR #30 review threads."
+        - covers: [I5D12]
+          note: "Addressed the fifth Gemini review comment on PR #30 for issue #27: wrapped auth.api.signUpEmail in a try/catch that rethrows with fixture context and forwards the underlying APIError via the standard Error(..., { cause }) option, preserving the original message and stack for password-complexity, unique-constraint, and transient DB failures; the empty-userId fallback now also stringifies the response payload for diagnosability. Replied to and resolved the PR #30 review thread."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

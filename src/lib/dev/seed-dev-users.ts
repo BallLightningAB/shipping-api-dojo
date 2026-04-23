@@ -55,18 +55,32 @@ async function ensureUserForFixture(
 		return { id: existing.id, created: false };
 	}
 
-	const signUp = await auth.api.signUpEmail({
-		body: {
-			email: fixture.email,
-			password: fixture.password,
-			name: fixture.name,
-		},
-	});
+	let signUp: Awaited<ReturnType<typeof auth.api.signUpEmail>>;
+	try {
+		signUp = await auth.api.signUpEmail({
+			body: {
+				email: fixture.email,
+				password: fixture.password,
+				name: fixture.name,
+			},
+		});
+	} catch (cause) {
+		// Better Auth's server API throws APIError on validation/DB failures
+		// (e.g. password complexity, unique constraint, transient DB). Preserve
+		// the original message and stack via `cause` so failed seeds are
+		// diagnosable without digging through logs.
+		const causeMessage = cause instanceof Error ? cause.message : String(cause);
+		throw new Error(
+			`Better Auth signUpEmail failed for ${fixture.email}: ${causeMessage}`,
+			{ cause: cause instanceof Error ? cause : undefined }
+		);
+	}
 
 	const userId = signUp?.user?.id;
 	if (!userId) {
 		throw new Error(
-			`Better Auth signUpEmail did not return a user id for ${fixture.email}`
+			`Better Auth signUpEmail did not return a user id for ${fixture.email}. ` +
+				`Response: ${JSON.stringify(signUp)}`
 		);
 	}
 

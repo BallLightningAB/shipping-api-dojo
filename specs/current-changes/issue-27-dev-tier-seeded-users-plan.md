@@ -66,3 +66,8 @@ The seed implementation should use Better Auth-supported account creation where 
 - `subscriptions.onConflictDoUpdate` now includes `priceId: null` in its `set` block so a stale `priceId` in a previously seeded row cannot drift from the canonical fixture shape.
 - Fixture processing runs in parallel via `Promise.all(DEV_TIER_KEYS.map(seedEntryForKey))`; unique emails and unique `dev-seed-${key}` subscription ids keep the atomic upserts contention-free.
 - Added 2 regression tests for the strict `"true"` exact-match contract of `isDevSeedInProgress`.
+
+## PR #30 Gemini Review Follow-ups (1.2.2)
+
+- Wrapped `auth.api.signUpEmail` in `src/lib/dev/seed-dev-users.ts` with a `try`/`catch` that rethrows with fixture context and forwards the underlying Better Auth `APIError` through the standard `Error(..., { cause })` option, so password-complexity, unique-constraint, and transient DB failures preserve their original message and stack.
+- The empty-`userId` fallback now also stringifies the response payload, making failed seed runs diagnosable without extra logging.

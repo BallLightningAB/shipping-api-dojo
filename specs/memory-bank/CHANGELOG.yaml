@@ -1,8 +1,30 @@
 entries:
   - date: "2026-04-23"
-    version: "1.2.1"
+    version: "1.2.2"
     commit: TBD
     status: pending
+    title: "fix(dev-seed): PR #30 Gemini follow-up — forward signUpEmail APIError via Error cause"
+    details: |-
+      Addressed the fifth Gemini review comment on PR #30 for issue #27
+      (I5D12).
+
+      - Wrapped `auth.api.signUpEmail` in a `try`/`catch` in
+        `src/lib/dev/seed-dev-users.ts` so Better Auth's `APIError` (password
+        complexity, unique-constraint, transient DB) is rethrown with fixture
+        context while preserving the original message and stack via the
+        standard `Error(..., { cause })` option.
+      - The empty-`userId` fallback now also stringifies the full response
+        payload in the error message, so failed seed runs surface the exact
+        Better Auth response shape without extra logging.
+      - Replied to and resolved the fifth PR #30 review thread.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
+    version: "1.2.1"
+    commit: e5876f9
+    status: completed
     title: "fix(dev-seed): PR #30 Gemini review — env-overridable password, lifecycle-email suppression, full priceId reset, and parallel seeding"
     details: |-
       Addressed the four Gemini review comments on PR #30 for issue #27
