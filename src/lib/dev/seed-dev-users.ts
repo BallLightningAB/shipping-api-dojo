@@ -117,6 +117,7 @@ async function upsertSubscriptionForFixture(
 				status: shape.status,
 				planKey: shape.planKey,
 				productId: shape.productId,
+				priceId: null,
 				cancelAtPeriodEnd: shape.cancelAtPeriodEnd,
 				currentPeriodStart: periodStart,
 				currentPeriodEnd: periodEnd,
@@ -128,25 +129,45 @@ async function upsertSubscriptionForFixture(
 	return subscriptionId;
 }
 
+async function seedEntryForKey(key: DevTierKey): Promise<SeedResultEntry> {
+	const fixture = DEV_TIER_USERS[key];
+	const { id: userId, created } = await ensureUserForFixture(fixture);
+	const subscriptionId = await upsertSubscriptionForFixture(userId, fixture);
+	return {
+		created,
+		email: fixture.email,
+		expectedTier: fixture.expectedTier,
+		key,
+		password: fixture.password,
+		subscriptionId,
+		userId,
+	};
+}
+
 export async function seedDevUsers(
 	env: SeedGuardEnv = process.env
 ): Promise<SeedDevUsersResult> {
 	assertSeedGuardAllowed(env);
 
-	const entries: SeedResultEntry[] = [];
-	for (const key of DEV_TIER_KEYS) {
-		const fixture = DEV_TIER_USERS[key];
-		const { id: userId, created } = await ensureUserForFixture(fixture);
-		const subscriptionId = await upsertSubscriptionForFixture(userId, fixture);
-		entries.push({
-			key,
-			userId,
-			email: fixture.email,
-			password: fixture.password,
-			subscriptionId,
-			expectedTier: fixture.expectedTier,
-			created,
-		});
+	// Signal the lifecycle email hook (see `isDevSeedInProgress` in
+	// `@/lib/email/lifecycle`) so Better Auth's `databaseHooks.user.create.after`
+	// welcome-email path short-circuits instead of hitting Resend with dummy
+	// addresses. The real hook still runs end-to-end; only the network call
+	// is suppressed.
+	const previousFlag = process.env.DEV_SEED_IN_PROGRESS;
+	process.env.DEV_SEED_IN_PROGRESS = "true";
+	try {
+		// Fixtures are independent so we can run sign-up + subscription upsert in
+		// parallel. The single-runner seed command cannot contend with itself;
+		// the atomic upsert on `subscriptions.id` keeps the billing shape
+		// deterministic across reruns.
+		const entries = await Promise.all(DEV_TIER_KEYS.map(seedEntryForKey));
+		return { entries };
+	} finally {
+		if (previousFlag === undefined) {
+			Reflect.deleteProperty(process.env, "DEV_SEED_IN_PROGRESS");
+		} else {
+			process.env.DEV_SEED_IN_PROGRESS = previousFlag;
+		}
 	}
-	return { entries };
 }

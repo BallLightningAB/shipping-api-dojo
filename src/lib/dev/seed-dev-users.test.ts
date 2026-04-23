@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { isDevSeedInProgress } from "../email/lifecycle";
 import {
 	type ResolvedEntitlements,
 	resolveEntitlements,
@@ -97,5 +98,18 @@ describe("DEV_TIER_USERS fixtures drive the real resolver path", () => {
 		expect([...DEV_TIER_KEYS].sort()).toEqual(
 			["canceled", "enterprise", "free", "inactive", "pro"].sort()
 		);
+	});
+});
+
+describe("isDevSeedInProgress", () => {
+	it("returns true when DEV_SEED_IN_PROGRESS is exactly 'true'", () => {
+		expect(isDevSeedInProgress({ DEV_SEED_IN_PROGRESS: "true" })).toBe(true);
+	});
+
+	it("returns false for any other value or unset", () => {
+		expect(isDevSeedInProgress({})).toBe(false);
+		expect(isDevSeedInProgress({ DEV_SEED_IN_PROGRESS: "TRUE" })).toBe(false);
+		expect(isDevSeedInProgress({ DEV_SEED_IN_PROGRESS: "1" })).toBe(false);
+		expect(isDevSeedInProgress({ DEV_SEED_IN_PROGRESS: "" })).toBe(false);
 	});
 });

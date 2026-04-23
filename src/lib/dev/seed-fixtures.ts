@@ -37,9 +37,12 @@ export interface SeededUserFixture {
 /**
  * Shared password for all dev-tier fixtures. This is only ever used against
  * local or test databases; the seed guard refuses to run in production or
- * preview environments.
+ * preview environments. The default can be overridden with the
+ * `DEV_TIER_PASSWORD` env var so shared dev databases do not rely on a
+ * source-controlled default.
  */
-export const DEV_TIER_PASSWORD = "dev-tier-password-do-not-use-elsewhere";
+export const DEV_TIER_PASSWORD =
+	process.env.DEV_TIER_PASSWORD ?? "dev-tier-password-do-not-use-elsewhere";
 
 const DEV_TIER_DOMAIN = "dev.shipping-api-dojo.local";
 

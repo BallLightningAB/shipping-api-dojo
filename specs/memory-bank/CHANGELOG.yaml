@@ -1,8 +1,44 @@
 entries:
   - date: "2026-04-23"
-    version: "1.2.0"
+    version: "1.2.1"
     commit: TBD
     status: pending
+    title: "fix(dev-seed): PR #30 Gemini review — env-overridable password, lifecycle-email suppression, full priceId reset, and parallel seeding"
+    details: |-
+      Addressed the four Gemini review comments on PR #30 for issue #27
+      (I5D12) on `codex/issue-27-dev-tier-seeded-users`.
+
+      - Allow `DEV_TIER_PASSWORD` to be overridden via env in
+        `src/lib/dev/seed-fixtures.ts` so shared dev databases do not rely on
+        the source-controlled default. The seed guard still blocks production
+        and preview regardless of the flag
+      - Suppress outbound lifecycle emails during dev-tier seeding. Added
+        `isDevSeedInProgress` in `src/lib/email/lifecycle.ts` that short-circuits
+        `sendLifecycleEmail` with a `console.warn` when `DEV_SEED_IN_PROGRESS=true`,
+        and wrapped `seedDevUsers` so it sets the flag around its run and
+        restores the previous value via `Reflect.deleteProperty`. The Better
+        Auth `databaseHooks.user.create.after` welcome-email hook still
+        executes end-to-end; only the Resend network call is skipped, so dummy
+        addresses cannot bounce or consume quota
+      - Include `priceId: null` in the `subscriptions` `onConflictDoUpdate`
+        `set` block so reruns fully reset the billing shape even if a
+        previously-seeded row held a stale `priceId`
+      - Parallelize the fixture loop via `Promise.all(DEV_TIER_KEYS.map(seedEntryForKey))`
+        after extracting a `seedEntryForKey` helper. Each fixture targets a
+        unique `email` and a unique `subscriptionId`, so the atomic upserts
+        cannot contend, and the seed command remains a single-runner CLI
+      - Added 2 regression tests in `src/lib/dev/seed-dev-users.test.ts`
+        covering the strict `"true"` exact-match contract of
+        `isDevSeedInProgress`
+      - Replied to and resolved all four Gemini review threads on PR #30
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
+    version: "1.2.0"
+    commit: 250f775
+    status: completed
     title: "feat(dev-seed): dev-only tiered auth users, billing-shape seed state, and Playwright auth helpers"
     details: |-
       Implemented issue #27 (I5D12) on `codex/issue-27-dev-tier-seeded-users` to

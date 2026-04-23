@@ -58,3 +58,11 @@ The seed implementation should use Better Auth-supported account creation where 
 - `tests/browser/tiered-auth.spec.ts` exercises the gated lesson-reroll surface and the `/settings` entitlement debug panel for each tier; it auto-skips when credentials are not seeded so CI without a database stays green.
 - `src/lib/dev/seed-dev-users.test.ts` covers the guard reasons and asserts the resolver returns the expected tier for every fixture state.
 - README documents the opt-in steps (`ENABLE_DEV_SEED=true`, `pnpm seed:dev-users`, `pnpm test:e2e`) and the fallback guarantees for canceled/past-due states.
+
+## PR #30 Gemini Review Follow-ups (1.2.1)
+
+- `DEV_TIER_PASSWORD` is now overridable via the `DEV_TIER_PASSWORD` env var (default kept for zero-config local use); the seed guard still blocks hosted environments regardless.
+- `isDevSeedInProgress` in `@/src/lib/email/lifecycle.ts` short-circuits `sendLifecycleEmail` when `DEV_SEED_IN_PROGRESS=true`; `seedDevUsers` sets the flag around its run and restores the previous value through `Reflect.deleteProperty`. The Better Auth `databaseHooks.user.create.after` path still runs end-to-end; only the outbound Resend call is suppressed.
+- `subscriptions.onConflictDoUpdate` now includes `priceId: null` in its `set` block so a stale `priceId` in a previously seeded row cannot drift from the canonical fixture shape.
+- Fixture processing runs in parallel via `Promise.all(DEV_TIER_KEYS.map(seedEntryForKey))`; unique emails and unique `dev-seed-${key}` subscription ids keep the atomic upserts contention-free.
+- Added 2 regression tests for the strict `"true"` exact-match contract of `isDevSeedInProgress`.

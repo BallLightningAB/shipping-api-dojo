@@ -62,11 +62,25 @@ export function buildLifecycleEmailCopy(
 	}
 }
 
+export function isDevSeedInProgress(
+	env: NodeJS.ProcessEnv = process.env
+): boolean {
+	return env.DEV_SEED_IN_PROGRESS === "true";
+}
+
 async function sendLifecycleEmail(
 	email: string,
 	type: LifecycleEmailType,
 	options?: { planKey?: string | null }
 ) {
+	if (isDevSeedInProgress()) {
+		// The dev-tier seed command opts out of real lifecycle email delivery so
+		// it does not consume Resend quota or bounce against dummy addresses.
+		// The `databaseHooks.user.create.after` hook in `@/lib/auth` still runs
+		// the same code path; only the outbound network call is suppressed.
+		console.warn(`[dev-seed] suppressed ${type} lifecycle email to ${email}`);
+		return;
+	}
 	const env = getAuthEnv();
 	const resend = new Resend(env.RESEND_API_KEY);
 	const copy = buildLifecycleEmailCopy(type, options);
