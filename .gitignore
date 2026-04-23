@@ -45,3 +45,6 @@ admin/
 
 # Newsletter PII data (Phase 1 JSON storage)
 content/newsletter/subscribers.json
+
+# Dev-only tiered auth artifacts (seed credentials + Playwright storage states)
+.playwright-auth/

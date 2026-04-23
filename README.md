@@ -96,6 +96,38 @@ pnpm dev
 
 Open `http://localhost:3000`.
 
+## Dev-Only Tiered Auth Users
+
+For testing entitlement-gated surfaces locally, the repo ships a guarded
+seed command that creates deterministic Free/Pro/Enterprise/canceled/
+past-due users via Better Auth plus billing-shaped `subscriptions` rows.
+The entitlement resolver uses the same code path as production when
+reading these rows — the seed never bypasses resolution with manual
+grants.
+
+```bash
+# .env.local
+ENABLE_DEV_SEED=true
+DATABASE_URL=postgres://...   # local dev database only
+
+pnpm seed:dev-users
+```
+
+Outputs:
+
+- `.playwright-auth/credentials.json` — seeded user credentials (gitignored)
+- Playwright tiered-auth tests in `tests/browser/tiered-auth.spec.ts`
+  automatically pick up the file and run; they skip cleanly if it is
+  missing (e.g. CI without a seeded database).
+
+The seed command refuses to run unless `NODE_ENV` is `development` or
+`test`, `VERCEL_ENV` is not `production`/`preview`, `ENABLE_DEV_SEED=true`,
+and `DATABASE_URL` is set. The fixture definitions live in
+`src/lib/dev/seed-fixtures.ts` and include one Free, one Pro, one
+Enterprise, one canceled, and one past-due user. Canceled and past-due
+fixtures assert that the resolver falls back to Free instead of masking
+the state.
+
 ## Testing
 
 - `pnpm test` runs the Vitest unit and integration suite.

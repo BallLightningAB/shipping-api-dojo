@@ -1,4 +1,164 @@
 entries:
+  - date: "2026-04-23"
+    version: "1.2.5"
+    commit: TBD
+    status: pending
+    title: "refactor(dev-seed): PR #30 Gemini follow-up — explicit periodDays, MS_PER_DAY constant, and cleanup"
+    details: |-
+      Addressed the eighth, ninth, and tenth Gemini review comments on PR #30
+      for issue #27 (I5D12).
+
+      - Added `periodDays` field to `SubscriptionSeedShape` interface in
+        `seed-fixtures.ts`, with each fixture state defining its billing
+        period (30 days for monthly, 365 days for annual/enterprise).
+      - Added `MS_PER_DAY` constant for millisecond conversion instead of
+        magic numbers, removing fragile string matching against plan keys.
+      - Kept `process.env` for flag manipulation since `SeedGuardEnv` has a
+        readonly index signature; the `env` parameter is only used for the
+        guard check while the actual signal uses the global.
+      - Removed redundant nullish coalescing operators in
+        `tests/browser/fixtures/tiered-auth.ts` since `CredentialEntry`
+        guarantees email and password are strings.
+      - Replied to all three PR #30 review threads.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
+    version: "1.2.4"
+    commit: TBD
+    status: pending
+    title: "fix(dev-seed): PR #30 Gemini follow-up — calculate subscription duration by plan type"
+    details: |-
+      Addressed the seventh Gemini review comment on PR #30 for issue #27
+      (I5D12).
+
+      - Added duration calculation based on plan type in
+        `upsertSubscriptionForFixture` in `src/lib/dev/seed-dev-users.ts`.
+      - Annual plans (`planKey.includes("annual")`) now use 365 days, while
+        monthly plans use 30 days.
+      - This ensures the seeded data matches the expected billing shape for
+        both `active_pro_monthly` and `active_pro_annual` fixtures.
+      - Replied to the seventh PR #30 review thread.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
+    version: "1.2.3"
+    commit: TBD
+    status: pending
+    title: "fix(dev-seed): PR #30 Gemini follow-up — add userId and provider to upsert set clause"
+    details: |-
+      Addressed the sixth Gemini review comment on PR #30 for issue #27
+      (I5D12).
+
+      - Added `userId` and `provider: "dev-seed"` to the
+        `onConflictDoUpdate` `set` clause in `upsertSubscriptionForFixture`
+        in `src/lib/dev/seed-dev-users.ts`.
+      - The upsert now fully reassigns the subscription row to the correct
+        user if a row with the same deterministic `dev-seed-{fixture.key}`
+        ID was previously associated with a different user, ensuring the
+        billing shape stays consistent with the fixture even across user
+        changes or manual database interventions.
+      - Replied to the sixth PR #30 review thread.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
+    version: "1.2.2"
+    commit: TBD
+    status: pending
+    title: "fix(dev-seed): PR #30 Gemini follow-up — forward signUpEmail APIError via Error cause"
+    details: |-
+      Addressed the fifth Gemini review comment on PR #30 for issue #27
+      (I5D12).
+
+      - Wrapped `auth.api.signUpEmail` in a `try`/`catch` in
+        `src/lib/dev/seed-dev-users.ts` so Better Auth's `APIError` (password
+        complexity, unique-constraint, transient DB) is rethrown with fixture
+        context while preserving the original message and stack via the
+        standard `Error(..., { cause })` option.
+      - The empty-`userId` fallback now also stringifies the full response
+        payload in the error message, so failed seed runs surface the exact
+        Better Auth response shape without extra logging.
+      - Replied to and resolved the fifth PR #30 review thread.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
+    version: "1.2.1"
+    commit: e5876f9
+    status: completed
+    title: "fix(dev-seed): PR #30 Gemini review — env-overridable password, lifecycle-email suppression, full priceId reset, and parallel seeding"
+    details: |-
+      Addressed the four Gemini review comments on PR #30 for issue #27
+      (I5D12) on `codex/issue-27-dev-tier-seeded-users`.
+
+      - Allow `DEV_TIER_PASSWORD` to be overridden via env in
+        `src/lib/dev/seed-fixtures.ts` so shared dev databases do not rely on
+        the source-controlled default. The seed guard still blocks production
+        and preview regardless of the flag
+      - Suppress outbound lifecycle emails during dev-tier seeding. Added
+        `isDevSeedInProgress` in `src/lib/email/lifecycle.ts` that short-circuits
+        `sendLifecycleEmail` with a `console.warn` when `DEV_SEED_IN_PROGRESS=true`,
+        and wrapped `seedDevUsers` so it sets the flag around its run and
+        restores the previous value via `Reflect.deleteProperty`. The Better
+        Auth `databaseHooks.user.create.after` welcome-email hook still
+        executes end-to-end; only the Resend network call is skipped, so dummy
+        addresses cannot bounce or consume quota
+      - Include `priceId: null` in the `subscriptions` `onConflictDoUpdate`
+        `set` block so reruns fully reset the billing shape even if a
+        previously-seeded row held a stale `priceId`
+      - Parallelize the fixture loop via `Promise.all(DEV_TIER_KEYS.map(seedEntryForKey))`
+        after extracting a `seedEntryForKey` helper. Each fixture targets a
+        unique `email` and a unique `subscriptionId`, so the atomic upserts
+        cannot contend, and the seed command remains a single-runner CLI
+      - Added 2 regression tests in `src/lib/dev/seed-dev-users.test.ts`
+        covering the strict `"true"` exact-match contract of
+        `isDevSeedInProgress`
+      - Replied to and resolved all four Gemini review threads on PR #30
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
+    version: "1.2.0"
+    commit: 250f775
+    status: completed
+    title: "feat(dev-seed): dev-only tiered auth users, billing-shape seed state, and Playwright auth helpers"
+    details: |-
+      Implemented issue #27 (I5D12) on `codex/issue-27-dev-tier-seeded-users` to
+      unblock rigorous testing of the paid-tier flows planned for I5D9.
+
+      - Added `src/lib/dev/seed-guard.ts` centralizing the environment gate:
+        allows NODE_ENV in {development, test}, blocks VERCEL_ENV in
+        {production, preview}, requires `ENABLE_DEV_SEED=true`, and requires
+        `DATABASE_URL` so the real resolver path is exercised
+      - Added `src/lib/dev/seed-fixtures.ts` with the five canonical dev users
+        (free, pro, enterprise, canceled, inactive) and a pure resolver that
+        maps each state to a billing-shape subscription row
+      - Added `src/lib/dev/seed-dev-users.ts` which performs idempotent
+        `auth.api.signUpEmail` sign-ups and `onConflictDoUpdate` upserts into
+        `subscriptions`. Free fixtures delete stray subscription rows so the
+        Free fallback path is real, not manually granted
+      - Added `scripts/seed-dev-users.ts` CLI plus the `pnpm seed:dev-users`
+        script and a `tsx` devDep; credentials are written to
+        `.playwright-auth/credentials.json` (gitignored)
+      - Added `tests/browser/fixtures/tiered-auth.ts` helpers that sign in via
+        Better Auth's email/password endpoint and persist Playwright storage
+        state per tier, plus `tests/browser/tiered-auth.spec.ts` which
+        auto-skips when credentials are missing so CI without a seeded DB
+        stays green
+      - Added `src/lib/dev/seed-dev-users.test.ts` covering all six guard
+        branches plus resolver expectations for every fixture state
+      - Documented the opt-in flow in README and `.env.example`, and updated
+        the issue plan and memory bank to mark I5D12 complete
+    refs:
+      - "I5D12"
+      - "#27"
   - date: "2026-04-22"
     version: "1.1.35"
     commit: e5ddc43

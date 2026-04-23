@@ -3,7 +3,7 @@
 Issue: [#27](https://github.com/BallLightningAB/shipping-api-dojo/issues/27)
 Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Milestone: v2
-Status: planned
+Status: implemented (pending validation)
 
 ## Goal
 
@@ -47,3 +47,41 @@ Provide a safe development-only way to test Free, Pro, Enterprise, canceled, and
 ## Notes
 
 The seed implementation should use Better Auth-supported account creation where practical and direct Drizzle writes only for billing/subscription fixtures. Manual entitlement rows must not accidentally mask canceled or inactive subscription fallback behavior.
+
+## Implementation Summary
+
+- `src/lib/dev/seed-guard.ts` centralizes the environment gate: requires NODE_ENV in {development, test}, blocks VERCEL_ENV in {production, preview}, requires `ENABLE_DEV_SEED=true`, and requires `DATABASE_URL`.
+- `src/lib/dev/seed-fixtures.ts` defines the five canonical fixtures (`free`, `pro`, `enterprise`, `canceled`, `inactive`) plus the billing-shape resolver that maps a fixture state to a `subscriptions` row.
+- `src/lib/dev/seed-dev-users.ts` performs idempotent sign-up via `auth.api.signUpEmail` and an `onConflictDoUpdate` upsert into the `subscriptions` table. Free fixtures explicitly delete stray subscription rows so the Free fallback is real, not manual.
+- `scripts/seed-dev-users.ts` is the CLI entry point invoked with `pnpm seed:dev-users`. It writes credentials to `.playwright-auth/credentials.json` (gitignored).
+- `tests/browser/fixtures/tiered-auth.ts` signs in via Better Auth's email/password endpoint and persists Playwright storage state files per tier.
+- `tests/browser/tiered-auth.spec.ts` exercises the gated lesson-reroll surface and the `/settings` entitlement debug panel for each tier; it auto-skips when credentials are not seeded so CI without a database stays green.
+- `src/lib/dev/seed-dev-users.test.ts` covers the guard reasons and asserts the resolver returns the expected tier for every fixture state.
+- README documents the opt-in steps (`ENABLE_DEV_SEED=true`, `pnpm seed:dev-users`, `pnpm test:e2e`) and the fallback guarantees for canceled/past-due states.
+
+## PR #30 Gemini Review Follow-ups (1.2.1)
+
+- `DEV_TIER_PASSWORD` is now overridable via the `DEV_TIER_PASSWORD` env var (default kept for zero-config local use); the seed guard still blocks hosted environments regardless.
+- `isDevSeedInProgress` in `@/src/lib/email/lifecycle.ts` short-circuits `sendLifecycleEmail` when `DEV_SEED_IN_PROGRESS=true`; `seedDevUsers` sets the flag around its run and restores the previous value through `Reflect.deleteProperty`. The Better Auth `databaseHooks.user.create.after` path still runs end-to-end; only the outbound Resend call is suppressed.
+- `subscriptions.onConflictDoUpdate` now includes `priceId: null` in its `set` block so a stale `priceId` in a previously seeded row cannot drift from the canonical fixture shape.
+- Fixture processing runs in parallel via `Promise.all(DEV_TIER_KEYS.map(seedEntryForKey))`; unique emails and unique `dev-seed-${key}` subscription ids keep the atomic upserts contention-free.
+- Added 2 regression tests for the strict `"true"` exact-match contract of `isDevSeedInProgress`.
+
+## PR #30 Gemini Review Follow-ups (1.2.2)
+
+- Wrapped `auth.api.signUpEmail` in `src/lib/dev/seed-dev-users.ts` with a `try`/`catch` that rethrows with fixture context and forwards the underlying Better Auth `APIError` through the standard `Error(..., { cause })` option, so password-complexity, unique-constraint, and transient DB failures preserve their original message and stack.
+- The empty-`userId` fallback now also stringifies the response payload, making failed seed runs diagnosable without extra logging.
+
+## PR #30 Gemini Review Follow-ups (1.2.3)
+
+- Added `userId` and `provider: "dev-seed"` to the `subscriptions.onConflictDoUpdate` set clause in `upsertSubscriptionForFixture`, ensuring the subscription row is correctly reassigned if a row with the same deterministic `dev-seed-{fixture.key}` ID was previously associated with a different user.
+
+## PR #30 Gemini Review Follow-ups (1.2.4)
+
+- Added duration calculation based on plan type in `upsertSubscriptionForFixture` so annual plans use 365 days and monthly plans use 30 days, ensuring the seeded data matches the expected billing shape for both `active_pro_monthly` and `active_pro_annual` fixtures.
+
+## PR #30 Gemini Review Follow-ups (1.2.5)
+
+- Moved duration into `SubscriptionSeedShape` as explicit `periodDays` field with `MS_PER_DAY` constant, removing fragile string matching against plan keys.
+- Kept `process.env` for flag manipulation since `SeedGuardEnv` has a readonly index signature; the `env` parameter is only used for the guard check while the actual signal uses the global.
+- Removed redundant nullish coalescing operators in `tests/browser/fixtures/tiered-auth.ts` since `CredentialEntry` guarantees email and password are strings.
