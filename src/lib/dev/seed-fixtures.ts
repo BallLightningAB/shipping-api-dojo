@@ -105,6 +105,7 @@ export function getDevTierFixture(key: DevTierKey): SeededUserFixture {
 
 export interface SubscriptionSeedShape {
 	cancelAtPeriodEnd: boolean;
+	periodDays: number;
 	planKey: string;
 	productId: string;
 	status: string;
@@ -127,6 +128,7 @@ export function resolveSubscriptionSeedShape(
 				status: "active",
 				productId: "dev-seed-pro-monthly",
 				cancelAtPeriodEnd: false,
+				periodDays: 30,
 			};
 		case "active_pro_annual":
 			return {
@@ -134,6 +136,7 @@ export function resolveSubscriptionSeedShape(
 				status: "active",
 				productId: "dev-seed-pro-annual",
 				cancelAtPeriodEnd: false,
+				periodDays: 365,
 			};
 		case "active_enterprise":
 			return {
@@ -141,6 +144,7 @@ export function resolveSubscriptionSeedShape(
 				status: "active",
 				productId: "dev-seed-enterprise",
 				cancelAtPeriodEnd: false,
+				periodDays: 365,
 			};
 		case "canceled_pro":
 			return {
@@ -148,6 +152,7 @@ export function resolveSubscriptionSeedShape(
 				status: "canceled",
 				productId: "dev-seed-pro-monthly",
 				cancelAtPeriodEnd: true,
+				periodDays: 30,
 			};
 		case "past_due_pro":
 			return {
@@ -155,6 +160,7 @@ export function resolveSubscriptionSeedShape(
 				status: "past_due",
 				productId: "dev-seed-pro-monthly",
 				cancelAtPeriodEnd: false,
+				periodDays: 30,
 			};
 		default: {
 			const exhaustive: never = state;

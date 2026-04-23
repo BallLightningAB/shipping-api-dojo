@@ -103,10 +103,8 @@ async function upsertSubscriptionForFixture(
 	const subscriptionId = `dev-seed-${fixture.key}`;
 	const now = new Date();
 	const periodStart = now;
-	const durationMs = shape.planKey.includes("annual")
-		? 365 * 24 * 60 * 60 * 1000
-		: 30 * 24 * 60 * 60 * 1000;
-	const periodEnd = new Date(now.getTime() + durationMs);
+	const MS_PER_DAY = 24 * 60 * 60 * 1000;
+	const periodEnd = new Date(now.getTime() + shape.periodDays * MS_PER_DAY);
 	const rawPayload = {
 		source: "dev-seed",
 		fixture: fixture.key,

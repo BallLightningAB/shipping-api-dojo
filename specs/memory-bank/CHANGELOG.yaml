@@ -1,5 +1,30 @@
 entries:
   - date: "2026-04-23"
+    version: "1.2.5"
+    commit: TBD
+    status: pending
+    title: "refactor(dev-seed): PR #30 Gemini follow-up — explicit periodDays, MS_PER_DAY constant, and cleanup"
+    details: |-
+      Addressed the eighth, ninth, and tenth Gemini review comments on PR #30
+      for issue #27 (I5D12).
+
+      - Added `periodDays` field to `SubscriptionSeedShape` interface in
+        `seed-fixtures.ts`, with each fixture state defining its billing
+        period (30 days for monthly, 365 days for annual/enterprise).
+      - Added `MS_PER_DAY` constant for millisecond conversion instead of
+        magic numbers, removing fragile string matching against plan keys.
+      - Kept `process.env` for flag manipulation since `SeedGuardEnv` has a
+        readonly index signature; the `env` parameter is only used for the
+        guard check while the actual signal uses the global.
+      - Removed redundant nullish coalescing operators in
+        `tests/browser/fixtures/tiered-auth.ts` since `CredentialEntry`
+        guarantees email and password are strings.
+      - Replied to all three PR #30 review threads.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
     version: "1.2.4"
     commit: TBD
     status: pending

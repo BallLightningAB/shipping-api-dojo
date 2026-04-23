@@ -79,3 +79,9 @@ The seed implementation should use Better Auth-supported account creation where 
 ## PR #30 Gemini Review Follow-ups (1.2.4)
 
 - Added duration calculation based on plan type in `upsertSubscriptionForFixture` so annual plans use 365 days and monthly plans use 30 days, ensuring the seeded data matches the expected billing shape for both `active_pro_monthly` and `active_pro_annual` fixtures.
+
+## PR #30 Gemini Review Follow-ups (1.2.5)
+
+- Moved duration into `SubscriptionSeedShape` as explicit `periodDays` field with `MS_PER_DAY` constant, removing fragile string matching against plan keys.
+- Kept `process.env` for flag manipulation since `SeedGuardEnv` has a readonly index signature; the `env` parameter is only used for the guard check while the actual signal uses the global.
+- Removed redundant nullish coalescing operators in `tests/browser/fixtures/tiered-auth.ts` since `CredentialEntry` guarantees email and password are strings.

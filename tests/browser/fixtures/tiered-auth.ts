@@ -17,10 +17,7 @@ import { dirname, resolve } from "node:path";
 import type { APIRequestContext, BrowserContext } from "@playwright/test";
 import { request as playwrightRequest } from "@playwright/test";
 
-import {
-	DEV_TIER_USERS,
-	type DevTierKey,
-} from "../../../src/lib/dev/seed-fixtures";
+import { type DevTierKey } from "../../../src/lib/dev/seed-fixtures";
 
 const CREDENTIALS_PATH = resolve(
 	process.cwd(),
@@ -100,11 +97,10 @@ export async function ensureStorageStateForTier(
 		return null;
 	}
 
-	const fixture = DEV_TIER_USERS[options.tier];
 	const resolved: CredentialEntry = {
 		key: options.tier,
-		email: credentials.email ?? fixture.email,
-		password: credentials.password ?? fixture.password,
+		email: credentials.email,
+		password: credentials.password,
 	};
 
 	const statePath = storageStatePathForTier(options.tier);
