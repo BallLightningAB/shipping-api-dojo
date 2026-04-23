@@ -1,5 +1,5 @@
 meta:
-  release: "1.2.3"
+  release: "1.2.4"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -181,6 +181,8 @@ roadmap:
           note: "Addressed the fifth Gemini review comment on PR #30 for issue #27: wrapped auth.api.signUpEmail in a try/catch that rethrows with fixture context and forwards the underlying APIError via the standard Error(..., { cause }) option, preserving the original message and stack for password-complexity, unique-constraint, and transient DB failures; the empty-userId fallback now also stringifies the response payload for diagnosability. Replied to and resolved the PR #30 review thread."
         - covers: [I5D12]
           note: "Addressed the sixth Gemini review comment on PR #30 for issue #27: added userId and provider: 'dev-seed' to the subscriptions onConflictDoUpdate set clause in upsertSubscriptionForFixture, ensuring the subscription row is correctly reassigned if a row with the same deterministic dev-seed-{fixture.key} ID was previously associated with a different user. Replied to the PR #30 review thread."
+        - covers: [I5D12]
+          note: "Addressed the seventh Gemini review comment on PR #30 for issue #27: added duration calculation based on plan type in upsertSubscriptionFixture so annual plans use 365 days and monthly plans use 30 days, ensuring the seeded data matches the expected billing shape for both active_pro_monthly and active_pro_annual fixtures. Replied to the PR #30 review thread."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

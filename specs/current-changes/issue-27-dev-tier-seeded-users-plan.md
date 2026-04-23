@@ -75,3 +75,7 @@ The seed implementation should use Better Auth-supported account creation where 
 ## PR #30 Gemini Review Follow-ups (1.2.3)
 
 - Added `userId` and `provider: "dev-seed"` to the `subscriptions.onConflictDoUpdate` set clause in `upsertSubscriptionForFixture`, ensuring the subscription row is correctly reassigned if a row with the same deterministic `dev-seed-{fixture.key}` ID was previously associated with a different user.
+
+## PR #30 Gemini Review Follow-ups (1.2.4)
+
+- Added duration calculation based on plan type in `upsertSubscriptionForFixture` so annual plans use 365 days and monthly plans use 30 days, ensuring the seeded data matches the expected billing shape for both `active_pro_monthly` and `active_pro_annual` fixtures.

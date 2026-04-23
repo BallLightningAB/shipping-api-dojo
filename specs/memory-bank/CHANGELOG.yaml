@@ -1,5 +1,25 @@
 entries:
   - date: "2026-04-23"
+    version: "1.2.4"
+    commit: TBD
+    status: pending
+    title: "fix(dev-seed): PR #30 Gemini follow-up — calculate subscription duration by plan type"
+    details: |-
+      Addressed the seventh Gemini review comment on PR #30 for issue #27
+      (I5D12).
+
+      - Added duration calculation based on plan type in
+        `upsertSubscriptionForFixture` in `src/lib/dev/seed-dev-users.ts`.
+      - Annual plans (`planKey.includes("annual")`) now use 365 days, while
+        monthly plans use 30 days.
+      - This ensures the seeded data matches the expected billing shape for
+        both `active_pro_monthly` and `active_pro_annual` fixtures.
+      - Replied to the seventh PR #30 review thread.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
     version: "1.2.3"
     commit: TBD
     status: pending
