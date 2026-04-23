@@ -1,5 +1,27 @@
 entries:
   - date: "2026-04-23"
+    version: "1.2.3"
+    commit: TBD
+    status: pending
+    title: "fix(dev-seed): PR #30 Gemini follow-up — add userId and provider to upsert set clause"
+    details: |-
+      Addressed the sixth Gemini review comment on PR #30 for issue #27
+      (I5D12).
+
+      - Added `userId` and `provider: "dev-seed"` to the
+        `onConflictDoUpdate` `set` clause in `upsertSubscriptionForFixture`
+        in `src/lib/dev/seed-dev-users.ts`.
+      - The upsert now fully reassigns the subscription row to the correct
+        user if a row with the same deterministic `dev-seed-{fixture.key}`
+        ID was previously associated with a different user, ensuring the
+        billing shape stays consistent with the fixture even across user
+        changes or manual database interventions.
+      - Replied to the sixth PR #30 review thread.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+  - date: "2026-04-23"
     version: "1.2.2"
     commit: TBD
     status: pending

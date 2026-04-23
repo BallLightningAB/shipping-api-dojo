@@ -128,6 +128,8 @@ async function upsertSubscriptionForFixture(
 		.onConflictDoUpdate({
 			target: subscriptions.id,
 			set: {
+				userId,
+				provider: "dev-seed",
 				status: shape.status,
 				planKey: shape.planKey,
 				productId: shape.productId,
