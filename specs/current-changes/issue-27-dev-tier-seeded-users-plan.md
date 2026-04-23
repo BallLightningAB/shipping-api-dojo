@@ -3,7 +3,7 @@
 Issue: [#27](https://github.com/BallLightningAB/shipping-api-dojo/issues/27)
 Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Milestone: v2
-Status: planned
+Status: implemented (pending validation)
 
 ## Goal
 
@@ -47,3 +47,14 @@ Provide a safe development-only way to test Free, Pro, Enterprise, canceled, and
 ## Notes
 
 The seed implementation should use Better Auth-supported account creation where practical and direct Drizzle writes only for billing/subscription fixtures. Manual entitlement rows must not accidentally mask canceled or inactive subscription fallback behavior.
+
+## Implementation Summary
+
+- `src/lib/dev/seed-guard.ts` centralizes the environment gate: requires NODE_ENV in {development, test}, blocks VERCEL_ENV in {production, preview}, requires `ENABLE_DEV_SEED=true`, and requires `DATABASE_URL`.
+- `src/lib/dev/seed-fixtures.ts` defines the five canonical fixtures (`free`, `pro`, `enterprise`, `canceled`, `inactive`) plus the billing-shape resolver that maps a fixture state to a `subscriptions` row.
+- `src/lib/dev/seed-dev-users.ts` performs idempotent sign-up via `auth.api.signUpEmail` and an `onConflictDoUpdate` upsert into the `subscriptions` table. Free fixtures explicitly delete stray subscription rows so the Free fallback is real, not manual.
+- `scripts/seed-dev-users.ts` is the CLI entry point invoked with `pnpm seed:dev-users`. It writes credentials to `.playwright-auth/credentials.json` (gitignored).
+- `tests/browser/fixtures/tiered-auth.ts` signs in via Better Auth's email/password endpoint and persists Playwright storage state files per tier.
+- `tests/browser/tiered-auth.spec.ts` exercises the gated lesson-reroll surface and the `/settings` entitlement debug panel for each tier; it auto-skips when credentials are not seeded so CI without a database stays green.
+- `src/lib/dev/seed-dev-users.test.ts` covers the guard reasons and asserts the resolver returns the expected tier for every fixture state.
+- README documents the opt-in steps (`ENABLE_DEV_SEED=true`, `pnpm seed:dev-users`, `pnpm test:e2e`) and the fallback guarantees for canceled/past-due states.

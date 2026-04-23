@@ -22,6 +22,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "generate:og": "node scripts/generate-og-images.mjs",
+    "seed:dev-users": "tsx scripts/seed-dev-users.ts",
     "format": "biome format --write",
     "lint": "biome lint",
     "check": "biome check"
@@ -89,6 +90,7 @@
     "baseline-browser-mapping": "^2.10.0",
     "drizzle-kit": "^0.31.10",
     "jsdom": "^27.0.0",
+    "tsx": "^4.20.2",
     "typescript": "^5.9.3",
     "ultracite": "7.3.2",
     "vite": "^7.3.2",

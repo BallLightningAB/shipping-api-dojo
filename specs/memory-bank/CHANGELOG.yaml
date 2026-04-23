@@ -1,4 +1,39 @@
 entries:
+  - date: "2026-04-23"
+    version: "1.2.0"
+    commit: TBD
+    status: pending
+    title: "feat(dev-seed): dev-only tiered auth users, billing-shape seed state, and Playwright auth helpers"
+    details: |-
+      Implemented issue #27 (I5D12) on `codex/issue-27-dev-tier-seeded-users` to
+      unblock rigorous testing of the paid-tier flows planned for I5D9.
+
+      - Added `src/lib/dev/seed-guard.ts` centralizing the environment gate:
+        allows NODE_ENV in {development, test}, blocks VERCEL_ENV in
+        {production, preview}, requires `ENABLE_DEV_SEED=true`, and requires
+        `DATABASE_URL` so the real resolver path is exercised
+      - Added `src/lib/dev/seed-fixtures.ts` with the five canonical dev users
+        (free, pro, enterprise, canceled, inactive) and a pure resolver that
+        maps each state to a billing-shape subscription row
+      - Added `src/lib/dev/seed-dev-users.ts` which performs idempotent
+        `auth.api.signUpEmail` sign-ups and `onConflictDoUpdate` upserts into
+        `subscriptions`. Free fixtures delete stray subscription rows so the
+        Free fallback path is real, not manually granted
+      - Added `scripts/seed-dev-users.ts` CLI plus the `pnpm seed:dev-users`
+        script and a `tsx` devDep; credentials are written to
+        `.playwright-auth/credentials.json` (gitignored)
+      - Added `tests/browser/fixtures/tiered-auth.ts` helpers that sign in via
+        Better Auth's email/password endpoint and persist Playwright storage
+        state per tier, plus `tests/browser/tiered-auth.spec.ts` which
+        auto-skips when credentials are missing so CI without a seeded DB
+        stays green
+      - Added `src/lib/dev/seed-dev-users.test.ts` covering all six guard
+        branches plus resolver expectations for every fixture state
+      - Documented the opt-in flow in README and `.env.example`, and updated
+        the issue plan and memory bank to mark I5D12 complete
+    refs:
+      - "I5D12"
+      - "#27"
   - date: "2026-04-22"
     version: "1.1.35"
     commit: e5ddc43
