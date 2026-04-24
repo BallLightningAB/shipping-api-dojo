@@ -1,4 +1,64 @@
 entries:
+  - date: "2026-04-24"
+    version: "1.2.6"
+    commit: TBD
+    status: pending
+    title: "docs(issue-21): close out paid-tier content gating bookkeeping"
+    details: |-
+      Closed issue #21 bookkeeping after confirming the paid-tier gating slice
+      was already shipped to `main` by PR #25 between v1.1.18 and v1.1.20
+      (commits 230a792, 40d0f63, and merge 3c4b101).
+
+      Audited surfaces verified on main:
+      - Capability matrix in `src/lib/entitlements/access-policy.ts`
+        (`TIER_CAPABILITY_MATRIX`, `canUseLessonChallengeReroll`,
+        `canUseScenarioReroll`, `canAccessScenarioRun`,
+        `requiresPremiumScenarioDepth`, `fallbackFreeEntitlements`).
+      - Server-side enforcement in `src/lib/practice/practice-runs.sync.ts`:
+        `createLessonPracticeRun`, `createArenaCardsRun`, and
+        `createArenaScenarioRun` throw
+        `FORBIDDEN_CAPABILITY:randomization.premium.full` for sessions
+        without the entitlement, and `getArenaPracticeRouteData` marks cards
+        as `isLocked` via `canAccessScenarioRun(capabilities, ladderLevel)`.
+      - Lesson upgrade UX in `src/routes/lesson/$slug.tsx` swaps the
+        `New Challenge` button for a `Unlock New Challenge (Pro)` link to
+        `/settings#paid-access` when `canUseChallengeReroll` is false.
+      - Arena locked-content UX in `src/routes/arena/index.tsx` renders a
+        `Lock` badge, `Advanced Scenario Depth (Pro)` copy, and
+        `Unlock advanced scenario depth` CTAs for premium-depth cards.
+      - Settings surface in `src/routes/settings.tsx` renders the full
+        `TIER_CAPABILITY_MATRIX`, live tier/source/capabilities, and falls
+        back to Free through `fallbackFreeEntitlements()` when the resolver
+        throws.
+      - Safe fallback in `resolvePracticeCapabilities` wraps
+        `resolveEntitlementsForUserId` in try/catch and returns
+        `fallbackFreeEntitlements().capabilities`, with exceptions routed
+        through the shared observability logger.
+      - Regression coverage in
+        `src/lib/entitlements/access-policy.test.ts`,
+        `src/lib/entitlements/entitlements.test.ts`, and
+        `tests/browser/smoke.spec.ts`.
+
+      Bookkeeping changes in this entry:
+      - Moved `specs/current-changes/issue-21-paid-tier-content-gating-plan.md`
+        to `specs/archived/completed/` with an appended closeout audit.
+      - Removed the stale duplicate
+        `specs/current-changes/issue-27-dev-tier-seeded-users-plan.md` that
+        PR #30's archive commit (`6e2ae58`) left behind in both locations.
+      - Dropped `I5D9` from issue #5 `remaining_deliverables` in
+        `specs/memory-bank/active-context.yaml`; only `I5D10` and `I5D11`
+        remain as umbrella deliverables.
+      - Closed GitHub issue #21 with `state_reason=completed` and posted a
+        closeout comment cross-linking PR #25 and the three implementing
+        commits, since PR #25 used `Refs #21` rather than `Closes #21` and
+        GitHub therefore never auto-closed the issue on merge.
+
+      No runtime code changes.
+    refs:
+      - "I5D9"
+      - "#5"
+      - "#21"
+      - "#25"
   - date: "2026-04-23"
     version: "1.2.5"
     commit: TBD

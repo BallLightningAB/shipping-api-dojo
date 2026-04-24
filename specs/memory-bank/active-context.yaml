@@ -1,5 +1,5 @@
 meta:
-  release: "1.2.5"
+  release: "1.2.6"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -124,7 +124,6 @@ roadmap:
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/28"
       remaining_deliverables:
-        - "[I5D9] Implement entitlement-aware paid tiers, content gating, premium access surfaces, and launch-ready upgrade behavior"
         - "[I5D10] Expand the wiki and directory beyond curriculum support into the v2 carrier reference surface"
         - "[I5D11] Add privacy-safe Sentry Free-tier observability for hosted v2 error paths"
       progress_log:
@@ -185,6 +184,8 @@ roadmap:
           note: "Addressed the seventh Gemini review comment on PR #30 for issue #27: added duration calculation based on plan type in upsertSubscriptionFixture so annual plans use 365 days and monthly plans use 30 days, ensuring the seeded data matches the expected billing shape for both active_pro_monthly and active_pro_annual fixtures. Replied to the PR #30 review thread."
         - covers: [I5D12]
           note: "Addressed the eighth, ninth, and tenth Gemini review comments on PR #30 for issue #27: moved duration into SubscriptionSeedShape as explicit periodDays field with MS_PER_DAY constant; kept process.env for flag manipulation due to readonly index signature on SeedGuardEnv; and removed redundant nullish coalescing operators in tiered-auth.ts. Replied to all three PR #30 review threads."
+        - covers: [I5D9]
+          note: "Closed issue #21 bookkeeping on codex/issue-21-closeout: audited main and confirmed PR #25 (commits 230a792, 40d0f63, 3c4b101) shipped the end-to-end paid-tier gating slice between v1.1.18 and v1.1.20 including the Free/Pro/Enterprise capability matrix, server-side entitlement enforcement for lesson/arena rerolls and arena-scenario depth, locked-content UX in arena, upgrade CTAs on lesson pages and settings, safe Free fallback via resolvePracticeCapabilities, and regression tests plus browser smoke assertions; archived specs/current-changes/issue-21-paid-tier-content-gating-plan.md to specs/archived/completed/, removed the stale duplicate specs/current-changes/issue-27-dev-tier-seeded-users-plan.md copy that PR #30's archive commit left behind, dropped I5D9 from issue #5 remaining_deliverables, and closed GitHub issue #21 with state_reason=completed so the tracker finally reflects that the PR used Refs #21 instead of Closes #21."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"
