@@ -176,6 +176,51 @@ src/
 └── styles.css        # Global styles
 ```
 
+## Observability
+
+Server and client error reporting flows through
+`@/src/lib/observability/logger.ts` as `captureException(error, context)`. The
+wrapper always writes a structured `[observability] exception` line to
+`console.error` and additionally forwards to Sentry when the Free-tier SDK is
+configured with a DSN.
+
+Sentry is off by default: the SDK is installed, but no events are sent until
+the env vars below are configured. That keeps local development, CI, and
+preview deploys Sentry-free unless a maintainer explicitly opts in.
+
+- **Server DSN**: `SENTRY_DSN` — initializes Sentry on Vercel Functions and
+  local Node processes the first time `@/src/lib/observability/logger.ts` is
+  imported. Self-hosted deployments can alternatively use
+  `--import ./instrument.server.mjs` for earlier coverage.
+- **Client DSN**: `VITE_SENTRY_DSN` — initializes Sentry in the browser via
+  the side-effect import in `@/src/router.tsx` → `@/src/instrument.client.ts`.
+- **Environment / release / tracing**: `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`,
+  `SENTRY_TRACES_SAMPLE_RATE` (mirrored on the client as `VITE_SENTRY_*`).
+  Tracing defaults to `0` because issue `#26` scopes performance tracing to a
+  conservative disabled baseline.
+- **Source maps**: `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`. The
+  Vite plugin in `@/vite.config.ts` stays disabled unless all three are
+  present, so the default `pnpm build` path never tries to upload source maps
+  or contact Sentry.
+
+Privacy posture (issue `#26`): the wrapper only accepts non-PII tag-shaped
+context (`route`, `operation`, `tier`, `fallbackTier`, `environment`). The
+`beforeSend` hook in `@/src/lib/observability/sentry-init.ts` strips the
+user block, request headers, query strings, and any `extra` fields as a
+last-line defense. Session Replay and PII forwarding are explicitly
+disabled (`sendDefaultPii: false`).
+
+To verify a test event after configuring a DSN:
+
+```bash
+# In a Node REPL or a throwaway script under scripts/
+node --import ./instrument.server.mjs -e "throw new Error('sentry-verify')"
+```
+
+Then confirm the event arrives in the Sentry project dashboard. The first
+real error in `/api/webhooks/creem`, `/api/webhooks/resend`, or any route
+that calls `captureException` should also appear automatically.
+
 ## Security Baseline
 
 - Local secret scanning via `.pre-commit-config.yaml`

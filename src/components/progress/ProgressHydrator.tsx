@@ -4,6 +4,7 @@
  */
 
 import { authClient } from "@/lib/auth/client";
+import { captureException } from "@/lib/observability/logger";
 import { shouldReplaceLocalProgress } from "@/lib/progress/progress.hydration";
 import {
 	getProgressSnapshot,
@@ -70,12 +71,18 @@ export function ProgressHydrator() {
 					"Progress sync requires explicit merge decision. UI prompt wiring is pending."
 				);
 			} catch (error) {
-				console.error("Failed to sync signed-in progress", error);
+				captureException(error, {
+					operation: "sync_signed_in_progress",
+					route: "client",
+				});
 			}
 		};
 
 		syncProgress().catch((error) => {
-			console.error("Failed to run signed-in progress sync", error);
+			captureException(error, {
+				operation: "run_signed_in_progress_sync",
+				route: "client",
+			});
 		});
 
 		return () => {
@@ -100,7 +107,10 @@ export function ProgressHydrator() {
 				writeServerProgress({
 					data: getProgressSnapshot(),
 				}).catch((error) => {
-					console.error("Failed to write signed-in progress", error);
+					captureException(error, {
+						operation: "write_signed_in_progress",
+						route: "client",
+					});
 				});
 			}, 350);
 		});

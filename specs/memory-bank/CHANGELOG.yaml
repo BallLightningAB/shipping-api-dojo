@@ -1,5 +1,91 @@
 entries:
   - date: "2026-04-24"
+    version: "1.3.0"
+    commit: TBD
+    status: pending
+    title: "feat(observability): ship Sentry Free-tier observability slice for hosted v2 errors"
+    details: |-
+      Implement the privacy-safe Sentry Free-tier integration planned in
+      issue #26. Sentry stays disabled by default and only activates when
+      the DSN env vars are set, so local development, CI, and preview
+      deploys ship zero Sentry traffic until the maintainer opts in.
+
+      Core wiring:
+
+      - Installed `@sentry/tanstackstart-react@10.50.0` and ran
+        `pnpm dedupe` to resolve a transient drizzle-orm peer duplication
+        caused by Sentry's OpenTelemetry peer chain.
+      - Added `src/lib/observability/sentry.env.ts` (Zod-parsed optional
+        schema returning `null` when the DSN is missing),
+        `src/lib/observability/sentry-scrubber.ts` (allow-list PII scrubber
+        keeping only `route`, `operation`, `tier`, `fallbackTier`,
+        `environment` tags and stripping `user`/`extra`/headers/query
+        strings), and `src/lib/observability/sentry-init.ts`
+        (`sentryBeforeSend` + idempotent `initServerSentryOnce` guarded by
+        `Sentry.getClient()`).
+      - Extended `src/lib/observability/logger.ts` so `captureException`
+        forwards to `Sentry.captureException` via `Sentry.withScope` +
+        `setTag` when a client is initialized, and keeps the existing
+        `console.error` fallback for local dev. Tags derived from context
+        use a `null → "null"` normalization so Sentry tag constraints are
+        respected.
+      - Added `src/instrument.client.ts` with double gating
+        (`VITE_SENTRY_DSN` present AND `typeof window !== "undefined"`)
+        side-effect imported from `src/router.tsx`, and
+        `instrument.server.mjs` in the project root for self-hosted
+        `--import ./instrument.server.mjs` bootstraps with inline
+        beforeSend scrubbing matching the TS scrubber.
+
+      Surface coverage:
+
+      - Wired `src/components/progress/ProgressHydrator.tsx` and the Creem
+        + Resend webhook handlers (`src/routes/api/webhooks/creem.ts`,
+        `src/routes/api/webhooks/resend.ts`) through `captureException`.
+        Webhooks now catch unexpected errors, return `500`, and forward
+        the exception so provider retry behavior stays intact without
+        hiding real failures.
+      - Route loader entitlement fallbacks already flowed through
+        `captureException` after issue `#21` (`resolvePracticeCapabilities`
+        in `src/lib/practice/practice-runs.sync.ts`); no additional
+        plumbing required there.
+
+      Build and deploy:
+
+      - Gated the Sentry Vite plugin (`sentryTanstackStart`) in
+        `vite.config.ts` on `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and
+        `SENTRY_PROJECT` so source-map upload only runs when all three
+        trusted credentials are present.
+      - Verified `pnpm build` produces the Vercel function bundle with
+        the Sentry core chunk (`_libs/sentry__core.mjs`, 366.66 kB) and
+        no auth-token upload step when credentials are unset.
+
+      Tests and docs:
+
+      - Added `src/lib/observability/sentry-scrubber.test.ts` (4 tests)
+        covering PII stripping, URL query/hash stripping on absolute and
+        relative URLs, non-mutation of caller input, and the
+        allow-list-based tag drop when nothing remains.
+      - Added `src/lib/observability/sentry.env.test.ts` (5 tests)
+        covering malformed DSN rejection, full env parsing, null return
+        when the requested side's DSN is missing, and traces-rate
+        resolution defaults.
+      - Extended `src/lib/observability/logger.test.ts` to 5 tests
+        (original 2 + Sentry no-client short-circuit + Sentry forwarding
+        with safe tag context + null-tag normalization). Used
+        `vi.hoisted` + `vi.mock` because `@sentry/tanstackstart-react`
+        cannot be spied via `vi.spyOn` under ESM.
+      - New suite: 105 tests across 24 files, all passing.
+      - Documented `SENTRY_DSN`, `VITE_SENTRY_DSN`, `SENTRY_ENVIRONMENT`,
+        `SENTRY_RELEASE`, `SENTRY_TRACES_SAMPLE_RATE`,
+        `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` in
+        `.env.example` and added a new `Observability` section to
+        `README.md` with privacy posture, DSN activation steps, and a
+        verify-a-test-event snippet.
+    refs:
+      - "I5D11"
+      - "#5"
+      - "#26"
+  - date: "2026-04-24"
     version: "1.2.6"
     commit: TBD
     status: pending
