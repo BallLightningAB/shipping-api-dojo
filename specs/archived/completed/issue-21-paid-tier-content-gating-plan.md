@@ -61,3 +61,24 @@ Turn the v2 paid-access direction from foundations and outline docs into user-vi
 
 - [#26](https://github.com/BallLightningAB/shipping-api-dojo/issues/26): Add Sentry Free-tier observability for hosted v2 errors.
 - [#27](https://github.com/BallLightningAB/shipping-api-dojo/issues/27): Add dev-only tiered seed users and Playwright auth states.
+
+## Closeout Audit (2026-04-24)
+
+Issue #21 was implemented by PR [#25](https://github.com/BallLightningAB/shipping-api-dojo/pull/25) and merged to `main` on 2026-04-21. GitHub did not auto-close the issue because the PR body used `Refs #21` rather than `Closes #21`. This closeout reconciles the mismatch between the shipped state and the open tracker.
+
+Shipped surfaces verified on `main`:
+
+- Capability matrix: `@/src/lib/entitlements/access-policy.ts` exposes `TIER_CAPABILITY_MATRIX`, `canUseLessonChallengeReroll`, `canUseScenarioReroll`, `canAccessScenarioRun`, `requiresPremiumScenarioDepth`, and `fallbackFreeEntitlements`.
+- Server-side enforcement: `@/src/lib/practice/practice-runs.sync.ts` rejects lesson rerolls, arena-cards rerolls, and arena-scenario rerolls with `FORBIDDEN_CAPABILITY:randomization.premium.full` for uncapable sessions and resolves entitlements per request.
+- Arena locked-content UX: `@/src/routes/arena/index.tsx` renders `Lock` badges, `Advanced Scenario Depth (Pro)` copy, and `Unlock advanced scenario depth` CTAs for premium-depth cards.
+- Lesson upgrade UX: `@/src/routes/lesson/$slug.tsx` swaps the `New Challenge` button for a `Unlock New Challenge (Pro)` link to `/settings#paid-access` on Free.
+- Settings entitlement surface: `@/src/routes/settings.tsx` renders the full tier matrix plus live tier/source/capability state and falls back to Free on resolver errors.
+- Safe fallback: `resolvePracticeCapabilities` wraps `resolveEntitlementsForUserId` in try/catch and returns `fallbackFreeEntitlements().capabilities` on failure, with exceptions routed through the shared observability logger.
+- Regression coverage: `@/src/lib/entitlements/access-policy.test.ts`, `@/src/lib/entitlements/entitlements.test.ts`, and `@/tests/browser/smoke.spec.ts` cover tier derivation, inactive/canceled downgrades, and locked/unlocked surfaces.
+- Documentation: `README.md` documents the Free/Pro/Enterprise split; `specs/memory-bank/CHANGELOG.yaml` records v1.1.18–v1.1.20 under `Refs #21`.
+
+Closeout actions:
+
+- Plan archived from `specs/current-changes/` to `specs/archived/completed/`.
+- `specs/memory-bank/active-context.yaml` `remaining_deliverables` for `#5` now drops `I5D9` (delivered via #21) and keeps `I5D10`/`I5D11` as the remaining umbrella deliverables.
+- GitHub issue #21 is closed with `state_reason=completed` and a closeout comment cross-linking PR #25 and commits `230a792`, `40d0f63`, `3c4b101`.
