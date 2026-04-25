@@ -1,7 +1,7 @@
 entries:
   - date: "2026-04-25"
     version: "1.3.1"
-    commit: cb54456
+    commit: 888543f
     status: pending
     title: "fix(observability,billing): address PR #32 Gemini review comments"
     details: |-
