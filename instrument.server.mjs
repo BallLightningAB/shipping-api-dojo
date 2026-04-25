@@ -73,7 +73,6 @@ if (dsn) {
 		dsn,
 		enableLogs: false,
 		environment: process.env.SENTRY_ENVIRONMENT ?? "development",
-		integrations: [],
 		release: process.env.SENTRY_RELEASE,
 		sendDefaultPii: false,
 		tracesSampleRate: Number.isNaN(parsedTracesSampleRate)

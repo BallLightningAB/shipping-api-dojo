@@ -1,7 +1,7 @@
-import * as Sentry from "@sentry/tanstackstart-react";
 import type { ErrorEvent, EventHint } from "@sentry/tanstackstart-react";
+import * as Sentry from "@sentry/tanstackstart-react";
 
-import { scrubSentryEvent, type ScrubbableEvent } from "./sentry-scrubber";
+import { type ScrubbableEvent, scrubSentryEvent } from "./sentry-scrubber";
 
 /**
  * Adapt the plain-JSON `scrubSentryEvent` helper to Sentry's `beforeSend`
@@ -59,7 +59,6 @@ export function initServerSentryOnce(env: NodeJS.ProcessEnv = process.env) {
 		dsn,
 		enableLogs: false,
 		environment: env.SENTRY_ENVIRONMENT ?? "development",
-		integrations: [],
 		release: env.SENTRY_RELEASE,
 		sendDefaultPii: false,
 		tracesSampleRate: parseTracesSampleRate(env.SENTRY_TRACES_SAMPLE_RATE),

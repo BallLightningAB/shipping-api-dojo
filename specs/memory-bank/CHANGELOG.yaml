@@ -1,7 +1,53 @@
 entries:
+  - date: "2026-04-25"
+    version: "1.3.1"
+    commit: cb54456
+    status: pending
+    title: "fix(observability,billing): address PR #32 Gemini review comments"
+    details: |-
+      Address all four Gemini code-review comments on PR #32 so the Sentry
+      Free-tier observability slice lands with a deterministic billing
+      upsert and full default Sentry integrations.
+
+      Billing correctness:
+
+      - `src/routes/api/webhooks/creem.ts`: extend the
+        `subscriptions` `onConflictDoUpdate` `set` clause to also write
+        `productId` (via `resolveProductIdForPlanKey`) and `provider:
+        "creem"`. Previously a plan change (e.g., monthly -> annual) would
+        update `planKey` but leave `productId` stale on the existing row.
+        The upsert now produces a fully deterministic post-state for all
+        mutable fields and constant identifiers.
+
+      Sentry default integrations:
+
+      - `instrument.server.mjs`, `src/instrument.client.ts`, and
+        `src/lib/observability/sentry-init.ts`: drop the `integrations: []`
+        override from all three `Sentry.init` call sites. Setting an empty
+        array disabled the SDK's default integrations (auto error capture,
+        unhandled promise rejection, OpenTelemetry on server, breadcrumbs
+        on client), which defeated the point of installing Sentry. The
+        `beforeSend` scrubber is the real compliance boundary and remains
+        in place, so enabling the defaults gives us comprehensive auto
+        capture while keeping the issue #26 privacy posture intact.
+
+      Rationale:
+
+      - Gemini flagged the missing `productId`/`provider` as HIGH priority
+        because a stale `productId` would break downstream billing
+        reconciliation on plan changes.
+      - The `integrations: []` pattern was a defensive carry-over from
+        early experimentation; with the scrubber proven out via tests and
+        `sendDefaultPii: false` still set, there is no remaining reason to
+        disable defaults.
+
+      No test or schema changes required: the upsert shape is still a
+      superset of the insert shape, and the Sentry tests mock the SDK at
+      the module level so integration defaults do not affect them.
+
   - date: "2026-04-24"
     version: "1.3.0"
-    commit: TBD
+    commit: bf89a98
     status: pending
     title: "feat(observability): ship Sentry Free-tier observability slice for hosted v2 errors"
     details: |-
@@ -190,425 +236,3 @@ entries:
       - "I5D12"
       - "#27"
       - "#30"
-  - date: "2026-04-23"
-    version: "1.2.3"
-    commit: TBD
-    status: pending
-    title: "fix(dev-seed): PR #30 Gemini follow-up — add userId and provider to upsert set clause"
-    details: |-
-      Addressed the sixth Gemini review comment on PR #30 for issue #27
-      (I5D12).
-
-      - Added `userId` and `provider: "dev-seed"` to the
-        `onConflictDoUpdate` `set` clause in `upsertSubscriptionForFixture`
-        in `src/lib/dev/seed-dev-users.ts`.
-      - The upsert now fully reassigns the subscription row to the correct
-        user if a row with the same deterministic `dev-seed-{fixture.key}`
-        ID was previously associated with a different user, ensuring the
-        billing shape stays consistent with the fixture even across user
-        changes or manual database interventions.
-      - Replied to the sixth PR #30 review thread.
-    refs:
-      - "I5D12"
-      - "#27"
-      - "#30"
-  - date: "2026-04-23"
-    version: "1.2.2"
-    commit: TBD
-    status: pending
-    title: "fix(dev-seed): PR #30 Gemini follow-up — forward signUpEmail APIError via Error cause"
-    details: |-
-      Addressed the fifth Gemini review comment on PR #30 for issue #27
-      (I5D12).
-
-      - Wrapped `auth.api.signUpEmail` in a `try`/`catch` in
-        `src/lib/dev/seed-dev-users.ts` so Better Auth's `APIError` (password
-        complexity, unique-constraint, transient DB) is rethrown with fixture
-        context while preserving the original message and stack via the
-        standard `Error(..., { cause })` option.
-      - The empty-`userId` fallback now also stringifies the full response
-        payload in the error message, so failed seed runs surface the exact
-        Better Auth response shape without extra logging.
-      - Replied to and resolved the fifth PR #30 review thread.
-    refs:
-      - "I5D12"
-      - "#27"
-      - "#30"
-  - date: "2026-04-23"
-    version: "1.2.1"
-    commit: e5876f9
-    status: completed
-    title: "fix(dev-seed): PR #30 Gemini review — env-overridable password, lifecycle-email suppression, full priceId reset, and parallel seeding"
-    details: |-
-      Addressed the four Gemini review comments on PR #30 for issue #27
-      (I5D12) on `codex/issue-27-dev-tier-seeded-users`.
-
-      - Allow `DEV_TIER_PASSWORD` to be overridden via env in
-        `src/lib/dev/seed-fixtures.ts` so shared dev databases do not rely on
-        the source-controlled default. The seed guard still blocks production
-        and preview regardless of the flag
-      - Suppress outbound lifecycle emails during dev-tier seeding. Added
-        `isDevSeedInProgress` in `src/lib/email/lifecycle.ts` that short-circuits
-        `sendLifecycleEmail` with a `console.warn` when `DEV_SEED_IN_PROGRESS=true`,
-        and wrapped `seedDevUsers` so it sets the flag around its run and
-        restores the previous value via `Reflect.deleteProperty`. The Better
-        Auth `databaseHooks.user.create.after` welcome-email hook still
-        executes end-to-end; only the Resend network call is skipped, so dummy
-        addresses cannot bounce or consume quota
-      - Include `priceId: null` in the `subscriptions` `onConflictDoUpdate`
-        `set` block so reruns fully reset the billing shape even if a
-        previously-seeded row held a stale `priceId`
-      - Parallelize the fixture loop via `Promise.all(DEV_TIER_KEYS.map(seedEntryForKey))`
-        after extracting a `seedEntryForKey` helper. Each fixture targets a
-        unique `email` and a unique `subscriptionId`, so the atomic upserts
-        cannot contend, and the seed command remains a single-runner CLI
-      - Added 2 regression tests in `src/lib/dev/seed-dev-users.test.ts`
-        covering the strict `"true"` exact-match contract of
-        `isDevSeedInProgress`
-      - Replied to and resolved all four Gemini review threads on PR #30
-    refs:
-      - "I5D12"
-      - "#27"
-      - "#30"
-  - date: "2026-04-23"
-    version: "1.2.0"
-    commit: 250f775
-    status: completed
-    title: "feat(dev-seed): dev-only tiered auth users, billing-shape seed state, and Playwright auth helpers"
-    details: |-
-      Implemented issue #27 (I5D12) on `codex/issue-27-dev-tier-seeded-users` to
-      unblock rigorous testing of the paid-tier flows planned for I5D9.
-
-      - Added `src/lib/dev/seed-guard.ts` centralizing the environment gate:
-        allows NODE_ENV in {development, test}, blocks VERCEL_ENV in
-        {production, preview}, requires `ENABLE_DEV_SEED=true`, and requires
-        `DATABASE_URL` so the real resolver path is exercised
-      - Added `src/lib/dev/seed-fixtures.ts` with the five canonical dev users
-        (free, pro, enterprise, canceled, inactive) and a pure resolver that
-        maps each state to a billing-shape subscription row
-      - Added `src/lib/dev/seed-dev-users.ts` which performs idempotent
-        `auth.api.signUpEmail` sign-ups and `onConflictDoUpdate` upserts into
-        `subscriptions`. Free fixtures delete stray subscription rows so the
-        Free fallback path is real, not manually granted
-      - Added `scripts/seed-dev-users.ts` CLI plus the `pnpm seed:dev-users`
-        script and a `tsx` devDep; credentials are written to
-        `.playwright-auth/credentials.json` (gitignored)
-      - Added `tests/browser/fixtures/tiered-auth.ts` helpers that sign in via
-        Better Auth's email/password endpoint and persist Playwright storage
-        state per tier, plus `tests/browser/tiered-auth.spec.ts` which
-        auto-skips when credentials are missing so CI without a seeded DB
-        stays green
-      - Added `src/lib/dev/seed-dev-users.test.ts` covering all six guard
-        branches plus resolver expectations for every fixture state
-      - Documented the opt-in flow in README and `.env.example`, and updated
-        the issue plan and memory bank to mark I5D12 complete
-    refs:
-      - "I5D12"
-      - "#27"
-  - date: "2026-04-22"
-    version: "1.1.35"
-    commit: e5ddc43
-    status: completed
-    title: "fix(seed-security): RFC 4122-compliant UUID fallback for practice seed IDs"
-    details: |-
-      Addressed the latest PR #29 review comment on the issue #28
-      seed-security branch.
-
-      - Reworked the `createPracticeSeedId` fallback to produce an RFC 4122-compliant
-        UUID v4 by masking `bytes[6]` and `bytes[8]` and formatting as
-        `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx` so persisted IDs stay interoperable
-        when `crypto.randomUUID` is unavailable
-      - Added a unit test that stubs `globalThis.crypto.randomUUID` to drive the
-        fallback path and asserts the output against the RFC 4122-v4 pattern
-      - Replied to and resolved the Gemini review thread on PR #29
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.34"
-    commit: d134a08
-    status: completed
-    title: "fix(seed-security): align practice-run return types with stripped runSeed"
-    details: |-
-      Addressed the two newest high-priority PR #29 review comments on the
-      issue #28 seed-security branch.
-
-      - Changed `buildScenarioPracticeRun` return type from `Scenario | null`
-        to `Omit<Scenario, "runSeed"> | null` so the declared type matches the
-        runtime stripping of `runSeed`
-      - Matched the arena `currentActiveScenario` state type to the same
-        `Omit<Scenario, "runSeed"> | null` so loader-derived active scenarios
-        flow through without type drift
-      - Replied to both Gemini review threads on PR #29
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.33"
-    commit: 1a75330
-    status: completed
-    title: "fix(drizzle): use type-safe sql template for no-op upsert"
-    details: |-
-      Addressed the tenth PR #29 review comment on the issue #28
-      seed-security branch.
-
-      - Changed `sql.raw('"seed"')` to `sql`${practiceSeeds.seed}`` in the
-        no-op upsert set clause to provide type-safe column reference while
-        preserving the first generated seed on conflicts
-      - Replied to and resolved the Gemini review thread on PR #29
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.32"
-    commit: ed77aea
-    status: completed
-    title: "fix(security): strip seeds from overlayArenaCardAccess in Free flows"
-    details: |-
-      Addressed the final PR #29 review comment on the issue #28
-      seed-security branch.
-
-      - Stripped `runSeed` and `seed` from scenario objects in `overlayArenaCardAccess`
-        using the same pattern as `buildArenaScenarioCards` to align with the
-        `ArenaScenarioCard` type and prevent seed leakage in Free practice flows
-      - Replied to and resolved the Gemini review thread on PR #29
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.31"
-    commit: 9f881dd
-    status: completed
-    title: "fix(types): align ArenaScenarioCard with runtime seed stripping"
-    details: |-
-      Addressed the final two PR #29 review comments on the issue #28
-      seed-security branch.
-
-      - Changed `ArenaScenarioCard extends Scenario` to
-        `ArenaScenarioCard extends Omit<Scenario, "runSeed" | "seed">` so the
-        type system matches the runtime behavior where `buildArenaScenarioCards`
-        strips seed-like fields before returning client-facing cards
-      - Verified `sql.identifier` is not compatible with drizzle-orm 0.45.1
-        `onConflictDoUpdate` set clauses; kept `sql.raw('"seed"')` as the
-        correct no-op upsert pattern for this Drizzle version
-      - Replied to and resolved both Gemini review threads on PR #29
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.30"
-    commit: e53119e
-    status: completed
-    title: "fix(security): harden seed cleanup edge cases"
-    details: |-
-      Addressed the eighth PR #29 review pass on the issue #28
-      seed-security branch.
-
-      - Removed the direct `window.location.origin` dependency from legacy
-        seed-param cleanup while keeping Router-driven replacement
-      - Made the insert-or-read no-op upsert use an explicit Postgres `"seed"`
-        column reference
-      - Cleared stale `?scenario=` search state when local Free arena shuffles
-        reset the active scenario
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.29"
-    commit: 1bba38f
-    status: in-progress
-    title: "chore(settings): share fallback compliance sections"
-    details: |-
-      Addressed the seventh PR #29 review pass on the issue #28
-      seed-security branch.
-
-      - Refactored the /settings SSR fallback and hydrated panel to share
-        storage, privacy/support, paid-access, and account-rights sections
-      - Preserved the server-visible fallback content that stabilizes smoke
-        coverage while reducing duplicated compliance and tier copy
-      - Rotated the memory-bank changelog after it exceeded the repo threshold
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.28"
-    commit: 3b689bc
-    status: in-progress
-    title: "fix(security): make practice seed issuance atomic"
-    details: |-
-      Addressed the sixth PR #29 review pass on the issue #28
-      seed-security branch.
-
-      - Replaced read-then-write get-or-create seed issuance with an atomic
-        insert-or-read upsert
-      - Preserved the first generated owned seed on conflicts and returned the
-        persisted seed to concurrent callers
-      - Kept explicit reroll rotation as the only path that changes an owned
-        practice seed
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.27"
-    commit: eef145f
-    status: in-progress
-    title: "chore(security): address seed-cleanup navigation feedback"
-    details: |-
-      Addressed the fifth PR #29 review pass on the issue #28
-      seed-security branch.
-
-      - Updated the legacy seed-param cleanup hook to observe Router
-        search-string changes
-      - Preserved Router-based `replace` cleanup while ensuring internal
-        navigations that introduce legacy seed params are stripped without a
-        full route remount
-      - Updated the issue #28 current-changes artifact and active context for
-        the latest review pass
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.26"
-    commit: 80c72c9
-    status: in-progress
-    title: "chore(security): address seed-utility review feedback"
-    details: |-
-      Addressed the fourth PR #29 review pass on the issue #28
-      seed-security branch.
-
-      - Defensively stripped seed-like fields from arena card payloads before
-        returning client-facing cards
-      - Moved practice seed and seed-row ID generation into shared pure helpers
-        so server seed ownership and local Free shuffles reuse the same logic
-      - Replaced direct legacy seed-param history mutation with Router
-        navigation replacement
-      - Updated the issue #28 current-changes artifact and active context for
-        the latest review pass
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.25"
-    commit: 58614c0
-    status: in-progress
-    title: "test(settings): stabilize checkpoint hydration fallback"
-    details: |-
-      Stabilized the PR #29 checkpoint path after the settings smoke test
-      intermittently observed the ClientOnly loading fallback under concurrent
-      browser-test load.
-
-      - Replaced the `/settings` one-line ClientOnly fallback with a
-        server-visible static summary for privacy, access, entitlement, support,
-        deletion, and retention surfaces
-      - Kept the interactive export/import/reset and account-aware entitlement
-        behavior inside the hydrated settings panel
-      - Updated the issue #28 current-changes artifact and active context for
-        the checkpoint stability follow-up
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.24"
-    commit: 89a96d6
-    status: in-progress
-    title: "chore(security): address seed-integrity review feedback"
-    details: |-
-      Addressed the third PR #29 review pass on the issue #28 seed-security
-      branch.
-
-      - Added cascade ownership from `practice_seeds.user_id` to `user.id` in
-        the Drizzle schema, generated migration SQL, and migration snapshot
-      - Changed local Free arena shuffles to use a fresh browser-local seed per
-        click instead of reusing the fixed anonymous route seed
-      - Updated the issue #28 current-changes artifact and active context for
-        the latest review pass
-    refs:
-      - "I5D13"
-  - date: "2026-04-22"
-    version: "1.1.23"
-    commit: 1bfb28e
-    status: in-progress
-    title: "chore(security): address seed-storage review feedback"
-    details: |-
-      Addressed the second PR #29 review pass on the issue #28
-      seed-security branch.
-
-      - Replaced delimiter-composed practice seed row IDs with random row IDs
-        while keeping `(user_id, surface, scope)` as the ownership and upsert key
-      - Preserved signed-in Free arena scenario shuffles as local,
-        non-authoritative practice behavior without exposing URL seeds or
-        granting Pro server-backed rerolls
-      - Updated the issue #28 current-changes artifact and active context for
-        the follow-up review pass
-    refs:
-      - "I5D13"
-  - date: "2026-04-21"
-    version: "1.1.22"
-    commit: fe4ecaa
-    status: in-progress
-    title: "chore(security): address seed-security review feedback"
-    details: |-
-      Addressed PR #29 review feedback on the issue #28 seed-security branch
-      and aligned README with the implemented seed boundary.
-
-      - Added explicit reroll nonces so lesson drills and arena scenarios
-        remount cleanly now that rerolls no longer change URL-visible seeds
-      - Centralized legacy seed-param cleanup for lesson and arena routes
-      - Switched practice seed update timestamps to database-native `now()`
-      - Updated README to document server-owned signed-in seeds, stripped
-        legacy seed params, crawlable public content, and anonymous/demo
-        practice as non-certificate-bearing
-    refs:
-      - "I5D13"
-  - date: "2026-04-21"
-    version: "1.1.21"
-    commit: c1ff17b
-    status: in-progress
-    title: "fix(security): remove URL-visible practice seeds"
-    details: |-
-      Started issue #28 with the first seed-security implementation slice for
-      certificate-safe randomized practice.
-
-      - Mapped lesson and arena seed exposure across route search params,
-        loader data, and client reroll paths
-      - Added the `practice_seeds` table so signed-in lesson, arena-card, and
-        arena-scenario seeds are owned by `(user_id, surface, scope)`
-      - Removed seed-bearing route search state from lesson and arena practice,
-        including legacy URL cleanup for `seed`, `runSeed`, and `exclude`
-      - Moved Pro lesson rerolls and arena rerolls to server functions that
-        rotate owned seeds and return materialized practice data without the
-        seed
-      - Added regression coverage for stripped search params, seed-free
-        client-facing payloads, and seed-free public practice markup
-    refs:
-      - "I5D13"
-  - date: "2026-04-21"
-    version: "1.1.20"
-    commit: TBD
-    status: in-progress
-    title: "docs(planning): track issue #28 seed security"
-    details: |-
-      Added issue #28 to the local v2 planning and memory-bank state as a
-      critical seed-security blocker for certificate-safe randomized practice.
-
-      - Added a current-changes artifact for server-authoritative seed
-        ownership and URL seed removal
-      - Updated the issue #5 joint plan to include #28 in scope, risks,
-        estimates, and deliverable mapping
-      - Updated active-context so #28 is tracked under the #5 roadmap with
-        critical priority and an explicit remaining deliverable
-      - Prepared PR #25 for merge after resolving the observability review
-        comment
-    refs:
-      - "I5D7, I5D13"
-  - date: "2026-04-21"
-    version: "1.1.19"
-    commit: 40d0f63
-    status: completed
-    title: "chore(observability): address paid-tier review feedback"
-    details: |-
-      Addressed PR review feedback on the issue #21 paid-tier gating branch
-      and split follow-up operational work into explicit v2 sub-issues.
-
-      - Added a shared observability logger for exception capture with
-        privacy-safe route and operation context
-      - Replaced route-local entitlement fallback console logging in lesson
-        and arena loaders with the shared logger
-      - Added unit coverage for logger normalization and context handling
-      - Created issue #26 for Sentry Free-tier hosted error observability
-        under parent issue #5 and milestone v2
-      - Created issue #27 for dev-only tiered seed users plus Playwright auth
-        states under parent issue #5 and milestone v2
-      - Updated issue #5 and issue #21 current-changes artifacts plus
-        memory-bank roadmap state to include the new v2 sub-issues
-    refs:
-      - "I5D7, I5D11, I5D12, I21D4, I21D5"

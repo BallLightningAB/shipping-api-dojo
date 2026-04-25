@@ -37,7 +37,6 @@ if (dsn && isBrowser) {
 			typeof environmentFromEnv === "string"
 				? environmentFromEnv
 				: "development",
-		integrations: [],
 		release: typeof releaseFromEnv === "string" ? releaseFromEnv : undefined,
 		sendDefaultPii: false,
 		tracesSampleRate:

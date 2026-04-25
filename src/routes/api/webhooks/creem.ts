@@ -132,6 +132,8 @@ async function handleCreemWebhook(request: Request) {
 				target: subscriptions.id,
 				set: {
 					planKey: fields.planKey,
+					productId: resolveProductIdForPlanKey(fields.planKey, creemEnv),
+					provider: "creem",
 					rawPayload: event,
 					status: fields.status,
 					updatedAt: new Date(),

@@ -20,6 +20,7 @@ Status: shipped-pending-dsn
 - [x] Document `SENTRY_DSN`, `VITE_SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`, `SENTRY_TRACES_SAMPLE_RATE`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` in `.env.example` and add a new README `Observability` section.
 - [x] Add regression coverage: `sentry-scrubber.test.ts` (4 tests), `sentry.env.test.ts` (5 tests), and extended `logger.test.ts` (5 tests, including Sentry forwarding + no-client short-circuit + null-tag normalization).
 - [x] Run validation suite: `pnpm format`, `pnpm lint`, `pnpm typecheck`, `pnpm test` (105 tests passing across 24 files), `pnpm build`.
+- [x] Address PR #32 Gemini review comments (v1.3.1): extend Creem subscriptions `onConflictDoUpdate` set clause with `productId` + `provider`; drop `integrations: []` from all three `Sentry.init` call sites (`instrument.server.mjs`, `src/instrument.client.ts`, `src/lib/observability/sentry-init.ts`) so default auto-capture integrations run while `beforeSend` scrubbing remains the compliance boundary.
 
 ## Goal
 
