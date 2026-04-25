@@ -1,5 +1,13 @@
 entries:
   - date: "2026-04-25"
+    version: "1.3.2.1"
+    commit: tbd
+    status: pending
+    title: "chore(docs): added two implementation plans"
+    details: |-
+      chore(docs): added two implementation plans
+
+  - date: "2026-04-25"
     version: "1.3.2"
     commit: 8535e10
     status: pending
