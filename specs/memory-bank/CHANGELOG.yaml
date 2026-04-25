@@ -1,7 +1,7 @@
 entries:
   - date: "2026-04-25"
     version: "1.3.2"
-    commit: TBD
+    commit: 8535e10
     status: pending
     title: "fix(observability): scrub Sentry breadcrumbs, centralize server env parsing, filter logger tags at source"
     details: |-
