@@ -21,6 +21,7 @@ Status: shipped-pending-dsn
 - [x] Add regression coverage: `sentry-scrubber.test.ts` (4 tests), `sentry.env.test.ts` (5 tests), and extended `logger.test.ts` (5 tests, including Sentry forwarding + no-client short-circuit + null-tag normalization).
 - [x] Run validation suite: `pnpm format`, `pnpm lint`, `pnpm typecheck`, `pnpm test` (105 tests passing across 24 files), `pnpm build`.
 - [x] Address PR #32 Gemini review comments (v1.3.1): extend Creem subscriptions `onConflictDoUpdate` set clause with `productId` + `provider`; drop `integrations: []` from all three `Sentry.init` call sites (`instrument.server.mjs`, `src/instrument.client.ts`, `src/lib/observability/sentry-init.ts`) so default auto-capture integrations run while `beforeSend` scrubbing remains the compliance boundary.
+- [x] Address second-round PR #32 Gemini review comments (v1.3.2): strip Sentry `breadcrumbs` in `scrubSentryEvent` and the inline `instrument.server.mjs` `beforeSend` so auto-captured console/fetch/UI events cannot leak PII; refactor `initServerSentryOnce` to delegate env parsing to `getServerSentryConfig` (eliminating duplicated Zod/default logic); export `SAFE_TAG_KEYS` from `sentry-scrubber` and apply the allow-list at the source in `captureException` so the wrapper only forwards tags the scrubber would keep. Added a 5th scrubber test asserting breadcrumb removal (now 106 tests / 24 files).
 
 ## Goal
 

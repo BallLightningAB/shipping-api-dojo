@@ -1,5 +1,47 @@
 entries:
   - date: "2026-04-25"
+    version: "1.3.2"
+    commit: TBD
+    status: pending
+    title: "fix(observability): scrub Sentry breadcrumbs, centralize server env parsing, filter logger tags at source"
+    details: |-
+      Address the second round of Gemini review comments on PR #32.
+
+      Privacy:
+
+      - `src/lib/observability/sentry-scrubber.ts`: strip the `breadcrumbs`
+        array on every Sentry event. Auto-captured breadcrumbs (console
+        logs, fetch/XHR calls, UI clicks) routinely contain emails, auth
+        tokens, or seeded query params, all of which issue #26 forbids
+        forwarding. The scrubber now nulls the entire trail rather than
+        attempting per-entry redaction. Added `breadcrumbs?: unknown` to
+        `ScrubbableEvent` and a fifth regression test
+        (`strips breadcrumbs to prevent PII leakage from auto-captured
+        console/fetch/UI events`).
+      - `instrument.server.mjs`: mirror the breadcrumb stripping inline so
+        the self-hosted `--import` path behaves identically to the lazy
+        `initServerSentryOnce` path.
+
+      Maintainability:
+
+      - `src/lib/observability/sentry-init.ts`: `initServerSentryOnce` now
+        delegates env parsing to `getServerSentryConfig` from
+        `sentry.env.ts`. The bespoke `parseTracesSampleRate` helper and
+        the inline `SENTRY_ENVIRONMENT ?? "development"` default are gone;
+        Zod parsing, defaults, and DSN-presence gating live in one place.
+      - `src/lib/observability/logger.ts`: filter `captureException`
+        context against `SAFE_TAG_KEYS` at the source instead of relying
+        only on the downstream scrubber. Exported `SAFE_TAG_KEYS` from
+        `sentry-scrubber.ts` so the allow-list stays single-sourced; the
+        scrubber remains the authoritative compliance boundary.
+
+      Validation:
+
+      - `pnpm test --run`: 106 tests / 24 files passing (added 1).
+      - `pnpm lint`, `pnpm format`, `pnpm typecheck`, `pre-commit`: all
+        clean.
+
+  - date: "2026-04-25"
     version: "1.3.1"
     commit: 888543f
     status: pending

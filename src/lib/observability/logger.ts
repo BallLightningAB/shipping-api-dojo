@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/tanstackstart-react";
 
 import { initServerSentryOnce } from "./sentry-init";
+import { SAFE_TAG_KEYS } from "./sentry-scrubber";
 
 // Initialize server-side Sentry at module load time so the first captured
 // exception on Vercel Functions or local dev already has a live Sentry
@@ -54,7 +55,15 @@ export function captureException(
 	}
 
 	Sentry.withScope((scope) => {
+		// Filter at the source against the same allow-list the scrubber enforces
+		// (`SAFE_TAG_KEYS` in `sentry-scrubber.ts`). The scrubber remains the
+		// authoritative compliance boundary, but applying the allow-list here
+		// avoids serializing tags we are guaranteed to drop downstream and keeps
+		// the tag surface visible in the source rather than only at scrub time.
 		for (const [key, value] of Object.entries(cleanContext)) {
+			if (!SAFE_TAG_KEYS.has(key)) {
+				continue;
+			}
 			scope.setTag(key, toTagValue(value));
 		}
 		Sentry.captureException(normalizedError);

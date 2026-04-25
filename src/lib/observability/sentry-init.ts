@@ -1,7 +1,7 @@
 import type { ErrorEvent, EventHint } from "@sentry/tanstackstart-react";
 import * as Sentry from "@sentry/tanstackstart-react";
-
 import { type ScrubbableEvent, scrubSentryEvent } from "./sentry-scrubber";
+import { getServerSentryConfig } from "./sentry.env";
 
 /**
  * Adapt the plain-JSON `scrubSentryEvent` helper to Sentry's `beforeSend`
@@ -19,14 +19,6 @@ export function sentryBeforeSend(
 	return scrubbed as unknown as ErrorEvent;
 }
 
-function parseTracesSampleRate(raw: string | undefined): number {
-	if (typeof raw !== "string" || raw.length === 0) {
-		return 0;
-	}
-	const parsed = Number.parseFloat(raw);
-	return Number.isFinite(parsed) ? parsed : 0;
-}
-
 /**
  * Initialize server-side Sentry if a DSN is configured and the SDK is not
  * already initialized.
@@ -37,6 +29,10 @@ function parseTracesSampleRate(raw: string | undefined): number {
  * Function invocations (which never run `pnpm start`) while still allowing
  * self-hosted Node deployments to use the canonical
  * `--import ./instrument.server.mjs` flag for earlier coverage.
+ *
+ * Environment parsing is delegated to `getServerSentryConfig` so the Zod
+ * schema, default values, and DSN-presence gating live in a single place
+ * (`sentry.env.ts`).
  */
 export function initServerSentryOnce(env: NodeJS.ProcessEnv = process.env) {
 	if (typeof window !== "undefined") {
@@ -49,18 +45,18 @@ export function initServerSentryOnce(env: NodeJS.ProcessEnv = process.env) {
 		return;
 	}
 
-	const dsn = env.SENTRY_DSN;
-	if (!dsn) {
+	const config = getServerSentryConfig(env);
+	if (!config) {
 		return;
 	}
 
 	Sentry.init({
 		beforeSend: sentryBeforeSend,
-		dsn,
+		dsn: config.dsn,
 		enableLogs: false,
-		environment: env.SENTRY_ENVIRONMENT ?? "development",
-		release: env.SENTRY_RELEASE,
+		environment: config.environment,
+		release: config.release,
 		sendDefaultPii: false,
-		tracesSampleRate: parseTracesSampleRate(env.SENTRY_TRACES_SAMPLE_RATE),
+		tracesSampleRate: config.tracesSampleRate,
 	});
 }

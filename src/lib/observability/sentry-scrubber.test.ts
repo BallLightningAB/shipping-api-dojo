@@ -66,6 +66,32 @@ describe("scrubSentryEvent", () => {
 		expect(event.user).toStrictEqual({ email: "alice@example.com" });
 	});
 
+	it("strips breadcrumbs to prevent PII leakage from auto-captured console/fetch/UI events", () => {
+		const event = {
+			breadcrumbs: [
+				{
+					category: "console",
+					level: "log",
+					message: "user logged in alice@example.com",
+				},
+				{
+					category: "fetch",
+					data: {
+						method: "POST",
+						url: "https://api.example.com/login?token=abc",
+					},
+				},
+				{ category: "ui.click", message: "clicked button" },
+			],
+			message: "boom",
+		};
+
+		const scrubbed = scrubSentryEvent(event);
+
+		expect(scrubbed.breadcrumbs).toBeUndefined();
+		expect(scrubbed.message).toBe("boom");
+	});
+
 	it("drops tags when no allow-listed keys remain", () => {
 		const scrubbed = scrubSentryEvent({
 			tags: { session_id: "abc", user_agent: "Mozilla" },

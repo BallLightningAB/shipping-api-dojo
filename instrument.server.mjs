@@ -41,6 +41,10 @@ if (dsn) {
 			if (event && typeof event === "object") {
 				event.user = undefined;
 				event.extra = undefined;
+				// Mirror the breadcrumb stripping from `sentry-scrubber.ts`: auto
+				// breadcrumbs (console, fetch/XHR, UI clicks) can carry emails,
+				// auth tokens, or seeded query params that issue #26 forbids.
+				event.breadcrumbs = undefined;
 
 				if (event.request && typeof event.request === "object") {
 					const request = event.request;

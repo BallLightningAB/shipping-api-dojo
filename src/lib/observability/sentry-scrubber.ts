@@ -33,6 +33,7 @@ export interface ScrubbableRequest {
 }
 
 export interface ScrubbableEvent {
+	breadcrumbs?: unknown;
 	contexts?: Record<string, unknown>;
 	exception?: unknown;
 	extra?: Record<string, unknown>;
@@ -44,7 +45,15 @@ export interface ScrubbableEvent {
 	[key: string]: unknown;
 }
 
-const SAFE_TAG_KEYS = new Set([
+/**
+ * Allow-list of tag keys that may be forwarded to Sentry.
+ *
+ * Exported so the application-level wrapper in `logger.ts` can filter at the
+ * source instead of relying purely on the downstream scrubber. The scrubber
+ * remains the last-line defense and the canonical source of truth for what
+ * is permitted to leave the process.
+ */
+export const SAFE_TAG_KEYS = new Set([
 	"environment",
 	"fallbackTier",
 	"operation",
@@ -112,6 +121,11 @@ export function scrubSentryEvent(event: ScrubbableEvent): ScrubbableEvent {
 	// ignores `undefined` fields on serialization.
 	scrubbed.user = undefined;
 	scrubbed.extra = undefined;
+	// Breadcrumbs auto-capture console logs, fetch/XHR calls, and UI clicks,
+	// any of which can contain emails, auth tokens, or seeded query params.
+	// Issue #26 forbids forwarding that surface, so we strip the entire
+	// breadcrumb trail rather than trying to selectively redact entries.
+	scrubbed.breadcrumbs = undefined;
 
 	if (scrubbed.request) {
 		const request = scrubbed.request;
