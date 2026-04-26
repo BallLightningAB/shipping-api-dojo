@@ -1,8 +1,58 @@
 entries:
   - date: "2026-04-26"
-    version: "1.4.1"
+    version: "1.4.1.1"
     commit: tbd
     status: pending
+    title: "fix(seo): address PR #34 review feedback on issue #15 wiki expansion"
+    details: |-
+      Address the four medium-priority Gemini review comments on PR `#34`
+      (issue `#15`) without changing any user-visible content, slug, or URL.
+
+      What changed:
+
+      - Centralized canonical site identity in a single source of truth at
+        `src/lib/seo/site.ts` exporting `SITE_URL`, `SITE_NAME`,
+        `ORGANIZATION_NAME`, `ORGANIZATION_URL`, and a shared
+        `toAbsoluteUrl(pathOrUrl)` helper. Both `src/lib/seo/sitemap.ts`
+        and `src/lib/seo/structured-data.ts` now import from this module
+        instead of redeclaring the origin, so the SEO surfaces cannot
+        drift.
+      - Hardened sitemap absolute-URL resolution against paths missing a
+        leading slash by routing every entry through the shared
+        `toAbsoluteUrl` helper, dropping the bespoke `toAbsolute`
+        wrapper in `src/lib/seo/sitemap.ts`.
+      - Made `generateBreadcrumbListSchema` SSR-safe: empty input now
+        returns `null` (matching `generateFAQPageSchema`) instead of
+        throwing and crashing the page during rendering. `jsonLdScript`
+        was widened to accept `object | null` and returns `""` on null
+        so existing eager-array call sites still type-check without
+        per-call guards. Updated `src/lib/seo/structured-data.test.ts`
+        to assert the null-return behavior.
+      - Replaced the inline `carrierSurfaces.find(...)` replacement-surface
+        lookup in `src/routes/wiki/carriers/$slug.tsx` with the existing
+        `getCarrierSurfaceBySlug` helper so all surface lookups go
+        through one consistent path.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 tests across 27 files (unchanged
+        coverage; the structured-data test now asserts null instead of
+        throw).
+
+      Out of scope: no content, slug, URL, sitemap output, or directory
+      change. PR `#34` review threads were replied to inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-26"
+    version: "1.4.1"
+    commit: 41f7625
+    status: committed
     title: "feat(wiki): add DHL Freight Sweden API Farm as the fourth DHL carrier surface (issue #15)"
     details: |-
       Extend the DHL section of the carrier-reference wiki shipped in
@@ -59,8 +109,8 @@ entries:
 
   - date: "2026-04-25"
     version: "1.4.0"
-    commit: tbd
-    status: pending
+    commit: 41f7625
+    status: committed
     title: "feat(wiki): expand carrier-reference library by vendor, business unit, region, and protocol (issue #15)"
     details: |-
       Expand the wiki from curriculum-supporting concept articles into a

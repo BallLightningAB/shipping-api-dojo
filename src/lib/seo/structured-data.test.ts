@@ -112,8 +112,8 @@ describe("generateBreadcrumbListSchema", () => {
 		expect(items[1].item).toBeUndefined();
 	});
 
-	it("rejects an empty breadcrumb list", () => {
-		expect(() => generateBreadcrumbListSchema([])).toThrow();
+	it("returns null on empty input so SSR callers can skip the script tag", () => {
+		expect(generateBreadcrumbListSchema([])).toBeNull();
 	});
 });
 

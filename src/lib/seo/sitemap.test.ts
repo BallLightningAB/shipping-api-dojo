@@ -5,7 +5,8 @@ import { describe, expect, it } from "vitest";
 import { carrierSurfaces } from "@/content/carriers";
 import { lessonDefinitions } from "@/content/families";
 import { wikiEntries } from "@/content/wiki";
-import { buildSitemapEntries, renderSitemap, SITE_URL } from "./sitemap";
+import { SITE_URL } from "./site";
+import { buildSitemapEntries, renderSitemap } from "./sitemap";
 
 const SITEMAP_PATH = path.join(process.cwd(), "public", "sitemap.xml");
 const XML_PROLOG = /^<\?xml version="1\.0" encoding="UTF-8"\?>/;

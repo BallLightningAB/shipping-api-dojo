@@ -1,5 +1,3 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { carrierSurfaces, getCarrierSurfaceBySlug } from "@/content/carriers";
 import { directoryEntries } from "@/content/directory";
@@ -12,6 +10,8 @@ import {
 	generateFAQPageSchema,
 	jsonLdScript,
 } from "@/lib/seo/structured-data";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 
 const PROTOCOL_LABEL: Record<CarrierSurface["protocol"], string> = {
 	rest: "REST",
@@ -128,9 +128,7 @@ function CarrierSurfacePage() {
 	const conceptRefs = findRelatedConceptTitles(surface.relatedConceptSlugs);
 	const surfaceRefs = findRelatedSurfaces(surface.relatedSurfaceSlugs);
 	const replacement = surface.replacementSurfaceSlug
-		? carrierSurfaces.find(
-				(item) => item.slug === surface.replacementSurfaceSlug
-			)
+		? getCarrierSurfaceBySlug(surface.replacementSurfaceSlug)
 		: undefined;
 	const isInactive =
 		surface.status === "deprecated" ||

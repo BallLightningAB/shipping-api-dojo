@@ -9,8 +9,7 @@
 import { carrierSurfaces } from "@/content/carriers";
 import { lessonDefinitions } from "@/content/families";
 import { wikiEntries } from "@/content/wiki";
-
-const SITE_URL = "https://shipping.apidojo.app";
+import { toAbsoluteUrl } from "./site";
 
 export interface SitemapEntry {
 	changefreq:
@@ -45,20 +44,16 @@ const STATIC_PAGES: StaticPage[] = [
 	{ path: "/cookies", priority: "0.3", changefreq: "yearly" },
 ];
 
-function toAbsolute(loc: string): string {
-	return loc.startsWith("http") ? loc : `${SITE_URL}${loc}`;
-}
-
 export function buildSitemapEntries(): SitemapEntry[] {
 	const entries: SitemapEntry[] = STATIC_PAGES.map((page) => ({
-		loc: toAbsolute(page.path),
+		loc: toAbsoluteUrl(page.path),
 		changefreq: page.changefreq,
 		priority: page.priority,
 	}));
 
 	for (const lesson of lessonDefinitions) {
 		entries.push({
-			loc: toAbsolute(`/lesson/${lesson.slug}`),
+			loc: toAbsoluteUrl(`/lesson/${lesson.slug}`),
 			changefreq: "monthly",
 			priority: "0.7",
 		});
@@ -66,7 +61,7 @@ export function buildSitemapEntries(): SitemapEntry[] {
 
 	for (const wiki of wikiEntries) {
 		entries.push({
-			loc: toAbsolute(`/wiki/${wiki.slug}`),
+			loc: toAbsoluteUrl(`/wiki/${wiki.slug}`),
 			changefreq: "monthly",
 			priority: "0.6",
 		});
@@ -77,7 +72,7 @@ export function buildSitemapEntries(): SitemapEntry[] {
 		// keep them crawlable; they remain the canonical answer to "is this API
 		// still supported?" intent queries even after the API itself is gone.
 		entries.push({
-			loc: toAbsolute(`/wiki/carriers/${surface.slug}`),
+			loc: toAbsoluteUrl(`/wiki/carriers/${surface.slug}`),
 			changefreq: "monthly",
 			priority: surface.status === "active" ? "0.75" : "0.5",
 			lastmod: surface.lastReviewed,
@@ -98,5 +93,3 @@ export function renderSitemap(entries: SitemapEntry[]): string {
 	const body = entries.map(renderUrl).join("\n");
 	return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>`;
 }
-
-export { SITE_URL };

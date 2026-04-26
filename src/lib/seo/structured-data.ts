@@ -6,23 +6,17 @@
  * - Article + BreadcrumbList + FAQPage schemas for wiki and carrier surfaces
  */
 
-const SITE_URL = "https://shipping.apidojo.app";
-const SITE_NAME = "Shipping API Dojo";
-const ORGANIZATION_NAME = "Ball Lightning AB";
-const ORGANIZATION_URL = "https://balllightning.cloud";
+import {
+	ORGANIZATION_NAME,
+	ORGANIZATION_URL,
+	SITE_NAME,
+	SITE_URL,
+	toAbsoluteUrl,
+} from "./site";
 
 const ORGANIZATION_ID = `${ORGANIZATION_URL}/#organization`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 const APP_ID = `${SITE_URL}/#application`;
-
-function toAbsoluteUrl(pathOrUrl: string): string {
-	if (pathOrUrl.startsWith("http")) {
-		return pathOrUrl;
-	}
-	return pathOrUrl.startsWith("/")
-		? `${SITE_URL}${pathOrUrl}`
-		: `${SITE_URL}/${pathOrUrl}`;
-}
 
 export function generateRootEntityGraphSchema() {
 	return {
@@ -69,9 +63,14 @@ export function generateRootEntityGraphSchema() {
 }
 
 /**
- * Generate script tag content for JSON-LD
+ * Generate script tag content for JSON-LD. Returns an empty string when the
+ * payload is null so callers that build their `head.scripts` array eagerly
+ * (e.g., breadcrumbs) cannot crash SSR on empty input.
  */
-export function jsonLdScript(data: object): string {
+export function jsonLdScript(data: object | null): string {
+	if (data === null) {
+		return "";
+	}
 	return JSON.stringify(data);
 }
 
@@ -135,11 +134,15 @@ export interface BreadcrumbCrumb {
  * Generate a BreadcrumbList JSON-LD payload.
  *
  * Each crumb's position is 1-indexed per the schema.org spec, and `item` is
- * resolved to an absolute URL when a path is provided.
+ * resolved to an absolute URL when a path is provided. Returns null on empty
+ * input so SSR callers can omit the script tag without crashing the page,
+ * matching the pattern used by `generateFAQPageSchema`.
  */
-export function generateBreadcrumbListSchema(crumbs: BreadcrumbCrumb[]) {
+export function generateBreadcrumbListSchema(
+	crumbs: BreadcrumbCrumb[]
+): object | null {
 	if (crumbs.length === 0) {
-		throw new Error("BreadcrumbList requires at least one crumb");
+		return null;
 	}
 
 	return {
