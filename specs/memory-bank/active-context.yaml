@@ -1,5 +1,5 @@
 meta:
-  release: "1.3.2.1"
+  release: "1.3.3"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -264,7 +264,7 @@ roadmap:
     - id: mobile-readiness-native-strategy
       issue: "#13"
       title: "Mobile readiness and native app strategy"
-      status: planned
+      status: in-progress
       priority: medium
       links:
         issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/13"
@@ -278,14 +278,11 @@ roadmap:
         dev_h: 6
         test_h: 3
       sub_issues: []
-      remaining_deliverables:
-        - "[I13D1] Review the Shipping API Dojo v2 architecture for mobile blockers across content families, progress, auth, entitlements, certificates, and challenge-run generation"
-        - "[I13D2] Define the platform-neutral boundaries required so a future native client can reuse the same content model, progress model, and premium entitlement system without duplicating core logic"
-        - "[I13D3] Decide the future native stack direction and app strategy, including whether to use Expo/React Native, what should stay shared, and what remains web-only"
-        - "[I13D4] Define the mobile auth/session approach to pair with Better Auth and the hosted backend without forcing premature complexity into the web-first implementation"
-        - "[I13D5] Define the API, deep-linking, offline, and app-store readiness follow-up work that should happen after the web v2 is complete"
+      remaining_deliverables: []
       progress_log:
         - note: "The current recommendation is web-first now, mobile later, with platform-neutral domain logic and backend contracts preserved during the v2 implementation."
+        - covers: [I13D1, I13D2, I13D3, I13D4, I13D5]
+          note: "Completed issue #13 strategy + light-touch refactor pass on codex/issue-13-mobile-readiness: shipped specs/current-changes/issue-13-mobile-readiness-plan.md covering the v2 architecture audit (D1), platform-neutral boundaries (D2), Expo + React Native stack recommendation with shared-vs-web-only matrix (D3), Better Auth Bearer + expo-secure-store + magic-link deep-link plan (D4), and the public API / deep-link scheme / offline / push / Apple+Google billing follow-up (D5). The only refactor was extracting the pure stripLegacySeedParamsFromHref helper from useStripLegacySeedParams into src/lib/practice/seed-search.ts, with 4 new unit tests; all other audited modules (randomization, progress.{schema,merge,actions,hydration}, practice-runs, entitlements, content runtime) were already platform-neutral. No native app code, no React Native deps, no monorepo tooling, no user-visible web change. Validated with pnpm format, pnpm lint, pnpm typecheck, and pnpm test --run (110 passed, 4 new)."
     - id: edi-product-strategy
       issue: "#16"
       title: "EDI product and subdomain strategy under API Dojo"

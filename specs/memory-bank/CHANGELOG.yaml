@@ -1,5 +1,110 @@
 entries:
   - date: "2026-04-25"
+    version: "1.3.3"
+    commit: tbd
+    status: pending
+    title: "docs(mobile): issue #13 mobile readiness strategy + extract platform-neutral seed-param helper (I13D1, I13D2, I13D3, I13D4, I13D5)"
+    details: |-
+      Issue #13 strategy + light-touch refactor pass on
+      `codex/issue-13-mobile-readiness`. No native app code, no React
+      Native dependencies, no monorepo tooling, and no user-visible web
+      behavior change.
+
+      Strategy doc:
+
+      - Added `specs/current-changes/issue-13-mobile-readiness-plan.md`
+        as the long-form companion to the existing outline. Covers all
+        five deliverables:
+        - `I13D1`: full audit of `src/lib/randomization.ts`,
+          `src/lib/practice/*`, `src/lib/progress/*`,
+          `src/lib/entitlements/*`, `src/content/*`, `src/lib/auth/*`,
+          and `src/lib/billing/*` — split into platform-neutral domain
+          modules (safe to share with native), browser-coupled modules
+          (must stay in the web layer), and TanStack Start / Router
+          server-fn modules (cannot be imported by native; must remain
+          callable over HTTPS). Confirmed lesson slugs, drill family
+          IDs, scenario IDs, premium capability names, and
+          `certificates.credentialId` / `credentialUrl` are all stable
+          domain values, never derived from URL state.
+        - `I13D2`: extracted the pure URL-cleaning logic from
+          `src/lib/practice/use-strip-legacy-seed-params.ts` into a new
+          `stripLegacySeedParamsFromHref(href)` helper in
+          `src/lib/practice/seed-search.ts`, leaving the React /
+          TanStack Router hook as a thin binding shell. Verified the
+          remaining modules (`progress.{schema,merge,actions,hydration}`,
+          `practice-runs`, `entitlements`, `access-policy`,
+          `randomization`, `content/*`) are already platform-neutral
+          and need no refactor. Boundary contract recap added to the
+          plan doc.
+        - `I13D3`: recommended Expo + React Native + TanStack Router
+          (native) as the default future stack, with a fallback "thin
+          native shell over the hosted web app" option. Documented
+          which modules are shared verbatim (`src/content/*`,
+          `randomization`, `progress.{schema,merge,actions,hydration}`,
+          `practice-runs`, `seed-search`, `entitlements/*`) and which
+          stay web-only (TanStack Start routes, SSR meta / OG / SEO,
+          Tailwind + Radix UI, `ProgressHydrator`,
+          `setupCrossTabSync`, settings export/import, web cookie
+          wiring, web Sentry init).
+        - `I13D4`: Bearer-token plan for native (Better Auth's
+          `bearer()` plugin server-side, `better-auth/react-native`
+          + `expoClient({ scheme, storage })` client-side,
+          `expo-secure-store` for token persistence, magic-link
+          callback URLs over `shippingapidojo://auth/...`,
+          `expo-local-authentication` biometric gate, per-device
+          session metadata for a future "signed-in devices" surface).
+          No code changes — strategy only.
+        - `I13D5`: documented the public API contract surface
+          (`/api/auth/*`, session/progress/entitlements/practice/
+          account-rights server fns), the `shippingapidojo://`
+          deep-link scheme (lessons, arena, wiki, directory, settings,
+          auth callbacks, certificates by `credentialId`), the offline
+          cache + sync conflict rules (curriculum bundled, progress
+          cached + last-write-wins via
+          `mergeAnonymousProgressOnSignIn`, entitlements cached ≤ 24h
+          with `fallbackFreeEntitlements()`), the push-notification
+          surface (`expo-notifications`, `device_push_tokens` table,
+          ID-only payloads), and the Apple/Google in-app-purchase
+          posture (read web-purchased entitlements on native; no
+          in-app upgrade flow in v1; add StoreKit / Play Billing later
+          and reconcile via the highest-tier rule in
+          `resolveEntitlementsForUserId`).
+
+      Refactor (extract pure helper):
+
+      - `src/lib/practice/seed-search.ts`: added
+        `stripLegacySeedParamsFromHref(href: string)
+        : { changed: boolean; href: string }` plus the
+        `StripLegacySeedParamsResult` interface. Pure: no React,
+        router, browser, or Node imports. Uses a fixed
+        `http://shipping-api-dojo.local` parsing base URL so relative
+        hrefs are normalized identically on web and (future) native.
+      - `src/lib/practice/use-strip-legacy-seed-params.ts`: hook now
+        delegates to the pure helper. The router-bound `navigate`
+        call is unchanged (`replace: true`, `resetScroll: false`),
+        so web behavior is identical.
+      - `src/lib/practice/seed-search.test.ts`: 4 new tests for the
+        pure helper (no-op case, preserved non-legacy params + hash,
+        all-three legacy params removal, and leading-slash
+        normalization). Existing two schema tests continue to pass.
+
+      Memory bank:
+
+      - `specs/memory-bank/active-context.yaml`: bumped
+        `meta.release` to `1.3.3`, moved `mobile-readiness-native-strategy`
+        from `planned` to `in-progress`, cleared
+        `remaining_deliverables`, and added a `progress_log` entry
+        covering all five deliverables.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: clean.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 110 / 110 passing across 24 files (added
+        4 new tests for `stripLegacySeedParamsFromHref`).
+
+  - date: "2026-04-25"
     version: "1.3.2.1"
     commit: tbd
     status: pending

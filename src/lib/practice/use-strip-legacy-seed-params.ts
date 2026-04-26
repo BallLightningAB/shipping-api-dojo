@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-import { LEGACY_SEED_SEARCH_PARAMS } from "./seed-search";
+import { stripLegacySeedParamsFromHref } from "./seed-search";
 
 export function useStripLegacySeedParams() {
 	const navigate = useNavigate();
@@ -10,18 +10,10 @@ export function useStripLegacySeedParams() {
 	});
 
 	useEffect(() => {
-		const url = new URL(href, "http://shipping-api-dojo.local");
-		let changed = false;
-		for (const param of LEGACY_SEED_SEARCH_PARAMS) {
-			if (url.searchParams.has(param)) {
-				url.searchParams.delete(param);
-				changed = true;
-			}
-		}
-
-		if (changed) {
+		const result = stripLegacySeedParamsFromHref(href);
+		if (result.changed) {
 			navigate({
-				href: `${url.pathname}${url.search}${url.hash}`,
+				href: result.href,
 				replace: true,
 				resetScroll: false,
 			});
