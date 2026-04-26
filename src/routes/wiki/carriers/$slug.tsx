@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { carrierSurfaces, getCarrierSurfaceBySlug } from "@/content/carriers";
+import { getCarrierSurfaceBySlug } from "@/content/carriers";
 import { directoryEntries } from "@/content/directory";
 import type { CarrierSurface, DirectoryEntry } from "@/content/types";
 import { wikiEntries } from "@/content/wiki";
@@ -20,7 +20,7 @@ const PROTOCOL_LABEL: Record<CarrierSurface["protocol"], string> = {
 	"edi-edifact": "EDIFACT",
 	graphql: "GraphQL",
 	webhook: "Webhook",
-	"xml-rpc": "XML over HTTP",
+	"xml-http": "XML over HTTP",
 };
 
 const STATUS_LABEL: Record<CarrierSurface["status"], string> = {
@@ -64,8 +64,13 @@ export const Route = createFileRoute("/wiki/carriers/$slug")({
 
 		const scripts = [
 			{ type: "application/ld+json", children: jsonLdScript(article) },
-			{ type: "application/ld+json", children: jsonLdScript(breadcrumbs) },
 		];
+		if (breadcrumbs) {
+			scripts.push({
+				type: "application/ld+json",
+				children: jsonLdScript(breadcrumbs),
+			});
+		}
 		if (faqSchema) {
 			scripts.push({
 				type: "application/ld+json",
@@ -118,7 +123,7 @@ function findRelatedConceptTitles(
 
 function findRelatedSurfaces(slugs: string[]): CarrierSurface[] {
 	return slugs
-		.map((slug) => carrierSurfaces.find((surface) => surface.slug === slug))
+		.map((slug) => getCarrierSurfaceBySlug(slug))
 		.filter((surface): surface is CarrierSurface => surface !== undefined);
 }
 

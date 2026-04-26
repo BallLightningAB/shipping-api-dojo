@@ -1,8 +1,61 @@
 entries:
   - date: "2026-04-26"
-    version: "1.4.1.1"
+    version: "1.4.1.2"
     commit: tbd
     status: pending
+    title: "fix(content): correct legacy XML protocol labeling and harden carrier-surface helpers (PR #34 review)"
+    details: |-
+      Address the second Gemini review pass on PR `#34` (issue `#15`,
+      commit `50641c5`) without changing any user-visible content, slug,
+      URL, or sitemap output.
+
+      What changed:
+
+      - Renamed the misleading `xml-rpc` member of `ProtocolFamily` to
+        `xml-http` and documented in `src/content/types.ts` that this
+        family covers proprietary XML-over-HTTP interfaces (such as
+        legacy USPS Web Tools and pre-2024 UPS XML services) and is
+        intentionally distinct from `soap` (envelope-based,
+        WSDL-described) and from the unrelated XML-RPC standard, which
+        none of the supported carriers implement.
+      - Updated the UPS Legacy XML/SOAP and USPS Web Tools carrier
+        surfaces in `src/content/carriers.ts`, plus the USPS Web Tools
+        directory entry in `src/content/directory.ts`, to use
+        `protocol: "xml-http"`. The displayed label
+        ("XML over HTTP") is unchanged via `PROTOCOL_LABEL` in
+        `src/routes/wiki/carriers/$slug.tsx`.
+      - Routed `findRelatedSurfaces` in
+        `src/routes/wiki/carriers/$slug.tsx` through the existing
+        `getCarrierSurfaceBySlug` helper instead of an inline
+        `carrierSurfaces.find(...)`, so all surface lookups (related,
+        sibling, replacement) flow through a single helper. Dropped the
+        now-unused `carrierSurfaces` import.
+      - Conditionally pushed the breadcrumb script in
+        `head.scripts` only when `generateBreadcrumbListSchema` returned
+        a non-null payload, mirroring the existing `faqSchema` pattern.
+        Even though the current call passes a fully-populated crumb
+        list, this prevents an empty `<script>` tag from being rendered
+        if a future caller hands in an empty array.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 across 27 files.
+
+      Out of scope: no content, slug, URL, sitemap output, or
+      directory data change beyond the renamed protocol token. PR `#34`
+      review threads were replied to inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-26"
+    version: "1.4.1.1"
+    commit: 50641c5
+    status: committed
     title: "fix(seo): address PR #34 review feedback on issue #15 wiki expansion"
     details: |-
       Address the four medium-priority Gemini review comments on PR `#34`

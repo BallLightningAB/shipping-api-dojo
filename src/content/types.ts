@@ -168,6 +168,15 @@ export interface WikiSource {
 	url: string;
 }
 
+/**
+ * Protocol families for carrier API surfaces.
+ *
+ * `xml-http` covers proprietary XML-over-HTTP interfaces (XML payload
+ * passed in a query string or POST body) such as legacy USPS Web Tools
+ * and pre-2024 UPS XML services. It is intentionally distinct from
+ * `soap` (envelope-based, WSDL-described) and from XML-RPC, which is a
+ * specific RPC standard that none of the supported carriers implement.
+ */
 export type ProtocolFamily =
 	| "rest"
 	| "soap"
@@ -175,7 +184,7 @@ export type ProtocolFamily =
 	| "edi-edifact"
 	| "graphql"
 	| "webhook"
-	| "xml-rpc";
+	| "xml-http";
 
 export type CarrierStatus =
 	| "active"

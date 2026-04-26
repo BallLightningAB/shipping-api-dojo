@@ -318,7 +318,7 @@ export const directoryEntries: DirectoryEntry[] = [
 		businessUnit: "Web Tools",
 		apiName: "USPS Web Tools",
 		region: "us",
-		protocols: ["xml-rpc"],
+		protocols: ["xml-http"],
 		status: "deprecated",
 		sandbox: {
 			available: false,

@@ -402,7 +402,7 @@ export const carrierSurfaces: CarrierSurface[] = [
 		businessUnit: "Legacy Web Services",
 		businessUnitSlug: "legacy-web-services",
 		region: "global",
-		protocol: "xml-rpc",
+		protocol: "xml-http",
 		apiName: "UPS Legacy XML/SOAP Web Services",
 		title: "UPS Legacy XML/SOAP Web Services (sunset)",
 		summary:
@@ -664,7 +664,7 @@ export const carrierSurfaces: CarrierSurface[] = [
 		businessUnit: "Web Tools",
 		businessUnitSlug: "web-tools",
 		region: "us",
-		protocol: "xml-rpc",
+		protocol: "xml-http",
 		apiName: "USPS Web Tools (XML)",
 		title: "USPS Web Tools (XML, deprecated)",
 		summary:
