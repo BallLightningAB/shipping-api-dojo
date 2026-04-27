@@ -431,7 +431,7 @@ function renderPage(page) {
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>${stripHtml(page.title)}</title>
+		<title>${escapeHtml(renderTitleText(page.title))}</title>
 		<style>
 			:root {
 				--bg: #05070a;
@@ -932,7 +932,7 @@ function renderPage(page) {
 				<div class="left">
 					<div>
 						<div class="eyebrow">${escapeHtml(page.eyebrow)}</div>
-						<h1>${page.title}</h1>
+						<h1>${renderTitleHtml(page.title)}</h1>
 						<p class="subtitle">${escapeHtml(page.subtitle)}</p>
 						<div class="tags">${tagMarkup}</div>
 					</div>
@@ -967,6 +967,13 @@ function escapeHtml(value) {
 		.replaceAll("'", "&#39;");
 }
 
-function stripHtml(value) {
-	return value.replaceAll(/<br\s*\/?>/gi, " ").replaceAll(/<[^>]+>/g, "");
+function renderTitleText(value) {
+	return value.replaceAll(/<br\s*\/?>/gi, " ");
+}
+
+function renderTitleHtml(value) {
+	return value
+		.split(/<br\s*\/?>/gi)
+		.map((segment) => escapeHtml(segment))
+		.join("<br/>");
 }

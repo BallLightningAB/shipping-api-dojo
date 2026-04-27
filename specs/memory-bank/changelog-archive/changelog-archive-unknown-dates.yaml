@@ -1,4 +1,583 @@
 entries:
+  - date: "2026-04-26"
+    version: "1.4.1"
+    commit: 41f7625
+    status: committed
+    title: "feat(wiki): add DHL Freight Sweden API Farm as the fourth DHL carrier surface (issue #15)"
+    details: |-
+      Extend the DHL section of the carrier-reference wiki shipped in
+      `v1.4.0` with a fourth distinct DHL business unit: **DHL Freight
+      Sweden — API Farm**. This is the in-scope follow-up slice of `I5D10`
+      requested before opening the PR for issue `#15`.
+
+      Why a separate page:
+
+      - DHL Freight Sweden runs its own integration portal at
+        `dhlpaket.se/dashboard/services/api-farm`, distinct from the DHL
+        Group Developer Portal at `developer.dhl.com`.
+      - Base URLs are completely separate (`api.freight-logistics.dhl.com`
+        for production, `test-api.freight-logistics.dhl.com` for sandbox).
+      - Authentication is a per-application **GUID API key** (`client-key`
+        header) issued by API Farm, not OAuth or HTTP Basic.
+      - The DHL Group portal explicitly redirects Sweden traffic to API
+        Farm, so omitting the page would 404 the canonical destination
+        for that intent and miss material SEO and integrator value.
+
+      What ships:
+
+      - `src/content/carriers.ts`: new `dhl-freight-se-rest` carrier
+        surface (REST, Sweden, status `active`) covering booking, pricing,
+        validation, and shipping documents on Sweden domestic and
+        Sweden-originating international road freight. Body is ≥180 words
+        and answers four FAQs: API key issuance flow, the no-cancel-via-API
+        limitation (Customer Service 0771-345 345 instead), the EDI vs
+        API Farm volume threshold (>10,000 shipments/day → EDI), and the
+        tracking delegation to the global `Shipment Tracking - Unified`
+        API at developer.dhl.com.
+      - Cross-linked the new surface with the existing
+        `dhl-express-global-mydhl-rest`, `dhl-ecommerce-americas-rest`,
+        and `dhl-parcel-de-rest` surfaces in both directions so all four
+        DHL business units link to one another.
+      - `src/content/directory.ts`: new `dhl-freight-sweden-api-farm`
+        directory entry with sandbox URL, Postman collection tooling
+        reference, and `carrierSlug` cross-link.
+      - `specs/current-changes/issue-15-wiki-expansion-plan.md`: documents
+        the four-surface DHL grouping and bumps the prioritized surface
+        count from `8–12` to `8–13`.
+      - `src/content/carriers.test.ts`: extended the DHL business-unit
+        test to require `freight` alongside `express`, `ecommerce`, and
+        `parcel-de`.
+      - `public/sitemap.xml`: regenerated from 67 → 68 URLs.
+
+      Validation: `pnpm format`, `pnpm lint`, `pnpm typecheck`,
+      `pnpm test --run` (147/147 passing), `pnpm build`, and `pre-commit`
+      all clean.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+
+  - date: "2026-04-25"
+    version: "1.4.0"
+    commit: 41f7625
+    status: committed
+    title: "feat(wiki): expand carrier-reference library by vendor, business unit, region, and protocol (issue #15)"
+    details: |-
+      Expand the wiki from curriculum-supporting concept articles into a
+      durable carrier-reference library organized along four axes: vendor,
+      business unit/product line, region/country, and protocol/documentation
+      surface. This is the in-scope `I5D10` slice of the v2 (#5) umbrella.
+
+      Taxonomy and URL conventions (I15D1):
+
+      - Added the long-form plan in
+        `specs/current-changes/issue-15-wiki-expansion-plan.md` documenting
+        the four-axis taxonomy, the immutable
+        `{vendor}-{businessunit}-{region}-{protocol}` slug pattern, the
+        canonical URL split (`/wiki/$slug` for concepts,
+        `/wiki/carriers/$slug` for surfaces), and the rules that keep
+        sunset/legacy pages indexed rather than deleted.
+
+      Highest-value carrier surfaces (I15D2):
+
+      - Prioritized 12 surfaces against `#5` acquisition value: DHL Express
+        MyDHL API, DHL eCommerce Solutions Americas, DHL Post & Parcel
+        Germany, UPS Developer APIs (REST + OAuth), UPS legacy XML/SOAP
+        (sunset 2024-06-03), FedEx REST APIs, FedEx Web Services (SOAP
+        legacy), USPS APIs (REST + OAuth), USPS Web Tools (deprecated),
+        Royal Mail Shipping API V3, La Poste Colissimo (SOAP, France), and
+        Australia Post Shipping & Tracking. Pairing modern and legacy
+        surfaces by vendor preserves SEO equity for "UPS XML API" and "USPS
+        Web Tools" search intent rather than 404'ing those queries.
+
+      Carrier surface schema and pages (I15D3):
+
+      - Added `ProtocolFamily`, `CarrierStatus`, `CarrierRegion`, and
+        `CarrierSurface` types in `src/content/types.ts`.
+      - Authored all 12 surfaces in `src/content/carriers.ts` with FAQs,
+        sandbox notes, tooling URLs, related concept and sibling links,
+        and `lastReviewed` dates. Each surface body is ≥180 words; FAQs
+        are real questions answered concretely, not marketing copy.
+      - Added `src/routes/wiki/carriers/index.tsx` (vendor-grouped index)
+        and `src/routes/wiki/carriers/$slug.tsx` (surface detail) following
+        TanStack Start file-route conventions. Sunset/deprecated/legacy
+        surfaces render a deprecation banner with a typed `Link` to the
+        replacement surface.
+      - Updated `src/routes/wiki/index.tsx` to surface the carrier section
+        above the existing concept articles list.
+
+      Directory expansion (I15D4):
+
+      - Extended `DirectoryEntry` with optional `slug`, `vendor`,
+        `businessUnit`, `apiName`, `region`, `protocols`, `status`,
+        `deprecation`, `sandbox`, `tooling`, and `carrierSlug` cross-link
+        fields. Existing entries are unchanged for backwards compatibility.
+      - Added 12 carrier-aware directory entries with vendor-aware metadata,
+        deprecation notes for the UPS XML legacy surface and USPS Web Tools,
+        sandbox URLs/notes, OpenAPI/WSDL tooling URLs, and `carrierSlug`
+        cross-links to the corresponding `/wiki/carriers/$slug` page.
+
+      SEO and structured data (I15D5):
+
+      - Added `generateArticleSchema`, `generateBreadcrumbListSchema`, and
+        `generateFAQPageSchema` to `src/lib/seo/structured-data.ts`. Wired
+        Article + BreadcrumbList JSON-LD onto every wiki concept page,
+        Article + BreadcrumbList + FAQPage onto every carrier surface page
+        (FAQPage is suppressed when no FAQs exist), and BreadcrumbList onto
+        the wiki and carrier index pages.
+      - Replaced the leftover Builder Coil `scripts/generate-sitemap.ts`
+        with a Shipping API Dojo generator that pulls slugs from the
+        canonical content modules. Extracted the deterministic logic into
+        `src/lib/seo/sitemap.ts` so both the script and the regression
+        tests share one source of truth.
+      - Regenerated `public/sitemap.xml` from 23 hand-maintained URLs to
+        67 generator-produced URLs covering all lessons, concept articles,
+        carrier surfaces (including sunset/legacy), and the static landing,
+        learn, arena, wiki, carrier-index, directory, privacy, and cookies
+        routes.
+
+      Tests (+41):
+
+      - `src/content/carriers.test.ts` — 16 tests: slug uniqueness, slug
+        pattern, ≥3 FAQs per surface, ≥180-word body floor, ≥2 concept
+        links and ≥1 directory link, replacement-slug resolution for
+        sunset/deprecated/legacy, sibling surface resolution, HTTPS source
+        URLs, vendor business-unit splits (DHL into Express/eCommerce/
+        Parcel DE), and modern-vs-legacy pairing for UPS, USPS, and FedEx.
+      - `src/content/directory.test.ts` — 9 tests: unique URLs and slugs,
+        HTTPS for entry/tooling/sandbox URLs, vendor/region required for
+        carrier-category entries, deprecation notes required for
+        deprecated/sunset entries, carrierSlug resolves to a real surface,
+        and every active surface has a directory entry.
+      - `src/lib/seo/structured-data.test.ts` — extended from 1 to 9 tests:
+        Article shape (canonical URL, mainEntityOfPage, publisher pointer,
+        publish/modify dates, optional author), BreadcrumbList (1-indexed
+        positions, optional URLs, empty-input rejection), and FAQPage
+        (null on empty, Question/Answer entities).
+      - `src/lib/seo/sitemap.test.ts` — 8 tests: every wiki, lesson, and
+        carrier surface slug is in the sitemap; static routes are covered;
+        no duplicate locs; the rendered XML matches the published file
+        byte-for-byte (drift regression).
+
+      Validation:
+
+      - `pnpm format`: 172 files clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 147 tests / 27 files passing (was 106 / 24).
+      - `pnpm build`: succeeds; new SSR chunks for `/wiki/carriers/`
+        and `/wiki/carriers/$slug` ship in the Vercel function bundle.
+
+      Out of scope (preserved): mobile native readiness (#13), curriculum
+      content beyond what #9 already shipped, paywall/randomization/
+      progress contracts.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+
+  - date: "2026-04-25"
+    version: "1.3.3"
+    commit: tbd
+    status: pending
+    title: "docs(mobile): issue #13 mobile readiness strategy + extract platform-neutral seed-param helper (I13D1, I13D2, I13D3, I13D4, I13D5)"
+    details: |-
+      Issue #13 strategy + light-touch refactor pass on
+      `codex/issue-13-mobile-readiness`. No native app code, no React
+      Native dependencies, no monorepo tooling, and no user-visible web
+      behavior change.
+
+      Strategy doc:
+
+      - Added `specs/current-changes/issue-13-mobile-readiness-plan.md`
+        as the long-form companion to the existing outline. Covers all
+        five deliverables:
+        - `I13D1`: full audit of `src/lib/randomization.ts`,
+          `src/lib/practice/*`, `src/lib/progress/*`,
+          `src/lib/entitlements/*`, `src/content/*`, `src/lib/auth/*`,
+          and `src/lib/billing/*` — split into platform-neutral domain
+          modules (safe to share with native), browser-coupled modules
+          (must stay in the web layer), and TanStack Start / Router
+          server-fn modules (cannot be imported by native; must remain
+          callable over HTTPS). Confirmed lesson slugs, drill family
+          IDs, scenario IDs, premium capability names, and
+          `certificates.credentialId` / `credentialUrl` are all stable
+          domain values, never derived from URL state.
+        - `I13D2`: extracted the pure URL-cleaning logic from
+          `src/lib/practice/use-strip-legacy-seed-params.ts` into a new
+          `stripLegacySeedParamsFromHref(href)` helper in
+          `src/lib/practice/seed-search.ts`, leaving the React /
+          TanStack Router hook as a thin binding shell. Verified the
+          remaining modules (`progress.{schema,merge,actions,hydration}`,
+          `practice-runs`, `entitlements`, `access-policy`,
+          `randomization`, `content/*`) are already platform-neutral
+          and need no refactor. Boundary contract recap added to the
+          plan doc.
+        - `I13D3`: recommended Expo + React Native + TanStack Router
+          (native) as the default future stack, with a fallback "thin
+          native shell over the hosted web app" option. Documented
+          which modules are shared verbatim (`src/content/*`,
+          `randomization`, `progress.{schema,merge,actions,hydration}`,
+          `practice-runs`, `seed-search`, `entitlements/*`) and which
+          stay web-only (TanStack Start routes, SSR meta / OG / SEO,
+          Tailwind + Radix UI, `ProgressHydrator`,
+          `setupCrossTabSync`, settings export/import, web cookie
+          wiring, web Sentry init).
+        - `I13D4`: Bearer-token plan for native (Better Auth's
+          `bearer()` plugin server-side, `better-auth/react-native`
+          + `expoClient({ scheme, storage })` client-side,
+          `expo-secure-store` for token persistence, magic-link
+          callback URLs over `shippingapidojo://auth/...`,
+          `expo-local-authentication` biometric gate, per-device
+          session metadata for a future "signed-in devices" surface).
+          No code changes — strategy only.
+        - `I13D5`: documented the public API contract surface
+          (`/api/auth/*`, session/progress/entitlements/practice/
+          account-rights server fns), the `shippingapidojo://`
+          deep-link scheme (lessons, arena, wiki, directory, settings,
+          auth callbacks, certificates by `credentialId`), the offline
+          cache + sync conflict rules (curriculum bundled, progress
+          cached + last-write-wins via
+          `mergeAnonymousProgressOnSignIn`, entitlements cached ≤ 24h
+          with `fallbackFreeEntitlements()`), the push-notification
+          surface (`expo-notifications`, `device_push_tokens` table,
+          ID-only payloads), and the Apple/Google in-app-purchase
+          posture (read web-purchased entitlements on native; no
+          in-app upgrade flow in v1; add StoreKit / Play Billing later
+          and reconcile via the highest-tier rule in
+          `resolveEntitlementsForUserId`).
+
+      Refactor (extract pure helper):
+
+      - `src/lib/practice/seed-search.ts`: added
+        `stripLegacySeedParamsFromHref(href: string)
+        : { changed: boolean; href: string }` plus the
+        `StripLegacySeedParamsResult` interface. Pure: no React,
+        router, browser, or Node imports. Uses a fixed
+        `http://shipping-api-dojo.local` parsing base URL so relative
+        hrefs are normalized identically on web and (future) native.
+      - `src/lib/practice/use-strip-legacy-seed-params.ts`: hook now
+        delegates to the pure helper. The router-bound `navigate`
+        call is unchanged (`replace: true`, `resetScroll: false`),
+        so web behavior is identical.
+      - `src/lib/practice/seed-search.test.ts`: 4 new tests for the
+        pure helper (no-op case, preserved non-legacy params + hash,
+        all-three legacy params removal, and leading-slash
+        normalization). Existing two schema tests continue to pass.
+
+      Memory bank:
+
+      - `specs/memory-bank/active-context.yaml`: bumped
+        `meta.release` to `1.3.3`, moved `mobile-readiness-native-strategy`
+        from `planned` to `in-progress`, cleared
+        `remaining_deliverables`, and added a `progress_log` entry
+        covering all five deliverables.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: clean.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 110 / 110 passing across 24 files (added
+        4 new tests for `stripLegacySeedParamsFromHref`).
+
+
+  - date: "2026-04-25"
+    version: "1.3.2.1"
+    commit: tbd
+    status: pending
+    title: "chore(docs): added two implementation plans"
+    details: |-
+      chore(docs): added two implementation plans
+
+
+  - date: "2026-04-25"
+    version: "1.3.2"
+    commit: 8535e10
+    status: pending
+    title: "fix(observability): scrub Sentry breadcrumbs, centralize server env parsing, filter logger tags at source"
+    details: |-
+      Address the second round of Gemini review comments on PR #32.
+
+      Privacy:
+
+      - `src/lib/observability/sentry-scrubber.ts`: strip the `breadcrumbs`
+        array on every Sentry event. Auto-captured breadcrumbs (console
+        logs, fetch/XHR calls, UI clicks) routinely contain emails, auth
+        tokens, or seeded query params, all of which issue #26 forbids
+        forwarding. The scrubber now nulls the entire trail rather than
+        attempting per-entry redaction. Added `breadcrumbs?: unknown` to
+        `ScrubbableEvent` and a fifth regression test
+        (`strips breadcrumbs to prevent PII leakage from auto-captured
+        console/fetch/UI events`).
+      - `instrument.server.mjs`: mirror the breadcrumb stripping inline so
+        the self-hosted `--import` path behaves identically to the lazy
+        `initServerSentryOnce` path.
+
+      Maintainability:
+
+      - `src/lib/observability/sentry-init.ts`: `initServerSentryOnce` now
+        delegates env parsing to `getServerSentryConfig` from
+        `sentry.env.ts`. The bespoke `parseTracesSampleRate` helper and
+        the inline `SENTRY_ENVIRONMENT ?? "development"` default are gone;
+        Zod parsing, defaults, and DSN-presence gating live in one place.
+      - `src/lib/observability/logger.ts`: filter `captureException`
+        context against `SAFE_TAG_KEYS` at the source instead of relying
+        only on the downstream scrubber. Exported `SAFE_TAG_KEYS` from
+        `sentry-scrubber.ts` so the allow-list stays single-sourced; the
+        scrubber remains the authoritative compliance boundary.
+
+      Validation:
+
+      - `pnpm test --run`: 106 tests / 24 files passing (added 1).
+      - `pnpm lint`, `pnpm format`, `pnpm typecheck`, `pre-commit`: all
+        clean.
+
+
+  - date: "2026-04-25"
+    version: "1.3.1"
+    commit: 888543f
+    status: pending
+    title: "fix(observability,billing): address PR #32 Gemini review comments"
+    details: |-
+      Address all four Gemini code-review comments on PR #32 so the Sentry
+      Free-tier observability slice lands with a deterministic billing
+      upsert and full default Sentry integrations.
+
+      Billing correctness:
+
+      - `src/routes/api/webhooks/creem.ts`: extend the
+        `subscriptions` `onConflictDoUpdate` `set` clause to also write
+        `productId` (via `resolveProductIdForPlanKey`) and `provider:
+        "creem"`. Previously a plan change (e.g., monthly -> annual) would
+        update `planKey` but leave `productId` stale on the existing row.
+        The upsert now produces a fully deterministic post-state for all
+        mutable fields and constant identifiers.
+
+      Sentry default integrations:
+
+      - `instrument.server.mjs`, `src/instrument.client.ts`, and
+        `src/lib/observability/sentry-init.ts`: drop the `integrations: []`
+        override from all three `Sentry.init` call sites. Setting an empty
+        array disabled the SDK's default integrations (auto error capture,
+        unhandled promise rejection, OpenTelemetry on server, breadcrumbs
+        on client), which defeated the point of installing Sentry. The
+        `beforeSend` scrubber is the real compliance boundary and remains
+        in place, so enabling the defaults gives us comprehensive auto
+        capture while keeping the issue #26 privacy posture intact.
+
+      Rationale:
+
+      - Gemini flagged the missing `productId`/`provider` as HIGH priority
+        because a stale `productId` would break downstream billing
+        reconciliation on plan changes.
+      - The `integrations: []` pattern was a defensive carry-over from
+        early experimentation; with the scrubber proven out via tests and
+        `sendDefaultPii: false` still set, there is no remaining reason to
+        disable defaults.
+
+      No test or schema changes required: the upsert shape is still a
+      superset of the insert shape, and the Sentry tests mock the SDK at
+      the module level so integration defaults do not affect them.
+
+
+  - date: "2026-04-24"
+    version: "1.3.0"
+    commit: bf89a98
+    status: pending
+    title: "feat(observability): ship Sentry Free-tier observability slice for hosted v2 errors"
+    details: |-
+      Implement the privacy-safe Sentry Free-tier integration planned in
+      issue #26. Sentry stays disabled by default and only activates when
+      the DSN env vars are set, so local development, CI, and preview
+      deploys ship zero Sentry traffic until the maintainer opts in.
+
+      Core wiring:
+
+      - Installed `@sentry/tanstackstart-react@10.50.0` and ran
+        `pnpm dedupe` to resolve a transient drizzle-orm peer duplication
+        caused by Sentry's OpenTelemetry peer chain.
+      - Added `src/lib/observability/sentry.env.ts` (Zod-parsed optional
+        schema returning `null` when the DSN is missing),
+        `src/lib/observability/sentry-scrubber.ts` (allow-list PII scrubber
+        keeping only `route`, `operation`, `tier`, `fallbackTier`,
+        `environment` tags and stripping `user`/`extra`/headers/query
+        strings), and `src/lib/observability/sentry-init.ts`
+        (`sentryBeforeSend` + idempotent `initServerSentryOnce` guarded by
+        `Sentry.getClient()`).
+      - Extended `src/lib/observability/logger.ts` so `captureException`
+        forwards to `Sentry.captureException` via `Sentry.withScope` +
+        `setTag` when a client is initialized, and keeps the existing
+        `console.error` fallback for local dev. Tags derived from context
+        use a `null → "null"` normalization so Sentry tag constraints are
+        respected.
+      - Added `src/instrument.client.ts` with double gating
+        (`VITE_SENTRY_DSN` present AND `typeof window !== "undefined"`)
+        side-effect imported from `src/router.tsx`, and
+        `instrument.server.mjs` in the project root for self-hosted
+        `--import ./instrument.server.mjs` bootstraps with inline
+        beforeSend scrubbing matching the TS scrubber.
+
+      Surface coverage:
+
+      - Wired `src/components/progress/ProgressHydrator.tsx` and the Creem
+        + Resend webhook handlers (`src/routes/api/webhooks/creem.ts`,
+        `src/routes/api/webhooks/resend.ts`) through `captureException`.
+        Webhooks now catch unexpected errors, return `500`, and forward
+        the exception so provider retry behavior stays intact without
+        hiding real failures.
+      - Route loader entitlement fallbacks already flowed through
+        `captureException` after issue `#21` (`resolvePracticeCapabilities`
+        in `src/lib/practice/practice-runs.sync.ts`); no additional
+        plumbing required there.
+
+      Build and deploy:
+
+      - Gated the Sentry Vite plugin (`sentryTanstackStart`) in
+        `vite.config.ts` on `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and
+        `SENTRY_PROJECT` so source-map upload only runs when all three
+        trusted credentials are present.
+      - Verified `pnpm build` produces the Vercel function bundle with
+        the Sentry core chunk (`_libs/sentry__core.mjs`, 366.66 kB) and
+        no auth-token upload step when credentials are unset.
+
+      Tests and docs:
+
+      - Added `src/lib/observability/sentry-scrubber.test.ts` (4 tests)
+        covering PII stripping, URL query/hash stripping on absolute and
+        relative URLs, non-mutation of caller input, and the
+        allow-list-based tag drop when nothing remains.
+      - Added `src/lib/observability/sentry.env.test.ts` (5 tests)
+        covering malformed DSN rejection, full env parsing, null return
+        when the requested side's DSN is missing, and traces-rate
+        resolution defaults.
+      - Extended `src/lib/observability/logger.test.ts` to 5 tests
+        (original 2 + Sentry no-client short-circuit + Sentry forwarding
+        with safe tag context + null-tag normalization). Used
+        `vi.hoisted` + `vi.mock` because `@sentry/tanstackstart-react`
+        cannot be spied via `vi.spyOn` under ESM.
+      - New suite: 105 tests across 24 files, all passing.
+      - Documented `SENTRY_DSN`, `VITE_SENTRY_DSN`, `SENTRY_ENVIRONMENT`,
+        `SENTRY_RELEASE`, `SENTRY_TRACES_SAMPLE_RATE`,
+        `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` in
+        `.env.example` and added a new `Observability` section to
+        `README.md` with privacy posture, DSN activation steps, and a
+        verify-a-test-event snippet.
+    refs:
+      - "I5D11"
+      - "#5"
+      - "#26"
+
+  - date: "2026-04-24"
+    version: "1.2.6"
+    commit: TBD
+    status: pending
+    title: "docs(issue-21): close out paid-tier content gating bookkeeping"
+    details: |-
+      Closed issue #21 bookkeeping after confirming the paid-tier gating slice
+      was already shipped to `main` by PR #25 between v1.1.18 and v1.1.20
+      (commits 230a792, 40d0f63, and merge 3c4b101).
+
+      Audited surfaces verified on main:
+      - Capability matrix in `src/lib/entitlements/access-policy.ts`
+        (`TIER_CAPABILITY_MATRIX`, `canUseLessonChallengeReroll`,
+        `canUseScenarioReroll`, `canAccessScenarioRun`,
+        `requiresPremiumScenarioDepth`, `fallbackFreeEntitlements`).
+      - Server-side enforcement in `src/lib/practice/practice-runs.sync.ts`:
+        `createLessonPracticeRun`, `createArenaCardsRun`, and
+        `createArenaScenarioRun` throw
+        `FORBIDDEN_CAPABILITY:randomization.premium.full` for sessions
+        without the entitlement, and `getArenaPracticeRouteData` marks cards
+        as `isLocked` via `canAccessScenarioRun(capabilities, ladderLevel)`.
+      - Lesson upgrade UX in `src/routes/lesson/$slug.tsx` swaps the
+        `New Challenge` button for a `Unlock New Challenge (Pro)` link to
+        `/settings#paid-access` when `canUseChallengeReroll` is false.
+      - Arena locked-content UX in `src/routes/arena/index.tsx` renders a
+        `Lock` badge, `Advanced Scenario Depth (Pro)` copy, and
+        `Unlock advanced scenario depth` CTAs for premium-depth cards.
+      - Settings surface in `src/routes/settings.tsx` renders the full
+        `TIER_CAPABILITY_MATRIX`, live tier/source/capabilities, and falls
+        back to Free through `fallbackFreeEntitlements()` when the resolver
+        throws.
+      - Safe fallback in `resolvePracticeCapabilities` wraps
+        `resolveEntitlementsForUserId` in try/catch and returns
+        `fallbackFreeEntitlements().capabilities`, with exceptions routed
+        through the shared observability logger.
+      - Regression coverage in
+        `src/lib/entitlements/access-policy.test.ts`,
+        `src/lib/entitlements/entitlements.test.ts`, and
+        `tests/browser/smoke.spec.ts`.
+
+      Bookkeeping changes in this entry:
+      - Moved `specs/current-changes/issue-21-paid-tier-content-gating-plan.md`
+        to `specs/archived/completed/` with an appended closeout audit.
+      - Removed the stale duplicate
+        `specs/current-changes/issue-27-dev-tier-seeded-users-plan.md` that
+        PR #30's archive commit (`6e2ae58`) left behind in both locations.
+      - Dropped `I5D9` from issue #5 `remaining_deliverables` in
+        `specs/memory-bank/active-context.yaml`; only `I5D10` and `I5D11`
+        remain as umbrella deliverables.
+      - Closed GitHub issue #21 with `state_reason=completed` and posted a
+        closeout comment cross-linking PR #25 and the three implementing
+        commits, since PR #25 used `Refs #21` rather than `Closes #21` and
+        GitHub therefore never auto-closed the issue on merge.
+
+      No runtime code changes.
+    refs:
+      - "I5D9"
+      - "#5"
+      - "#21"
+      - "#25"
+
+  - date: "2026-04-23"
+    version: "1.2.5"
+    commit: TBD
+    status: pending
+    title: "refactor(dev-seed): PR #30 Gemini follow-up — explicit periodDays, MS_PER_DAY constant, and cleanup"
+    details: |-
+      Addressed the eighth, ninth, and tenth Gemini review comments on PR #30
+      for issue #27 (I5D12).
+
+      - Added `periodDays` field to `SubscriptionSeedShape` interface in
+        `seed-fixtures.ts`, with each fixture state defining its billing
+        period (30 days for monthly, 365 days for annual/enterprise).
+      - Added `MS_PER_DAY` constant for millisecond conversion instead of
+        magic numbers, removing fragile string matching against plan keys.
+      - Kept `process.env` for flag manipulation since `SeedGuardEnv` has a
+        readonly index signature; the `env` parameter is only used for the
+        guard check while the actual signal uses the global.
+      - Removed redundant nullish coalescing operators in
+        `tests/browser/fixtures/tiered-auth.ts` since `CredentialEntry`
+        guarantees email and password are strings.
+      - Replied to all three PR #30 review threads.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+
+  - date: "2026-04-23"
+    version: "1.2.4"
+    commit: TBD
+    status: pending
+    title: "fix(dev-seed): PR #30 Gemini follow-up — calculate subscription duration by plan type"
+    details: |-
+      Addressed the seventh Gemini review comment on PR #30 for issue #27
+      (I5D12).
+
+      - Added duration calculation based on plan type in
+        `upsertSubscriptionForFixture` in `src/lib/dev/seed-dev-users.ts`.
+      - Annual plans (`planKey.includes("annual")`) now use 365 days, while
+        monthly plans use 30 days.
+      - This ensures the seeded data matches the expected billing shape for
+        both `active_pro_monthly` and `active_pro_annual` fixtures.
+      - Replied to the seventh PR #30 review thread.
+    refs:
+      - "I5D12"
+      - "#27"
+      - "#30"
+
   - date: "2026-04-23"
     version: "1.2.3"
     commit: TBD
