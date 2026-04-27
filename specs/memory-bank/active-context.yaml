@@ -1,5 +1,5 @@
 meta:
-  release: "1.4.1.3"
+  release: "1.4.1.4"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -201,6 +201,8 @@ roadmap:
           note: "Addressed the second Gemini review pass on PR #34 for issue #15 (commit 50641c5): renamed the misleading 'xml-rpc' member of ProtocolFamily to 'xml-http' with a doc comment explaining it covers proprietary XML-over-HTTP interfaces (USPS Web Tools, pre-2024 UPS XML services) and is intentionally distinct from soap and from the actual XML-RPC standard; updated the UPS legacy and USPS Web Tools carrier surfaces plus the matching directory entry; routed findRelatedSurfaces through the existing getCarrierSurfaceBySlug helper and dropped the now-unused carrierSurfaces import; conditionally pushed the breadcrumb script in /wiki/carriers/$slug.tsx only when generateBreadcrumbListSchema returned a non-null payload, mirroring the existing faqSchema pattern. Replied to all four PR #34 review threads. Validated with pnpm format, pnpm lint, pnpm typecheck, and pnpm test --run (151/151). Bumped meta.release to 1.4.1.2."
         - covers: [I5D10]
           note: "Addressed the third Gemini review pass on PR #34 for issue #15 (commit 9acfbfb): hoisted the static groupSurfacesByVendor(carrierSurfaces) call out of CarrierIndexPage and into a module-scope carrierVendorGroups constant so the transformation runs once at module load; extracted a shared breadcrumbScripts(crumbs) helper in src/lib/seo/structured-data.ts that returns the head.scripts entry array (empty when generateBreadcrumbListSchema yields null) and updated all four wiki routes (/wiki, /wiki/$slug, /wiki/carriers, /wiki/carriers/$slug) to spread the helper so the conditional null-handling is centralized and cannot drift across routes; routed findRelatedConceptTitles in /wiki/carriers/$slug.tsx through the existing getWikiBySlug helper and dropped the now-unused wikiEntries import. Replied to all three PR #34 review threads. Validated with pnpm format, pnpm lint, pnpm typecheck, pre-commit, and pnpm test --run (151/151). Bumped meta.release to 1.4.1.3."
+        - covers: [I5D10]
+          note: "Addressed the fourth Gemini review pass on PR #34 for issue #15 (commit 401a676): hoisted the carrierVendorCount derivation (a Set over carrierSurfaces.map(... vendorSlug)) out of WikiIndexPage and into a module-scope constant in src/routes/wiki/index.tsx, matching the pattern already applied to carrierVendorGroups in /wiki/carriers/index.tsx so both static-data transformations run once at module load instead of on every render. Replied to the PR #34 review thread. Validated with pnpm format, pnpm lint, pnpm typecheck, pre-commit, and pnpm test --run (151/151). Bumped meta.release to 1.4.1.4."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

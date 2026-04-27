@@ -1,8 +1,45 @@
 entries:
   - date: "2026-04-27"
-    version: "1.4.1.3"
+    version: "1.4.1.4"
     commit: tbd
     status: pending
+    title: "perf(wiki): hoist static carrier vendor count out of WikiIndexPage (PR #34 review)"
+    details: |-
+      Address the fourth Gemini review pass on PR `#34` (issue `#15`,
+      commit `401a676`) without changing any user-visible content,
+      slug, URL, or sitemap output.
+
+      What changed:
+
+      - Hoisted the `carrierVendorCount` derivation (a `Set` over
+        `carrierSurfaces.map((surface) => surface.vendorSlug)`) out of
+        `WikiIndexPage` and into a module-scope constant in
+        `src/routes/wiki/index.tsx`. This matches the pattern already
+        applied to `carrierVendorGroups` in
+        `src/routes/wiki/carriers/index.tsx`, so both static-data
+        transformations now run once at module load instead of on
+        every render.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 across 27 files.
+      - `pre-commit`: clean.
+
+      Out of scope: no content, slug, URL, sitemap output, or
+      directory data change. PR `#34` review thread was replied to
+      inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-27"
+    version: "1.4.1.3"
+    commit: 401a676
+    status: committed
     title: "refactor(seo): hoist static carrier groups and centralize breadcrumb JSON-LD helper (PR #34 review)"
     details: |-
       Address the third Gemini review pass on PR `#34` (issue `#15`,

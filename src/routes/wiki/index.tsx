@@ -29,11 +29,11 @@ export const Route = createFileRoute("/wiki/")({
 	component: WikiIndexPage,
 });
 
-function WikiIndexPage() {
-	const carrierVendorCount = new Set(
-		carrierSurfaces.map((surface) => surface.vendorSlug)
-	).size;
+const carrierVendorCount = new Set(
+	carrierSurfaces.map((surface) => surface.vendorSlug)
+).size;
 
+function WikiIndexPage() {
 	return (
 		<div className="container mx-auto max-w-4xl px-4 py-16">
 			<h1 className="mb-4">Wiki</h1>
