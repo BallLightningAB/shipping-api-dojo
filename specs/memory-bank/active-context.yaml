@@ -1,5 +1,5 @@
 meta:
-  release: "1.4.1.5"
+  release: "1.4.1.6"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -13,7 +13,7 @@ roadmap:
     - id: content-expansion
       issue: "#5"
       title: "Web v2 program: content expansion, hosted access, and knowledge surfaces"
-      status: in-progress
+      status: final-readiness
       priority: high
       links:
         issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/5"
@@ -31,9 +31,10 @@ roadmap:
         - "[I5D11] Add privacy-safe Sentry Free-tier observability for hosted v2 error paths"
         - "[I5D12] Add dev-only tiered auth users, billing-shaped seed state, and Playwright auth helpers"
         - "[I5D13] Remove URL-visible seeds from protected randomized practice flows before certificate launch"
+        - "[I5D14] Add public plans/sign-in/storefront surfaces and complete production integration acceptance testing"
       est:
-        dev_h: 158
-        test_h: 83
+        dev_h: 170
+        test_h: 97
       sub_issues:
         - id: content-expansion-scoping
           issue: "#7"
@@ -95,7 +96,7 @@ roadmap:
         - id: deep-wiki-expansion
           issue: "#15"
           title: "Deep wiki expansion by vendor, business unit, region, and protocol surface"
-          status: in-progress
+          status: done
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/15"
           progress_log:
@@ -110,7 +111,7 @@ roadmap:
         - id: sentry-observability
           issue: "#26"
           title: "Add Sentry Free-tier observability for hosted v2 errors"
-          status: planned
+          status: done
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/26"
         - id: dev-tier-seeded-users
@@ -126,9 +127,15 @@ roadmap:
           priority: critical
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/28"
+        - id: final-production-readiness
+          issue: "#36"
+          title: "Final v2 production readiness: public plans, Creem storefront, sign-in, and integration acceptance"
+          status: planned
+          priority: high
+          links:
+            issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/36"
       remaining_deliverables:
-        - "[I5D10] Expand the wiki and directory beyond curriculum support into the v2 carrier reference surface"
-        - "[I5D11] Add privacy-safe Sentry Free-tier observability for hosted v2 error paths"
+        - "[I5D14] Add public plans/sign-in/storefront surfaces and complete production integration acceptance testing"
       progress_log:
         - note: "Research captured in specs/current-changes/issue-5-content-expansion-research.md and GitHub issue #5 was updated to target minimum viable randomization, 20 lessons, 20 drill families, and 20 scenario families."
         - note: "Created the issue-5 joint plan plus issue-specific plan artifacts for #7, #11, #8, #9, and #10; added GitHub issue #11 for auth/billing/email/domain foundation; and updated the roadmap to sequence work as #7 -> #11 -> #8 -> #9 with #10 as follow-on."
@@ -203,6 +210,8 @@ roadmap:
           note: "Addressed the third Gemini review pass on PR #34 for issue #15 (commit 9acfbfb): hoisted the static groupSurfacesByVendor(carrierSurfaces) call out of CarrierIndexPage and into a module-scope carrierVendorGroups constant so the transformation runs once at module load; extracted a shared breadcrumbScripts(crumbs) helper in src/lib/seo/structured-data.ts that returns the head.scripts entry array (empty when generateBreadcrumbListSchema yields null) and updated all four wiki routes (/wiki, /wiki/$slug, /wiki/carriers, /wiki/carriers/$slug) to spread the helper so the conditional null-handling is centralized and cannot drift across routes; routed findRelatedConceptTitles in /wiki/carriers/$slug.tsx through the existing getWikiBySlug helper and dropped the now-unused wikiEntries import. Replied to all three PR #34 review threads. Validated with pnpm format, pnpm lint, pnpm typecheck, pre-commit, and pnpm test --run (151/151). Bumped meta.release to 1.4.1.3."
         - covers: [I5D10]
           note: "Addressed the fourth Gemini review pass on PR #34 for issue #15 (commit 401a676): hoisted the carrierVendorCount derivation (a Set over carrierSurfaces.map(... vendorSlug)) out of WikiIndexPage and into a module-scope constant in src/routes/wiki/index.tsx, matching the pattern already applied to carrierVendorGroups in /wiki/carriers/index.tsx so both static-data transformations run once at module load instead of on every render. Replied to the PR #34 review thread. Validated with pnpm format, pnpm lint, pnpm typecheck, pre-commit, and pnpm test --run (151/151). Bumped meta.release to 1.4.1.4."
+        - covers: [I5D14]
+          note: "Created final v2 production-readiness sub-issue #36 after the #5 completion audit found the remaining launch gap: public plans/sign-in surfaces, Creem Storefront CTAs for the two Pro product IDs, explicit Enterprise inquiry-only messaging, paid-feature navigation from product surfaces, and a targeted external integration acceptance pass. Marked #15 and #26 complete in the roadmap state and left #36 as the only remaining #5 deliverable before closing the umbrella."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

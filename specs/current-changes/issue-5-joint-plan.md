@@ -1,8 +1,8 @@
 # Issue 5 Joint Plan
 
-Date: 2026-04-12
+Date: 2026-04-27
 Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
-Scope: Coordination plan for the full Shipping API Dojo web-v2 program anchored by `#5`, with core execution across `#7`, `#11`, `#8`, `#9`, `#10`, `#12`, `#15`, `#21`, `#26`, `#27`, and `#28`.
+Scope: Coordination plan for the full Shipping API Dojo web-v2 program anchored by `#5`, with core execution across `#7`, `#11`, `#8`, `#9`, `#10`, `#12`, `#15`, `#21`, `#26`, `#27`, `#28`, and the final production-readiness issue `#36`.
 
 ## Goal
 
@@ -19,6 +19,7 @@ Deliver issue `#5` through a strict sequence that separates:
 - production-grade hosted error reporting
 - development-only tiered auth and billing-state fixtures for browser validation
 - server-authoritative seed security for certificate-safe randomized practice
+- final public product, plans, sign-in, Creem Storefront, and production integration acceptance surfaces
 
 Issue `#5` provides the global instructions and guardrails for the whole web-v2 implementation chain. Subplans should not reinterpret its product boundary, testing standard, or SEO posture independently.
 
@@ -28,6 +29,8 @@ Issue `#5` provides the global instructions and guardrails for the whole web-v2 
 - The `apidojo.app` purchase and subdomain/DNS setup are required work, not a launch footnote.
 - API Trainer gets a fresh dedicated Resend account and sending domain.
 - Hosted access follows `anonymous sample -> signed-in free -> Pro -> Enterprise`.
+- Pro is the only storefront-backed paid plan currently in scope, using the monthly product ID `prod_3jDZfwYMV4z7s0yyzLMGtp` and annual product ID `prod_2UKovfLiNB4uUAdlQrN2TD`.
+- Team and Enterprise checkout are not implemented yet; Enterprise must remain an inquiry/support path until a real product and entitlement model exist.
 - Local-only progress remains anonymous-only.
 - Signed-in progress becomes server-backed.
 - The public repo stays open core.
@@ -42,6 +45,7 @@ Issue `#5` provides the global instructions and guardrails for the whole web-v2 
 - Hosted v2 observability belongs in `#26`; issue `#21` may add a lightweight wrapper but full Sentry setup should stay separate.
 - Dev-only tiered auth and billing-state fixtures belong in `#27` so Free/Pro/Enterprise/canceled states can be exercised without polluting production data.
 - Seed-security hardening belongs in `#28`; deterministic randomization was proven in `#8/#9`, but URL-visible seeds must be removed before certificate-bearing or competitive paid practice flows launch.
+- Final production readiness belongs in `#36`; public plan/product copy, storefront CTAs, sign-in/account navigation, and deployed external integration acceptance must complete before `#5` closes.
 - EDI should be treated as a sibling-product strategy issue in `#16`, not as a third track inside Shipping API Dojo and not as a `#5` blocker.
 
 ## Current Execution Notes
@@ -49,8 +53,8 @@ Issue `#5` provides the global instructions and guardrails for the whole web-v2 
 - The public product identity is now `Shipping API Dojo`, with `API Dojo` treated as the umbrella brand for future sibling products.
 - Public SEO copy should prefer keyword phrases like `shipping API training`, `carrier APIs`, and `carrier integrations` instead of reviving the old `API Trainer` product label.
 - Issues `#10`, `#12`, `#19`, and `#20` are complete, but `#10` was outline-only and does not mean paid tiers/content gating are implemented.
-- Issue `#21` is complete after PR `#25`; issue `#5` remains open until the remaining in-scope v2 items such as `#15`, `#26`, `#27`, and `#28` complete or are explicitly deferred.
-- Issues `#26`, `#27`, and `#28` are now in-scope v2 support sub-issues under `#5`.
+- Issues `#15`, `#21`, `#26`, `#27`, and `#28` are complete. Issue `#5` remains open only for final production readiness in `#36`.
+- Issue `#36` is the final in-scope v2 support sub-issue under `#5`.
 - Issues `#13` and `#16` are still useful strategy work, but they are not blockers for `#5`.
 - During future implementation issues, keep GitHub, the issue-local plan artifact, and `active-context.yaml` aligned so resumability does not depend on terminal history.
 
@@ -72,6 +76,7 @@ Additional v2 support issues:
 - `#26` is an in-scope v2 sub-issue for Sentry Free-tier observability on hosted error paths.
 - `#27` is an in-scope v2 sub-issue for dev-only tiered seed users and Playwright auth states.
 - `#28` is an in-scope critical v2 sub-issue for server-authoritative seed security before certificates or challenge-validity claims.
+- `#36` is the final in-scope v2 sub-issue for public product/plans/sign-in surfaces, Creem Storefront routing, and production external-integration acceptance.
 - `#13` is follow-on mobile-readiness/native strategy work outside `#5`.
 - `#16` is follow-on EDI sibling-product strategy work outside `#5`.
 
@@ -90,6 +95,7 @@ Additional v2 support issues:
 - `#26` adds Sentry-backed observability so hosted auth, billing, entitlement, webhook, and route-loader failures are visible without relying on console output.
 - `#27` adds development-only seeded users and browser auth states for exercising tiered access through production-like resolver paths.
 - `#28` removes URL-visible seed exposure from protected randomized practice by moving seed ownership into server-authoritative state.
+- `#36` turns the implemented v2 platform into a production-ready customer-facing product by adding clear plans/product pages, sign-in/account entry points, Pro Storefront CTAs, Enterprise inquiry-only messaging, paid-feature direction, and external integration acceptance tests.
 - `#13` and `#16` are separate strategy follow-ons and do not block `#5`.
 
 ## SEO And Knowledge-Surface Guardrails
@@ -112,13 +118,14 @@ Additional v2 support issues:
 | `I5D4` 20 lessons | `#9` | Editorial lessons remain authored, not AI-generated. |
 | `I5D5` 20 drill families | `#9` | Existing drills are regrouped into the family taxonomy. |
 | `I5D6` 20 scenario families | `#9` | Existing scenarios are absorbed into the family taxonomy. |
-| `I5D7` linked sub-issue execution plan | `#7`, `#11`, `#8`, `#9`, `#15`, `#21`, `#26`, `#27`, `#28` | Satisfied when the in-scope issue graph and plan set are in place. |
+| `I5D7` linked sub-issue execution plan | `#7`, `#11`, `#8`, `#9`, `#15`, `#21`, `#26`, `#27`, `#28`, `#36` | Satisfied when the in-scope issue graph and plan set are in place. |
 | `I5D8` separate higher-value randomization track | `#10` | Outline only in this phase. |
 | `I5D9` paid tiers, content gating, and premium access surfaces | `#21` | First paid-tier gating slice shipped in PR `#25`. |
-| `I5D10` deep wiki and directory reference expansion | `#15` | In-scope v2 knowledge-surface expansion remains open. |
-| `I5D11` hosted error observability | `#26` | Add Sentry Free-tier reporting with privacy-safe context. |
+| `I5D10` deep wiki and directory reference expansion | `#15` | Completed in PR `#34`, including carrier surfaces, directory metadata, structured data, sitemap coverage, and review follow-ups. |
+| `I5D11` hosted error observability | `#26` | Completed with privacy-safe Sentry Free-tier reporting through the shared observability wrapper. |
 | `I5D12` tiered dev auth fixtures | `#27` | Add seeded Free/Pro/Enterprise/canceled states and Playwright auth helpers. |
 | `I5D13` server-authoritative seed security | `#28` | Remove URL-visible seeds from protected randomized practice flows before certificate launch. |
+| `I5D14` final production readiness | `#36` | Add public plans/sign-in/storefront surfaces and complete the target-environment integration acceptance pass. |
 
 ## Rough Estimates
 
@@ -135,8 +142,9 @@ Additional v2 support issues:
 | `#26` | Sentry Free-tier observability | 4h | 2h |
 | `#27` | dev-only tiered seed users and Playwright auth states | 6h | 4h |
 | `#28` | seed-security hardening | 8h | 5h |
+| `#36` | final product, storefront, sign-in, and integration acceptance | 12h | 14h |
 | Core chain total | `#5` umbrella rollup (`#7/#11/#8/#9/#10`) | 100h | 52h |
-| Full `#5` web-v2 total | core chain plus `#12/#15/#21/#26/#27/#28` | 158h | 83h |
+| Full `#5` web-v2 total | core chain plus `#12/#15/#21/#26/#27/#28/#36` | 170h | 97h |
 | Separate strategy follow-ons | `#13` mobile-readiness and `#16` EDI sibling-product strategy | 14h | 6h |
 
 ## Dependencies
@@ -174,6 +182,7 @@ Additional v2 support issues:
 | Hosted failures remain console-only | production entitlement or billing failures are missed | Complete `#26` before enabling paid hosted rollout. |
 | Paid-tier QA depends on ad hoc accounts | regressions slip across Free/Pro/Enterprise/canceled states | Complete `#27` before relying on browser validation for paid access. |
 | URL-visible seeds remain in protected flows | copied URLs can reproduce randomized attempts and undermine future certificate validity | Complete `#28` before certificates or challenge-validity claims launch. |
+| Public product and checkout surfaces remain hidden in settings | Creem payment activation may be rejected and customers cannot understand or buy Pro | Complete `#36` with a public plans page, visible sign-in/account entry, Pro Storefront CTAs, Enterprise inquiry-only copy, and deployed integration acceptance. |
 
 ## Shared Product Boundaries
 
@@ -189,8 +198,8 @@ Additional v2 support issues:
 - durable progress and account history
 - entitlement-aware content access
 - premium variant banks and review modes
-- certificates and shareable credential pages
-- team and enterprise reporting
+- certificates and shareable credential pages remain future work until implemented
+- team and enterprise reporting remain future work and are not part of the current Pro Storefront launch
 
 ### Sibling-product surface
 
@@ -222,8 +231,11 @@ Every implementation issue in this chain must include iterative validation, not 
 This planning package is complete when:
 
 - the v2 issue plans and follow-on outline artifacts exist in `specs/current-changes`
-- GitHub issues `#5`, `#7`, `#11`, `#8`, `#9`, `#10`, `#12`, `#15`, `#21`, `#26`, `#27`, and `#28` match this structure
+- GitHub issues `#5`, `#7`, `#11`, `#8`, `#9`, `#10`, `#12`, `#15`, `#21`, `#26`, `#27`, `#28`, and `#36` match this structure
 - `#13` and `#16` are explicitly marked as separate strategy follow-ons outside `#5`
 - the memory-bank reflects the new order and scope
 - the repo is ready to execute work in branch order without inventing architecture mid-stream
 - the SEO, licensing, privacy, mobile-readiness, wiki-expansion, and sibling-product guardrails are explicit enough that later issues do not accidentally undermine them
+
+`#5` is ready to close only after `#36` is implemented and the production
+acceptance results are recorded.

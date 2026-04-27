@@ -1,8 +1,44 @@
 entries:
   - date: "2026-04-27"
+    version: "1.4.1.6"
+    commit: 94d76c2
+    status: committed
+    title: "docs(v2): add final production-readiness issue and align launch state"
+    details: |-
+      Created final v2 production-readiness issue `#36` under the `#5`
+      umbrella and aligned the local planning state around the remaining
+      launch gap.
+
+      What changed:
+
+      - Added
+        `specs/current-changes/issue-5-final-production-readiness-plan.md`
+        covering the public product/plans page, visible sign-in/account
+        entry points, Creem Storefront CTAs for the two Pro products,
+        Enterprise inquiry-only messaging, paid-feature navigation, and
+        external integration acceptance tests.
+      - Updated `specs/current-changes/issue-5-joint-plan.md` so `#36`
+        is the only remaining in-scope `#5` blocker.
+      - Updated `specs/memory-bank/active-context.yaml` to mark `#15`
+        and `#26` complete and leave `I5D14` as the remaining
+        deliverable.
+      - Updated `README.md` so implemented v2 infrastructure is no longer
+        described as planned and so Pro/Enterprise product state is clear.
+
+      Validation:
+
+      - `pnpm format`: passed after restoring unrelated formatter touches.
+      - Documentation consistency grep for stale v2/planned markers:
+        passed.
+    refs:
+      - "I5D14"
+      - "#5"
+      - "#36"
+
+  - date: "2026-04-27"
     version: "1.4.1.5"
-    commit: tbd
-    status: pending
+    commit: 105af7b
+    status: committed
     title: "chore(security): resolve remaining automated dependency and CodeQL alerts"
     details: |-
       Followed up on the remaining automated security and quality alerts
