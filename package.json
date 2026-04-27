@@ -69,7 +69,7 @@
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.72.0",
     "react-icons": "^5.5.0",
-    "resend": "^6.5.2",
+    "resend": "^6.12.2",
     "shiki": "^3.15.0",
     "superjson": "^2.2.6",
     "tailwind-merge": "^3.4.0",
@@ -104,7 +104,9 @@
       "h3-v2": "npm:h3@2.0.1-rc.18",
       "undici": "7.24.0",
       "seroval": "1.4.1",
-      "rollup": "4.59.0"
+      "rollup": "4.59.0",
+      "@esbuild-kit/core-utils>esbuild": "0.25.12",
+      "resend>svix": "1.92.2"
     }
   }
 }
