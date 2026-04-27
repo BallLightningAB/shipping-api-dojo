@@ -168,9 +168,119 @@ export interface WikiSource {
 	url: string;
 }
 
-export interface DirectoryEntry {
-	category: "spec" | "tool" | "carrier" | "community";
-	description: string;
+/**
+ * Protocol families for carrier API surfaces.
+ *
+ * `xml-http` covers proprietary XML-over-HTTP interfaces (XML payload
+ * passed in a query string or POST body) such as legacy USPS Web Tools
+ * and pre-2024 UPS XML services. It is intentionally distinct from
+ * `soap` (envelope-based, WSDL-described) and from XML-RPC, which is a
+ * specific RPC standard that none of the supported carriers implement.
+ */
+export type ProtocolFamily =
+	| "rest"
+	| "soap"
+	| "edi-x12"
+	| "edi-edifact"
+	| "graphql"
+	| "webhook"
+	| "xml-http";
+
+export type CarrierStatus =
+	| "active"
+	| "preview"
+	| "deprecated"
+	| "sunset"
+	| "legacy";
+
+export type CarrierRegion =
+	| "global"
+	| "us"
+	| "ca"
+	| "de"
+	| "fr"
+	| "uk"
+	| "nl"
+	| "se"
+	| "au"
+	| "jp"
+	| "apac"
+	| "europe"
+	| "americas";
+
+export interface CarrierBaseUrls {
+	production?: string;
+	sandbox?: string;
+}
+
+export interface CarrierToolingNotes {
+	ediGuideUrl?: string;
+	graphqlEndpoint?: string;
+	openApiUrl?: string;
+	postmanCollectionUrl?: string;
+	wsdlUrl?: string;
+}
+
+export interface CarrierFaq {
+	answer: string;
+	question: string;
+}
+
+export interface CarrierSurface {
+	apiName: string;
+	authMethods: string[];
+	baseUrls: CarrierBaseUrls;
+	body: string;
+	businessUnit: string;
+	businessUnitSlug: string;
+	deprecationNotes?: string;
+	directorySlugs: string[];
+	faqs: CarrierFaq[];
+	lastReviewed: string;
+	officialDocs: WikiSource[];
+	productLine?: string;
+	protocol: ProtocolFamily;
+	region: CarrierRegion;
+	relatedConceptSlugs: string[];
+	relatedSurfaceSlugs: string[];
+	replacementSurfaceSlug?: string;
+	sandboxNotes?: string;
+	slug: string;
+	sources: WikiSource[];
+	status: CarrierStatus;
+	summary: string;
 	title: string;
+	toolingNotes?: CarrierToolingNotes;
+	vendor: string;
+	vendorSlug: string;
+}
+
+export interface DirectoryDeprecation {
+	effectiveDate?: string;
+	notes: string;
+	replacement?: string;
+}
+
+export interface DirectorySandbox {
+	available: boolean;
+	notes?: string;
+	url?: string;
+}
+
+export interface DirectoryEntry {
+	apiName?: string;
+	businessUnit?: string;
+	carrierSlug?: string;
+	category: "spec" | "tool" | "carrier" | "community";
+	deprecation?: DirectoryDeprecation;
+	description: string;
+	protocols?: ProtocolFamily[];
+	region?: CarrierRegion;
+	sandbox?: DirectorySandbox;
+	slug?: string;
+	status?: CarrierStatus;
+	title: string;
+	tooling?: CarrierToolingNotes;
 	url: string;
+	vendor?: string;
 }

@@ -1,4 +1,374 @@
 entries:
+  - date: "2026-04-27"
+    version: "1.4.1.4"
+    commit: tbd
+    status: pending
+    title: "perf(wiki): hoist static carrier vendor count out of WikiIndexPage (PR #34 review)"
+    details: |-
+      Address the fourth Gemini review pass on PR `#34` (issue `#15`,
+      commit `401a676`) without changing any user-visible content,
+      slug, URL, or sitemap output.
+
+      What changed:
+
+      - Hoisted the `carrierVendorCount` derivation (a `Set` over
+        `carrierSurfaces.map((surface) => surface.vendorSlug)`) out of
+        `WikiIndexPage` and into a module-scope constant in
+        `src/routes/wiki/index.tsx`. This matches the pattern already
+        applied to `carrierVendorGroups` in
+        `src/routes/wiki/carriers/index.tsx`, so both static-data
+        transformations now run once at module load instead of on
+        every render.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 across 27 files.
+      - `pre-commit`: clean.
+
+      Out of scope: no content, slug, URL, sitemap output, or
+      directory data change. PR `#34` review thread was replied to
+      inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-27"
+    version: "1.4.1.3"
+    commit: 401a676
+    status: committed
+    title: "refactor(seo): hoist static carrier groups and centralize breadcrumb JSON-LD helper (PR #34 review)"
+    details: |-
+      Address the third Gemini review pass on PR `#34` (issue `#15`,
+      commit `9acfbfb`) without changing any user-visible content,
+      slug, URL, or sitemap output.
+
+      What changed:
+
+      - Hoisted `groupSurfacesByVendor(carrierSurfaces)` out of
+        `CarrierIndexPage` in `src/routes/wiki/carriers/index.tsx`
+        and into a module-scope `carrierVendorGroups` constant so the
+        static-data transformation runs once at module load instead
+        of on every render.
+      - Added a shared `breadcrumbScripts(crumbs)` helper in
+        `src/lib/seo/structured-data.ts` that wraps
+        `generateBreadcrumbListSchema` + `jsonLdScript` and returns the
+        ready-to-spread `head.scripts` entry array (empty when the
+        schema is null). Updated all four wiki routes that emit
+        breadcrumb JSON-LD to spread the helper:
+        `src/routes/wiki/index.tsx`,
+        `src/routes/wiki/$slug.tsx`,
+        `src/routes/wiki/carriers/index.tsx`, and
+        `src/routes/wiki/carriers/$slug.tsx`. The conditional
+        null-handling is now centralized in one place, so the four
+        routes cannot drift on this contract.
+      - Routed `findRelatedConceptTitles` in
+        `src/routes/wiki/carriers/$slug.tsx` through the existing
+        `getWikiBySlug` helper instead of an inline
+        `wikiEntries.find((item) => item.slug === slug)`, mirroring
+        how `findRelatedSurfaces` already uses
+        `getCarrierSurfaceBySlug`. Dropped the now-unused
+        `wikiEntries` import.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 across 27 files.
+      - `pre-commit`: clean.
+
+      Out of scope: no content, slug, URL, sitemap output, or
+      directory data change. PR `#34` review threads were replied to
+      inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-26"
+    version: "1.4.1.2"
+    commit: 9acfbfb
+    status: committed
+    title: "fix(content): correct legacy XML protocol labeling and harden carrier-surface helpers (PR #34 review)"
+    details: |-
+      Address the second Gemini review pass on PR `#34` (issue `#15`,
+      commit `50641c5`) without changing any user-visible content, slug,
+      URL, or sitemap output.
+
+      What changed:
+
+      - Renamed the misleading `xml-rpc` member of `ProtocolFamily` to
+        `xml-http` and documented in `src/content/types.ts` that this
+        family covers proprietary XML-over-HTTP interfaces (such as
+        legacy USPS Web Tools and pre-2024 UPS XML services) and is
+        intentionally distinct from `soap` (envelope-based,
+        WSDL-described) and from the unrelated XML-RPC standard, which
+        none of the supported carriers implement.
+      - Updated the UPS Legacy XML/SOAP and USPS Web Tools carrier
+        surfaces in `src/content/carriers.ts`, plus the USPS Web Tools
+        directory entry in `src/content/directory.ts`, to use
+        `protocol: "xml-http"`. The displayed label
+        ("XML over HTTP") is unchanged via `PROTOCOL_LABEL` in
+        `src/routes/wiki/carriers/$slug.tsx`.
+      - Routed `findRelatedSurfaces` in
+        `src/routes/wiki/carriers/$slug.tsx` through the existing
+        `getCarrierSurfaceBySlug` helper instead of an inline
+        `carrierSurfaces.find(...)`, so all surface lookups (related,
+        sibling, replacement) flow through a single helper. Dropped the
+        now-unused `carrierSurfaces` import.
+      - Conditionally pushed the breadcrumb script in
+        `head.scripts` only when `generateBreadcrumbListSchema` returned
+        a non-null payload, mirroring the existing `faqSchema` pattern.
+        Even though the current call passes a fully-populated crumb
+        list, this prevents an empty `<script>` tag from being rendered
+        if a future caller hands in an empty array.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 across 27 files.
+
+      Out of scope: no content, slug, URL, sitemap output, or
+      directory data change beyond the renamed protocol token. PR `#34`
+      review threads were replied to inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-26"
+    version: "1.4.1.1"
+    commit: 50641c5
+    status: committed
+    title: "fix(seo): address PR #34 review feedback on issue #15 wiki expansion"
+    details: |-
+      Address the four medium-priority Gemini review comments on PR `#34`
+      (issue `#15`) without changing any user-visible content, slug, or URL.
+
+      What changed:
+
+      - Centralized canonical site identity in a single source of truth at
+        `src/lib/seo/site.ts` exporting `SITE_URL`, `SITE_NAME`,
+        `ORGANIZATION_NAME`, `ORGANIZATION_URL`, and a shared
+        `toAbsoluteUrl(pathOrUrl)` helper. Both `src/lib/seo/sitemap.ts`
+        and `src/lib/seo/structured-data.ts` now import from this module
+        instead of redeclaring the origin, so the SEO surfaces cannot
+        drift.
+      - Hardened sitemap absolute-URL resolution against paths missing a
+        leading slash by routing every entry through the shared
+        `toAbsoluteUrl` helper, dropping the bespoke `toAbsolute`
+        wrapper in `src/lib/seo/sitemap.ts`.
+      - Made `generateBreadcrumbListSchema` SSR-safe: empty input now
+        returns `null` (matching `generateFAQPageSchema`) instead of
+        throwing and crashing the page during rendering. `jsonLdScript`
+        was widened to accept `object | null` and returns `""` on null
+        so existing eager-array call sites still type-check without
+        per-call guards. Updated `src/lib/seo/structured-data.test.ts`
+        to assert the null-return behavior.
+      - Replaced the inline `carrierSurfaces.find(...)` replacement-surface
+        lookup in `src/routes/wiki/carriers/$slug.tsx` with the existing
+        `getCarrierSurfaceBySlug` helper so all surface lookups go
+        through one consistent path.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 tests across 27 files (unchanged
+        coverage; the structured-data test now asserts null instead of
+        throw).
+
+      Out of scope: no content, slug, URL, sitemap output, or directory
+      change. PR `#34` review threads were replied to inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-26"
+    version: "1.4.1"
+    commit: 41f7625
+    status: committed
+    title: "feat(wiki): add DHL Freight Sweden API Farm as the fourth DHL carrier surface (issue #15)"
+    details: |-
+      Extend the DHL section of the carrier-reference wiki shipped in
+      `v1.4.0` with a fourth distinct DHL business unit: **DHL Freight
+      Sweden — API Farm**. This is the in-scope follow-up slice of `I5D10`
+      requested before opening the PR for issue `#15`.
+
+      Why a separate page:
+
+      - DHL Freight Sweden runs its own integration portal at
+        `dhlpaket.se/dashboard/services/api-farm`, distinct from the DHL
+        Group Developer Portal at `developer.dhl.com`.
+      - Base URLs are completely separate (`api.freight-logistics.dhl.com`
+        for production, `test-api.freight-logistics.dhl.com` for sandbox).
+      - Authentication is a per-application **GUID API key** (`client-key`
+        header) issued by API Farm, not OAuth or HTTP Basic.
+      - The DHL Group portal explicitly redirects Sweden traffic to API
+        Farm, so omitting the page would 404 the canonical destination
+        for that intent and miss material SEO and integrator value.
+
+      What ships:
+
+      - `src/content/carriers.ts`: new `dhl-freight-se-rest` carrier
+        surface (REST, Sweden, status `active`) covering booking, pricing,
+        validation, and shipping documents on Sweden domestic and
+        Sweden-originating international road freight. Body is ≥180 words
+        and answers four FAQs: API key issuance flow, the no-cancel-via-API
+        limitation (Customer Service 0771-345 345 instead), the EDI vs
+        API Farm volume threshold (>10,000 shipments/day → EDI), and the
+        tracking delegation to the global `Shipment Tracking - Unified`
+        API at developer.dhl.com.
+      - Cross-linked the new surface with the existing
+        `dhl-express-global-mydhl-rest`, `dhl-ecommerce-americas-rest`,
+        and `dhl-parcel-de-rest` surfaces in both directions so all four
+        DHL business units link to one another.
+      - `src/content/directory.ts`: new `dhl-freight-sweden-api-farm`
+        directory entry with sandbox URL, Postman collection tooling
+        reference, and `carrierSlug` cross-link.
+      - `specs/current-changes/issue-15-wiki-expansion-plan.md`: documents
+        the four-surface DHL grouping and bumps the prioritized surface
+        count from `8–12` to `8–13`.
+      - `src/content/carriers.test.ts`: extended the DHL business-unit
+        test to require `freight` alongside `express`, `ecommerce`, and
+        `parcel-de`.
+      - `public/sitemap.xml`: regenerated from 67 → 68 URLs.
+
+      Validation: `pnpm format`, `pnpm lint`, `pnpm typecheck`,
+      `pnpm test --run` (147/147 passing), `pnpm build`, and `pre-commit`
+      all clean.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-25"
+    version: "1.4.0"
+    commit: 41f7625
+    status: committed
+    title: "feat(wiki): expand carrier-reference library by vendor, business unit, region, and protocol (issue #15)"
+    details: |-
+      Expand the wiki from curriculum-supporting concept articles into a
+      durable carrier-reference library organized along four axes: vendor,
+      business unit/product line, region/country, and protocol/documentation
+      surface. This is the in-scope `I5D10` slice of the v2 (#5) umbrella.
+
+      Taxonomy and URL conventions (I15D1):
+
+      - Added the long-form plan in
+        `specs/current-changes/issue-15-wiki-expansion-plan.md` documenting
+        the four-axis taxonomy, the immutable
+        `{vendor}-{businessunit}-{region}-{protocol}` slug pattern, the
+        canonical URL split (`/wiki/$slug` for concepts,
+        `/wiki/carriers/$slug` for surfaces), and the rules that keep
+        sunset/legacy pages indexed rather than deleted.
+
+      Highest-value carrier surfaces (I15D2):
+
+      - Prioritized 12 surfaces against `#5` acquisition value: DHL Express
+        MyDHL API, DHL eCommerce Solutions Americas, DHL Post & Parcel
+        Germany, UPS Developer APIs (REST + OAuth), UPS legacy XML/SOAP
+        (sunset 2024-06-03), FedEx REST APIs, FedEx Web Services (SOAP
+        legacy), USPS APIs (REST + OAuth), USPS Web Tools (deprecated),
+        Royal Mail Shipping API V3, La Poste Colissimo (SOAP, France), and
+        Australia Post Shipping & Tracking. Pairing modern and legacy
+        surfaces by vendor preserves SEO equity for "UPS XML API" and "USPS
+        Web Tools" search intent rather than 404'ing those queries.
+
+      Carrier surface schema and pages (I15D3):
+
+      - Added `ProtocolFamily`, `CarrierStatus`, `CarrierRegion`, and
+        `CarrierSurface` types in `src/content/types.ts`.
+      - Authored all 12 surfaces in `src/content/carriers.ts` with FAQs,
+        sandbox notes, tooling URLs, related concept and sibling links,
+        and `lastReviewed` dates. Each surface body is ≥180 words; FAQs
+        are real questions answered concretely, not marketing copy.
+      - Added `src/routes/wiki/carriers/index.tsx` (vendor-grouped index)
+        and `src/routes/wiki/carriers/$slug.tsx` (surface detail) following
+        TanStack Start file-route conventions. Sunset/deprecated/legacy
+        surfaces render a deprecation banner with a typed `Link` to the
+        replacement surface.
+      - Updated `src/routes/wiki/index.tsx` to surface the carrier section
+        above the existing concept articles list.
+
+      Directory expansion (I15D4):
+
+      - Extended `DirectoryEntry` with optional `slug`, `vendor`,
+        `businessUnit`, `apiName`, `region`, `protocols`, `status`,
+        `deprecation`, `sandbox`, `tooling`, and `carrierSlug` cross-link
+        fields. Existing entries are unchanged for backwards compatibility.
+      - Added 12 carrier-aware directory entries with vendor-aware metadata,
+        deprecation notes for the UPS XML legacy surface and USPS Web Tools,
+        sandbox URLs/notes, OpenAPI/WSDL tooling URLs, and `carrierSlug`
+        cross-links to the corresponding `/wiki/carriers/$slug` page.
+
+      SEO and structured data (I15D5):
+
+      - Added `generateArticleSchema`, `generateBreadcrumbListSchema`, and
+        `generateFAQPageSchema` to `src/lib/seo/structured-data.ts`. Wired
+        Article + BreadcrumbList JSON-LD onto every wiki concept page,
+        Article + BreadcrumbList + FAQPage onto every carrier surface page
+        (FAQPage is suppressed when no FAQs exist), and BreadcrumbList onto
+        the wiki and carrier index pages.
+      - Replaced the leftover Builder Coil `scripts/generate-sitemap.ts`
+        with a Shipping API Dojo generator that pulls slugs from the
+        canonical content modules. Extracted the deterministic logic into
+        `src/lib/seo/sitemap.ts` so both the script and the regression
+        tests share one source of truth.
+      - Regenerated `public/sitemap.xml` from 23 hand-maintained URLs to
+        67 generator-produced URLs covering all lessons, concept articles,
+        carrier surfaces (including sunset/legacy), and the static landing,
+        learn, arena, wiki, carrier-index, directory, privacy, and cookies
+        routes.
+
+      Tests (+41):
+
+      - `src/content/carriers.test.ts` — 16 tests: slug uniqueness, slug
+        pattern, ≥3 FAQs per surface, ≥180-word body floor, ≥2 concept
+        links and ≥1 directory link, replacement-slug resolution for
+        sunset/deprecated/legacy, sibling surface resolution, HTTPS source
+        URLs, vendor business-unit splits (DHL into Express/eCommerce/
+        Parcel DE), and modern-vs-legacy pairing for UPS, USPS, and FedEx.
+      - `src/content/directory.test.ts` — 9 tests: unique URLs and slugs,
+        HTTPS for entry/tooling/sandbox URLs, vendor/region required for
+        carrier-category entries, deprecation notes required for
+        deprecated/sunset entries, carrierSlug resolves to a real surface,
+        and every active surface has a directory entry.
+      - `src/lib/seo/structured-data.test.ts` — extended from 1 to 9 tests:
+        Article shape (canonical URL, mainEntityOfPage, publisher pointer,
+        publish/modify dates, optional author), BreadcrumbList (1-indexed
+        positions, optional URLs, empty-input rejection), and FAQPage
+        (null on empty, Question/Answer entities).
+      - `src/lib/seo/sitemap.test.ts` — 8 tests: every wiki, lesson, and
+        carrier surface slug is in the sitemap; static routes are covered;
+        no duplicate locs; the rendered XML matches the published file
+        byte-for-byte (drift regression).
+
+      Validation:
+
+      - `pnpm format`: 172 files clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 147 tests / 27 files passing (was 106 / 24).
+      - `pnpm build`: succeeds; new SSR chunks for `/wiki/carriers/`
+        and `/wiki/carriers/$slug` ship in the Vercel function bundle.
+
+      Out of scope (preserved): mobile native readiness (#13), curriculum
+      content beyond what #9 already shipped, paywall/randomization/
+      progress contracts.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
   - date: "2026-04-25"
     version: "1.3.3"
     commit: tbd

@@ -21,6 +21,8 @@ import { Route as LessonSlugRouteImport } from './routes/lesson/$slug'
 import { Route as LearnSoapRouteImport } from './routes/learn/soap'
 import { Route as LearnRestRouteImport } from './routes/learn/rest'
 import { Route as LearnCrossTrackRouteImport } from './routes/learn/cross-track'
+import { Route as WikiCarriersIndexRouteImport } from './routes/wiki/carriers/index'
+import { Route as WikiCarriersSlugRouteImport } from './routes/wiki/carriers/$slug'
 import { Route as ApiWebhooksResendRouteImport } from './routes/api/webhooks/resend'
 import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -85,6 +87,16 @@ const LearnCrossTrackRoute = LearnCrossTrackRouteImport.update({
   path: '/learn/cross-track',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WikiCarriersIndexRoute = WikiCarriersIndexRouteImport.update({
+  id: '/wiki/carriers/',
+  path: '/wiki/carriers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WikiCarriersSlugRoute = WikiCarriersSlugRouteImport.update({
+  id: '/wiki/carriers/$slug',
+  path: '/wiki/carriers/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiWebhooksResendRoute = ApiWebhooksResendRouteImport.update({
   id: '/api/webhooks/resend',
   path: '/api/webhooks/resend',
@@ -117,6 +129,8 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
   '/api/webhooks/resend': typeof ApiWebhooksResendRoute
+  '/wiki/carriers/$slug': typeof WikiCarriersSlugRoute
+  '/wiki/carriers/': typeof WikiCarriersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -134,6 +148,8 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
   '/api/webhooks/resend': typeof ApiWebhooksResendRoute
+  '/wiki/carriers/$slug': typeof WikiCarriersSlugRoute
+  '/wiki/carriers': typeof WikiCarriersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -152,6 +168,8 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/webhooks/creem': typeof ApiWebhooksCreemRoute
   '/api/webhooks/resend': typeof ApiWebhooksResendRoute
+  '/wiki/carriers/$slug': typeof WikiCarriersSlugRoute
+  '/wiki/carriers/': typeof WikiCarriersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +189,8 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/webhooks/creem'
     | '/api/webhooks/resend'
+    | '/wiki/carriers/$slug'
+    | '/wiki/carriers/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +208,8 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/webhooks/creem'
     | '/api/webhooks/resend'
+    | '/wiki/carriers/$slug'
+    | '/wiki/carriers'
   id:
     | '__root__'
     | '/'
@@ -205,6 +227,8 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/webhooks/creem'
     | '/api/webhooks/resend'
+    | '/wiki/carriers/$slug'
+    | '/wiki/carriers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,6 +247,8 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiWebhooksCreemRoute: typeof ApiWebhooksCreemRoute
   ApiWebhooksResendRoute: typeof ApiWebhooksResendRoute
+  WikiCarriersSlugRoute: typeof WikiCarriersSlugRoute
+  WikiCarriersIndexRoute: typeof WikiCarriersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -311,6 +337,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnCrossTrackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wiki/carriers/': {
+      id: '/wiki/carriers/'
+      path: '/wiki/carriers'
+      fullPath: '/wiki/carriers/'
+      preLoaderRoute: typeof WikiCarriersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wiki/carriers/$slug': {
+      id: '/wiki/carriers/$slug'
+      path: '/wiki/carriers/$slug'
+      fullPath: '/wiki/carriers/$slug'
+      preLoaderRoute: typeof WikiCarriersSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/webhooks/resend': {
       id: '/api/webhooks/resend'
       path: '/api/webhooks/resend'
@@ -351,6 +391,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiWebhooksCreemRoute: ApiWebhooksCreemRoute,
   ApiWebhooksResendRoute: ApiWebhooksResendRoute,
+  WikiCarriersSlugRoute: WikiCarriersSlugRoute,
+  WikiCarriersIndexRoute: WikiCarriersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

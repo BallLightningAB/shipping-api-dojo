@@ -69,6 +69,25 @@ Search visibility is a first-class product concern. During v2 work:
 - internal linking should keep the directory and knowledge surfaces usable as a hub-and-spoke system
 - route migrations and the eventual domain cutover should avoid unnecessary URL churn
 
+### Wiki structure
+
+Two parallel wiki subtrees, intentionally split:
+
+- `/wiki/$slug` — concept articles (idempotency, retry strategies, SOAP envelope, WSDL, etc.).
+- `/wiki/carriers/$slug` — vendor-specific surfaces. Slugs follow the immutable `{vendor}-{businessunit}-{region}-{protocol}` pattern (for example `dhl-express-global-mydhl-rest`, `ups-global-rest-oauth`, `usps-us-webtools-legacy`). Sunset and legacy surfaces stay published and indexed because they remain the canonical answer to "is this API still supported?" search intent. The taxonomy is documented in [`specs/current-changes/issue-15-wiki-expansion-plan.md`](specs/current-changes/issue-15-wiki-expansion-plan.md).
+
+Each carrier surface page emits Article + BreadcrumbList JSON-LD, plus FAQPage when it carries FAQs. Concept pages emit Article + BreadcrumbList.
+
+### Sitemap
+
+`public/sitemap.xml` is generated deterministically from the canonical content modules:
+
+```bash
+pnpm tsx scripts/generate-sitemap.ts
+```
+
+The generator reads `src/content/families` (lessons), `src/content/wiki` (concept articles), and `src/content/carriers` (carrier surfaces). A regression test in `src/lib/seo/sitemap.test.ts` parses the published `public/sitemap.xml` and fails the suite if it drifts from the generator output, so you cannot accidentally merge a stale sitemap.
+
 ## Tech Stack
 
 ### Current implementation

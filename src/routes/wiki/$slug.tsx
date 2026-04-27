@@ -1,9 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WikiArticle } from "@/components/wiki/WikiArticle";
 import { getWikiBySlug } from "@/content/wiki";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
+import {
+	breadcrumbScripts,
+	generateArticleSchema,
+	jsonLdScript,
+} from "@/lib/seo/structured-data";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/wiki/$slug")({
 	loader: ({ params }) => {
@@ -19,17 +24,36 @@ export const Route = createFileRoute("/wiki/$slug")({
 			return {};
 		}
 
+		const url = `/wiki/${entry.slug}`;
+
 		return {
 			meta: [
 				...generateMeta({
 					title: entry.title,
 					description: entry.summary,
-					url: `/wiki/${entry.slug}`,
+					url,
 					type: "article",
 					tags: ["shipping api", "carrier api", "wiki"],
 				}),
 			],
-			links: [generateCanonical(`/wiki/${entry.slug}`)],
+			links: [generateCanonical(url)],
+			scripts: [
+				{
+					type: "application/ld+json",
+					children: jsonLdScript(
+						generateArticleSchema({
+							title: entry.title,
+							description: entry.summary,
+							url,
+						})
+					),
+				},
+				...breadcrumbScripts([
+					{ name: "Home", url: "/" },
+					{ name: "Wiki", url: "/wiki" },
+					{ name: entry.title, url },
+				]),
+			],
 		};
 	},
 	component: WikiSlugPage,
