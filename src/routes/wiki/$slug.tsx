@@ -3,8 +3,8 @@ import { WikiArticle } from "@/components/wiki/WikiArticle";
 import { getWikiBySlug } from "@/content/wiki";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 import {
+	breadcrumbScripts,
 	generateArticleSchema,
-	generateBreadcrumbListSchema,
 	jsonLdScript,
 } from "@/lib/seo/structured-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -48,16 +48,11 @@ export const Route = createFileRoute("/wiki/$slug")({
 						})
 					),
 				},
-				{
-					type: "application/ld+json",
-					children: jsonLdScript(
-						generateBreadcrumbListSchema([
-							{ name: "Home", url: "/" },
-							{ name: "Wiki", url: "/wiki" },
-							{ name: entry.title, url },
-						])
-					),
-				},
+				...breadcrumbScripts([
+					{ name: "Home", url: "/" },
+					{ name: "Wiki", url: "/wiki" },
+					{ name: entry.title, url },
+				]),
 			],
 		};
 	},

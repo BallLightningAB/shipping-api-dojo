@@ -164,6 +164,31 @@ export function generateBreadcrumbListSchema(
 	};
 }
 
+/**
+ * Build the `head.scripts` entries for a BreadcrumbList JSON-LD payload.
+ *
+ * Returns an empty array when the crumb list is empty (matching the
+ * null-return contract of `generateBreadcrumbListSchema`) so route
+ * `head` builders can spread the result into their `scripts` array
+ * unconditionally without producing an empty `<script>` tag. This keeps
+ * the four wiki routes that emit breadcrumb JSON-LD on the same
+ * abstraction.
+ */
+export function breadcrumbScripts(
+	crumbs: BreadcrumbCrumb[]
+): { type: string; children: string }[] {
+	const schema = generateBreadcrumbListSchema(crumbs);
+	if (schema === null) {
+		return [];
+	}
+	return [
+		{
+			type: "application/ld+json",
+			children: jsonLdScript(schema),
+		},
+	];
+}
+
 export interface FaqEntry {
 	answer: string;
 	question: string;

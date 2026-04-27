@@ -2,10 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { carrierSurfaces } from "@/content/carriers";
 import { wikiEntries } from "@/content/wiki";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
-import {
-	generateBreadcrumbListSchema,
-	jsonLdScript,
-} from "@/lib/seo/structured-data";
+import { breadcrumbScripts } from "@/lib/seo/structured-data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/wiki/")({
@@ -23,17 +20,10 @@ export const Route = createFileRoute("/wiki/")({
 				}),
 			],
 			links: [generateCanonical("/wiki")],
-			scripts: [
-				{
-					type: "application/ld+json",
-					children: jsonLdScript(
-						generateBreadcrumbListSchema([
-							{ name: "Home", url: "/" },
-							{ name: "Wiki", url: "/wiki" },
-						])
-					),
-				},
-			],
+			scripts: breadcrumbScripts([
+				{ name: "Home", url: "/" },
+				{ name: "Wiki", url: "/wiki" },
+			]),
 		};
 	},
 	component: WikiIndexPage,

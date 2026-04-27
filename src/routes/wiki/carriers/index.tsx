@@ -1,12 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { carrierSurfaces } from "@/content/carriers";
 import type { CarrierSurface } from "@/content/types";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
-import {
-	generateBreadcrumbListSchema,
-	jsonLdScript,
-} from "@/lib/seo/structured-data";
+import { breadcrumbScripts } from "@/lib/seo/structured-data";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 const CARRIER_INDEX_PATH = "/wiki/carriers";
 const CARRIER_INDEX_TITLE = "Carrier API Surfaces";
@@ -63,25 +60,18 @@ export const Route = createFileRoute("/wiki/carriers/")({
 			}),
 		],
 		links: [generateCanonical(CARRIER_INDEX_PATH)],
-		scripts: [
-			{
-				type: "application/ld+json",
-				children: jsonLdScript(
-					generateBreadcrumbListSchema([
-						{ name: "Home", url: "/" },
-						{ name: "Wiki", url: "/wiki" },
-						{ name: "Carrier surfaces", url: CARRIER_INDEX_PATH },
-					])
-				),
-			},
-		],
+		scripts: breadcrumbScripts([
+			{ name: "Home", url: "/" },
+			{ name: "Wiki", url: "/wiki" },
+			{ name: "Carrier surfaces", url: CARRIER_INDEX_PATH },
+		]),
 	}),
 	component: CarrierIndexPage,
 });
 
-function CarrierIndexPage() {
-	const groups = groupSurfacesByVendor(carrierSurfaces);
+const carrierVendorGroups = groupSurfacesByVendor(carrierSurfaces);
 
+function CarrierIndexPage() {
 	return (
 		<div className="container mx-auto max-w-4xl px-4 py-16">
 			<h1 className="mb-4">Carrier API Surfaces</h1>
@@ -91,7 +81,7 @@ function CarrierIndexPage() {
 				and DHL Parcel DE are not collapsed into a single "DHL" summary.
 			</p>
 
-			{groups.map((group) => (
+			{carrierVendorGroups.map((group) => (
 				<section className="mb-10" key={group.vendorSlug}>
 					<h2 className="mb-4 text-xl">{group.vendor}</h2>
 					<div className="space-y-3">

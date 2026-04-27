@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { getCarrierSurfaceBySlug } from "@/content/carriers";
 import { directoryEntries } from "@/content/directory";
 import type { CarrierSurface, DirectoryEntry } from "@/content/types";
-import { wikiEntries } from "@/content/wiki";
+import { getWikiBySlug } from "@/content/wiki";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 import {
+	breadcrumbScripts,
 	generateArticleSchema,
-	generateBreadcrumbListSchema,
 	generateFAQPageSchema,
 	jsonLdScript,
 } from "@/lib/seo/structured-data";
@@ -46,13 +46,6 @@ export const Route = createFileRoute("/wiki/carriers/$slug")({
 		}
 
 		const url = `/wiki/carriers/${surface.slug}`;
-		const breadcrumbs = generateBreadcrumbListSchema([
-			{ name: "Home", url: "/" },
-			{ name: "Wiki", url: "/wiki" },
-			{ name: "Carrier surfaces", url: "/wiki/carriers" },
-			{ name: surface.vendor },
-			{ name: surface.title, url },
-		]);
 		const article = generateArticleSchema({
 			title: surface.title,
 			description: surface.summary,
@@ -64,13 +57,14 @@ export const Route = createFileRoute("/wiki/carriers/$slug")({
 
 		const scripts = [
 			{ type: "application/ld+json", children: jsonLdScript(article) },
+			...breadcrumbScripts([
+				{ name: "Home", url: "/" },
+				{ name: "Wiki", url: "/wiki" },
+				{ name: "Carrier surfaces", url: "/wiki/carriers" },
+				{ name: surface.vendor },
+				{ name: surface.title, url },
+			]),
 		];
-		if (breadcrumbs) {
-			scripts.push({
-				type: "application/ld+json",
-				children: jsonLdScript(breadcrumbs),
-			});
-		}
 		if (faqSchema) {
 			scripts.push({
 				type: "application/ld+json",
@@ -113,7 +107,7 @@ function findRelatedConceptTitles(
 ): { slug: string; title: string }[] {
 	return slugs
 		.map((slug) => {
-			const entry = wikiEntries.find((item) => item.slug === slug);
+			const entry = getWikiBySlug(slug);
 			return entry ? { slug, title: entry.title } : null;
 		})
 		.filter(

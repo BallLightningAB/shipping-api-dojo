@@ -1,8 +1,61 @@
 entries:
-  - date: "2026-04-26"
-    version: "1.4.1.2"
+  - date: "2026-04-27"
+    version: "1.4.1.3"
     commit: tbd
     status: pending
+    title: "refactor(seo): hoist static carrier groups and centralize breadcrumb JSON-LD helper (PR #34 review)"
+    details: |-
+      Address the third Gemini review pass on PR `#34` (issue `#15`,
+      commit `9acfbfb`) without changing any user-visible content,
+      slug, URL, or sitemap output.
+
+      What changed:
+
+      - Hoisted `groupSurfacesByVendor(carrierSurfaces)` out of
+        `CarrierIndexPage` in `src/routes/wiki/carriers/index.tsx`
+        and into a module-scope `carrierVendorGroups` constant so the
+        static-data transformation runs once at module load instead
+        of on every render.
+      - Added a shared `breadcrumbScripts(crumbs)` helper in
+        `src/lib/seo/structured-data.ts` that wraps
+        `generateBreadcrumbListSchema` + `jsonLdScript` and returns the
+        ready-to-spread `head.scripts` entry array (empty when the
+        schema is null). Updated all four wiki routes that emit
+        breadcrumb JSON-LD to spread the helper:
+        `src/routes/wiki/index.tsx`,
+        `src/routes/wiki/$slug.tsx`,
+        `src/routes/wiki/carriers/index.tsx`, and
+        `src/routes/wiki/carriers/$slug.tsx`. The conditional
+        null-handling is now centralized in one place, so the four
+        routes cannot drift on this contract.
+      - Routed `findRelatedConceptTitles` in
+        `src/routes/wiki/carriers/$slug.tsx` through the existing
+        `getWikiBySlug` helper instead of an inline
+        `wikiEntries.find((item) => item.slug === slug)`, mirroring
+        how `findRelatedSurfaces` already uses
+        `getCarrierSurfaceBySlug`. Dropped the now-unused
+        `wikiEntries` import.
+
+      Validation:
+
+      - `pnpm format`: clean.
+      - `pnpm lint`: 0 errors.
+      - `pnpm typecheck`: clean.
+      - `pnpm test --run`: 151/151 across 27 files.
+      - `pre-commit`: clean.
+
+      Out of scope: no content, slug, URL, sitemap output, or
+      directory data change. PR `#34` review threads were replied to
+      inline.
+    refs:
+      - "I5D10"
+      - "#5"
+      - "#15"
+
+  - date: "2026-04-26"
+    version: "1.4.1.2"
+    commit: 9acfbfb
+    status: committed
     title: "fix(content): correct legacy XML protocol labeling and harden carrier-surface helpers (PR #34 review)"
     details: |-
       Address the second Gemini review pass on PR `#34` (issue `#15`,
