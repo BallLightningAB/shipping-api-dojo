@@ -13,21 +13,33 @@ The current public build includes:
 - **Wiki** reference content for shipping/API concepts
 - **Directory** curated links to specs, tools, and carrier resources
 - **Anonymous local progress** stored in the browser today
+- **Signed-in server-backed progress** through Better Auth and Neon/Drizzle
 - **Tier-aware gating** for premium challenge depth while keeping public educational pages crawlable
 - **Server-owned practice seeds** for signed-in randomized practice flows
+- **Creem webhook-based entitlement sync** for Pro subscription state
+- **Resend transactional email plumbing** for auth and lifecycle messages
+- **Sentry-ready observability** that stays off until DSNs are configured
 
-## V2 Direction
+## V2 Completion State
 
-The active v2 plan is tracked in [`specs/current-changes`](specs/current-changes) and centers on:
+The v2 platform work is implemented and tracked in
+[`specs/current-changes`](specs/current-changes):
 
 - 20 lessons, 20 drill families, and 20 scenario families
 - deterministic content families and seeded randomization
 - signed-in server-backed progress with Better Auth + Neon/Drizzle
-- hosted access tiers: anonymous sample -> signed-in free -> Pro -> Enterprise
-- Creem billing, Resend transactional email, and `shipping.apidojo.app` as the target production domain under the `apidojo.app` umbrella
+- hosted access tiers: anonymous sample -> signed-in free -> Pro, with Enterprise reserved for inquiry-only future work
+- Creem billing webhooks, Resend transactional email, and `shipping.apidojo.app` as the target production domain under the `apidojo.app` umbrella
 - stronger SEO-first knowledge architecture around lessons, wiki, and directory surfaces
 
-## Hosted Access Matrix (Current Slice)
+The remaining v2 launch-readiness gap is tracked in
+[#36](https://github.com/BallLightningAB/shipping-api-dojo/issues/36): a
+public plans/product page, visible sign-in/account entry points, Creem
+Storefront CTAs for Pro monthly and annual products, explicit Enterprise
+inquiry-only messaging, and a target-environment acceptance pass for auth,
+billing, email, observability, database, and browser flows.
+
+## Hosted Access Matrix
 
 - **Free**
   - Public lessons, wiki, and directory
@@ -37,12 +49,25 @@ The active v2 plan is tracked in [`specs/current-changes`](specs/current-changes
   - All Free surfaces
   - Premium lesson and arena challenge rerolls
   - Advanced review-depth scenario access
-  - Certificate-basic capability reserved for certificate implementation
-- **Enterprise**
-  - All Pro surfaces
-  - Branded certificate capability, team reporting, and custom premium-pack capability
+  - Available as monthly and annual Pro products in Creem
+- **Enterprise inquiries**
+  - Not implemented as a checkout product today
+  - No Team or Enterprise plan is currently live
+  - Support handles Enterprise, team, procurement, or custom-access questions manually
 
 The current implementation gates premium actions and depth (for example rerolls and advanced arena ladders) instead of hiding public SEO-critical pages.
+
+### Creem Pro Products
+
+The two configured product IDs are both Pro products:
+
+- Monthly Pro: `CREEM_PRO_MONTHLY_PRODUCT_ID=prod_3jDZfwYMV4z7s0yyzLMGtp`
+- Annual Pro: `CREEM_PRO_ANNUAL_PRODUCT_ID=prod_2UKovfLiNB4uUAdlQrN2TD`
+
+Storefront URLs are intentionally separate runtime configuration from product
+IDs. Product IDs drive webhook plan resolution; public CTAs should point to
+Creem's customer-facing Storefront URLs once issue `#36` implements the public
+plans flow.
 
 ## Practice Seed Security
 
@@ -95,16 +120,14 @@ The generator reads `src/content/families` (lessons), `src/content/wiki` (concep
 - **TanStack Start** (React 19, file-based routing, SSR)
 - **Tailwind CSS v4** + shadcn/ui + Lucide icons
 - **@tanstack/react-store** for anonymous/local progress state
+- **Better Auth** for hosted accounts and sessions
+- **Neon Postgres** + **Drizzle ORM** for durable progress, auth-adjacent state, billing events, and entitlements
+- **Creem** webhook handling for subscription and entitlement sync
+- **Resend** for transactional email rendering, sending, and webhook ingestion
+- **Sentry** SDK wrappers for opt-in hosted error reporting
 - **Zod** for runtime validation
 - **Biome** + Ultracite for formatting/linting
 - **Vite** for bundling, deployed to **Vercel**
-
-### Planned v2 additions
-
-- **Better Auth** for hosted accounts and sessions
-- **Neon Postgres** + **Drizzle ORM** for durable progress and entitlements
-- **Creem** for subscriptions and billing
-- **Resend** for transactional email
 
 ## Getting Started
 
@@ -162,6 +185,26 @@ pnpm exec playwright install chromium
 ```
 
 The browser suite is intentionally narrow: it smoke-tests the home page, the learning hubs, a representative lesson route, the arena, wiki content, and the directory. Keep broader logic coverage in Vitest and grow the browser suite only when a route-level regression risk justifies it.
+
+### Production Readiness Acceptance
+
+Before enabling paid production access, issue
+[#36](https://github.com/BallLightningAB/shipping-api-dojo/issues/36) requires
+one targeted acceptance pass beyond the normal unit/lint/build checks:
+
+- Run `pnpm test:checkpoint`.
+- Seed dev users and run `pnpm test:e2e` with `.playwright-auth/credentials.json`
+  present so tiered auth states execute instead of skipping.
+- Verify sign-up, sign-in, sign-out, session persistence, account settings, and
+  account export on the target deployment.
+- Verify Neon schema/migration state against the target database.
+- Replay or send Creem test events for active, canceled, and past-due Pro
+  subscriptions and confirm entitlement transitions.
+- Verify monthly and annual Pro Storefront CTAs from the deployed site.
+- Verify Resend transactional send plus webhook delivery.
+- Verify a Sentry test event with DSN configured and privacy scrubbing intact.
+- Smoke test the deployed home, plans, learning hubs, representative lesson,
+  arena, wiki, directory, privacy, cookies, and settings routes.
 
 ## Domains
 
