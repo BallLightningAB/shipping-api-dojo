@@ -1,7 +1,7 @@
 entries:
   - date: "2026-04-27"
     version: "1.4.1.6"
-    commit: 94d76c2
+    commit: 21e6f1f
     status: committed
     title: "docs(v2): add final production-readiness issue and align launch state"
     details: |-
