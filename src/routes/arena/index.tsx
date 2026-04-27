@@ -23,6 +23,7 @@ import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 import {
 	ClientOnly,
 	createFileRoute,
+	Link,
 	useNavigate,
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
@@ -163,12 +164,12 @@ function ArenaPage() {
 							New Scenario Run
 						</button>
 					) : (
-						<a
+						<Link
 							className="text-sm text-muted-foreground hover:text-foreground"
-							href="/settings#paid-access"
+							to="/plans"
 						>
 							Unlock New Scenario Runs (Pro)
-						</a>
+						</Link>
 					)}
 				</div>
 				<ClientOnly
@@ -198,12 +199,12 @@ function ArenaPage() {
 					runs.
 				</p>
 				<div className="flex flex-wrap gap-3">
-					<a
+					<Link
 						className="inline-flex items-center rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
-						href="/settings#paid-access"
+						to="/plans"
 					>
-						View Paid Access Options
-					</a>
+						View Pro plans
+					</Link>
 					<button
 						className="text-sm text-muted-foreground hover:text-foreground"
 						onClick={handleBackToScenarios}
@@ -251,12 +252,12 @@ function ArenaPage() {
 								<p className="text-sm text-muted-foreground">
 									{scenario.summary}
 								</p>
-								<a
+								<Link
 									className="inline-flex items-center text-sm text-bl-red hover:underline"
-									href="/settings#paid-access"
+									to="/plans"
 								>
 									Unlock advanced scenario depth
-								</a>
+								</Link>
 							</CardContent>
 						</Card>
 					) : (

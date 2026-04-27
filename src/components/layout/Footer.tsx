@@ -8,6 +8,7 @@ const footerLinks = {
 		{ href: "/arena", label: "Incident Arena" },
 	],
 	resources: [
+		{ href: "/plans", label: "Plans" },
 		{ href: "/wiki", label: "Wiki" },
 		{ href: "/directory", label: "Directory" },
 		{ href: "/settings", label: "Settings" },

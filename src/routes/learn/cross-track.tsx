@@ -81,6 +81,14 @@ function CrossTrackPage() {
 					</Link>
 				</Button>
 			</div>
+			<p className="mt-6 text-sm text-muted-foreground">
+				Free includes the public cross-track lessons. Pro adds deeper incident
+				review and premium rerolls across learning surfaces.{" "}
+				<Link className="text-bl-red hover:underline" to="/plans">
+					Compare plans
+				</Link>
+				.
+			</p>
 		</div>
 	);
 }

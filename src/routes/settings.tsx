@@ -1,9 +1,11 @@
 import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
-import { Download, Trash2, Upload } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Download, LogOut, Mail, Trash2, Upload } from "lucide-react";
+import { type FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	retentionSummaryItems,
 	SUPPORT_CONTACT_LABEL,
@@ -11,10 +13,7 @@ import {
 } from "@/content/legal";
 import { getAccountPrivacyExport } from "@/lib/account/account-rights.sync";
 import { authClient } from "@/lib/auth/client";
-import {
-	fallbackFreeEntitlements,
-	TIER_CAPABILITY_MATRIX,
-} from "@/lib/entitlements/access-policy";
+import { fallbackFreeEntitlements } from "@/lib/entitlements/access-policy";
 import { getCurrentEntitlements } from "@/lib/entitlements/entitlements.sync";
 import { captureException } from "@/lib/observability/logger";
 import { resetProgress } from "@/lib/progress/progress.actions";
@@ -154,37 +153,18 @@ function PlansAndAccessSection({
 	activeTier,
 	entitlementSource,
 	hasPaidTier = false,
-	supportMailto,
 }: {
 	activeTier: string;
 	entitlementSource: string;
 	hasPaidTier?: boolean;
-	supportMailto: string;
 }) {
 	return (
-		<div className="space-y-4" id="paid-access">
-			<h2 className="text-xl">Plans and Access</h2>
+		<div className="space-y-4" id="entitlement-status">
+			<h2 className="text-xl">Entitlement Status</h2>
 			<p className="max-w-3xl text-sm text-muted-foreground">
-				Public lessons, wiki, and directory pages stay crawlable. Paid tiers add
-				challenge depth, review-mode access, and premium account surfaces
-				without blanketing public educational content.
+				Settings shows the account entitlement state detected for this session.
+				Public plan details and purchase CTAs live on the crawlable plans page.
 			</p>
-			<div className="grid gap-4 md:grid-cols-3">
-				{TIER_CAPABILITY_MATRIX.map((tier) => (
-					<Card key={tier.tier}>
-						<CardHeader>
-							<CardTitle>{tier.label}</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<ul className="space-y-2 text-sm text-muted-foreground">
-								{tier.surfaces.map((surface) => (
-									<li key={surface}>{surface}</li>
-								))}
-							</ul>
-						</CardContent>
-					</Card>
-				))}
-			</div>
 			<Card>
 				<CardHeader>
 					<CardTitle>Current entitlement state</CardTitle>
@@ -210,12 +190,138 @@ function PlansAndAccessSection({
 							entitlement becomes active.
 						</p>
 					)}
-					<a className="text-bl-red hover:underline" href={supportMailto}>
-						Contact support for Pro or Enterprise access
-					</a>
+					<Button asChild size="sm" variant="outline">
+						<Link to="/plans">View public plans</Link>
+					</Button>
 				</CardContent>
 			</Card>
 		</div>
+	);
+}
+
+function AccountAccessCard({
+	isPending,
+	userEmail,
+}: {
+	isPending: boolean;
+	userEmail?: string | null;
+}) {
+	const [email, setEmail] = useState("");
+	const [status, setStatus] = useState<string | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	async function handleMagicLink(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+		const normalizedEmail = email.trim();
+		if (!normalizedEmail) {
+			setStatus("Enter an email address to receive a sign-in link.");
+			return;
+		}
+
+		setStatus(null);
+		setIsSubmitting(true);
+		try {
+			await authClient.signIn.magicLink({
+				callbackURL: "/settings",
+				email: normalizedEmail,
+				newUserCallbackURL: "/settings",
+			});
+			setStatus("Check your email for the Shipping API Dojo sign-in link.");
+		} catch {
+			setStatus(
+				"Could not send a sign-in link. Contact support if it persists."
+			);
+		} finally {
+			setIsSubmitting(false);
+		}
+	}
+
+	async function handleSignOut() {
+		setStatus(null);
+		setIsSubmitting(true);
+		try {
+			await authClient.signOut();
+			window.location.reload();
+		} catch {
+			setStatus("Could not sign out. Refresh and try again.");
+			setIsSubmitting(false);
+		}
+	}
+
+	let accountContent = <p>Checking account session...</p>;
+
+	if (!(isPending || !userEmail)) {
+		accountContent = (
+			<>
+				<p>
+					Signed in as <strong className="text-foreground">{userEmail}</strong>.
+				</p>
+				<Button
+					className="gap-2"
+					disabled={isSubmitting}
+					onClick={handleSignOut}
+					variant="outline"
+				>
+					<LogOut className="h-4 w-4" />
+					Sign out
+				</Button>
+			</>
+		);
+	} else if (!isPending) {
+		accountContent = (
+			<form className="space-y-3" onSubmit={handleMagicLink}>
+				<p>
+					Sign in or create an account to sync progress and connect any Pro
+					entitlement reported by Creem.
+				</p>
+				<div className="space-y-2">
+					<Label htmlFor="account-email">Email address</Label>
+					<Input
+						id="account-email"
+						onChange={(event) => setEmail(event.target.value)}
+						placeholder="you@example.com"
+						type="email"
+						value={email}
+					/>
+				</div>
+				<Button className="gap-2" disabled={isSubmitting} type="submit">
+					<Mail className="h-4 w-4" />
+					{isSubmitting ? "Sending..." : "Send sign-in link"}
+				</Button>
+			</form>
+		);
+	}
+
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Account access</CardTitle>
+			</CardHeader>
+			<CardContent className="space-y-4 text-sm text-muted-foreground">
+				{accountContent}
+				{status && <p>{status}</p>}
+			</CardContent>
+		</Card>
+	);
+}
+
+function AccountAccessFallbackCard() {
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Account access</CardTitle>
+			</CardHeader>
+			<CardContent className="space-y-3 text-sm text-muted-foreground">
+				<p>
+					Sign-in controls load in the browser so account sessions and
+					magic-link requests stay client-side.
+				</p>
+				<p>
+					Use the visible Sign in action in the header or refresh if the account
+					form does not appear.
+				</p>
+			</CardContent>
+		</Card>
 	);
 }
 
@@ -347,6 +453,7 @@ function SettingsFallback() {
 	return (
 		<div className="space-y-8">
 			<div className="grid gap-4 md:grid-cols-2">
+				<AccountAccessFallbackCard />
 				<CurrentStorageModelCard />
 				<PrivacySupportCard supportMailto={supportMailto} />
 			</div>
@@ -354,7 +461,6 @@ function SettingsFallback() {
 			<PlansAndAccessSection
 				activeTier="free"
 				entitlementSource="browser_pending"
-				supportMailto={supportMailto}
 			/>
 
 			<AccountDataRightsSection
@@ -497,6 +603,10 @@ function SettingsPanel() {
 	return (
 		<div className="space-y-8">
 			<div className="grid gap-4 md:grid-cols-2">
+				<AccountAccessCard
+					isPending={session.isPending}
+					userEmail={session.data?.user?.email}
+				/>
 				<CurrentStorageModelCard isSignedIn={Boolean(session.data?.user?.id)} />
 				<PrivacySupportCard supportMailto={supportMailto} />
 			</div>
@@ -537,7 +647,6 @@ function SettingsPanel() {
 				activeTier={activeTier}
 				entitlementSource={currentEntitlements?.source ?? "fallback_free"}
 				hasPaidTier={hasPaidTier}
-				supportMailto={supportMailto}
 			/>
 
 			<AccountDataRightsSection

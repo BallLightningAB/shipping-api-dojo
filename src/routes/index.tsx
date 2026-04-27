@@ -155,6 +155,9 @@ function HomePage() {
 								>
 									<Link to="/learn/soap">Start SOAP Track</Link>
 								</Button>
+								<Button asChild size="lg" variant="ghost">
+									<Link to="/plans">Compare Free and Pro</Link>
+								</Button>
 							</AnimatedGroup>
 						</motion.div>
 					</AnimatedGroup>
@@ -220,6 +223,17 @@ function HomePage() {
 							</Link>
 						))}
 					</AnimatedGroup>
+					<div className="mt-8 rounded-lg border border-border p-5">
+						<p className="text-sm text-muted-foreground">
+							Free keeps the public lessons, wiki, directory, and standard arena
+							open. Pro adds premium challenge rerolls and advanced incident
+							depth when you need more practice.{" "}
+							<Link className="text-bl-red hover:underline" to="/plans">
+								View plans
+							</Link>
+							.
+						</p>
+					</div>
 				</div>
 			</section>
 

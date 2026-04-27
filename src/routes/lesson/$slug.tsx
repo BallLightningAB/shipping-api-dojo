@@ -143,7 +143,7 @@ function LessonPage() {
 								</Button>
 							) : (
 								<Button asChild size="sm" variant="outline">
-									<a href="/settings#paid-access">Unlock New Challenge (Pro)</a>
+									<Link to="/plans">Unlock New Challenge (Pro)</Link>
 								</Button>
 							)}
 						</ClientOnly>

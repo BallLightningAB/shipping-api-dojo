@@ -47,6 +47,7 @@ describe("buildSitemapEntries", () => {
 		const entries = buildSitemapEntries();
 		const locs = new Set(entries.map((entry) => entry.loc));
 		expect(locs.has(`${SITE_URL}/`)).toBe(true);
+		expect(locs.has(`${SITE_URL}/plans`)).toBe(true);
 		expect(locs.has(`${SITE_URL}/wiki`)).toBe(true);
 		expect(locs.has(`${SITE_URL}/wiki/carriers`)).toBe(true);
 		expect(locs.has(`${SITE_URL}/directory`)).toBe(true);

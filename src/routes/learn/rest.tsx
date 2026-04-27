@@ -82,6 +82,14 @@ function RestTrackPage() {
 					</Link>
 				</Button>
 			</div>
+			<p className="mt-6 text-sm text-muted-foreground">
+				Free includes the public lesson track. Pro adds premium challenge
+				rerolls for deeper practice.{" "}
+				<Link className="text-bl-red hover:underline" to="/plans">
+					Compare plans
+				</Link>
+				.
+			</p>
 		</div>
 	);
 }

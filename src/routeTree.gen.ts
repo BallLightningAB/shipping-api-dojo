@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PlansRouteImport } from './routes/plans'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as IndexRouteImport } from './routes/index'
@@ -35,6 +36,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlansRoute = PlansRouteImport.update({
+  id: '/plans',
+  path: '/plans',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DirectoryRoute = DirectoryRouteImport.update({
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cookies': typeof CookiesRoute
   '/directory': typeof DirectoryRoute
+  '/plans': typeof PlansRoute
   '/privacy': typeof PrivacyRoute
   '/settings': typeof SettingsRoute
   '/learn/cross-track': typeof LearnCrossTrackRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cookies': typeof CookiesRoute
   '/directory': typeof DirectoryRoute
+  '/plans': typeof PlansRoute
   '/privacy': typeof PrivacyRoute
   '/settings': typeof SettingsRoute
   '/learn/cross-track': typeof LearnCrossTrackRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cookies': typeof CookiesRoute
   '/directory': typeof DirectoryRoute
+  '/plans': typeof PlansRoute
   '/privacy': typeof PrivacyRoute
   '/settings': typeof SettingsRoute
   '/learn/cross-track': typeof LearnCrossTrackRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cookies'
     | '/directory'
+    | '/plans'
     | '/privacy'
     | '/settings'
     | '/learn/cross-track'
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cookies'
     | '/directory'
+    | '/plans'
     | '/privacy'
     | '/settings'
     | '/learn/cross-track'
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cookies'
     | '/directory'
+    | '/plans'
     | '/privacy'
     | '/settings'
     | '/learn/cross-track'
@@ -235,6 +247,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CookiesRoute: typeof CookiesRoute
   DirectoryRoute: typeof DirectoryRoute
+  PlansRoute: typeof PlansRoute
   PrivacyRoute: typeof PrivacyRoute
   SettingsRoute: typeof SettingsRoute
   LearnCrossTrackRoute: typeof LearnCrossTrackRoute
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plans': {
+      id: '/plans'
+      path: '/plans'
+      fullPath: '/plans'
+      preLoaderRoute: typeof PlansRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/directory': {
@@ -379,6 +399,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CookiesRoute: CookiesRoute,
   DirectoryRoute: DirectoryRoute,
+  PlansRoute: PlansRoute,
   PrivacyRoute: PrivacyRoute,
   SettingsRoute: SettingsRoute,
   LearnCrossTrackRoute: LearnCrossTrackRoute,

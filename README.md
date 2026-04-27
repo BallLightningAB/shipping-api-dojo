@@ -15,8 +15,11 @@ The current public build includes:
 - **Anonymous local progress** stored in the browser today
 - **Signed-in server-backed progress** through Better Auth and Neon/Drizzle
 - **Tier-aware gating** for premium challenge depth while keeping public educational pages crawlable
+- **Public plans page** at `/plans` with Free, Pro monthly, Pro annual, and inquiry-only Team/Enterprise messaging
+- **Visible sign-in/account navigation** with account access and entitlement status kept in settings
 - **Server-owned practice seeds** for signed-in randomized practice flows
 - **Creem webhook-based entitlement sync** for Pro subscription state
+- **Creem Storefront CTA support** for Pro monthly and annual purchase URLs through runtime environment configuration
 - **Resend transactional email plumbing** for auth and lifecycle messages
 - **Sentry-ready observability** that stays off until DSNs are configured
 
@@ -32,12 +35,12 @@ The v2 platform work is implemented and tracked in
 - Creem billing webhooks, Resend transactional email, and `shipping.apidojo.app` as the target production domain under the `apidojo.app` umbrella
 - stronger SEO-first knowledge architecture around lessons, wiki, and directory surfaces
 
-The remaining v2 launch-readiness gap is tracked in
-[#36](https://github.com/BallLightningAB/shipping-api-dojo/issues/36): a
+The final v2 launch-readiness slice is tracked in
+[#36](https://github.com/BallLightningAB/shipping-api-dojo/issues/36): the
 public plans/product page, visible sign-in/account entry points, Creem
-Storefront CTAs for Pro monthly and annual products, explicit Enterprise
-inquiry-only messaging, and a target-environment acceptance pass for auth,
-billing, email, observability, database, and browser flows.
+Storefront CTAs for Pro monthly and annual products, Enterprise inquiry-only
+messaging, and the target-environment acceptance checklist for auth, billing,
+email, observability, database, and browser flows.
 
 ## Hosted Access Matrix
 
@@ -66,8 +69,16 @@ The two configured product IDs are both Pro products:
 
 Storefront URLs are intentionally separate runtime configuration from product
 IDs. Product IDs drive webhook plan resolution; public CTAs should point to
-Creem's customer-facing Storefront URLs once issue `#36` implements the public
-plans flow.
+Creem's customer-facing Storefront URLs.
+
+```bash
+CREEM_PRO_MONTHLY_STOREFRONT_URL=https://...
+CREEM_PRO_ANNUAL_STOREFRONT_URL=https://...
+```
+
+If either Storefront URL is missing or invalid, the public `/plans` page renders
+a support-contact fallback for that Pro purchase path instead of a broken
+checkout link.
 
 ## Practice Seed Security
 
@@ -190,7 +201,9 @@ The browser suite is intentionally narrow: it smoke-tests the home page, the lea
 
 Before enabling paid production access, issue
 [#36](https://github.com/BallLightningAB/shipping-api-dojo/issues/36) requires
-one targeted acceptance pass beyond the normal unit/lint/build checks:
+one targeted acceptance pass beyond the normal unit/lint/build checks. Local
+checks can validate the route, gating, and no-provider behavior; the provider
+checks below require the target deployment and service dashboards:
 
 - Run `pnpm test:checkpoint`.
 - Seed dev users and run `pnpm test:e2e` with `.playwright-auth/credentials.json`

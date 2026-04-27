@@ -4,7 +4,7 @@ Date: 2026-04-27
 Parent issue: [#5](https://github.com/BallLightningAB/shipping-api-dojo/issues/5)
 Issue: [#36](https://github.com/BallLightningAB/shipping-api-dojo/issues/36)
 Branch: `codex/issue-5-production-readiness`
-Release: `1.4.1.6` (documentation and final readiness planning)
+Release: `1.4.1.7` (public plans and Pro storefront readiness)
 
 ## Goal
 
@@ -164,3 +164,62 @@ This issue is complete when:
 - README and memory-bank state no longer describe completed v2 systems as
   planned or in-progress.
 - Parent issue `#5` can be closed as completed.
+
+## Implementation Progress
+
+Date: 2026-04-27
+
+- Added the crawlable `/plans` route with Free, Pro Monthly, Pro Annual, and
+  Team / Enterprise inquiry-only plan cards.
+- Added runtime Storefront URL configuration through
+  `CREEM_PRO_MONTHLY_STOREFRONT_URL` and
+  `CREEM_PRO_ANNUAL_STOREFRONT_URL`, keeping those URLs separate from the
+  Creem Pro product IDs used by webhook plan resolution.
+- Kept the two Pro product IDs explicit on the public plans page:
+  `prod_3jDZfwYMV4z7s0yyzLMGtp` for monthly and
+  `prod_2UKovfLiNB4uUAdlQrN2TD` for annual.
+- Added safe support fallbacks when Storefront URLs are missing or invalid.
+- Added visible Plans and Sign in / Account navigation in the header and Plans
+  in the footer.
+- Added a lightweight settings account card for magic-link sign-in and sign-out
+  while keeping settings focused on account, privacy, progress, and entitlement
+  status.
+- Pointed lesson and arena paid-feature locks at `/plans` instead of
+  `/settings#paid-access`.
+- Added non-intrusive plan direction from home, learning hubs, wiki, and
+  directory without hiding their SSR-visible educational content.
+- Added `/plans` to the deterministic sitemap generator and regenerated
+  `public/sitemap.xml`.
+
+## Acceptance Status
+
+Automated/local checks:
+
+- `pnpm format`: passed.
+- `pnpm lint`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm test --run`: passed, 153 tests across 28 files.
+- `pnpm test:checkpoint`: passed, including 14 Chromium browser checks; 5
+  tiered-auth browser checks skipped because
+  `.playwright-auth/credentials.json` is not present.
+- `pnpm audit --json`: passed with zero advisories.
+- `pnpm exec drizzle-kit check`: passed.
+- `pnpm build`: passed after adding a Windows-only Nitro `noPublicDir` guard so
+  the local build does not fail on a redundant public-asset `chmod`; the
+  production/Linux copy path remains unchanged.
+- `pre-commit`: passed.
+
+External-provider and target-deployment checks still require dashboard/manual
+verification:
+
+- Seed dev users and run `pnpm test:e2e` with tiered auth credentials present.
+- Preview/production smoke for sign-up, sign-in, sign-out, session persistence,
+  settings, and account export.
+- Neon migration/schema verification against the target database.
+- Creem webhook replay or test events for active, canceled, and past-due Pro
+  subscriptions.
+- Creem Storefront monthly and annual CTA verification from the deployed site.
+- Resend transactional email send plus webhook delivery verification.
+- Sentry DSN test event verification with privacy scrubbing confirmed.
+- Browser smoke against the deployed home, plans, learning hubs, representative
+  lesson, arena, wiki, directory, privacy, cookies, and settings routes.

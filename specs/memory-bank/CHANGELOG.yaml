@@ -1,5 +1,56 @@
 entries:
   - date: "2026-04-27"
+    version: "1.4.1.7"
+    commit: pending
+    status: uncommitted
+    title: "feat(plans): ship public Pro storefront readiness surfaces"
+    details: |-
+      Implemented the final `#5` production-readiness slice tracked by
+      issue `#36`, making the hosted v2 product ready for Creem
+      Storefront activation and public Pro sales review.
+
+      What changed:
+
+      - Added a crawlable `/plans` page with Free, Pro Monthly, Pro
+        Annual, and Team / Enterprise inquiry-only plan cards.
+      - Added runtime Creem Storefront URL configuration through
+        `CREEM_PRO_MONTHLY_STOREFRONT_URL` and
+        `CREEM_PRO_ANNUAL_STOREFRONT_URL`, while keeping the webhook
+        product IDs separate:
+        `prod_3jDZfwYMV4z7s0yyzLMGtp` and
+        `prod_2UKovfLiNB4uUAdlQrN2TD`.
+      - Added visible Plans and Sign in / Account navigation, plus footer
+        Plans access.
+      - Updated lesson and arena paid-feature locks to point to `/plans`
+        instead of `/settings#paid-access`.
+      - Added lightweight plan direction from home, learning hubs, wiki,
+        and directory while keeping public educational content crawlable.
+      - Refocused settings on account, privacy, progress, and entitlement
+        status instead of acting as the public sales page.
+      - Added `/plans` to sitemap generation and regenerated
+        `public/sitemap.xml`.
+      - Documented the external provider dashboard checks that still need
+        manual verification during payment activation.
+
+      Validation:
+
+      - `pnpm format`: passed.
+      - `pnpm lint`: passed.
+      - `pnpm typecheck`: passed.
+      - `pnpm test --run`: 153/153 tests passing across 28 files.
+      - `pnpm test:checkpoint`: passed; 14 browser checks passed and 5
+        tiered-auth checks skipped because seeded auth credentials were not
+        present locally.
+      - `pnpm audit --json`: zero advisories.
+      - `pnpm exec drizzle-kit check`: passed.
+      - `pnpm build`: passed.
+      - `pre-commit`: passed.
+    refs:
+      - "I5D14"
+      - "#5"
+      - "#36"
+
+  - date: "2026-04-27"
     version: "1.4.1.6"
     commit: 21e6f1f
     status: committed
