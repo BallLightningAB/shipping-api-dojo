@@ -1,5 +1,5 @@
 meta:
-  release: "1.4.1.7"
+  release: "1.4.1.8"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -310,29 +310,84 @@ roadmap:
           note: "Completed issue #13 strategy + light-touch refactor pass on codex/issue-13-mobile-readiness: shipped specs/current-changes/issue-13-mobile-readiness-plan.md covering the v2 architecture audit (D1), platform-neutral boundaries (D2), Expo + React Native stack recommendation with shared-vs-web-only matrix (D3), Better Auth Bearer + expo-secure-store + magic-link deep-link plan (D4), and the public API / deep-link scheme / offline / push / Apple+Google billing follow-up (D5). The only refactor was extracting the pure stripLegacySeedParamsFromHref helper from useStripLegacySeedParams into src/lib/practice/seed-search.ts, with 4 new unit tests; all other audited modules (randomization, progress.{schema,merge,actions,hydration}, practice-runs, entitlements, content runtime) were already platform-neutral. No native app code, no React Native deps, no monorepo tooling, no user-visible web change. Validated with pnpm format, pnpm lint, pnpm typecheck, and pnpm test --run (110 passed, 4 new)."
     - id: edi-product-strategy
       issue: "#16"
-      title: "EDI product and subdomain strategy under API Dojo"
+      title: "EDI API Dojo: sibling product at edi.apidojo.app under the API Dojo umbrella"
       status: planned
-      priority: medium
+      priority: high
+      blocked_by: "#39"
       links:
         issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/16"
+        plans:
+          - "specs/current-changes/issue-16-edi-product-plan.md"
+          - "specs/current-changes/issue-16-edi-product-implementation-plan.md"
+          - "specs/current-changes/issue-16-edi-curriculum-draft.md"
+          - "specs/current-changes/issue-16-edi-wiki-inventory.md"
+          - "specs/current-changes/issue-16-fresh-thread-prompt.md"
       deliverables:
         - "[I16D1] Decide whether EDI should ship as a sibling product under API Dojo rather than as a track inside Shipping API Dojo"
         - "[I16D2] Define the recommended product boundary, IA, naming, and domain strategy for an EDI-focused learning surface"
-        - "[I16D3] Outline the initial curriculum scope for EDI, including X12, EDIFACT, acknowledgements, mapping, and operational troubleshooting"
-        - "[I16D4] Define the shared-platform boundaries between Shipping API Dojo and a future EDI product so content, auth, entitlements, and SEO concerns stay coherent"
+        - "[I16D3] Outline the initial curriculum scope for EDI, including X12, EDIFACT, acknowledgements, transports, mapping, and operational troubleshooting plus ERP/WMS/TMS integration realities and DHL Freight Sweden via dhldashboard.se"
+        - "[I16D4] Define the shared-platform boundaries between Shipping API Dojo and a future EDI product so content, auth, entitlements, UI, and SEO concerns stay coherent"
         - "[I16D5] Decide the launch path for the first mirrored sibling product, including cross-linking and umbrella-brand positioning under apidojo.app"
+        - "[I16D6] Wave 1 — apps/edi/ workspace deployable at edi.apidojo.app with shared-package wiring, branding, public shell, and noindex placeholders"
+        - "[I16D7] Wave 2 — 8 lessons, ≥15 drill families with ≥4 variants each, ≥8 scenario families, standards/transports/integrations/carrier-EDI wiki, directory entries, JSON-LD, sitemap, browser smoke, cross-product overlap matrix enforced"
+        - "[I16D8] Wave 3 — EDI Pro monthly + annual Creem products, API Dojo Pro Bundle products, capability resolution with product axis, plans page bundle CTAs, lifecycle email respecting entitlement state"
+        - "[I16D9] Wave 4 — cross-product polish, optional apex apidojo.app/ landing, full cross-domain SSO smoke verification"
       est:
-        dev_h: 8
-        test_h: 3
+        dev_h: 66
+        test_h: 34
       sub_issues: []
       remaining_deliverables:
-        - "[I16D1] Decide whether EDI should ship as a sibling product under API Dojo rather than as a track inside Shipping API Dojo"
-        - "[I16D2] Define the recommended product boundary, IA, naming, and domain strategy for an EDI-focused learning surface"
-        - "[I16D3] Outline the initial curriculum scope for EDI, including X12, EDIFACT, acknowledgements, mapping, and operational troubleshooting"
-        - "[I16D4] Define the shared-platform boundaries between Shipping API Dojo and a future EDI product so content, auth, entitlements, and SEO concerns stay coherent"
-        - "[I16D5] Decide the launch path for the first mirrored sibling product, including cross-linking and umbrella-brand positioning under apidojo.app"
+        - "[I16D1]"
+        - "[I16D2]"
+        - "[I16D3]"
+        - "[I16D4]"
+        - "[I16D5]"
+        - "[I16D6]"
+        - "[I16D7]"
+        - "[I16D8]"
+        - "[I16D9]"
       progress_log:
         - note: "Created as a follow-on strategy issue during issue #9 Phase 0 after deciding that EDI should be treated as a sibling product and likely first mirrored subdomain rather than as a third Shipping API Dojo track."
+        - note: "Locked the strategy on the #36 branch in PR #38: EDI lands as apps/edi/ under the post-#39 apidojo-app monorepo at edi.apidojo.app, sharing Better Auth, Neon, Creem, Resend, Sentry, and shared-ui via packages/shared-*. Added the long-form plan, wave-based implementation plan, full first-wave curriculum draft (8 lessons, 18 drill family stubs, 10 scenario family stubs), wiki + integration + carrier-EDI + directory inventory with cross-product overlap matrix, and fresh-thread prompt under specs/current-changes/. Cross-sell + bundle pricing model defined with an API Dojo Pro Bundle SKU. EDI implementation is blocked by #39 (rename + monorepo) which is in turn blocked by #36/PR #38."
+    - id: umbrella-monorepo-rename
+      issue: "#39"
+      title: "Rename to apidojo-app and convert to pnpm-workspaces monorepo"
+      status: planned
+      priority: high
+      blocked_by: "#36"
+      blocks: ["#16", "#13"]
+      links:
+        issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/39"
+        plans:
+          - "specs/current-changes/issue-39-monorepo-rename-plan.md"
+      deliverables:
+        - "[I39D1] Rename GitHub repo and local working folder to apidojo-app"
+        - "[I39D2] Workspace skeleton: pnpm-workspace.yaml, root package.json (private apidojo-app), tsconfig.base.json with shared path aliases"
+        - "[I39D3] apps/shipping/ workspace contains the previous src/, public/, and per-app config; root scripts route through pnpm --filter"
+        - "[I39D4] Seven packages/shared-* exist (shared-domain, shared-db, shared-auth, shared-billing, shared-email, shared-observability, shared-ui) with public surfaces via src/index.ts; content schema + runtime engine fold into shared-domain"
+        - "[I39D5] Vercel root directory updated to apps/shipping; preview build green and identical to current production"
+        - "[I39D6] Sentry source-map upload validated against the new build path on a preview deploy"
+        - "[I39D7] pnpm exec drizzle-kit check passes against the relocated shared-db config"
+        - "[I39D8] apps/shipping Playwright smoke and 153/153 unit tests pass; no test deletions"
+        - "[I39D9] README, TRADEMARKS, PDD, and active-context.yaml reflect the new repo name and layout; meta.repo updated; meta.release bumped to 1.5.0 (minor — structural)"
+        - "[I39D10] Single squash merge to main with a documented rollback plan"
+      est:
+        dev_h: 14
+        test_h: 8
+      sub_issues: []
+      remaining_deliverables:
+        - "[I39D1]"
+        - "[I39D2]"
+        - "[I39D3]"
+        - "[I39D4]"
+        - "[I39D5]"
+        - "[I39D6]"
+        - "[I39D7]"
+        - "[I39D8]"
+        - "[I39D9]"
+        - "[I39D10]"
+      progress_log:
+        - note: "Opened on the #36 branch with PR #38 carrying the standalone plan in specs/current-changes/issue-39-monorepo-rename-plan.md. Pure mechanical refactor + repo rename. No EDI content, no feature work, no logic changes, no user-visible UX change. Blocked by #36 / PR #38; blocks #16 (EDI implementation) and #13 (native app implementation)."
     - id: search-and-filtering
       title: "Wiki search, directory filtering"
       status: planned

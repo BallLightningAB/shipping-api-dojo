@@ -1,4 +1,82 @@
 entries:
+  - date: "2026-04-28"
+    version: "1.4.1.8"
+    commit: pending
+    status: uncommitted
+    title: "docs(planning): add #16 EDI sibling-product plan and open #39 umbrella monorepo refactor issue"
+    details: |-
+      Markdown-only planning additions on the `#36` branch that ride into
+      `main` with PR `#38`. No code changes. No worktree creation. No
+      restructure. The execution sequence stays strict: `#36` → `#39` → `#16`.
+
+      What changed:
+
+      - Added `specs/current-changes/issue-39-monorepo-rename-plan.md`
+        — standalone plan for renaming the GitHub repo and local working
+        folder from `shipping-api-dojo` to `apidojo-app` and converting the
+        single-app repo to a pnpm-workspaces monorepo with `apps/shipping/`
+        plus seven shared packages: `@apidojo/shared-domain`,
+        `shared-db`, `shared-auth`, `shared-billing`, `shared-email`,
+        `shared-observability`, `shared-ui`. Content schema + runtime
+        engine fold into `shared-domain`. `shared-ui` carries the shadcn
+        primitives plus the content-type-driven renderers (drill, lesson,
+        arena, wiki, progress). No `shared-content-schema` package — that
+        responsibility lives inside `shared-domain`. Pure mechanical
+        refactor. No Turborepo/Nx/Rush/Lerna in this issue.
+      - Added `specs/current-changes/issue-16-edi-product-plan.md` —
+        long-form EDI sibling-product strategy: `edi.apidojo.app`,
+        product name "EDI API Dojo", IA mirroring Shipping, single
+        Better Auth user across products, single Creem customer with a
+        cross-product API Dojo Pro Bundle, shared infra, separate
+        per-product SEO with no cross-domain canonicals, cross-product
+        overlap matrix, compatibility with the future native app from
+        `#13`.
+      - Added `specs/current-changes/issue-16-edi-product-implementation-plan.md`
+        — wave breakdown for after `#39` merges (Wave 1 scaffolding →
+        Wave 2 MVP curriculum + wiki → Wave 3 paid tier + bundle →
+        Wave 4 cross-product polish), with sub-issue layout, validation
+        rules, and 66h dev / 34h test estimates.
+      - Added `specs/current-changes/issue-16-edi-curriculum-draft.md`
+        — first-wave EDI curriculum (8 lessons, 18 drill family stubs,
+        10 scenario family stubs across X12, EDIFACT, ACKs, AS2/SFTP/
+        VAN/OFTP2 transports, mapping, ops, and ERP/WMS/TMS integration
+        realities including DHL Freight Sweden via `dhldashboard.se`).
+      - Added `specs/current-changes/issue-16-edi-wiki-inventory.md` —
+        wiki + integration + carrier-EDI + directory inventory using
+        the `#15` deep-wiki convention adapted for EDI, plus the
+        cross-product overlap matrix that decides which topics
+        canonicalise on which product.
+      - Added `specs/current-changes/issue-16-fresh-thread-prompt.md`
+        — fresh-thread prompt for the future `#16` worktree (after
+        `#39` merges).
+      - Updated `specs/memory-bank/active-context.yaml`: bumped
+        `meta.release` to `1.4.1.8`, added a new `#39` roadmap entry as
+        `planned` with `blocked_by: #36` and `blocks: [#16, #13]`,
+        refreshed the `#16` entry with the locked decisions, the wave
+        deliverables `I16D6`–`I16D9`, and the new `66h dev / 34h test`
+        estimate.
+      - Created GitHub issue `#39` (`Rename to apidojo-app and convert
+        to pnpm-workspaces monorepo`) with the body lifted from the
+        umbrella refactor plan; blocked by `#36`.
+      - Updated GitHub issue `#16` body to reflect the locked decisions
+        (subdomain `edi.apidojo.app`, EDI Pro + bundle pricing, shared
+        packages roster, `shared-ui` included), link to the new plan
+        files, and mark blocked-by `#39`.
+      - Updated PR `#38` description to note the markdown-only planning
+        additions and the new issue `#39`.
+
+      Validation:
+
+      - Markdown-only edits + YAML metadata; no runtime behavior
+        changes, all existing automated checks still apply when the
+        user runs them on this branch before merging.
+    refs:
+      - "#5"
+      - "#13"
+      - "#16"
+      - "#36"
+      - "#39"
+
   - date: "2026-04-27"
     version: "1.4.1.7"
     commit: pending

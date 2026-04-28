@@ -19,7 +19,7 @@ Decide whether EDI should launch as a sibling product under API Dojo rather than
 ## Outline
 
 1. Define the EDI product boundary and target audience.
-2. Define the initial curriculum scope around X12, EDIFACT, acknowledgements, transport, mapping, and operations.
+2. Define the initial curriculum scope around X12, EDIFACT, acknowledgements, transport, mapping, and operations. Include EDI-Integration for DHL Freight Sweden via dhldashboard.se documentation.
 3. Decide the information architecture, naming, and domain strategy.
 4. Define which shared systems can be reused across products.
 5. Define cross-linking rules between Shipping API Dojo and the future EDI product.
