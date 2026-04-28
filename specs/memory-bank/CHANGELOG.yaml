@@ -1,8 +1,8 @@
 entries:
   - date: "2026-04-28"
     version: "1.4.1.9"
-    commit: pending
-    status: uncommitted
+    commit: 0e23053
+    status: committed
     title: "fix(plans,header): address PR #38 Gemini review feedback"
     details: |-
       Addresses the two Gemini code-review comments left on PR `#38`:
@@ -33,8 +33,8 @@ entries:
 
   - date: "2026-04-28"
     version: "1.4.1.8"
-    commit: pending
-    status: uncommitted
+    commit: 7bb0823
+    status: committed
     title: "docs(planning): add #16 EDI sibling-product plan and open #39 umbrella monorepo refactor issue"
     details: |-
       Markdown-only planning additions on the `#36` branch that ride into
