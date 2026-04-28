@@ -1,3 +1,13 @@
+import { Button } from "@/components/ui/button";
+import {
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
+import { authClient } from "@/lib/auth/client";
 import { ClientOnly, Link } from "@tanstack/react-router";
 import {
 	BookOpen,
@@ -10,16 +20,6 @@ import {
 	UserRound,
 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "@/components/ui/sheet";
-import { authClient } from "@/lib/auth/client";
 
 const navLinks = [
 	{ href: "/learn/rest", label: "REST", icon: BookOpen },
@@ -99,16 +99,16 @@ export function Header() {
 										{link.label}
 									</Link>
 								))}
-								<Link
-									className={
-										"flex items-center gap-2 font-medium text-foreground text-lg transition-colors hover:text-bl-red"
+								<ClientOnly
+									fallback={
+										<MobileAccountLink
+											label="Sign in"
+											onClick={() => setMobileMenuOpen(false)}
+										/>
 									}
-									onClick={() => setMobileMenuOpen(false)}
-									to="/settings"
 								>
-									<UserRound className="h-4 w-4" />
-									Account
-								</Link>
+									<MobileAccountNav onClick={() => setMobileMenuOpen(false)} />
+								</ClientOnly>
 							</nav>
 						</SheetContent>
 					</Sheet>
@@ -133,4 +133,31 @@ function AccountNav() {
 	const session = authClient.useSession();
 	const label = session.data?.user?.id ? "Account" : "Sign in";
 	return <AccountLink label={label} />;
+}
+
+function MobileAccountLink({
+	label,
+	onClick,
+}: {
+	label: string;
+	onClick: () => void;
+}) {
+	return (
+		<Link
+			className={
+				"flex items-center gap-2 font-medium text-foreground text-lg transition-colors hover:text-bl-red"
+			}
+			onClick={onClick}
+			to="/settings"
+		>
+			<UserRound className="h-4 w-4" />
+			{label}
+		</Link>
+	);
+}
+
+function MobileAccountNav({ onClick }: { onClick: () => void }) {
+	const session = authClient.useSession();
+	const label = session.data?.user?.id ? "Account" : "Sign in";
+	return <MobileAccountLink label={label} onClick={onClick} />;
 }

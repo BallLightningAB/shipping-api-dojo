@@ -12,11 +12,12 @@ import {
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { SUPPORT_CONTACT_LABEL, SUPPORT_EMAIL } from "@/content/legal";
 import { getStorefrontPlanConfig } from "@/lib/billing/storefront";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
 import { breadcrumbScripts } from "@/lib/seo/structured-data";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/plans")({
 	loader: () => getStorefrontPlanConfig(),
@@ -115,6 +116,45 @@ function ProductId({ children }: { children: ReactNode }) {
 	);
 }
 
+function PlanCard({
+	title,
+	titleIcon,
+	description,
+	features,
+	action,
+	productId,
+	cardClassName,
+}: {
+	title: string;
+	titleIcon?: ReactNode;
+	description: string;
+	features: string[];
+	action: ReactNode;
+	productId?: ReactNode;
+	cardClassName?: string;
+}) {
+	return (
+		<Card className={cardClassName}>
+			<CardHeader>
+				<div className="flex items-center gap-2">
+					{titleIcon}
+					<h2 className={cn("font-semibold leading-none")}>{title}</h2>
+				</div>
+				<p className="text-muted-foreground text-sm">{description}</p>
+			</CardHeader>
+			<CardContent className="space-y-5">
+				<ul className="space-y-3 text-sm text-muted-foreground">
+					{features.map((feature) => (
+						<PlanFeature key={feature}>{feature}</PlanFeature>
+					))}
+				</ul>
+				{action}
+				{productId}
+			</CardContent>
+		</Card>
+	);
+}
+
 function PlansPage() {
 	const storefront = Route.useLoaderData();
 
@@ -135,48 +175,25 @@ function PlansPage() {
 			</section>
 
 			<section className="mt-12 grid gap-5 lg:grid-cols-4">
-				<Card className="border-border">
-					<CardHeader>
-						<CardTitle>
-							<h2>Free</h2>
-						</CardTitle>
-						<p className="text-muted-foreground text-sm">Open public core</p>
-					</CardHeader>
-					<CardContent className="space-y-5">
-						<ul className="space-y-3 text-sm text-muted-foreground">
-							<PlanFeature>
-								Public REST, SOAP, and cross-track lessons
-							</PlanFeature>
-							<PlanFeature>
-								Core lesson drills and standard arena scenarios
-							</PlanFeature>
-							<PlanFeature>Wiki and carrier API directory access</PlanFeature>
-							<PlanFeature>Signed-in server-backed progress</PlanFeature>
-						</ul>
+				<PlanCard
+					action={
 						<Button asChild className="w-full" variant="outline">
 							<Link to="/learn/rest">Start Free</Link>
 						</Button>
-					</CardContent>
-				</Card>
+					}
+					cardClassName="border-border"
+					description="Open public core"
+					features={[
+						"Public REST, SOAP, and cross-track lessons",
+						"Core lesson drills and standard arena scenarios",
+						"Wiki and carrier API directory access",
+						"Signed-in server-backed progress",
+					]}
+					title="Free"
+				/>
 
-				<Card className="border-blue-500/60">
-					<CardHeader>
-						<CardTitle>
-							<h2>Pro Monthly</h2>
-						</CardTitle>
-						<p className="text-muted-foreground text-sm">
-							Premium practice, monthly billing
-						</p>
-					</CardHeader>
-					<CardContent className="space-y-5">
-						<ul className="space-y-3 text-sm text-muted-foreground">
-							<PlanFeature>Everything in Free</PlanFeature>
-							<PlanFeature>Premium lesson challenge rerolls</PlanFeature>
-							<PlanFeature>Advanced incident review depth</PlanFeature>
-							<PlanFeature>
-								More scenario and drill variant practice
-							</PlanFeature>
-						</ul>
+				<PlanCard
+					action={
 						<StorefrontButton
 							fallbackLabel="Ask support for Pro Monthly"
 							fallbackSubject="Shipping API Dojo Pro monthly inquiry"
@@ -184,30 +201,25 @@ function PlansPage() {
 						>
 							Buy Pro Monthly
 						</StorefrontButton>
+					}
+					cardClassName="border-blue-500/60"
+					description="Premium practice, monthly billing"
+					features={[
+						"Everything in Free",
+						"Premium lesson challenge rerolls",
+						"Advanced incident review depth",
+						"More scenario and drill variant practice",
+					]}
+					productId={
 						<ProductId>
 							Creem Pro monthly product ID: {storefront.monthly.productId}
 						</ProductId>
-					</CardContent>
-				</Card>
+					}
+					title="Pro Monthly"
+				/>
 
-				<Card className="border-blue-500/60">
-					<CardHeader>
-						<CardTitle>
-							<h2>Pro Annual</h2>
-						</CardTitle>
-						<p className="text-muted-foreground text-sm">
-							The same Pro capability set, annual billing
-						</p>
-					</CardHeader>
-					<CardContent className="space-y-5">
-						<ul className="space-y-3 text-sm text-muted-foreground">
-							<PlanFeature>Everything in Free</PlanFeature>
-							<PlanFeature>Premium lesson challenge rerolls</PlanFeature>
-							<PlanFeature>Advanced incident review depth</PlanFeature>
-							<PlanFeature>
-								Annual Pro purchase through Creem Storefront
-							</PlanFeature>
-						</ul>
+				<PlanCard
+					action={
 						<StorefrontButton
 							fallbackLabel="Ask support for Pro Annual"
 							fallbackSubject="Shipping API Dojo Pro annual inquiry"
@@ -215,42 +227,39 @@ function PlansPage() {
 						>
 							Buy Pro Annual
 						</StorefrontButton>
+					}
+					cardClassName="border-blue-500/60"
+					description="The same Pro capability set, annual billing"
+					features={[
+						"Everything in Free",
+						"Premium lesson challenge rerolls",
+						"Advanced incident review depth",
+						"Annual Pro purchase through Creem Storefront",
+					]}
+					productId={
 						<ProductId>
 							Creem Pro annual product ID: {storefront.annual.productId}
 						</ProductId>
-					</CardContent>
-				</Card>
+					}
+					title="Pro Annual"
+				/>
 
-				<Card className="border-border bg-muted/20">
-					<CardHeader>
-						<div className="flex items-center gap-2">
-							<HelpCircle className="h-5 w-5 text-muted-foreground" />
-							<CardTitle>
-								<h2>Team / Enterprise</h2>
-							</CardTitle>
-						</div>
-						<p className="text-muted-foreground text-sm">
-							Inquiry-only, not implemented as checkout
-						</p>
-					</CardHeader>
-					<CardContent className="space-y-5">
-						<ul className="space-y-3 text-sm text-muted-foreground">
-							<PlanFeature>
-								No Team or Enterprise checkout is live today
-							</PlanFeature>
-							<PlanFeature>
-								No Enterprise Creem product is configured
-							</PlanFeature>
-							<PlanFeature>
-								Support handles procurement, team, and custom-access questions
-								manually
-							</PlanFeature>
-						</ul>
+				<PlanCard
+					action={
 						<Button asChild className="w-full" variant="outline">
 							<a href={supportHref}>Contact support</a>
 						</Button>
-					</CardContent>
-				</Card>
+					}
+					cardClassName="border-border bg-muted/20"
+					description="Inquiry-only, not implemented as checkout"
+					features={[
+						"No Team or Enterprise checkout is live today",
+						"No Enterprise Creem product is configured",
+						"Support handles procurement, team, and custom-access questions manually",
+					]}
+					title="Team / Enterprise"
+					titleIcon={<HelpCircle className="h-5 w-5 text-muted-foreground" />}
+				/>
 			</section>
 
 			<section className="mt-12 grid gap-5 md:grid-cols-[1.3fr_0.7fr]">

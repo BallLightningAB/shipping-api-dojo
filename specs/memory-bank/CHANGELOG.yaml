@@ -1,5 +1,37 @@
 entries:
   - date: "2026-04-28"
+    version: "1.4.1.9"
+    commit: pending
+    status: uncommitted
+    title: "fix(plans,header): address PR #38 Gemini review feedback"
+    details: |-
+      Addresses the two Gemini code-review comments left on PR `#38`:
+
+      - `src/routes/plans.tsx`: extracted a shared `PlanCard` component
+        and dropped the `<CardTitle><h2>...</h2></CardTitle>` nesting in
+        favour of a single semantic `<h2>` styled with the title classes.
+        Removes the four duplicated card structures (Free, Pro Monthly,
+        Pro Annual, Team / Enterprise) so future pricing edits change one
+        place. Tightened the `features` prop to `string[]` so React keys
+        are stable values rather than array indices.
+      - `src/components/layout/Header.tsx`: made the mobile-menu account
+        link session-aware via a new `MobileAccountNav` component wrapped
+        in `ClientOnly`. The mobile menu now toggles between "Sign in"
+        and "Account" exactly like the desktop nav, instead of hard-coded
+        "Account".
+
+      No public copy changes, no route changes, no schema changes. The
+      `/plans` page renders identically; only the underlying markup is
+      cleaner and the mobile auth label now matches the desktop label
+      based on session state.
+
+      Validation: `pnpm format`, `pnpm lint`, `pnpm typecheck`,
+      `pnpm test --run` (153/153 across 28 files).
+    refs:
+      - "#36"
+      - "#38"
+
+  - date: "2026-04-28"
     version: "1.4.1.8"
     commit: pending
     status: uncommitted
