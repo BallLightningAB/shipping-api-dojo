@@ -18,7 +18,7 @@ function withSectionIds(sections: LessonSection[]) {
 
 const lessonDefinitions: LessonDefinition[] = lessonCatalog.map((entry) => {
 	const legacyLesson = legacyLessons.find(
-		(lesson) => lesson.slug === entry.slug
+		(lesson) => lesson.slug === entry.slug,
 	);
 	if (!legacyLesson) {
 		throw new Error(`Unknown legacy lesson: ${entry.slug}`);

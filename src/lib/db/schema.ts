@@ -28,7 +28,7 @@ export const userProgress = pgTable(
 		progressJson: jsonb("progress_json").notNull(),
 		...timestamps,
 	},
-	(table) => [index("user_progress_updated_at_idx").on(table.updatedAt)]
+	(table) => [index("user_progress_updated_at_idx").on(table.updatedAt)],
 );
 
 export const userEntitlements = pgTable(
@@ -44,7 +44,7 @@ export const userEntitlements = pgTable(
 		effectiveTo: timestamp("effective_to", { withTimezone: true }),
 		...timestamps,
 	},
-	(table) => [index("user_entitlements_tier_idx").on(table.tier)]
+	(table) => [index("user_entitlements_tier_idx").on(table.tier)],
 );
 
 export const subscriptions = pgTable(
@@ -68,7 +68,7 @@ export const subscriptions = pgTable(
 	(table) => [
 		index("subscriptions_user_id_idx").on(table.userId),
 		index("subscriptions_status_idx").on(table.status),
-	]
+	],
 );
 
 export const billingEvents = pgTable(
@@ -89,7 +89,7 @@ export const billingEvents = pgTable(
 	(table) => [
 		index("billing_events_user_id_idx").on(table.userId),
 		index("billing_events_subscription_id_idx").on(table.subscriptionId),
-	]
+	],
 );
 
 export const certificates = pgTable(
@@ -109,7 +109,7 @@ export const certificates = pgTable(
 	(table) => [
 		index("certificates_user_id_idx").on(table.userId),
 		uniqueIndex("certificates_credential_id_unique").on(table.credentialId),
-	]
+	],
 );
 
 export const emailEvents = pgTable(
@@ -130,7 +130,7 @@ export const emailEvents = pgTable(
 	(table) => [
 		index("email_events_user_id_idx").on(table.userId),
 		index("email_events_provider_event_id_idx").on(table.providerEventId),
-	]
+	],
 );
 
 export const progressMergeEvents = pgTable(
@@ -144,7 +144,7 @@ export const progressMergeEvents = pgTable(
 		resultSnapshot: jsonb("result_snapshot").notNull(),
 		...timestamps,
 	},
-	(table) => [index("progress_merge_events_user_id_idx").on(table.userId)]
+	(table) => [index("progress_merge_events_user_id_idx").on(table.userId)],
 );
 
 export const user = pgTable(
@@ -157,7 +157,7 @@ export const user = pgTable(
 		image: text("image"),
 		...timestamps,
 	},
-	(table) => [uniqueIndex("user_email_unique").on(table.email)]
+	(table) => [uniqueIndex("user_email_unique").on(table.email)],
 );
 
 export const practiceSeeds = pgTable(
@@ -177,9 +177,9 @@ export const practiceSeeds = pgTable(
 		uniqueIndex("practice_seeds_owner_scope_unique").on(
 			table.userId,
 			table.surface,
-			table.scope
+			table.scope,
 		),
-	]
+	],
 );
 
 export const session = pgTable(
@@ -198,7 +198,7 @@ export const session = pgTable(
 	(table) => [
 		uniqueIndex("session_token_unique").on(table.token),
 		index("session_user_id_idx").on(table.userId),
-	]
+	],
 );
 
 export const account = pgTable(
@@ -226,10 +226,10 @@ export const account = pgTable(
 	(table) => [
 		uniqueIndex("account_provider_account_unique").on(
 			table.providerId,
-			table.accountId
+			table.accountId,
 		),
 		index("account_user_id_idx").on(table.userId),
-	]
+	],
 );
 
 export const verification = pgTable(
@@ -244,9 +244,9 @@ export const verification = pgTable(
 	(table) => [
 		uniqueIndex("verification_identifier_value_unique").on(
 			table.identifier,
-			table.value
+			table.value,
 		),
-	]
+	],
 );
 
 export const schema = {

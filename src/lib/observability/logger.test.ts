@@ -105,12 +105,12 @@ describe("captureException", () => {
 		expect(mockState.setTag).toHaveBeenCalledWith("fallbackTier", "free");
 		expect(mockState.setTag).toHaveBeenCalledWith(
 			"operation",
-			"resolve_entitlements"
+			"resolve_entitlements",
 		);
 		expect(mockState.setTag).toHaveBeenCalledWith("route", "/arena");
 		expect(mockState.setTag).not.toHaveBeenCalledWith(
 			"unused",
-			expect.anything()
+			expect.anything(),
 		);
 		expect(mockState.captureException).toHaveBeenCalledTimes(1);
 		const [capturedError] = mockState.captureException.mock.calls[0];

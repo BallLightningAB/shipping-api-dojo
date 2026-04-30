@@ -55,7 +55,7 @@ export function resolvePlanKeyFromProductId(
 	config: Pick<
 		CreemEnvConfig,
 		"annualProductId" | "enterpriseProductId" | "monthlyProductId"
-	>
+	>,
 ): string | null {
 	if (!productId) {
 		return null;
@@ -73,7 +73,7 @@ export function resolvePlanKeyFromProductId(
 }
 
 export function resolveTierFromPlanKey(
-	planKey: string | null
+	planKey: string | null,
 ): "free" | "pro" | "enterprise" {
 	if (!planKey) {
 		return "free";
@@ -88,7 +88,7 @@ export function resolveTierFromPlanKey(
 }
 
 export function isActiveSubscriptionStatus(
-	status: string | null | undefined
+	status: string | null | undefined,
 ): boolean {
 	const normalizedStatus = status?.toLowerCase();
 	return normalizedStatus === "active" || normalizedStatus === "trialing";
@@ -126,7 +126,7 @@ function getObject(data: unknown): Record<string, unknown> | null {
 
 function getString(
 	obj: Record<string, unknown> | null,
-	key: string
+	key: string,
 ): string | null {
 	const value = obj?.[key];
 	return typeof value === "string" ? value : null;
@@ -137,7 +137,7 @@ export function extractSubscriptionFields(
 	config: Pick<
 		CreemEnvConfig,
 		"annualProductId" | "enterpriseProductId" | "monthlyProductId"
-	>
+	>,
 ): {
 	planKey: string | null;
 	status: string | null;
@@ -173,7 +173,7 @@ export function extractSubscriptionFields(
 }
 
 export function extractPreviousSubscriptionStatus(
-	event: CreemWebhookEvent
+	event: CreemWebhookEvent,
 ): string | null {
 	const eventData = getObject(event.data);
 	const subscription = getObject(eventData?.subscription);

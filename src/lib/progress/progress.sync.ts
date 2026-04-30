@@ -44,7 +44,7 @@ async function readCurrentUserProgress(userId: string) {
 
 async function upsertCurrentUserProgress(
 	userId: string,
-	progress: ReturnType<typeof parseProgress>
+	progress: ReturnType<typeof parseProgress>,
 ) {
 	const db = getDb();
 
@@ -71,7 +71,7 @@ export const readServerProgress = createServerFn({ method: "GET" }).handler(
 		const progress = await readCurrentUserProgress(session.user.id);
 
 		return progress ?? { ...DEFAULT_PROGRESS };
-	}
+	},
 );
 
 export const writeServerProgress = createServerFn({ method: "POST" })

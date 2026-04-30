@@ -17,7 +17,7 @@ function maxIsoDate(left: string | null, right: string | null): string | null {
 
 function mergeLessons(
 	serverLessons: ProgressData["lessons"],
-	localLessons: ProgressData["lessons"]
+	localLessons: ProgressData["lessons"],
 ): ProgressData["lessons"] {
 	const lessonKeys = new Set([
 		...Object.keys(serverLessons),
@@ -46,7 +46,7 @@ function mergeLessons(
 			completed: Boolean(serverLesson?.completed || localLesson?.completed),
 			completedAt: maxIsoDate(
 				serverLesson?.completedAt ?? null,
-				localLesson?.completedAt ?? null
+				localLesson?.completedAt ?? null,
 			),
 			drillScores: mergedDrillScores,
 		};
@@ -57,7 +57,7 @@ function mergeLessons(
 
 export function mergeProgressSnapshots(
 	serverProgress: ProgressData,
-	localProgress: ProgressData
+	localProgress: ProgressData,
 ): ProgressData {
 	const normalizedServer = normalizeProgressData(serverProgress);
 	const normalizedLocal = normalizeProgressData(localProgress);
@@ -72,7 +72,7 @@ export function mergeProgressSnapshots(
 		streak: Math.max(normalizedServer.streak, normalizedLocal.streak),
 		lastActiveDate: maxIsoDate(
 			normalizedServer.lastActiveDate,
-			normalizedLocal.lastActiveDate
+			normalizedLocal.lastActiveDate,
 		),
 		lessons: mergeLessons(normalizedServer.lessons, normalizedLocal.lessons),
 		scenariosCompleted: [...mergedScenarios],

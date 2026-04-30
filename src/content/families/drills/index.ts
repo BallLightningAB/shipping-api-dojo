@@ -14,11 +14,11 @@ function getLegacyDrill(id: string): Drill {
 function assertDrillType(
 	id: string,
 	expectedType: DrillType,
-	actualType: DrillType
+	actualType: DrillType,
 ) {
 	if (expectedType !== actualType) {
 		throw new Error(
-			`Legacy drill ${id} has type ${actualType} but catalog expects ${expectedType}`
+			`Legacy drill ${id} has type ${actualType} but catalog expects ${expectedType}`,
 		);
 	}
 }
@@ -33,11 +33,11 @@ const drillFamilies: DrillFamilyDefinition[] = drillFamilyCatalog.map(
 		tags: entry.tags,
 		buildVariant: (seed) => {
 			const legacyVariants = entry.legacyDrillIds.map((legacyId) =>
-				getLegacyDrill(legacyId)
+				getLegacyDrill(legacyId),
 			);
 			const variant = pickDeterministic(
 				legacyVariants,
-				deriveChildSeed(seed, entry.id)
+				deriveChildSeed(seed, entry.id),
 			);
 
 			assertDrillType(variant.id, entry.type, variant.type);
@@ -51,7 +51,7 @@ const drillFamilies: DrillFamilyDefinition[] = drillFamilyCatalog.map(
 				},
 			};
 		},
-	})
+	}),
 );
 
 export { drillFamilies };

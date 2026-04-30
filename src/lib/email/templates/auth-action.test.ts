@@ -13,7 +13,7 @@ describe("renderAuthActionEmail", () => {
 
 		expect(html).toContain("Sign in to Shipping API Dojo");
 		expect(html).toContain(
-			"https://shipping.apidojo.app/auth/magic?token=test"
+			"https://shipping.apidojo.app/auth/magic?token=test",
 		);
 		expect(html).toContain("<!DOCTYPE html>");
 	});

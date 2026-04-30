@@ -58,7 +58,7 @@ export function readStoredProgress(storage: StorageReader) {
 function migrateLegacyProgressIfNeeded(
 	storage: StorageWriter,
 	data: ProgressData,
-	sourceKey: string | null
+	sourceKey: string | null,
 ) {
 	if (!sourceKey || sourceKey === STORAGE_KEY) {
 		return;

@@ -68,7 +68,7 @@ export function ProgressHydrator() {
 
 				setWriteReadyUserId(null);
 				console.info(
-					"Progress sync requires explicit merge decision. UI prompt wiring is pending."
+					"Progress sync requires explicit merge decision. UI prompt wiring is pending.",
 				);
 			} catch (error) {
 				captureException(error, {

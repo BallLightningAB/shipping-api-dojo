@@ -21,7 +21,7 @@ export function buildLessonPracticeRun(
 	seed: number,
 	options?: {
 		excludeDrillIds?: string[];
-	}
+	},
 ): LessonPracticeRun | null {
 	const run = getLessonRuntimeBySlug(slug, seed, options);
 	if (!run) {
@@ -39,7 +39,7 @@ export function buildArenaScenarioCards(
 	options: {
 		canAccessLadderLevel: (ladderLevel: Scenario["ladderLevel"]) => boolean;
 		requiresPremiumDepth: (ladderLevel: Scenario["ladderLevel"]) => boolean;
-	}
+	},
 ): ArenaScenarioCard[] {
 	return getArenaScenarioCards(seed).map((card) => {
 		const {
@@ -60,7 +60,7 @@ export function buildArenaScenarioCards(
 
 export function buildScenarioPracticeRun(
 	scenarioId: string,
-	seed: number
+	seed: number,
 ): Omit<Scenario, "runSeed"> | null {
 	const scenario = getScenarioRuntimeById(scenarioId, seed);
 	if (!scenario) {
@@ -97,9 +97,7 @@ export function createPracticeSeedId(): string {
 	const bytes = new Uint8Array(16);
 	globalThis.crypto.getRandomValues(bytes);
 	// Set version to 4 and variant to 1 as per RFC 4122.
-	// biome-ignore lint/suspicious/noBitwiseOperators: RFC 4122 requires bitwise masks to set UUID version and variant bits.
 	bytes[6] = (bytes[6] & 0x0f) | 0x40;
-	// biome-ignore lint/suspicious/noBitwiseOperators: RFC 4122 requires bitwise masks to set UUID version and variant bits.
 	bytes[8] = (bytes[8] & 0x3f) | 0x80;
 
 	const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0"));

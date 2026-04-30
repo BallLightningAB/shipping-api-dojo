@@ -22,7 +22,7 @@ function getObject(value: unknown): Record<string, unknown> | null {
 
 function getString(
 	record: Record<string, unknown> | null,
-	key: string
+	key: string,
 ): string | null {
 	const value = record?.[key];
 	return typeof value === "string" ? value : null;

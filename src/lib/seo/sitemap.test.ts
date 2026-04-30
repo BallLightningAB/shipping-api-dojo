@@ -80,7 +80,7 @@ describe("public/sitemap.xml", () => {
 		const actual = readPublishedSitemap();
 		for (const surface of carrierSurfaces) {
 			expect(actual).toContain(
-				`<loc>${SITE_URL}/wiki/carriers/${surface.slug}</loc>`
+				`<loc>${SITE_URL}/wiki/carriers/${surface.slug}</loc>`,
 			);
 		}
 	});

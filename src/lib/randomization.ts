@@ -20,7 +20,7 @@ export function createSeededRandom(seed: number | string): () => number {
 
 export function shuffleDeterministic<T>(
 	items: readonly T[],
-	seed: number | string
+	seed: number | string,
 ): T[] {
 	const random = createSeededRandom(seed);
 	const nextItems = [...items];
@@ -38,7 +38,7 @@ export function shuffleDeterministic<T>(
 
 export function pickDeterministic<T>(
 	items: readonly T[],
-	seed: number | string
+	seed: number | string,
 ): T {
 	if (items.length === 0) {
 		throw new Error("pickDeterministic requires at least one item.");

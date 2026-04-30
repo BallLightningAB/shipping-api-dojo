@@ -31,7 +31,7 @@ describe("content runtime", () => {
 	it("preserves legacy lessons through the same runtime API", () => {
 		const introRuntime = getLessonRuntimeBySlug(
 			"intro-carrier-integrations",
-			101
+			101,
 		);
 		const runtime = getLessonRuntimeBySlug("rest-2-auth-headers", 101);
 
@@ -51,35 +51,35 @@ describe("content runtime", () => {
 		const third = getLessonRuntimeBySlug("rest-1-http-semantics", 303);
 
 		expect(first?.drills.map((drill) => drill.id)).toEqual(
-			second?.drills.map((drill) => drill.id)
+			second?.drills.map((drill) => drill.id),
 		);
 		expect(first?.drills.map((drill) => drill.id)).not.toEqual(
-			third?.drills.map((drill) => drill.id)
+			third?.drills.map((drill) => drill.id),
 		);
 	});
 
 	it("avoids the current drill variants on reroll when alternatives exist", () => {
 		const first = getLessonRuntimeBySlug(
 			"cross-track-2-carrier-capability-matrix-integration-architecture",
-			101
+			101,
 		);
 		const rerolled = getLessonRuntimeBySlug(
 			"cross-track-2-carrier-capability-matrix-integration-architecture",
 			202,
 			{
 				excludeDrillIds: first?.drills.map((drill) => drill.id),
-			}
+			},
 		);
 
 		expect(first).not.toBeNull();
 		expect(rerolled).not.toBeNull();
 		expect(first?.drills.map((drill) => drill.id)).not.toEqual(
-			rerolled?.drills.map((drill) => drill.id)
+			rerolled?.drills.map((drill) => drill.id),
 		);
 		expect(
 			rerolled?.drills.every(
-				(drill) => !first?.drills.some((previous) => previous.id === drill.id)
-			)
+				(drill) => !first?.drills.some((previous) => previous.id === drill.id),
+			),
 		).toBe(true);
 	});
 
@@ -89,10 +89,10 @@ describe("content runtime", () => {
 		for (let seed = 1; seed <= 200; seed += 1) {
 			const runtime = getLessonRuntimeBySlug(
 				"rest-9-webhook-signatures-replay-ordering",
-				seed
+				seed,
 			);
 			uniqueChallenges.add(
-				runtime?.drills.map((drill) => drill.id).join("|") ?? "null"
+				runtime?.drills.map((drill) => drill.id).join("|") ?? "null",
 			);
 		}
 
@@ -102,25 +102,25 @@ describe("content runtime", () => {
 	it("rerolls rest-9 into new drill variants instead of only reordering the same pair", () => {
 		const first = getLessonRuntimeBySlug(
 			"rest-9-webhook-signatures-replay-ordering",
-			101
+			101,
 		);
 		const rerolled = getLessonRuntimeBySlug(
 			"rest-9-webhook-signatures-replay-ordering",
 			202,
 			{
 				excludeDrillIds: first?.drills.map((drill) => drill.id),
-			}
+			},
 		);
 
 		expect(first).not.toBeNull();
 		expect(rerolled).not.toBeNull();
 		expect(first?.drills.map((drill) => drill.id)).not.toEqual(
-			rerolled?.drills.map((drill) => drill.id)
+			rerolled?.drills.map((drill) => drill.id),
 		);
 		expect(
 			rerolled?.drills.every(
-				(drill) => !first?.drills.some((previous) => previous.id === drill.id)
-			)
+				(drill) => !first?.drills.some((previous) => previous.id === drill.id),
+			),
 		).toBe(true);
 	});
 
@@ -132,7 +132,7 @@ describe("content runtime", () => {
 			for (let seed = 1; seed <= 400; seed += 1) {
 				const runtime = getLessonRuntimeBySlug(lesson.slug, seed);
 				uniqueChallenges.add(
-					runtime?.drills.map((drill) => drill.id).join("|") ?? "null"
+					runtime?.drills.map((drill) => drill.id).join("|") ?? "null",
 				);
 			}
 
@@ -143,7 +143,7 @@ describe("content runtime", () => {
 		});
 
 		expect(lessonDepths.filter((lesson) => lesson.count < depthFloor)).toEqual(
-			[]
+			[],
 		);
 	});
 
@@ -210,13 +210,13 @@ describe("content runtime", () => {
 		const soapLessons = getLessonsByTrackRuntime("soap");
 		const crossTrackLessons = getLessonsByTrackRuntime("cross-track");
 		const introLesson = catalog.find(
-			(lesson) => lesson.slug === "intro-carrier-integrations"
+			(lesson) => lesson.slug === "intro-carrier-integrations",
 		);
 		const restLesson = catalog.find(
-			(lesson) => lesson.slug === "rest-1-http-semantics"
+			(lesson) => lesson.slug === "rest-1-http-semantics",
 		);
 		const legacyLesson = catalog.find(
-			(lesson) => lesson.slug === "rest-2-auth-headers"
+			(lesson) => lesson.slug === "rest-2-auth-headers",
 		);
 
 		expect(introLesson?.id).toBe("lesson-intro-carrier-integrations");
@@ -227,13 +227,13 @@ describe("content runtime", () => {
 		expect(soapLessons).toHaveLength(7);
 		expect(crossTrackLessons).toHaveLength(2);
 		expect(restLessons.at(-1)?.slug).toBe(
-			"rest-10-observability-health-checks-runbooks"
+			"rest-10-observability-health-checks-runbooks",
 		);
 		expect(soapLessons.at(-1)?.slug).toBe(
-			"soap-7-fault-taxonomy-internal-error-mapping"
+			"soap-7-fault-taxonomy-internal-error-mapping",
 		);
 		expect(crossTrackLessons.at(-1)?.slug).toBe(
-			"cross-track-2-carrier-capability-matrix-integration-architecture"
+			"cross-track-2-carrier-capability-matrix-integration-architecture",
 		);
 		expect(catalog.every((lesson) => Boolean(lesson.id))).toBe(true);
 	});

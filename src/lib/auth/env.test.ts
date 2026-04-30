@@ -27,7 +27,7 @@ describe("parseAuthEnv", () => {
 				BETTER_AUTH_URL: "http://127.0.0.1:3000",
 				RESEND_API_KEY: "re_123",
 				RESEND_FROM_EMAIL: "auth@mail.apidojo.app",
-			})
+			}),
 		).toThrowError();
 	});
 });
@@ -35,7 +35,7 @@ describe("parseAuthEnv", () => {
 describe("parseTrustedOrigins", () => {
 	it("splits a csv list and trims whitespace", () => {
 		expect(
-			parseTrustedOrigins("http://localhost:3000, http://127.0.0.1:3000")
+			parseTrustedOrigins("http://localhost:3000, http://127.0.0.1:3000"),
 		).toEqual(["http://localhost:3000", "http://127.0.0.1:3000"]);
 	});
 

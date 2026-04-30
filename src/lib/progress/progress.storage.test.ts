@@ -35,7 +35,7 @@ describe("readStoredProgress", () => {
 					lessons: {},
 					scenariosCompleted: [],
 				}),
-			})
+			}),
 		);
 
 		expect(result.sourceKey).toBe(STORAGE_KEY);
@@ -53,7 +53,7 @@ describe("readStoredProgress", () => {
 					lessons: {},
 					scenariosCompleted: [],
 				}),
-			})
+			}),
 		);
 
 		expect(result.sourceKey).toBe(LEGACY_STORAGE_KEYS[0]);

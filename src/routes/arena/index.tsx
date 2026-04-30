@@ -292,7 +292,7 @@ function ArenaPage() {
 								</CardContent>
 							</Card>
 						</button>
-					)
+					),
 				)}
 			</div>
 		);
@@ -318,7 +318,7 @@ function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
 				isLocked: card.isLocked,
 				requiresPremiumDepth: card.requiresPremiumDepth,
 			},
-		])
+		]),
 	);
 
 	return getArenaScenarioCards(generatePracticeSeed()).map((card) => {
@@ -340,7 +340,7 @@ function overlayArenaCardAccess(cards: ArenaScenarioCard[]) {
 
 function ScenarioStatus({ scenarioId }: { scenarioId: string }) {
 	const completed = useStore(progressStore, (s) =>
-		s.scenariosCompleted.includes(scenarioId)
+		s.scenariosCompleted.includes(scenarioId),
 	);
 
 	if (completed) {

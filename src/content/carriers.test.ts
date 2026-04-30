@@ -66,7 +66,7 @@ describe("carrierSurfaces", () => {
 		const directorySlugs = new Set(
 			directoryEntries
 				.map((entry) => entry.slug)
-				.filter((slug): slug is string => Boolean(slug))
+				.filter((slug): slug is string => Boolean(slug)),
 		);
 		for (const surface of carrierSurfaces) {
 			expect(surface.directorySlugs.length).toBeGreaterThanOrEqual(1);
@@ -120,10 +120,10 @@ describe("carrierSurfaces", () => {
 
 	it("groups DHL into separate business-unit surfaces (Express, eCommerce, Parcel DE, Freight Sweden) rather than a single page", () => {
 		const dhl = carrierSurfaces.filter(
-			(surface) => surface.vendorSlug === "dhl"
+			(surface) => surface.vendorSlug === "dhl",
 		);
 		const businessUnits = new Set(
-			dhl.map((surface) => surface.businessUnitSlug)
+			dhl.map((surface) => surface.businessUnitSlug),
 		);
 		expect(businessUnits.has("express")).toBe(true);
 		expect(businessUnits.has("ecommerce")).toBe(true);
@@ -133,7 +133,7 @@ describe("carrierSurfaces", () => {
 
 	it("represents both modern and legacy USPS surfaces so 'USPS Web Tools' search intent has a destination", () => {
 		const usps = carrierSurfaces.filter(
-			(surface) => surface.vendorSlug === "usps"
+			(surface) => surface.vendorSlug === "usps",
 		);
 		const statuses = new Set(usps.map((surface) => surface.status));
 		expect(statuses.has("active")).toBe(true);
@@ -142,7 +142,7 @@ describe("carrierSurfaces", () => {
 
 	it("represents both modern and legacy UPS surfaces so 'UPS XML API' search intent has a destination", () => {
 		const ups = carrierSurfaces.filter(
-			(surface) => surface.vendorSlug === "ups"
+			(surface) => surface.vendorSlug === "ups",
 		);
 		const statuses = new Set(ups.map((surface) => surface.status));
 		expect(statuses.has("active")).toBe(true);
@@ -151,7 +151,7 @@ describe("carrierSurfaces", () => {
 
 	it("represents both REST and SOAP FedEx surfaces", () => {
 		const fedex = carrierSurfaces.filter(
-			(surface) => surface.vendorSlug === "fedex"
+			(surface) => surface.vendorSlug === "fedex",
 		);
 		const protocols = new Set(fedex.map((surface) => surface.protocol));
 		expect(protocols.has("rest")).toBe(true);

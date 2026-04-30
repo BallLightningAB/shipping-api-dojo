@@ -1,7 +1,3 @@
-import { ClientOnly, createFileRoute, Link } from "@tanstack/react-router";
-import { useStore } from "@tanstack/react-store";
-import { Download, LogOut, Mail, Trash2, Upload } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,6 +17,15 @@ import { parseProgress } from "@/lib/progress/progress.schema";
 import { saveProgress } from "@/lib/progress/progress.storage";
 import { progressStore } from "@/lib/progress/progress.store";
 import { generateCanonical, generateMeta } from "@/lib/seo/meta";
+import {
+	ClientOnly,
+	createFileRoute,
+	Link,
+	useNavigate,
+} from "@tanstack/react-router";
+import { useStore } from "@tanstack/react-store";
+import { Download, LogOut, Mail, Trash2, Upload } from "lucide-react";
+import { type FormEvent, useEffect, useState } from "react";
 
 export const Route = createFileRoute("/settings")({
 	head: () => ({
@@ -60,19 +65,19 @@ function SettingsPage() {
 
 function buildSupportMailto() {
 	return `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-		"Shipping API Dojo support request"
+		"Shipping API Dojo support request",
 	)}`;
 }
 
 function buildDeletionMailto(accountEmail = "") {
 	const body = accountEmail
 		? `&body=${encodeURIComponent(
-				`Please review my Shipping API Dojo deletion request.\n\nAccount email: ${accountEmail}\nRequest details: `
+				`Please review my Shipping API Dojo deletion request.\n\nAccount email: ${accountEmail}\nRequest details: `,
 			)}`
 		: "";
 
 	return `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-		"Shipping API Dojo deletion request"
+		"Shipping API Dojo deletion request",
 	)}${body}`;
 }
 
@@ -206,6 +211,7 @@ function AccountAccessCard({
 	isPending: boolean;
 	userEmail?: string | null;
 }) {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [status, setStatus] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -229,7 +235,7 @@ function AccountAccessCard({
 			setStatus("Check your email for the Shipping API Dojo sign-in link.");
 		} catch {
 			setStatus(
-				"Could not send a sign-in link. Contact support if it persists."
+				"Could not send a sign-in link. Contact support if it persists.",
 			);
 		} finally {
 			setIsSubmitting(false);
@@ -241,7 +247,7 @@ function AccountAccessCard({
 		setIsSubmitting(true);
 		try {
 			await authClient.signOut();
-			window.location.reload();
+			navigate({ to: "/" });
 		} catch {
 			setStatus("Could not sign out. Refresh and try again.");
 			setIsSubmitting(false);
@@ -479,11 +485,11 @@ function SettingsPanel() {
 	const lessonsProgress = useStore(progressStore, (s) => s.lessons);
 	const scenariosCompleted = useStore(
 		progressStore,
-		(s) => s.scenariosCompleted
+		(s) => s.scenariosCompleted,
 	);
 	const [importStatus, setImportStatus] = useState<string | null>(null);
 	const [accountExportStatus, setAccountExportStatus] = useState<string | null>(
-		null
+		null,
 	);
 	const [isExportingAccount, setIsExportingAccount] = useState(false);
 	const [currentEntitlements, setCurrentEntitlements] = useState<{
@@ -517,7 +523,7 @@ function SettingsPanel() {
 	}, [debugSessionKey]);
 
 	const completedLessons = Object.values(lessonsProgress).filter(
-		(l) => l.completed
+		(l) => l.completed,
 	).length;
 	const activeTier = currentEntitlements?.tier ?? "free";
 	const hasPaidTier = activeTier === "pro" || activeTier === "enterprise";
@@ -562,7 +568,6 @@ function SettingsPanel() {
 	}
 
 	function handleReset() {
-		// biome-ignore lint: simple UX for MVP reset
 		if (window.confirm("Are you sure? This will erase all your progress.")) {
 			resetProgress();
 			setImportStatus("Progress reset.");
@@ -593,7 +598,7 @@ function SettingsPanel() {
 				route: "/settings",
 			});
 			setAccountExportStatus(
-				"Could not export account data. Contact support if the problem persists."
+				"Could not export account data. Contact support if the problem persists.",
 			);
 		} finally {
 			setIsExportingAccount(false);

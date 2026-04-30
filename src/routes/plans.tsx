@@ -49,7 +49,7 @@ export const Route = createFileRoute("/plans")({
 });
 
 const supportHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-	"Shipping API Dojo plan inquiry"
+	"Shipping API Dojo plan inquiry",
 )}`;
 
 const productLinks = [
@@ -98,7 +98,7 @@ function StorefrontButton({
 		<Button asChild className="w-full gap-2" variant="outline">
 			<a
 				href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-					fallbackSubject
+					fallbackSubject,
 				)}`}
 			>
 				{fallbackLabel}

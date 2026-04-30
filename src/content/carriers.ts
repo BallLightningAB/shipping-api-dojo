@@ -923,13 +923,13 @@ export const carrierSurfaces: CarrierSurface[] = [
 ];
 
 export function getCarrierSurfaceBySlug(
-	slug: string
+	slug: string,
 ): CarrierSurface | undefined {
 	return carrierSurfaces.find((surface) => surface.slug === slug);
 }
 
 export function getCarrierSurfacesByVendor(
-	vendorSlug: string
+	vendorSlug: string,
 ): CarrierSurface[] {
 	return carrierSurfaces.filter((surface) => surface.vendorSlug === vendorSlug);
 }

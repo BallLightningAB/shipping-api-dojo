@@ -98,12 +98,12 @@ export const Route = createFileRoute("/wiki/carriers/$slug")({
 
 function findDirectoryEntries(slugs: string[]): DirectoryEntry[] {
 	return directoryEntries.filter(
-		(entry) => entry.slug !== undefined && slugs.includes(entry.slug)
+		(entry) => entry.slug !== undefined && slugs.includes(entry.slug),
 	);
 }
 
 function findRelatedConceptTitles(
-	slugs: string[]
+	slugs: string[],
 ): { slug: string; title: string }[] {
 	return slugs
 		.map((slug) => {
@@ -111,7 +111,7 @@ function findRelatedConceptTitles(
 			return entry ? { slug, title: entry.title } : null;
 		})
 		.filter(
-			(value): value is { slug: string; title: string } => value !== null
+			(value): value is { slug: string; title: string } => value !== null,
 		);
 }
 

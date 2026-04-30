@@ -50,7 +50,7 @@ function isEntitlementTier(value: string): value is EntitlementTier {
 
 function resolveSubscriptionTier(
 	status?: string | null,
-	planKey?: string | null
+	planKey?: string | null,
 ): EntitlementTier | null {
 	if (!(status && planKey)) {
 		return null;
@@ -75,7 +75,7 @@ function resolveSubscriptionTier(
 
 function maxTier(
 	left: EntitlementTier | null,
-	right: EntitlementTier | null
+	right: EntitlementTier | null,
 ): EntitlementTier | null {
 	if (!left) {
 		return right;
@@ -88,13 +88,13 @@ function maxTier(
 
 export function hasCapability(
 	capabilities: readonly string[],
-	required: string
+	required: string,
 ): boolean {
 	return capabilities.includes(required);
 }
 
 export function resolveEntitlements(
-	input: ResolveEntitlementInput
+	input: ResolveEntitlementInput,
 ): ResolvedEntitlements {
 	const manualTier =
 		input.manualTier && isEntitlementTier(input.manualTier)
@@ -102,13 +102,13 @@ export function resolveEntitlements(
 			: null;
 	const subscriptionTier = resolveSubscriptionTier(
 		input.subscriptionStatus,
-		input.subscriptionPlanKey
+		input.subscriptionPlanKey,
 	);
 	const tier = maxTier(subscriptionTier, manualTier) ?? "free";
 	const baseCapabilities = CAPABILITY_BUNDLES[tier];
 	const manualCapabilities = input.manualCapabilities ?? [];
 	const capabilities = Array.from(
-		new Set([...baseCapabilities, ...manualCapabilities])
+		new Set([...baseCapabilities, ...manualCapabilities]),
 	);
 
 	let source: ResolvedEntitlements["source"] = "fallback_free";

@@ -32,7 +32,7 @@ describe("verifyCreemWebhookSignature", () => {
 				payload,
 				secret,
 				signatureHeader: signature,
-			})
+			}),
 		).toBe(true);
 	});
 
@@ -42,7 +42,7 @@ describe("verifyCreemWebhookSignature", () => {
 				payload: "{}",
 				secret: "test_secret",
 				signatureHeader: "bad_signature",
-			})
+			}),
 		).toBe(false);
 	});
 });
@@ -50,16 +50,16 @@ describe("verifyCreemWebhookSignature", () => {
 describe("resolvePlanKeyFromProductId", () => {
 	it("maps known product IDs to stable plan keys", () => {
 		expect(resolvePlanKeyFromProductId("prod_monthly", CREEM_CONFIG)).toBe(
-			"pro_monthly"
+			"pro_monthly",
 		);
 		expect(resolvePlanKeyFromProductId("prod_annual", CREEM_CONFIG)).toBe(
-			"pro_annual"
+			"pro_annual",
 		);
 		expect(resolvePlanKeyFromProductId("prod_enterprise", CREEM_CONFIG)).toBe(
-			"enterprise"
+			"enterprise",
 		);
 		expect(
-			resolvePlanKeyFromProductId("prod_unknown", CREEM_CONFIG)
+			resolvePlanKeyFromProductId("prod_unknown", CREEM_CONFIG),
 		).toBeNull();
 	});
 });
@@ -78,14 +78,14 @@ describe("resolveTierFromSubscription", () => {
 			resolveTierFromSubscription({
 				planKey: "pro_monthly",
 				status: "active",
-			})
+			}),
 		).toBe("pro");
 
 		expect(
 			resolveTierFromSubscription({
 				planKey: "enterprise",
 				status: "trialing",
-			})
+			}),
 		).toBe("enterprise");
 	});
 
@@ -94,14 +94,14 @@ describe("resolveTierFromSubscription", () => {
 			resolveTierFromSubscription({
 				planKey: "pro_annual",
 				status: "canceled",
-			})
+			}),
 		).toBe("free");
 
 		expect(
 			resolveTierFromSubscription({
 				planKey: "pro_monthly",
 				status: "past_due",
-			})
+			}),
 		).toBe("free");
 	});
 });
@@ -170,7 +170,7 @@ describe("resolveBillingLifecycleEmailType", () => {
 			resolveBillingLifecycleEmailType({
 				eventType: "checkout.completed",
 				status: "active",
-			})
+			}),
 		).toBe("subscription_confirmation");
 	});
 
@@ -180,7 +180,7 @@ describe("resolveBillingLifecycleEmailType", () => {
 				eventType: "subscription.updated",
 				previousStatus: "past_due",
 				status: "active",
-			})
+			}),
 		).toBe("subscription_confirmation");
 	});
 
@@ -189,7 +189,7 @@ describe("resolveBillingLifecycleEmailType", () => {
 			resolveBillingLifecycleEmailType({
 				eventType: "subscription.updated",
 				status: "active",
-			})
+			}),
 		).toBeNull();
 	});
 
@@ -198,7 +198,7 @@ describe("resolveBillingLifecycleEmailType", () => {
 			resolveBillingLifecycleEmailType({
 				eventType: "invoice.payment_failed",
 				status: "past_due",
-			})
+			}),
 		).toBe("payment_failure");
 	});
 
@@ -207,7 +207,7 @@ describe("resolveBillingLifecycleEmailType", () => {
 			resolveBillingLifecycleEmailType({
 				eventType: "subscription.canceled",
 				status: "canceled",
-			})
+			}),
 		).toBe("subscription_cancellation");
 	});
 });

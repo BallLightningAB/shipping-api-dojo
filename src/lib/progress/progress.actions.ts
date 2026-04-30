@@ -21,7 +21,7 @@ function todayISO(): string {
 }
 
 function updateStreak(
-	prev: ProgressData
+	prev: ProgressData,
 ): Pick<ProgressData, "streak" | "lastActiveDate"> {
 	const today = todayISO();
 	if (prev.lastActiveDate === today) {
@@ -50,7 +50,7 @@ export function addXp(amount: number) {
 export function completeDrill(
 	lessonSlug: string,
 	drillId: string,
-	score: number
+	score: number,
 ) {
 	progressStore.setState((prev) => {
 		const lesson: LessonProgress = prev.lessons[lessonSlug] ?? {

@@ -11,8 +11,8 @@ const coreDrillProgressPairs: [string, string][] = [
 
 const catalogDrillProgressPairs = drillFamilyCatalog.flatMap((entry) =>
 	entry.legacyDrillIds.map(
-		(legacyDrillId) => [legacyDrillId, entry.id] as [string, string]
-	)
+		(legacyDrillId) => [legacyDrillId, entry.id] as [string, string],
+	),
 );
 
 const coreScenarioProgressPairs: [string, string][] = [
@@ -20,7 +20,7 @@ const coreScenarioProgressPairs: [string, string][] = [
 ];
 
 const catalogScenarioProgressPairs = scenarioFamilyCatalog.map(
-	(entry) => [entry.sourceScenarioId, entry.id] as [string, string]
+	(entry) => [entry.sourceScenarioId, entry.id] as [string, string],
 );
 
 export const LEGACY_DRILL_PROGRESS_KEY_MAP = Object.fromEntries([

@@ -25,7 +25,7 @@ describe("buildAuthBaseURLConfig", () => {
 
 		expect(config.allowedHosts).toContain("shipping.apidojo.app");
 		expect(config.allowedHosts).toContain(
-			"shipping-apidojo-git-main.vercel.app"
+			"shipping-apidojo-git-main.vercel.app",
 		);
 		expect(config.fallback).toBe("https://shipping.apidojo.app");
 	});
@@ -45,7 +45,7 @@ describe("cookie and security helpers", () => {
 			shouldUseSecureCookies({
 				...BASE_ENV,
 				BETTER_AUTH_URL: "http://127.0.0.1:3000",
-			})
+			}),
 		).toBe(false);
 	});
 });

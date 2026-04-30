@@ -1,4 +1,32 @@
 entries:
+  - date: "2026-04-30"
+    version: "1.4.1.10"
+    commit: pending
+    status: uncommitted
+    title: "fix(settings): replace window.location.reload() with router navigation after signOut"
+    details: |-
+      Addresses the unresolved PR `#38` code-review comment about using
+      `window.location.reload()` for state management after sign-out being a
+      heavy-handed approach in a React application.
+
+      - `src/routes/settings.tsx`: added `useNavigate` import from
+        `@tanstack/react-router`, added `const navigate = useNavigate()` to
+        `AccountAccessCard` component, and replaced
+        `window.location.reload()` with `navigate({ to: "/" })` in the
+        `handleSignOut` function.
+      - The session state from `authClient.useSession()` now automatically
+        updates when signOut completes, avoiding the full page refresh and
+        providing a better user experience.
+
+      No public copy changes, no route changes, no schema changes. The sign-out
+      flow now uses idiomatic React navigation instead of a full page reload.
+
+      Validation: `pnpm format`, `pnpm lint`, `pnpm typecheck`,
+      `pnpm test --run` (153/153 across 28 files).
+    refs:
+      - "#36"
+      - "#38"
+
   - date: "2026-04-28"
     version: "1.4.1.9"
     commit: 0e23053

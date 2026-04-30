@@ -3,7 +3,7 @@ export interface InitialProgressSyncResult {
 }
 
 export function shouldReplaceLocalProgress(
-	result: InitialProgressSyncResult
+	result: InitialProgressSyncResult,
 ): boolean {
 	return !result.requiresDecision;
 }

@@ -69,8 +69,8 @@ async function handleResendWebhook(request: Request) {
 				and(
 					eq(emailEvents.provider, "resend"),
 					eq(emailEvents.providerEventId, fields.providerEventId),
-					eq(emailEvents.eventType, event.type)
-				)
+					eq(emailEvents.eventType, event.type),
+				),
 			)
 			.limit(1);
 

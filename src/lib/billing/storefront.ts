@@ -30,7 +30,7 @@ export interface StorefrontPlanConfig {
 }
 
 export function readStorefrontPlanConfig(
-	env: NodeJS.ProcessEnv = process.env
+	env: NodeJS.ProcessEnv = process.env,
 ): StorefrontPlanConfig {
 	return {
 		annual: {

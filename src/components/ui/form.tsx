@@ -24,7 +24,7 @@ interface FormFieldContextValue<
 }
 
 const FormFieldContext = createContext<FormFieldContextValue>(
-	{} as FormFieldContextValue
+	{} as FormFieldContextValue,
 );
 
 const FormField = <
@@ -68,7 +68,7 @@ interface FormItemContextValue {
 }
 
 const FormItemContext = createContext<FormItemContextValue>(
-	{} as FormItemContextValue
+	{} as FormItemContextValue,
 );
 
 function FormItem({ className, ...props }: ComponentProps<"div">) {

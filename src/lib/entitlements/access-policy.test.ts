@@ -18,7 +18,7 @@ describe("entitlement access policy", () => {
 			"enterprise",
 		]);
 		expect(TIER_CAPABILITY_MATRIX.every((row) => row.surfaces.length > 0)).toBe(
-			true
+			true,
 		);
 	});
 

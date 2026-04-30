@@ -79,6 +79,6 @@ function AuthActionEmailTemplate({
 
 export function renderAuthActionEmail(props: AuthActionEmailProps): string {
 	return `<!DOCTYPE html>${renderToStaticMarkup(
-		<AuthActionEmailTemplate {...props} />
+		<AuthActionEmailTemplate {...props} />,
 	)}`;
 }

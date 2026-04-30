@@ -53,7 +53,7 @@ export function fallbackFreeEntitlements(): ResolvedEntitlements {
 }
 
 export function canUseLessonChallengeReroll(
-	capabilities: readonly string[]
+	capabilities: readonly string[],
 ): boolean {
 	return hasCapability(capabilities, "randomization.premium.full");
 }
@@ -71,7 +71,7 @@ export function requiresPremiumScenarioDepth(ladderLevel?: number): boolean {
 
 export function canAccessScenarioRun(
 	capabilities: readonly string[],
-	ladderLevel?: number
+	ladderLevel?: number,
 ): boolean {
 	if (!requiresPremiumScenarioDepth(ladderLevel)) {
 		return true;
