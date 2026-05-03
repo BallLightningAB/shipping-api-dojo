@@ -210,9 +210,9 @@ Automated/local checks:
 - `pre-commit`: passed.
 
 External-provider and target-deployment checks still require dashboard/manual
-verification:
+verification and are now tracked separately in GitHub issue
+[#40](https://github.com/BallLightningAB/shipping-api-dojo/issues/40):
 
-- Seed dev users and run `pnpm test:e2e` with tiered auth credentials present.
 - Preview/production smoke for sign-up, sign-in, sign-out, session persistence,
   settings, and account export.
 - Neon migration/schema verification against the target database.

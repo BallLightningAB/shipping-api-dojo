@@ -134,6 +134,13 @@ roadmap:
           priority: high
           links:
             issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/36"
+          sub_issues:
+            - id: manual-activation-checks
+              issue: "#40"
+              title: "Manual Activation Checks"
+              status: planned
+              links:
+                issue: "https://github.com/BallLightningAB/shipping-api-dojo/issues/40"
       remaining_deliverables: []
       progress_log:
         - note: "Research captured in specs/current-changes/issue-5-content-expansion-research.md and GitHub issue #5 was updated to target minimum viable randomization, 20 lessons, 20 drill families, and 20 scenario families."
@@ -213,6 +220,8 @@ roadmap:
           note: "Created final v2 production-readiness sub-issue #36 after the #5 completion audit found the remaining launch gap: public plans/sign-in surfaces, Creem Storefront CTAs for the two Pro product IDs, explicit Enterprise inquiry-only messaging, paid-feature navigation from product surfaces, and a targeted external integration acceptance pass. Marked #15 and #26 complete in the roadmap state and left #36 as the only remaining #5 deliverable before closing the umbrella."
         - covers: [I5D14]
           note: "Implemented issue #36: added the crawlable /plans product/pricing page, runtime-configured Creem Storefront URLs kept separate from the Pro monthly/annual product IDs, visible Plans and Sign in / Account navigation, support fallback CTAs for unconfigured Storefront URLs, explicit Team/Enterprise inquiry-only copy, paid-feature locks routed to /plans, lightweight plan direction from home/learning/wiki/directory surfaces, settings refocused on account/privacy/progress/entitlement status, sitemap coverage for /plans, and final acceptance documentation. Validated with pnpm format, pnpm lint, pnpm typecheck, pnpm test --run, pnpm test:checkpoint, pnpm audit --json, pnpm exec drizzle-kit check, pnpm build, and pre-commit; provider dashboard checks are documented as manual activation checks."
+        - covers: [I5D14]
+          note: "Moved the remaining target-deployment and external-provider manual activation checks out of PR #38 into GitHub sub-issue #40 so the implementation PR can merge after local automated validation and code-review fixes. #40 tracks deployed auth/account smoke, Neon schema verification, Creem Storefront CTA verification, Creem webhook replay/test events, Resend transactional/webhook verification, Sentry DSN/privacy-scrubbing verification, and deployed browser smoke across the public/account routes."
   next_steps:
     - id: higher-value-randomization
       issue: "#10"

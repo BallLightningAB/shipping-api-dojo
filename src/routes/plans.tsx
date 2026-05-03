@@ -108,21 +108,12 @@ function StorefrontButton({
 	);
 }
 
-function ProductId({ children }: { children: ReactNode }) {
-	return (
-		<p className="break-all rounded border border-border bg-muted/40 px-2 py-1 font-mono text-[0.75rem] text-muted-foreground">
-			{children}
-		</p>
-	);
-}
-
 function PlanCard({
 	title,
 	titleIcon,
 	description,
 	features,
 	action,
-	productId,
 	cardClassName,
 }: {
 	title: string;
@@ -130,7 +121,6 @@ function PlanCard({
 	description: string;
 	features: string[];
 	action: ReactNode;
-	productId?: ReactNode;
 	cardClassName?: string;
 }) {
 	return (
@@ -149,7 +139,6 @@ function PlanCard({
 					))}
 				</ul>
 				{action}
-				{productId}
 			</CardContent>
 		</Card>
 	);
@@ -210,11 +199,6 @@ function PlansPage() {
 						"Advanced incident review depth",
 						"More scenario and drill variant practice",
 					]}
-					productId={
-						<ProductId>
-							Creem Pro monthly product ID: {storefront.monthly.productId}
-						</ProductId>
-					}
 					title="Pro Monthly"
 				/>
 
@@ -236,11 +220,6 @@ function PlansPage() {
 						"Advanced incident review depth",
 						"Annual Pro purchase through Creem Storefront",
 					]}
-					productId={
-						<ProductId>
-							Creem Pro annual product ID: {storefront.annual.productId}
-						</ProductId>
-					}
 					title="Pro Annual"
 				/>
 

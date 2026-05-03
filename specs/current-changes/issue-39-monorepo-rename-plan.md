@@ -30,7 +30,7 @@ without forcing a second migration later.
 ## Hard prerequisites
 
 - `#36` is merged to `main` (PR `#38` closed).
-- External acceptance pass on the `#36` deploy is recorded in the changelog or current-changes.
+- Manual activation checks from `#40` are complete and recorded in the changelog or current-changes.
 - A clean `main` HEAD with no in-flight feature branches that touch broad swaths of `src/`.
 - Working `pnpm` ≥ 10, Node ≥ 20.
 

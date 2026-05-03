@@ -69,6 +69,24 @@ function buildSupportMailto() {
 	)}`;
 }
 
+function getMagicLinkFailureStatus(error: unknown) {
+	const message = error instanceof Error ? error.message.toLowerCase() : "";
+
+	if (message.includes("rate") || message.includes("429")) {
+		return "Too many sign-in link requests. Wait a few minutes and try again.";
+	}
+
+	if (message.includes("invalid") && message.includes("email")) {
+		return "Enter a valid email address to receive a sign-in link.";
+	}
+
+	if (message.includes("network") || message.includes("fetch")) {
+		return "Network error while sending the sign-in link. Check your connection and try again.";
+	}
+
+	return "Could not send a sign-in link. Contact support if it persists.";
+}
+
 function buildDeletionMailto(accountEmail = "") {
 	const body = accountEmail
 		? `&body=${encodeURIComponent(
@@ -232,11 +250,11 @@ function AccountAccessCard({
 				email: normalizedEmail,
 				newUserCallbackURL: "/settings",
 			});
+			navigate({ replace: true, to: "/settings" });
+			setEmail("");
 			setStatus("Check your email for the Shipping API Dojo sign-in link.");
-		} catch {
-			setStatus(
-				"Could not send a sign-in link. Contact support if it persists.",
-			);
+		} catch (error) {
+			setStatus(getMagicLinkFailureStatus(error));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -247,7 +265,7 @@ function AccountAccessCard({
 		setIsSubmitting(true);
 		try {
 			await authClient.signOut();
-			navigate({ to: "/" });
+			navigate({ replace: true, to: "/" });
 		} catch {
 			setStatus("Could not sign out. Refresh and try again.");
 			setIsSubmitting(false);

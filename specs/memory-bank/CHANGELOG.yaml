@@ -3,29 +3,39 @@ entries:
     version: "1.4.1.10"
     commit: pending
     status: uncommitted
-    title: "fix(settings): replace window.location.reload() with router navigation after signOut"
+    title: "fix(plans,settings): address final PR #38 review feedback"
     details: |-
-      Addresses the unresolved PR `#38` code-review comment about using
-      `window.location.reload()` for state management after sign-out being a
-      heavy-handed approach in a React application.
+      Addresses the unresolved PR `#38` code-review comments from the latest
+      Gemini review pass and moves the remaining manual activation checks into
+      a dedicated GitHub follow-up issue.
 
       - `src/routes/settings.tsx`: added `useNavigate` import from
         `@tanstack/react-router`, added `const navigate = useNavigate()` to
         `AccountAccessCard` component, and replaced
-        `window.location.reload()` with `navigate({ to: "/" })` in the
+        `window.location.reload()` with `navigate({ replace: true, to: "/" })` in the
         `handleSignOut` function.
-      - The session state from `authClient.useSession()` now automatically
-        updates when signOut completes, avoiding the full page refresh and
-        providing a better user experience.
+      - Improved magic-link submission handling by clearing the settings URL
+        state after a successful request, clearing the email field, and
+        returning more specific user-facing messages for rate-limit,
+        invalid-email, and network/fetch failures.
+      - `src/routes/plans.tsx` and `src/lib/billing/storefront.ts`: stopped
+        returning or rendering raw Creem Product IDs from the public `/plans`
+        loader payload while preserving Storefront URL fallback behaviour.
+      - `.env.example`: documented the Pro Product ID and Storefront URL
+        variables with purpose and expected formats.
+      - Created GitHub issue `#40` ("Manual Activation Checks") and moved the
+        remaining deployed/provider-dashboard checks out of PR `#38`.
 
-      No public copy changes, no route changes, no schema changes. The sign-out
-      flow now uses idiomatic React navigation instead of a full page reload.
+      No route changes and no schema changes. The sign-out flow now uses
+      idiomatic React navigation instead of a full page reload, and the public
+      plans page no longer exposes internal Product IDs.
 
       Validation: `pnpm format`, `pnpm lint`, `pnpm typecheck`,
       `pnpm test --run` (153/153 across 28 files).
     refs:
       - "#36"
       - "#38"
+      - "#40"
 
   - date: "2026-04-28"
     version: "1.4.1.9"
