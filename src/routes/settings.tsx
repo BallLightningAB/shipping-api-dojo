@@ -25,7 +25,7 @@ import {
 } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { Download, LogOut, Mail, Trash2, Upload } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/settings")({
 	head: () => ({
@@ -230,9 +230,16 @@ function AccountAccessCard({
 	userEmail?: string | null;
 }) {
 	const navigate = useNavigate();
+	const isMountedRef = useRef(true);
 	const [email, setEmail] = useState("");
 	const [status, setStatus] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	useEffect(() => {
+		return () => {
+			isMountedRef.current = false;
+		};
+	}, []);
 
 	async function handleMagicLink(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -250,13 +257,21 @@ function AccountAccessCard({
 				email: normalizedEmail,
 				newUserCallbackURL: "/settings",
 			});
+			if (!isMountedRef.current) {
+				return;
+			}
 			navigate({ replace: true, to: "/settings" });
 			setEmail("");
 			setStatus("Check your email for the Shipping API Dojo sign-in link.");
 		} catch (error) {
+			if (!isMountedRef.current) {
+				return;
+			}
 			setStatus(getMagicLinkFailureStatus(error));
 		} finally {
-			setIsSubmitting(false);
+			if (isMountedRef.current) {
+				setIsSubmitting(false);
+			}
 		}
 	}
 
@@ -265,10 +280,15 @@ function AccountAccessCard({
 		setIsSubmitting(true);
 		try {
 			await authClient.signOut();
+			if (!isMountedRef.current) {
+				return;
+			}
 			navigate({ replace: true, to: "/" });
 		} catch {
-			setStatus("Could not sign out. Refresh and try again.");
-			setIsSubmitting(false);
+			if (isMountedRef.current) {
+				setStatus("Could not sign out. Refresh and try again.");
+				setIsSubmitting(false);
+			}
 		}
 	}
 

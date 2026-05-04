@@ -1,19 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-function optionalUrl(value: string | undefined): string | null {
-	if (!value) {
-		return null;
-	}
-
-	try {
-		const url = new URL(value);
-		return url.protocol === "https:" || url.protocol === "http:"
-			? url.toString()
-			: null;
-	} catch {
-		return null;
-	}
-}
+import { normalizeHttpUrl } from "../url/http-url";
 
 export interface StorefrontPlanConfig {
 	annual: {
@@ -29,10 +16,10 @@ export function readStorefrontPlanConfig(
 ): StorefrontPlanConfig {
 	return {
 		annual: {
-			storefrontUrl: optionalUrl(env.CREEM_PRO_ANNUAL_STOREFRONT_URL),
+			storefrontUrl: normalizeHttpUrl(env.CREEM_PRO_ANNUAL_STOREFRONT_URL),
 		},
 		monthly: {
-			storefrontUrl: optionalUrl(env.CREEM_PRO_MONTHLY_STOREFRONT_URL),
+			storefrontUrl: normalizeHttpUrl(env.CREEM_PRO_MONTHLY_STOREFRONT_URL),
 		},
 	};
 }

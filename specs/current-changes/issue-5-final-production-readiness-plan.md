@@ -197,6 +197,9 @@ Date: 2026-05-04
   session-aware account-label hook for desktop and mobile header navigation.
 - Updated browser smoke coverage so the public `/plans` page asserts internal
   Creem Product IDs are absent instead of visible.
+- Addressed the fresh PR `#38` Gemini review pass by centralizing Storefront
+  URL normalization, adding deterministic UUID v4 bit regression coverage, and
+  guarding async account-access completion against unmounted settings UI.
 
 ## Acceptance Status
 

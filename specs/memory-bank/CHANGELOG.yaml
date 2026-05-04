@@ -1,8 +1,32 @@
 entries:
   - date: "2026-05-04"
-    version: "1.4.1.12"
+    version: "1.4.1.13"
     commit: pending
     status: uncommitted
+    title: "fix(settings,billing): address fresh PR #38 Gemini review"
+    details: |-
+      Addresses the three unresolved Gemini review threads from the May 4
+      fresh review pass on PR `#38`:
+
+      - Moved Storefront HTTP/HTTPS URL normalization into a shared
+        `normalizeHttpUrl` helper and routed billing Storefront config through
+        it.
+      - Made the fallback UUID v4 bit masks explicit and added deterministic
+        regression coverage for the RFC 4122 version and variant bits.
+      - Guarded async magic-link and sign-out completion handling in settings
+        with an active component ref before navigation or state updates.
+
+      Validation: targeted Storefront, URL helper, and practice-run tests plus
+      typecheck passed before the full commit-process validation pass.
+    refs:
+      - "I5D14"
+      - "#36"
+      - "#38"
+
+  - date: "2026-05-04"
+    version: "1.4.1.12"
+    commit: 0b73dbc
+    status: committed
     title: "chore(memory-bank): cap changelog archive files below 1000 lines"
     details: |-
       Fixes the memory-bank hygiene issue found during PR `#38` review work:
