@@ -139,7 +139,7 @@ export interface BreadcrumbCrumb {
  * matching the pattern used by `generateFAQPageSchema`.
  */
 export function generateBreadcrumbListSchema(
-	crumbs: BreadcrumbCrumb[],
+	crumbs: BreadcrumbCrumb[]
 ): object | null {
 	if (crumbs.length === 0) {
 		return null;
@@ -175,7 +175,7 @@ export function generateBreadcrumbListSchema(
  * abstraction.
  */
 export function breadcrumbScripts(
-	crumbs: BreadcrumbCrumb[],
+	crumbs: BreadcrumbCrumb[]
 ): { type: string; children: string }[] {
 	const schema = generateBreadcrumbListSchema(crumbs);
 	if (schema === null) {

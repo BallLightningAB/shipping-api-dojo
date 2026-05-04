@@ -30,7 +30,7 @@ export const Route = createFileRoute("/wiki/")({
 });
 
 const carrierVendorCount = new Set(
-	carrierSurfaces.map((surface) => surface.vendorSlug),
+	carrierSurfaces.map((surface) => surface.vendorSlug)
 ).size;
 
 function WikiIndexPage() {

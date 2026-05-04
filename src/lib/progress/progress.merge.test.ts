@@ -38,10 +38,10 @@ describe("mergeProgressSnapshots", () => {
 		expect(merged.xp).toBe(55);
 		expect(merged.lessons["rest-1-http-semantics"]?.completed).toBe(true);
 		expect(
-			merged.lessons["rest-1-http-semantics"]?.drillScores["rest-mcq-1"],
+			merged.lessons["rest-1-http-semantics"]?.drillScores["rest-mcq-1"]
 		).toBe(80);
 		expect(
-			merged.lessons["rest-1-http-semantics"]?.drillScores["rest-cloze-1"],
+			merged.lessons["rest-1-http-semantics"]?.drillScores["rest-cloze-1"]
 		).toBe(100);
 	});
 
@@ -97,7 +97,7 @@ describe("mergeProgressSnapshots", () => {
 		expect(
 			merged.lessons["rest-2-auth-headers"]?.drillScores[
 				"rest-required-headers-correlation-ids"
-			],
+			]
 		).toBe(95);
 		expect(merged.scenariosCompleted).toContain("rate-limiting-storm");
 	});

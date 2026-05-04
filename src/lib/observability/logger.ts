@@ -33,7 +33,7 @@ export type ObservabilityContext = Record<
  */
 export function captureException(
 	error: unknown,
-	context: ObservabilityContext = {},
+	context: ObservabilityContext = {}
 ) {
 	const normalizedError =
 		error instanceof Error
@@ -79,7 +79,7 @@ function isSentryInitialized(): boolean {
 }
 
 function toTagValue(
-	value: boolean | number | string | null,
+	value: boolean | number | string | null
 ): boolean | number | string {
 	// Sentry tag values must be primitives but do not accept `null`. We
 	// normalize `null` to the string "null" so the tag is still searchable in
@@ -88,12 +88,12 @@ function toTagValue(
 }
 
 function removeUndefinedValues(
-	context: ObservabilityContext,
+	context: ObservabilityContext
 ): Record<string, boolean | number | string | null> {
 	return Object.fromEntries(
 		Object.entries(context).filter(
 			(entry): entry is [string, boolean | number | string | null] =>
-				entry[1] !== undefined,
-		),
+				entry[1] !== undefined
+		)
 	);
 }

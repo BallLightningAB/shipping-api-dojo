@@ -5,7 +5,7 @@ import type { ScenarioFamilyDefinition } from "../../types";
 
 function cloneScenario(sourceScenarioId: string) {
 	const legacyScenario = legacyScenarios.find(
-		(scenario) => scenario.id === sourceScenarioId,
+		(scenario) => scenario.id === sourceScenarioId
 	);
 	if (!legacyScenario) {
 		throw new Error(`Unknown legacy scenario: ${sourceScenarioId}`);
@@ -32,7 +32,7 @@ const scenarioFamilies: ScenarioFamilyDefinition[] = scenarioFamilyCatalog.map(
 			const scenario = cloneScenario(entry.sourceScenarioId);
 			const evidence = pickDeterministic(
 				entry.evidenceOptions,
-				deriveChildSeed(seed, `${entry.id}:evidence`),
+				deriveChildSeed(seed, `${entry.id}:evidence`)
 			);
 
 			return {
@@ -50,7 +50,7 @@ const scenarioFamilies: ScenarioFamilyDefinition[] = scenarioFamilyCatalog.map(
 				},
 			};
 		},
-	}),
+	})
 );
 
 export { scenarioFamilies };

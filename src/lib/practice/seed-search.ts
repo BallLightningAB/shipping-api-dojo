@@ -20,7 +20,7 @@ export interface StripLegacySeedParamsResult {
 }
 
 export function stripLegacySeedParamsFromHref(
-	href: string,
+	href: string
 ): StripLegacySeedParamsResult {
 	const url = new URL(href, PARSING_BASE_URL);
 	let changed = false;

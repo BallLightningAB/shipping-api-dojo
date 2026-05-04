@@ -1,8 +1,35 @@
 entries:
   - date: "2026-05-04"
-    version: "1.4.1.13"
+    version: "1.4.1.14"
     commit: pending
     status: uncommitted
+    title: "fix(tooling,billing): restore Ultracite presets and require HTTPS Storefront URLs"
+    details: |-
+      Addresses the local code-review findings before merging PR `#38`:
+
+      - Restored the shared Ultracite Biome presets and the original filename
+        convention rule.
+      - Added narrow Biome suppressions only where required: RFC 4122 UUID v4
+        bit masks and the existing destructive-progress reset confirmation.
+      - Made Storefront URL normalization require HTTPS for public checkout
+        CTAs while keeping the shared URL helper reusable for non-checkout HTTP
+        use cases.
+      - Added URL helper and Storefront config regression coverage for HTTPS
+        checkout requirements.
+      - Re-ran formatting under the restored Ultracite presets, so previously
+        drifted files are back under the shared formatting profile.
+
+      Validation: targeted billing/url/practice tests, `pnpm format`,
+      `pnpm lint`, and `pnpm run typecheck` passed before staging.
+    refs:
+      - "I5D14"
+      - "#36"
+      - "#38"
+
+  - date: "2026-05-04"
+    version: "1.4.1.13"
+    commit: 8fb0f49
+    status: committed
     title: "fix(settings,billing): address fresh PR #38 Gemini review"
     details: |-
       Addresses the three unresolved Gemini review threads from the May 4

@@ -73,12 +73,12 @@ describe("parseProgress", () => {
 		expect(
 			parsed.lessons["rest-1-http-semantics"]?.drillScores[
 				"rest-http-method-classification"
-			],
+			]
 		).toBe(60);
 		expect(
 			parsed.lessons["rest-2-auth-headers"]?.drillScores[
 				"rest-required-headers-correlation-ids"
-			],
+			]
 		).toBe(90);
 		expect(parsed.scenariosCompleted).toEqual(["rate-limiting-storm"]);
 	});

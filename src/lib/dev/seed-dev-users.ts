@@ -42,7 +42,7 @@ export interface SeedDevUsersResult {
 }
 
 async function ensureUserForFixture(
-	fixture: SeededUserFixture,
+	fixture: SeededUserFixture
 ): Promise<{ id: string; created: boolean }> {
 	const db = getDb();
 	const [existing] = await db
@@ -72,7 +72,7 @@ async function ensureUserForFixture(
 		const causeMessage = cause instanceof Error ? cause.message : String(cause);
 		throw new Error(
 			`Better Auth signUpEmail failed for ${fixture.email}: ${causeMessage}`,
-			{ cause: cause instanceof Error ? cause : undefined },
+			{ cause: cause instanceof Error ? cause : undefined }
 		);
 	}
 
@@ -80,7 +80,7 @@ async function ensureUserForFixture(
 	if (!userId) {
 		throw new Error(
 			`Better Auth signUpEmail did not return a user id for ${fixture.email}. ` +
-				`Response: ${JSON.stringify(signUp)}`,
+				`Response: ${JSON.stringify(signUp)}`
 		);
 	}
 
@@ -89,7 +89,7 @@ async function ensureUserForFixture(
 
 async function upsertSubscriptionForFixture(
 	userId: string,
-	fixture: SeededUserFixture,
+	fixture: SeededUserFixture
 ): Promise<string | null> {
 	const db = getDb();
 	const shape = resolveSubscriptionSeedShape(fixture.subscriptionState);
@@ -162,7 +162,7 @@ async function seedEntryForKey(key: DevTierKey): Promise<SeedResultEntry> {
 }
 
 export async function seedDevUsers(
-	env: SeedGuardEnv = process.env,
+	env: SeedGuardEnv = process.env
 ): Promise<SeedDevUsersResult> {
 	assertSeedGuardAllowed(env);
 

@@ -47,7 +47,7 @@ async function capturePracticeException(
 		fallbackTier?: "free";
 		operation: string;
 		route: string;
-	},
+	}
 ) {
 	const { captureException } = await import("../observability/logger");
 	captureException(error, context);
@@ -93,7 +93,7 @@ async function insertOrReadUserPracticeSeed(
 	userId: string,
 	surface: PracticeSeedSurface,
 	scope: string,
-	seed: number,
+	seed: number
 ): Promise<number> {
 	const { db, practiceSeeds } = await getPracticeSeedStorage();
 
@@ -125,7 +125,7 @@ async function writeUserPracticeSeed(
 	userId: string,
 	surface: PracticeSeedSurface,
 	scope: string,
-	seed: number,
+	seed: number
 ): Promise<number> {
 	const { db, practiceSeeds } = await getPracticeSeedStorage();
 
@@ -157,7 +157,7 @@ async function writeUserPracticeSeed(
 export function getOrCreateUserPracticeSeed(
 	userId: string,
 	surface: PracticeSeedSurface,
-	scope: string,
+	scope: string
 ): Promise<number> {
 	const seed = generatePracticeSeed();
 	return insertOrReadUserPracticeSeed(userId, surface, scope, seed);
@@ -166,7 +166,7 @@ export function getOrCreateUserPracticeSeed(
 export function rotateUserPracticeSeed(
 	userId: string,
 	surface: PracticeSeedSurface,
-	scope: string,
+	scope: string
 ): Promise<number> {
 	const seed = generatePracticeSeed();
 	return writeUserPracticeSeed(userId, surface, scope, seed);
@@ -182,7 +182,7 @@ export const getLessonPracticeRouteData = createServerFn({ method: "GET" })
 				seed = await getOrCreateUserPracticeSeed(
 					session.user.id,
 					"lesson",
-					data.slug,
+					data.slug
 				);
 			} catch (error) {
 				await capturePracticeException(error, {
@@ -216,7 +216,7 @@ export const getArenaPracticeRouteData = createServerFn({ method: "GET" })
 				seed = await getOrCreateUserPracticeSeed(
 					session.user.id,
 					"arena-cards",
-					"index",
+					"index"
 				);
 			} catch (error) {
 				await capturePracticeException(error, {
@@ -245,7 +245,7 @@ export const getArenaPracticeRouteData = createServerFn({ method: "GET" })
 					scenarioSeed = await getOrCreateUserPracticeSeed(
 						session.user.id,
 						"arena-scenario",
-						data.scenario,
+						data.scenario
 					);
 				} catch (error) {
 					await capturePracticeException(error, {
@@ -278,7 +278,7 @@ export const createLessonPracticeRun = createServerFn({ method: "POST" })
 		const seed = await rotateUserPracticeSeed(
 			session.user.id,
 			"lesson",
-			data.slug,
+			data.slug
 		);
 		const run = buildLessonPracticeRun(data.slug, seed, {
 			excludeDrillIds: data.excludeDrillIds,
@@ -302,7 +302,7 @@ export const createArenaCardsRun = createServerFn({ method: "POST" })
 		const seed = await rotateUserPracticeSeed(
 			session.user.id,
 			"arena-cards",
-			"index",
+			"index"
 		);
 
 		return {
@@ -326,7 +326,7 @@ export const createArenaScenarioRun = createServerFn({ method: "POST" })
 		const seed = await rotateUserPracticeSeed(
 			session.user.id,
 			"arena-scenario",
-			data.scenarioId,
+			data.scenarioId
 		);
 		const scenario = buildScenarioPracticeRun(data.scenarioId, seed);
 		if (!scenario) {

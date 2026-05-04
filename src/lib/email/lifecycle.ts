@@ -30,7 +30,7 @@ function resolvePlanLabel(planKey: string | null | undefined): string {
 
 export function buildLifecycleEmailCopy(
 	type: LifecycleEmailType,
-	options?: { planKey?: string | null },
+	options?: { planKey?: string | null }
 ): LifecycleEmailCopy {
 	switch (type) {
 		case "welcome":
@@ -63,7 +63,7 @@ export function buildLifecycleEmailCopy(
 }
 
 export function isDevSeedInProgress(
-	env: NodeJS.ProcessEnv = process.env,
+	env: NodeJS.ProcessEnv = process.env
 ): boolean {
 	return env.DEV_SEED_IN_PROGRESS === "true";
 }
@@ -71,7 +71,7 @@ export function isDevSeedInProgress(
 async function sendLifecycleEmail(
 	email: string,
 	type: LifecycleEmailType,
-	options?: { planKey?: string | null },
+	options?: { planKey?: string | null }
 ) {
 	if (isDevSeedInProgress()) {
 		// The dev-tier seed command opts out of real lifecycle email delivery so
@@ -105,7 +105,7 @@ export async function sendWelcomeEmail(email: string) {
 
 export async function sendSubscriptionConfirmationEmail(
 	email: string,
-	planKey: string | null | undefined,
+	planKey: string | null | undefined
 ) {
 	await sendLifecycleEmail(email, "subscription_confirmation", { planKey });
 }

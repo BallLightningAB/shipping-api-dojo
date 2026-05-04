@@ -17,7 +17,7 @@ const MAX_REROLL_ATTEMPTS = 8;
 function materializeFamilyDrill(
 	familyId: string,
 	seed: number,
-	excludedDrillIds: ReadonlySet<string> = new Set(),
+	excludedDrillIds: ReadonlySet<string> = new Set()
 ): Drill {
 	const family = getDrillFamilyById(familyId);
 	if (!family) {
@@ -51,10 +51,10 @@ function materializeFamilyDrill(
 						}));
 						const shuffledOptions = shuffleDeterministic(
 							orderedOptions,
-							deriveChildSeed(variantSeed, `${family.id}:options`),
+							deriveChildSeed(variantSeed, `${family.id}:options`)
 						);
 						const correctIndex = shuffledOptions.findIndex(
-							(entry) => entry.index === baseDrill.correctIndex,
+							(entry) => entry.index === baseDrill.correctIndex
 						);
 
 						return {
@@ -106,7 +106,7 @@ export function getLessonRuntimeBySlug(
 	seed: number,
 	options?: {
 		excludeDrillIds?: string[];
-	},
+	}
 ): {
 	lesson: Lesson;
 	seed: number;
@@ -117,7 +117,7 @@ export function getLessonRuntimeBySlug(
 		const drillSeed = deriveChildSeed(seed, `${slug}:drill-order`);
 		const excludedDrillIds = new Set(options?.excludeDrillIds ?? []);
 		const drills = familyLesson.drillFamilyIds.map((familyId) =>
-			materializeFamilyDrill(familyId, seed, excludedDrillIds),
+			materializeFamilyDrill(familyId, seed, excludedDrillIds)
 		);
 
 		return {
@@ -156,13 +156,13 @@ export function getArenaScenarioCards(seed: number): Scenario[] {
 
 	return shuffleDeterministic(
 		canonicalCards,
-		deriveChildSeed(seed, "arena-cards"),
+		deriveChildSeed(seed, "arena-cards")
 	);
 }
 
 export function getScenarioRuntimeById(
 	id: string,
-	runSeed: number,
+	runSeed: number
 ): Scenario | null {
 	const family = getScenarioFamilyById(id);
 	if (!family) {

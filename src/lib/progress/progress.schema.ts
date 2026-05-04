@@ -40,7 +40,7 @@ export const DEFAULT_PROGRESS: ProgressData = {
 };
 
 function normalizeLessons(
-	lessons: ProgressData["lessons"],
+	lessons: ProgressData["lessons"]
 ): ProgressData["lessons"] {
 	return Object.fromEntries(
 		Object.entries(lessons).map(([lessonSlug, lessonProgress]) => {
@@ -59,7 +59,7 @@ function normalizeLessons(
 					drillScores: remappedScores,
 				},
 			];
-		}),
+		})
 	);
 }
 
@@ -70,9 +70,9 @@ export function normalizeProgressData(data: ProgressData): ProgressData {
 		scenariosCompleted: Array.from(
 			new Set(
 				data.scenariosCompleted.map((scenarioKey) =>
-					remapLegacyScenarioProgressKey(scenarioKey),
-				),
-			),
+					remapLegacyScenarioProgressKey(scenarioKey)
+				)
+			)
 		),
 	};
 }

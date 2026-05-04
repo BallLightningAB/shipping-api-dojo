@@ -28,7 +28,7 @@ import { captureException } from "@/lib/observability/logger";
 
 function resolveProductIdForPlanKey(
 	planKey: string,
-	creemEnv: ReturnType<typeof getCreemEnv>,
+	creemEnv: ReturnType<typeof getCreemEnv>
 ) {
 	if (planKey === "pro_annual") {
 		return creemEnv.CREEM_PRO_ANNUAL_PRODUCT_ID;
@@ -183,7 +183,7 @@ async function handleCreemWebhook(request: Request) {
 			if (lifecycleEmailType === "subscription_confirmation") {
 				await sendSubscriptionConfirmationEmail(
 					billingUser.email,
-					fields.planKey,
+					fields.planKey
 				);
 			}
 
@@ -204,7 +204,7 @@ async function handleCreemWebhook(request: Request) {
 			updatedAt: new Date(),
 		})
 		.where(
-			and(eq(billingEvents.id, event.id), eq(billingEvents.provider, "creem")),
+			and(eq(billingEvents.id, event.id), eq(billingEvents.provider, "creem"))
 		);
 
 	return new Response(JSON.stringify({ ok: true }), {

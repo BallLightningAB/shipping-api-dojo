@@ -45,7 +45,7 @@ export const Route = createFileRoute("/wiki/$slug")({
 							title: entry.title,
 							description: entry.summary,
 							url,
-						}),
+						})
 					),
 				},
 				...breadcrumbScripts([

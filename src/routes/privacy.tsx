@@ -25,10 +25,10 @@ export const Route = createFileRoute("/privacy")({
 
 function PrivacyPolicyPage() {
 	const deletionMailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-		"Shipping API Dojo deletion request",
+		"Shipping API Dojo deletion request"
 	)}`;
 	const privacyMailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-		"Shipping API Dojo privacy request",
+		"Shipping API Dojo privacy request"
 	)}`;
 
 	return (

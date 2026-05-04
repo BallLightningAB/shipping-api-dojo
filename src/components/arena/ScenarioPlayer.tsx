@@ -22,13 +22,13 @@ export function ScenarioPlayer({ scenario, onComplete }: ScenarioPlayerProps) {
 	const [history, setHistory] = useState<string[]>([]);
 
 	const currentStep = scenario.steps.find(
-		(s: ScenarioStep) => s.id === currentStepId,
+		(s: ScenarioStep) => s.id === currentStepId
 	);
 
 	function handleChoice(
 		nextStepId: string | null,
 		choiceFeedback: string,
-		isCorrect: boolean,
+		isCorrect: boolean
 	) {
 		setFeedback({ text: choiceFeedback, isCorrect });
 		setHistory((prev) => [...prev, currentStepId]);
@@ -85,7 +85,7 @@ export function ScenarioPlayer({ scenario, onComplete }: ScenarioPlayerProps) {
 								handleChoice(
 									choice.nextStepId,
 									choice.feedback,
-									choice.isCorrect,
+									choice.isCorrect
 								)
 							}
 							type="button"

@@ -200,6 +200,9 @@ Date: 2026-05-04
 - Addressed the fresh PR `#38` Gemini review pass by centralizing Storefront
   URL normalization, adding deterministic UUID v4 bit regression coverage, and
   guarding async account-access completion against unmounted settings UI.
+- Addressed local code-review findings by restoring the shared Ultracite Biome
+  presets with narrow rule suppressions and requiring HTTPS for public Creem
+  Storefront checkout URLs.
 
 ## Acceptance Status
 

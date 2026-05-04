@@ -65,7 +65,7 @@ function SettingsPage() {
 
 function buildSupportMailto() {
 	return `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-		"Shipping API Dojo support request",
+		"Shipping API Dojo support request"
 	)}`;
 }
 
@@ -90,12 +90,12 @@ function getMagicLinkFailureStatus(error: unknown) {
 function buildDeletionMailto(accountEmail = "") {
 	const body = accountEmail
 		? `&body=${encodeURIComponent(
-				`Please review my Shipping API Dojo deletion request.\n\nAccount email: ${accountEmail}\nRequest details: `,
+				`Please review my Shipping API Dojo deletion request.\n\nAccount email: ${accountEmail}\nRequest details: `
 			)}`
 		: "";
 
 	return `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-		"Shipping API Dojo deletion request",
+		"Shipping API Dojo deletion request"
 	)}${body}`;
 }
 
@@ -523,11 +523,11 @@ function SettingsPanel() {
 	const lessonsProgress = useStore(progressStore, (s) => s.lessons);
 	const scenariosCompleted = useStore(
 		progressStore,
-		(s) => s.scenariosCompleted,
+		(s) => s.scenariosCompleted
 	);
 	const [importStatus, setImportStatus] = useState<string | null>(null);
 	const [accountExportStatus, setAccountExportStatus] = useState<string | null>(
-		null,
+		null
 	);
 	const [isExportingAccount, setIsExportingAccount] = useState(false);
 	const [currentEntitlements, setCurrentEntitlements] = useState<{
@@ -561,7 +561,7 @@ function SettingsPanel() {
 	}, [debugSessionKey]);
 
 	const completedLessons = Object.values(lessonsProgress).filter(
-		(l) => l.completed,
+		(l) => l.completed
 	).length;
 	const activeTier = currentEntitlements?.tier ?? "free";
 	const hasPaidTier = activeTier === "pro" || activeTier === "enterprise";
@@ -606,6 +606,7 @@ function SettingsPanel() {
 	}
 
 	function handleReset() {
+		// biome-ignore lint/suspicious/noAlert: intentional MVP confirmation before destructive local progress reset.
 		if (window.confirm("Are you sure? This will erase all your progress.")) {
 			resetProgress();
 			setImportStatus("Progress reset.");
@@ -636,7 +637,7 @@ function SettingsPanel() {
 				route: "/settings",
 			});
 			setAccountExportStatus(
-				"Could not export account data. Contact support if the problem persists.",
+				"Could not export account data. Contact support if the problem persists."
 			);
 		} finally {
 			setIsExportingAccount(false);

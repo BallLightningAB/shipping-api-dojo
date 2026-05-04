@@ -38,10 +38,10 @@ describe("evaluateSeedGuard", () => {
 
 	it("blocks running when VERCEL_ENV is preview or production", () => {
 		expect(evaluateSeedGuard({ ...base, VERCEL_ENV: "preview" }).allowed).toBe(
-			false,
+			false
 		);
 		expect(
-			evaluateSeedGuard({ ...base, VERCEL_ENV: "production" }).allowed,
+			evaluateSeedGuard({ ...base, VERCEL_ENV: "production" }).allowed
 		).toBe(false);
 	});
 
@@ -60,7 +60,7 @@ describe("evaluateSeedGuard", () => {
 
 describe("DEV_TIER_USERS fixtures drive the real resolver path", () => {
 	function resolvedForFixture(
-		key: (typeof DEV_TIER_KEYS)[number],
+		key: (typeof DEV_TIER_KEYS)[number]
 	): ResolvedEntitlements {
 		const fixture = DEV_TIER_USERS[key];
 		const shape = resolveSubscriptionSeedShape(fixture.subscriptionState);
@@ -96,7 +96,7 @@ describe("DEV_TIER_USERS fixtures drive the real resolver path", () => {
 
 	it("covers the documented tier set", () => {
 		expect([...DEV_TIER_KEYS].sort()).toEqual(
-			["canceled", "enterprise", "free", "inactive", "pro"].sort(),
+			["canceled", "enterprise", "free", "inactive", "pro"].sort()
 		);
 	});
 });

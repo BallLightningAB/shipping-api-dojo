@@ -117,7 +117,7 @@ export interface SubscriptionSeedShape {
  * exist (e.g. pure Free users).
  */
 export function resolveSubscriptionSeedShape(
-	state: SeededSubscriptionState,
+	state: SeededSubscriptionState
 ): SubscriptionSeedShape | null {
 	switch (state) {
 		case "none":
@@ -165,7 +165,7 @@ export function resolveSubscriptionSeedShape(
 		default: {
 			const exhaustive: never = state;
 			throw new Error(
-				`Unhandled seeded subscription state: ${String(exhaustive)}`,
+				`Unhandled seeded subscription state: ${String(exhaustive)}`
 			);
 		}
 	}

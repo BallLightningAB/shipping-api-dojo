@@ -137,7 +137,7 @@ const drillFamilies: DrillFamilyDefinition[] = [
 			];
 			const variant = pickDeterministic(
 				variants,
-				deriveChildSeed(seed, "rest-http-method-classification"),
+				deriveChildSeed(seed, "rest-http-method-classification")
 			);
 
 			return {
@@ -210,7 +210,7 @@ const drillFamilies: DrillFamilyDefinition[] = [
 			];
 			const variant = pickDeterministic(
 				variants,
-				deriveChildSeed(seed, "rest-timeout-recovery"),
+				deriveChildSeed(seed, "rest-timeout-recovery")
 			);
 
 			return {
@@ -265,7 +265,7 @@ const drillFamilies: DrillFamilyDefinition[] = [
 			];
 			const variant = pickDeterministic(
 				variants,
-				deriveChildSeed(seed, "rest-retry-policy-cloze"),
+				deriveChildSeed(seed, "rest-retry-policy-cloze")
 			);
 
 			return {
@@ -337,7 +337,7 @@ const drillFamilies: DrillFamilyDefinition[] = [
 			];
 			const variant = pickDeterministic(
 				variants,
-				deriveChildSeed(seed, "soap-envelope-structure"),
+				deriveChildSeed(seed, "soap-envelope-structure")
 			);
 
 			return {
@@ -449,7 +449,7 @@ const drillFamilies: DrillFamilyDefinition[] = [
 			];
 			const variant = pickDeterministic(
 				variants,
-				deriveChildSeed(seed, "soap-envelope-builder"),
+				deriveChildSeed(seed, "soap-envelope-builder")
 			);
 
 			return {
@@ -477,7 +477,7 @@ const timeoutChoice = (
 	label: string,
 	nextStepId: string | null,
 	feedback: string,
-	isCorrect: boolean,
+	isCorrect: boolean
 ) => ({ id, label, nextStepId, feedback, isCorrect });
 
 const timeoutScenarioFamily: ScenarioFamilyDefinition = {
@@ -495,7 +495,7 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 				{ name: "ParcelStream", path: "/api/shipments", order: "ORD-784" },
 				{ name: "Atlas Freight", path: "/shipments/create", order: "ORD-445" },
 			],
-			deriveChildSeed(seed, "carrier"),
+			deriveChildSeed(seed, "carrier")
 		);
 		const evidenceBank = pickDeterministic(
 			[
@@ -510,7 +510,7 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 					"Support chat says the customer is waiting for a label right now.",
 				],
 			],
-			deriveChildSeed(seed, "evidence"),
+			deriveChildSeed(seed, "evidence")
 		);
 		const queryPath = `${carrier.path}?order_id=${carrier.order}`;
 		const steps: ScenarioStep[] = [
@@ -523,21 +523,21 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 						"Retry the POST immediately",
 						"duplicate-risk",
 						"Risky — the original request may already have created a shipment, so a blind retry can produce duplicate labels and charges.",
-						false,
+						false
 					),
 					timeoutChoice(
 						"inspect-evidence",
 						"Inspect the evidence you already have before retrying",
 						"evidence-review",
 						"Correct — use correlation IDs, queue metadata, and recent shipment lookups before deciding whether another write is safe.",
-						true,
+						true
 					),
 					timeoutChoice(
 						"customer-wait",
 						"Tell the customer to try again later",
 						null,
 						"Poor recovery. You should investigate the ambiguous state instead of pushing the uncertainty back to the customer.",
-						false,
+						false
 					),
 				],
 			},
@@ -550,14 +550,14 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 						"Void the duplicate shipment and record the missing idempotency guardrail",
 						"system-fix",
 						"Correct — clean up the duplicate first, then fix the workflow so the same ambiguity cannot create another extra label.",
-						true,
+						true
 					),
 					timeoutChoice(
 						"ignore-duplicate",
 						"Ignore the duplicate because the customer only needs one label",
 						null,
 						"Wrong — duplicate shipments still create billing, tracking, and operational reconciliation problems.",
-						false,
+						false
 					),
 				],
 			},
@@ -570,14 +570,14 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 						`Query ${queryPath} and search by the client reference before retrying`,
 						"query-result",
 						"Correct — check whether the original shipment already exists before sending another write request.",
-						true,
+						true
 					),
 					timeoutChoice(
 						"queue-retry",
 						"Send the request back to the queue immediately with no additional checks",
 						null,
 						"That repeats the same ambiguity. Investigate the carrier state first.",
-						false,
+						false
 					),
 				],
 			},
@@ -590,14 +590,14 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 						"Return the existing shipment result and make the create flow idempotent for future retries",
 						"system-fix",
 						"Correct — the safest outcome is to use the existing shipment and improve the retry path so the next timeout is not ambiguous.",
-						true,
+						true
 					),
 					timeoutChoice(
 						"create-anyway",
 						"Create a second shipment because the first lookup might be stale",
 						null,
 						"Wrong — the lookup resolved the ambiguity. Creating another shipment reintroduces the duplicate risk you just avoided.",
-						false,
+						false
 					),
 				],
 			},
@@ -610,14 +610,14 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 						"Store a client reference or Idempotency-Key, query by that key, and reuse the original shipment outcome on retries",
 						null,
 						"Perfect — explicit idempotency and evidence-based recovery eliminate the blind-retry path that caused the incident.",
-						true,
+						true
 					),
 					timeoutChoice(
 						"longer-timeout",
 						"Increase the timeout and keep the current retry behavior",
 						null,
 						"Longer timeouts may reduce noise, but they do not solve ambiguous writes. You still need an idempotent recovery path.",
-						false,
+						false
 					),
 				],
 			},
@@ -644,19 +644,19 @@ const timeoutScenarioFamily: ScenarioFamilyDefinition = {
 const scenarioFamilies: ScenarioFamilyDefinition[] = [timeoutScenarioFamily];
 
 export function getLessonDefinitionBySlug(
-	slug: string,
+	slug: string
 ): LessonDefinition | undefined {
 	return lessonDefinitions.find((lesson) => lesson.slug === slug);
 }
 
 export function getDrillFamilyById(
-	id: string,
+	id: string
 ): DrillFamilyDefinition | undefined {
 	return drillFamilies.find((family) => family.id === id);
 }
 
 export function getScenarioFamilyById(
-	id: string,
+	id: string
 ): ScenarioFamilyDefinition | undefined {
 	return scenarioFamilies.find((family) => family.id === id);
 }

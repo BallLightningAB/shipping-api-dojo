@@ -12,14 +12,18 @@ export interface StorefrontPlanConfig {
 }
 
 export function readStorefrontPlanConfig(
-	env: NodeJS.ProcessEnv = process.env,
+	env: NodeJS.ProcessEnv = process.env
 ): StorefrontPlanConfig {
 	return {
 		annual: {
-			storefrontUrl: normalizeHttpUrl(env.CREEM_PRO_ANNUAL_STOREFRONT_URL),
+			storefrontUrl: normalizeHttpUrl(env.CREEM_PRO_ANNUAL_STOREFRONT_URL, {
+				requireHttps: true,
+			}),
 		},
 		monthly: {
-			storefrontUrl: normalizeHttpUrl(env.CREEM_PRO_MONTHLY_STOREFRONT_URL),
+			storefrontUrl: normalizeHttpUrl(env.CREEM_PRO_MONTHLY_STOREFRONT_URL, {
+				requireHttps: true,
+			}),
 		},
 	};
 }

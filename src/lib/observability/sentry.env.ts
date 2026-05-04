@@ -61,7 +61,7 @@ export function parseSentryEnv(input: unknown): SentryEnv {
  */
 export function resolveSentryEnv(
 	input: unknown,
-	side: "server" | "client",
+	side: "server" | "client"
 ): ResolvedSentryConfig | null {
 	const parsed = parseSentryEnv(input);
 	const dsn = side === "server" ? parsed.SENTRY_DSN : parsed.VITE_SENTRY_DSN;
@@ -79,7 +79,7 @@ export function resolveSentryEnv(
 }
 
 export function getServerSentryConfig(
-	env: NodeJS.ProcessEnv = process.env,
+	env: NodeJS.ProcessEnv = process.env
 ): ResolvedSentryConfig | null {
 	return resolveSentryEnv(env, "server");
 }

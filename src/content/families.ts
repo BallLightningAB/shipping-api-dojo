@@ -28,19 +28,19 @@ const scenarioFamilies: ScenarioFamilyDefinition[] = [
 ];
 
 export function getLessonDefinitionBySlug(
-	slug: string,
+	slug: string
 ): LessonDefinition | undefined {
 	return lessonDefinitions.find((lesson) => lesson.slug === slug);
 }
 
 export function getDrillFamilyById(
-	id: string,
+	id: string
 ): DrillFamilyDefinition | undefined {
 	return drillFamilies.find((family) => family.id === id);
 }
 
 export function getScenarioFamilyById(
-	id: string,
+	id: string
 ): ScenarioFamilyDefinition | undefined {
 	return scenarioFamilies.find((family) => family.id === id);
 }

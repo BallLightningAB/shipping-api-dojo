@@ -28,18 +28,18 @@ describe("resolveSentryEnv", () => {
 		expect(
 			resolveSentryEnv(
 				{ VITE_SENTRY_DSN: "https://k@ingest.example/1" },
-				"server",
-			),
+				"server"
+			)
 		).toBeNull();
 		expect(
-			resolveSentryEnv({ SENTRY_DSN: "https://k@ingest.example/1" }, "client"),
+			resolveSentryEnv({ SENTRY_DSN: "https://k@ingest.example/1" }, "client")
 		).toBeNull();
 	});
 
 	it("resolves server-side config with sensible defaults", () => {
 		const resolved = resolveSentryEnv(
 			{ SENTRY_DSN: "https://server@ingest.example/1" },
-			"server",
+			"server"
 		);
 		expect(resolved).toStrictEqual({
 			dsn: "https://server@ingest.example/1",
@@ -56,7 +56,7 @@ describe("resolveSentryEnv", () => {
 				SENTRY_TRACES_SAMPLE_RATE: "0.1",
 				VITE_SENTRY_DSN: "https://client@ingest.example/1",
 			},
-			"client",
+			"client"
 		);
 		expect(resolved).toStrictEqual({
 			dsn: "https://client@ingest.example/1",

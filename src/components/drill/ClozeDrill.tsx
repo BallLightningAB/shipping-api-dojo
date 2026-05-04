@@ -15,7 +15,7 @@ interface ClozeDrillProps {
 function getInputBorderClass(
 	isSubmitted: boolean,
 	input: string,
-	answer: string,
+	answer: string
 ): string {
 	if (!isSubmitted) {
 		return "border-border";
@@ -29,7 +29,7 @@ function getInputBorderClass(
 export function ClozeDrill({ drill, onComplete }: ClozeDrillProps) {
 	const blankCount = drill.answers.length;
 	const [inputs, setInputs] = useState<string[]>(
-		new Array(blankCount).fill(""),
+		new Array(blankCount).fill("")
 	);
 	const [submitted, setSubmitted] = useState(false);
 
@@ -44,7 +44,7 @@ export function ClozeDrill({ drill, onComplete }: ClozeDrillProps) {
 	function handleSubmit() {
 		setSubmitted(true);
 		const correct = inputs.filter(
-			(v, i) => v.trim().toLowerCase() === drill.answers[i].toLowerCase(),
+			(v, i) => v.trim().toLowerCase() === drill.answers[i].toLowerCase()
 		).length;
 		onComplete(correct / blankCount);
 	}
@@ -91,7 +91,7 @@ export function ClozeDrill({ drill, onComplete }: ClozeDrillProps) {
 			{submitted && (
 				<div className="flex items-start gap-2 rounded-lg bg-muted p-3 text-sm">
 					{inputs.every(
-						(v, i) => v.trim().toLowerCase() === drill.answers[i].toLowerCase(),
+						(v, i) => v.trim().toLowerCase() === drill.answers[i].toLowerCase()
 					) ? (
 						<CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-400" />
 					) : (

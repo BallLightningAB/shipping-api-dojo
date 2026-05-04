@@ -16,10 +16,10 @@ describe("generateRootEntityGraphSchema", () => {
 		};
 
 		const website = schema["@graph"].find(
-			(entry) => entry["@type"] === "WebSite",
+			(entry) => entry["@type"] === "WebSite"
 		);
 		const app = schema["@graph"].find(
-			(entry) => entry["@type"] === "WebApplication",
+			(entry) => entry["@type"] === "WebApplication"
 		);
 
 		expect(website?.name).toBe("Shipping API Dojo");

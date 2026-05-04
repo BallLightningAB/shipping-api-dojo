@@ -13,7 +13,7 @@ import { getServerSentryConfig } from "./sentry.env";
  */
 export function sentryBeforeSend(
 	event: ErrorEvent,
-	_hint: EventHint,
+	_hint: EventHint
 ): ErrorEvent {
 	const scrubbed = scrubSentryEvent(event as unknown as ScrubbableEvent);
 	return scrubbed as unknown as ErrorEvent;

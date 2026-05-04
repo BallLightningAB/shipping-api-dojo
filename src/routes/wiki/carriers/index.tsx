@@ -17,7 +17,7 @@ interface CarrierVendorGroup {
 }
 
 function groupSurfacesByVendor(
-	surfaces: CarrierSurface[],
+	surfaces: CarrierSurface[]
 ): CarrierVendorGroup[] {
 	const groups = new Map<string, CarrierVendorGroup>();
 	for (const surface of surfaces) {
@@ -38,7 +38,7 @@ function groupSurfacesByVendor(
 	}
 
 	return [...groups.values()].sort((left, right) =>
-		left.vendor.localeCompare(right.vendor),
+		left.vendor.localeCompare(right.vendor)
 	);
 }
 

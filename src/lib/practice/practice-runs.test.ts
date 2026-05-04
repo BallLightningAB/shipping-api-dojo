@@ -26,7 +26,7 @@ describe("practice run materialization", () => {
 	it("does not expose scenario run seeds in the client-facing run payload", () => {
 		const scenario = buildScenarioPracticeRun(
 			"duplicate-webhook-replay",
-			123_456,
+			123_456
 		);
 
 		expect(scenario).not.toBeNull();
@@ -65,7 +65,7 @@ describe("practice run materialization", () => {
 
 				array.fill(0xff);
 				return array;
-			},
+			}
 		);
 
 		try {

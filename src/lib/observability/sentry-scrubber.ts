@@ -89,7 +89,7 @@ function stripUrl(url: unknown): string | undefined {
 }
 
 function pickSafeTags(
-	tags: Record<string, unknown> | undefined,
+	tags: Record<string, unknown> | undefined
 ): Record<string, unknown> | undefined {
 	if (!tags) {
 		return undefined;

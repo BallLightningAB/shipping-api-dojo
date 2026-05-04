@@ -49,7 +49,7 @@ export const getCurrentEntitlements = createServerFn({ method: "GET" }).handler(
 		const { getRequestSession } = await import("@/lib/auth/server");
 		const session = await getRequestSession();
 		return resolveEntitlementsForUserId(session?.user?.id);
-	},
+	}
 );
 
 export const requireCapability = createServerFn({ method: "GET" })

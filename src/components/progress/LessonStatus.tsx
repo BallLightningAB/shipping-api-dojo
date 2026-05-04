@@ -13,7 +13,7 @@ interface LessonStatusProps {
 export function LessonStatus({ lessonSlug }: LessonStatusProps) {
 	const completed = useStore(
 		progressStore,
-		(s) => s.lessons[lessonSlug]?.completed ?? false,
+		(s) => s.lessons[lessonSlug]?.completed ?? false
 	);
 
 	if (completed) {

@@ -34,7 +34,7 @@ describe("practice route search schemas", () => {
 describe("stripLegacySeedParamsFromHref", () => {
 	it("returns the original href unchanged when no legacy seed params are present", () => {
 		const result = stripLegacySeedParamsFromHref(
-			"/lesson/rest-timeout-recovery",
+			"/lesson/rest-timeout-recovery"
 		);
 		expect(result).toEqual({
 			changed: false,
@@ -44,7 +44,7 @@ describe("stripLegacySeedParamsFromHref", () => {
 
 	it("preserves non-legacy search params and the hash fragment", () => {
 		const result = stripLegacySeedParamsFromHref(
-			"/arena?scenario=duplicate-webhook-replay&seed=42#step-2",
+			"/arena?scenario=duplicate-webhook-replay&seed=42#step-2"
 		);
 
 		expect(result.changed).toBe(true);
@@ -53,7 +53,7 @@ describe("stripLegacySeedParamsFromHref", () => {
 
 	it("removes every legacy seed-bearing param", () => {
 		const result = stripLegacySeedParamsFromHref(
-			"/lesson/rest-timeout-recovery?seed=1&runSeed=2&exclude=a",
+			"/lesson/rest-timeout-recovery?seed=1&runSeed=2&exclude=a"
 		);
 
 		expect(result.changed).toBe(true);
@@ -62,7 +62,7 @@ describe("stripLegacySeedParamsFromHref", () => {
 
 	it("accepts hrefs with no leading slash and normalizes via the parsing base URL", () => {
 		const result = stripLegacySeedParamsFromHref(
-			"lesson/rest-timeout-recovery?seed=1",
+			"lesson/rest-timeout-recovery?seed=1"
 		);
 
 		expect(result.changed).toBe(true);

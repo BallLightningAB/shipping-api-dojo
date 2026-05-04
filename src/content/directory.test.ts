@@ -73,7 +73,7 @@ describe("directoryEntries", () => {
 
 	it("resolves carrierSlug to a real CarrierSurface", () => {
 		const surfaceSlugs = new Set(
-			carrierSurfaces.map((surface) => surface.slug),
+			carrierSurfaces.map((surface) => surface.slug)
 		);
 		for (const entry of directoryEntries) {
 			if (entry.carrierSlug) {
@@ -90,7 +90,7 @@ describe("directoryEntries", () => {
 		const directoryByCarrierSlug = new Set(
 			directoryEntries
 				.map((entry) => entry.carrierSlug)
-				.filter((slug): slug is string => Boolean(slug)),
+				.filter((slug): slug is string => Boolean(slug))
 		);
 		for (const surface of carrierSurfaces) {
 			if (surface.status === "active") {

@@ -19,8 +19,8 @@ describe("readStorefrontPlanConfig", () => {
 
 	it("falls back to safe support routing when Storefront URLs are missing or invalid", () => {
 		const config = readStorefrontPlanConfig({
-			CREEM_PRO_ANNUAL_STOREFRONT_URL: "javascript:alert(1)",
-			CREEM_PRO_MONTHLY_STOREFRONT_URL: "",
+			CREEM_PRO_ANNUAL_STOREFRONT_URL: "http://creem.io/store/annual",
+			CREEM_PRO_MONTHLY_STOREFRONT_URL: "javascript:alert(1)",
 		});
 
 		expect(config.monthly.storefrontUrl).toBeNull();
