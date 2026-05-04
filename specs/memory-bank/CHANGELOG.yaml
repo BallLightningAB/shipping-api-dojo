@@ -1,8 +1,35 @@
 entries:
   - date: "2026-05-04"
-    version: "1.4.1.11"
+    version: "1.4.1.12"
     commit: pending
     status: uncommitted
+    title: "chore(memory-bank): cap changelog archive files below 1000 lines"
+    details: |-
+      Fixes the memory-bank hygiene issue found during PR `#38` review work:
+
+      - Split the oversized historical changelog archive into two closed
+        archives, each below the 1,000-line initialization limit.
+      - Added a changelog archive README identifying the latest closed archive
+        and explaining how future quarter-numbered archive files should be
+        interpreted.
+      - Updated `scripts/rotate-changelog.sh` to enforce
+        `MAX_ARCHIVE_LINES` (default 1,000) and create the next archive file
+        before an append would exceed the cap.
+      - Fixed date parsing for extracted entries that start with `- date:` so
+        future rotated archives use quarter-based names instead of the
+        `UNKNOWN` fallback.
+      - Updated memory-bank usage guidance so archive files are historical
+        reference and not part of default thread initialization.
+
+      Validation: Bash syntax check, temp-file rotation test, and active plus
+      archive file line-count checks all passed.
+    refs:
+      - "#38"
+
+  - date: "2026-05-04"
+    version: "1.4.1.11"
+    commit: eaee7b3
+    status: committed
     title: "fix(header,plans): address latest PR #38 review feedback"
     details: |-
       Addresses the two unresolved Gemini review threads on PR `#38`:

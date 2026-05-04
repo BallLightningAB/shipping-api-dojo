@@ -30,6 +30,18 @@ The memory-bank directory contains the core documentation and tracking files for
 - Extend Refs: lines with corresponding IxDy IDs from active-context.yaml
 - Include detailed bullet points describing all changes made
 - Keep version numbers synchronized with active-context.yaml meta.release
+- Keep the active changelog below the rotation threshold with
+  `scripts/rotate-changelog.sh`.
+- Keep each file in `specs/memory-bank/changelog-archive/` at or below 1,000
+  lines. The rotation script must create a fresh archive before appending would
+  exceed that cap.
+- Treat `specs/memory-bank/changelog-archive/` as historical reference, not
+  default memory-bank initialization input. Read archives only when historical
+  release detail is expressly needed.
+- Name closed archive files so the covered date or version range is clear, or
+  use the script's quarter-numbered sequence. For quarter-numbered archives,
+  the highest suffix for a quarter is the latest closed archive for that
+  quarter.
 
 ### shipping-api-dojo-pdd.yaml
 **Purpose**: Project Design Document with technical specifications
