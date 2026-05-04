@@ -1,8 +1,35 @@
 entries:
-  - date: "2026-04-30"
-    version: "1.4.1.10"
+  - date: "2026-05-04"
+    version: "1.4.1.11"
     commit: pending
     status: uncommitted
+    title: "fix(header,plans): address latest PR #38 review feedback"
+    details: |-
+      Addresses the two unresolved Gemini review threads on PR `#38`:
+
+      - `src/components/layout/Header.tsx`: extracted the duplicated
+        session-aware account label logic into `useAccountLabel()` so desktop
+        and mobile account navigation derive "Sign in" versus "Account" from
+        the same Better Auth session source.
+      - `tests/browser/smoke.spec.ts`: updated the `/plans` smoke coverage to
+        assert the internal Creem Product IDs are absent from the public page,
+        matching the intentional Product ID removal from the public UI.
+      - `specs/current-changes/issue-5-final-production-readiness-plan.md`:
+        corrected the implementation progress note so the plan records that
+        raw Creem Product IDs are kept internal and Storefront URLs are the
+        public purchase surface.
+
+      Validation: focused Playwright plans smoke check and TypeScript
+      typecheck passed before the full commit-process validation pass.
+    refs:
+      - "I5D14"
+      - "#36"
+      - "#38"
+
+  - date: "2026-04-30"
+    version: "1.4.1.10"
+    commit: fbefb44
+    status: committed
     title: "fix(plans,settings): address final PR #38 review feedback"
     details: |-
       Addresses the unresolved PR `#38` code-review comments from the latest

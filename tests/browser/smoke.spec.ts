@@ -18,8 +18,8 @@ const BUY_PRO_ANNUAL = /buy pro annual|ask support for pro annual/i;
 const TEAM_ENTERPRISE = /team \/ enterprise/i;
 const NO_TEAM_ENTERPRISE_CHECKOUT =
 	/no team or enterprise checkout is live today/i;
-const PRO_MONTHLY_PRODUCT_ID = /prod_3jDZfwYMV4z7s0yyzLMGtp/i;
-const PRO_ANNUAL_PRODUCT_ID = /prod_2UKovfLiNB4uUAdlQrN2TD/i;
+const INTERNAL_PRO_MONTHLY_PRODUCT_ID = /prod_3jDZfwYMV4z7s0yyzLMGtp/i;
+const INTERNAL_PRO_ANNUAL_PRODUCT_ID = /prod_2UKovfLiNB4uUAdlQrN2TD/i;
 const REST_LESSONS = /rest lessons/i;
 const PRIVACY = /^privacy$/i;
 const SIGN_IN = /sign in/i;
@@ -123,8 +123,8 @@ test("public plans page exposes Free, Pro, Storefront fallback, and inquiry-only
 		page.getByRole("heading", { name: TEAM_ENTERPRISE })
 	).toBeVisible();
 	await expect(page.getByText(NO_TEAM_ENTERPRISE_CHECKOUT)).toBeVisible();
-	await expect(page.getByText(PRO_MONTHLY_PRODUCT_ID)).toBeVisible();
-	await expect(page.getByText(PRO_ANNUAL_PRODUCT_ID)).toBeVisible();
+	await expect(page.getByText(INTERNAL_PRO_MONTHLY_PRODUCT_ID)).toHaveCount(0);
+	await expect(page.getByText(INTERNAL_PRO_ANNUAL_PRODUCT_ID)).toHaveCount(0);
 	await expect(page.getByRole("link", { name: BUY_PRO_MONTHLY })).toBeVisible();
 	await expect(page.getByRole("link", { name: BUY_PRO_ANNUAL })).toBeVisible();
 	await expect(

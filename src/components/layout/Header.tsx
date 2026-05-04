@@ -129,9 +129,13 @@ function AccountLink({ label }: { label: string }) {
 	);
 }
 
-function AccountNav() {
+function useAccountLabel() {
 	const session = authClient.useSession();
-	const label = session.data?.user?.id ? "Account" : "Sign in";
+	return session.data?.user?.id ? "Account" : "Sign in";
+}
+
+function AccountNav() {
+	const label = useAccountLabel();
 	return <AccountLink label={label} />;
 }
 
@@ -157,7 +161,6 @@ function MobileAccountLink({
 }
 
 function MobileAccountNav({ onClick }: { onClick: () => void }) {
-	const session = authClient.useSession();
-	const label = session.data?.user?.id ? "Account" : "Sign in";
+	const label = useAccountLabel();
 	return <MobileAccountLink label={label} onClick={onClick} />;
 }

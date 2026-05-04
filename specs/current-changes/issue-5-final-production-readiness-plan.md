@@ -175,9 +175,9 @@ Date: 2026-04-27
   `CREEM_PRO_MONTHLY_STOREFRONT_URL` and
   `CREEM_PRO_ANNUAL_STOREFRONT_URL`, keeping those URLs separate from the
   Creem Pro product IDs used by webhook plan resolution.
-- Kept the two Pro product IDs explicit on the public plans page:
-  `prod_3jDZfwYMV4z7s0yyzLMGtp` for monthly and
-  `prod_2UKovfLiNB4uUAdlQrN2TD` for annual.
+- Kept the two Pro product IDs internal to billing and webhook resolution, and
+  exposed only the configured Creem Storefront URLs or safe support fallbacks
+  on the public plans page.
 - Added safe support fallbacks when Storefront URLs are missing or invalid.
 - Added visible Plans and Sign in / Account navigation in the header and Plans
   in the footer.
@@ -190,6 +190,13 @@ Date: 2026-04-27
   directory without hiding their SSR-visible educational content.
 - Added `/plans` to the deterministic sitemap generator and regenerated
   `public/sitemap.xml`.
+
+Date: 2026-05-04
+
+- Addressed the latest PR `#38` Gemini review pass by extracting a shared
+  session-aware account-label hook for desktop and mobile header navigation.
+- Updated browser smoke coverage so the public `/plans` page asserts internal
+  Creem Product IDs are absent instead of visible.
 
 ## Acceptance Status
 
