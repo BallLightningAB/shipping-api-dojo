@@ -6,6 +6,7 @@ ARCHIVE_DIR="${2:-specs/memory-bank/changelog-archive}"
 
 TRIGGER_LINES="${TRIGGER_LINES:-600}"
 TARGET_LINES="${TARGET_LINES:-200}"
+MAX_ARCHIVE_LINES="${MAX_ARCHIVE_LINES:-1000}"
 
 if [[ ! -f "$CHANGELOG" ]]; then
   echo "ERROR: Changelog not found: $CHANGELOG" >&2
@@ -34,13 +35,14 @@ ensure_archive_file() {
 extract_entry_quarter() {
   local entry_file="$1"
   local date_line date y m q
-  # Accept date: 2026-03-03 OR date: "2026-03-03" OR date: '2026-03-03'
-  date_line="$(grep -m1 -E '^[[:space:]]*date:[[:space:]]*["'\'']?[0-9]{4}-[0-9]{2}-[0-9]{2}' "$entry_file" || true)"
+  # Accept date: 2026-03-03 OR date: "2026-03-03" OR date: '2026-03-03',
+  # including extracted entry blocks that start with "- date:".
+  date_line="$(grep -m1 -E '^[[:space:]]*(-[[:space:]]*)?date:[[:space:]]*["'\'']?[0-9]{4}-[0-9]{2}-[0-9]{2}' "$entry_file" || true)"
   if [[ -z "$date_line" ]]; then
     echo "UNKNOWN"
     return
   fi
-  date="$(echo "$date_line" | sed -E 's/^[[:space:]]*date:[[:space:]]*["'\'']?([0-9]{4}-[0-9]{2}-[0-9]{2}).*/\1/')"
+  date="$(echo "$date_line" | sed -E 's/^[[:space:]]*(-[[:space:]]*)?date:[[:space:]]*["'\'']?([0-9]{4}-[0-9]{2}-[0-9]{2}).*/\2/')"
   y="${date:0:4}"
   m="${date:5:2}"
   # Calculate quarter: Q1=Jan-Mar, Q2=Apr-Jun, Q3=Jul-Sep, Q4=Oct-Dec
@@ -54,19 +56,63 @@ extract_entry_quarter() {
   echo "${y}-${q}"
 }
 
-get_next_archive_number() {
+extract_entry_version() {
+  local entry_file="$1"
+  local version_line
+  version_line="$(grep -m1 -E '^[[:space:]]*version:[[:space:]]*["'\'']?[^"'\'']+' "$entry_file" || true)"
+  if [[ -z "$version_line" ]]; then
+    echo "unknown-version"
+    return
+  fi
+  echo "$version_line" | sed -E 's/^[[:space:]]*version:[[:space:]]*["'\'']?([^"'\'']+).*/\1/'
+}
+
+get_latest_archive_number() {
   local quarter="$1"
-  local archive_num=1
-  local archive_file
-  
-  while true; do
-    archive_file="$ARCHIVE_DIR/changelog-archive-${quarter}-${archive_num}.yaml"
-    if [[ ! -f "$archive_file" ]]; then
-      echo "$archive_num"
+  local archive_file archive_num latest=0
+
+  shopt -s nullglob
+  for archive_file in "$ARCHIVE_DIR"/changelog-archive-"$quarter"-*.yaml; do
+    archive_file="$(basename "$archive_file")"
+    if [[ "$archive_file" =~ ^changelog-archive-${quarter}-([0-9]+)\.yaml$ ]]; then
+      archive_num="${BASH_REMATCH[1]}"
+      if (( archive_num > latest )); then
+        latest="$archive_num"
+      fi
+    fi
+  done
+  shopt -u nullglob
+
+  echo "$latest"
+}
+
+select_archive_file() {
+  local quarter="$1"
+  local entry_file="$2"
+  local entry_lines latest archive current_lines archive_num
+
+  entry_lines="$(line_count "$entry_file")"
+  if (( entry_lines + 1 > MAX_ARCHIVE_LINES )); then
+    echo "ERROR: Single changelog entry is $entry_lines lines; cannot keep archive files <= $MAX_ARCHIVE_LINES lines." >&2
+    echo "       Entry version: $(extract_entry_version "$entry_file")" >&2
+    exit 1
+  fi
+
+  latest="$(get_latest_archive_number "$quarter")"
+  if (( latest > 0 )); then
+    archive="$ARCHIVE_DIR/changelog-archive-${quarter}-${latest}.yaml"
+    ensure_archive_file "$archive"
+    current_lines="$(line_count "$archive")"
+    if (( current_lines + entry_lines + 1 <= MAX_ARCHIVE_LINES )); then
+      echo "$archive"
       return
     fi
-    ((archive_num++))
-  done
+    archive_num=$(( latest + 1 ))
+  else
+    archive_num=1
+  fi
+
+  echo "$ARCHIVE_DIR/changelog-archive-${quarter}-${archive_num}.yaml"
 }
 
 # Only run rotation if over trigger
@@ -96,12 +142,7 @@ while (( "$(line_count "$CHANGELOG")" >= TARGET_LINES )); do
   tail -n +"$last_start" "$CHANGELOG" > "$entry_file"
 
   quarter="$(extract_entry_quarter "$entry_file")"
-  if [[ "$quarter" == "UNKNOWN" ]]; then
-    archive="$ARCHIVE_DIR/changelog-archive-unknown-dates.yaml"
-  else
-    archive_num="$(get_next_archive_number "$quarter")"
-    archive="$ARCHIVE_DIR/changelog-archive-${quarter}-${archive_num}.yaml"
-  fi
+  archive="$(select_archive_file "$quarter" "$entry_file")"
 
   ensure_archive_file "$archive"
 

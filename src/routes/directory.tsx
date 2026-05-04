@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { directoryEntries } from "@/content/directory";
@@ -40,6 +40,14 @@ function DirectoryPage() {
 			<p className="mb-10 max-w-2xl text-lg text-muted-foreground">
 				Curated links to specs, tools, carrier portals, and community resources
 				for carrier API integration work.
+			</p>
+			<p className="mb-10 max-w-2xl text-sm text-muted-foreground">
+				The directory stays public for research and SEO.{" "}
+				<Link className="text-bl-red hover:underline" to="/plans">
+					Pro
+				</Link>{" "}
+				unlocks deeper in-app challenge practice rather than gating this
+				reference list.
 			</p>
 
 			{categoryOrder.map((cat) => {

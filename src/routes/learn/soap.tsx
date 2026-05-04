@@ -80,6 +80,14 @@ function SoapTrackPage() {
 					</Link>
 				</Button>
 			</div>
+			<p className="mt-6 text-sm text-muted-foreground">
+				Free includes the public SOAP lessons and drills. Pro adds premium
+				challenge rerolls for more variant practice.{" "}
+				<Link className="text-bl-red hover:underline" to="/plans">
+					Compare plans
+				</Link>
+				.
+			</p>
 		</div>
 	);
 }

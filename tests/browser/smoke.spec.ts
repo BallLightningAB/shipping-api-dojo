@@ -8,9 +8,25 @@ const FUTURE_CONSENT_TRIGGER_MATRIX = /future consent-trigger matrix/i;
 const START_REST_TRACK = /start rest track/i;
 const START_SOAP_TRACK = /start soap track/i;
 const INCIDENT_ARENA = /incident arena/i;
+const PLANS = /^plans$/i;
+const PLANS_FOR_SHIPPING_API_TRAINING = /plans for shipping api training/i;
+const FREE = /^free$/i;
+const PRO_MONTHLY = /pro monthly/i;
+const PRO_ANNUAL = /pro annual/i;
+const BUY_PRO_MONTHLY = /buy pro monthly|ask support for pro monthly/i;
+const BUY_PRO_ANNUAL = /buy pro annual|ask support for pro annual/i;
+const TEAM_ENTERPRISE = /team \/ enterprise/i;
+const NO_TEAM_ENTERPRISE_CHECKOUT =
+	/no team or enterprise checkout is live today/i;
+const INTERNAL_PRO_MONTHLY_PRODUCT_ID = /prod_3jDZfwYMV4z7s0yyzLMGtp/i;
+const INTERNAL_PRO_ANNUAL_PRODUCT_ID = /prod_2UKovfLiNB4uUAdlQrN2TD/i;
+const REST_LESSONS = /rest lessons/i;
+const PRIVACY = /^privacy$/i;
+const SIGN_IN = /sign in/i;
 const SETTINGS = /settings/i;
-const PLANS_AND_ACCESS = /plans and access/i;
+const ENTITLEMENT_STATUS = /entitlement status/i;
 const CURRENT_ENTITLEMENT_STATE = /current entitlement state/i;
+const ACCOUNT_ACCESS = /account access/i;
 const ACCOUNT_DATA_RIGHTS = /account data rights/i;
 const ACCESS_AND_EXPORT = /access and export/i;
 const DELETION_REQUESTS = /deletion requests/i;
@@ -73,10 +89,49 @@ test("home page exposes the main learning surfaces", async ({ page }) => {
 		page.locator("main").getByRole("link", { name: WIKI_QUICK_REFERENCE })
 	).toBeVisible();
 	await expect(
+		page.locator("header").getByRole("link", { name: PLANS })
+	).toBeVisible();
+	await expect(
+		page.locator("header").getByRole("link", { name: SIGN_IN })
+	).toBeVisible();
+	await expect(
 		page.locator("footer").getByRole("link", { name: PRIVACY_POLICY })
 	).toBeVisible();
 	await expect(
+		page.locator("footer").getByRole("link", { name: PLANS })
+	).toBeVisible();
+	await expect(
 		page.locator("footer").getByRole("link", { name: COOKIE_AND_STORAGE })
+	).toBeVisible();
+});
+
+test("public plans page exposes Free, Pro, Storefront fallback, and inquiry-only Enterprise", async ({
+	page,
+}) => {
+	await page.goto("/plans");
+
+	await expect(
+		page.getByRole("heading", {
+			level: 1,
+			name: PLANS_FOR_SHIPPING_API_TRAINING,
+		})
+	).toBeVisible();
+	await expect(page.getByRole("heading", { name: FREE })).toBeVisible();
+	await expect(page.getByRole("heading", { name: PRO_MONTHLY })).toBeVisible();
+	await expect(page.getByRole("heading", { name: PRO_ANNUAL })).toBeVisible();
+	await expect(
+		page.getByRole("heading", { name: TEAM_ENTERPRISE })
+	).toBeVisible();
+	await expect(page.getByText(NO_TEAM_ENTERPRISE_CHECKOUT)).toBeVisible();
+	await expect(page.getByText(INTERNAL_PRO_MONTHLY_PRODUCT_ID)).toHaveCount(0);
+	await expect(page.getByText(INTERNAL_PRO_ANNUAL_PRODUCT_ID)).toHaveCount(0);
+	await expect(page.getByRole("link", { name: BUY_PRO_MONTHLY })).toBeVisible();
+	await expect(page.getByRole("link", { name: BUY_PRO_ANNUAL })).toBeVisible();
+	await expect(
+		page.locator("main").getByRole("link", { name: REST_LESSONS })
+	).toBeVisible();
+	await expect(
+		page.locator("main").getByRole("link", { name: PRIVACY })
 	).toBeVisible();
 });
 
@@ -111,7 +166,8 @@ test("settings exposes the privacy and account-rights surfaces", async ({
 	await expect(
 		page.getByRole("heading", { level: 1, name: SETTINGS })
 	).toBeVisible();
-	await expect(page.getByText(PLANS_AND_ACCESS)).toBeVisible();
+	await expect(page.getByText(ACCOUNT_ACCESS)).toBeVisible();
+	await expect(page.getByText(ENTITLEMENT_STATUS)).toBeVisible();
 	await expect(page.getByText(CURRENT_ENTITLEMENT_STATE)).toBeVisible();
 	await expect(page.getByText(ACCOUNT_DATA_RIGHTS)).toBeVisible();
 	await expect(page.getByText(ACCESS_AND_EXPORT)).toBeVisible();
@@ -229,6 +285,9 @@ test("wave 4 cross-track lesson route keeps drills visible and gates premium rer
 		page.getByRole("link", { name: UNLOCK_NEW_CHALLENGE_PRO })
 	).toBeVisible();
 	await expect(
+		page.getByRole("link", { name: UNLOCK_NEW_CHALLENGE_PRO })
+	).toHaveAttribute("href", "/plans");
+	await expect(
 		page.getByRole("button", { name: CHECK_ANSWER }).first()
 	).toBeDisabled();
 	await expect(
@@ -257,6 +316,9 @@ test("arena lists migrated scenario cards and opens a wave 2 incident", async ({
 	await expect(
 		page.getByRole("link", { name: UNLOCK_ADVANCED_SCENARIO_DEPTH }).first()
 	).toBeVisible();
+	await expect(
+		page.getByRole("link", { name: UNLOCK_ADVANCED_SCENARIO_DEPTH }).first()
+	).toHaveAttribute("href", "/plans");
 
 	await page.goto("/arena?scenario=duplicate-webhook-replay");
 	await expect(page.getByText(TRACKING_WEBHOOK_TIMED_OUT_ONCE)).toBeVisible();

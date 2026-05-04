@@ -1,4 +1,308 @@
 entries:
+  - date: "2026-05-04"
+    version: "1.4.1.14"
+    commit: pending
+    status: uncommitted
+    title: "fix(tooling,billing): restore Ultracite presets and require HTTPS Storefront URLs"
+    details: |-
+      Addresses the local code-review findings before merging PR `#38`:
+
+      - Restored the shared Ultracite Biome presets and the original filename
+        convention rule.
+      - Added narrow Biome suppressions only where required: RFC 4122 UUID v4
+        bit masks and the existing destructive-progress reset confirmation.
+      - Made Storefront URL normalization require HTTPS for public checkout
+        CTAs while keeping the shared URL helper reusable for non-checkout HTTP
+        use cases.
+      - Added URL helper and Storefront config regression coverage for HTTPS
+        checkout requirements.
+      - Re-ran formatting under the restored Ultracite presets, so previously
+        drifted files are back under the shared formatting profile.
+
+      Validation: targeted billing/url/practice tests, `pnpm format`,
+      `pnpm lint`, and `pnpm run typecheck` passed before staging.
+    refs:
+      - "I5D14"
+      - "#36"
+      - "#38"
+
+  - date: "2026-05-04"
+    version: "1.4.1.13"
+    commit: 8fb0f49
+    status: committed
+    title: "fix(settings,billing): address fresh PR #38 Gemini review"
+    details: |-
+      Addresses the three unresolved Gemini review threads from the May 4
+      fresh review pass on PR `#38`:
+
+      - Moved Storefront HTTP/HTTPS URL normalization into a shared
+        `normalizeHttpUrl` helper and routed billing Storefront config through
+        it.
+      - Made the fallback UUID v4 bit masks explicit and added deterministic
+        regression coverage for the RFC 4122 version and variant bits.
+      - Guarded async magic-link and sign-out completion handling in settings
+        with an active component ref before navigation or state updates.
+
+      Validation: targeted Storefront, URL helper, and practice-run tests plus
+      typecheck passed before the full commit-process validation pass.
+    refs:
+      - "I5D14"
+      - "#36"
+      - "#38"
+
+  - date: "2026-05-04"
+    version: "1.4.1.12"
+    commit: 0b73dbc
+    status: committed
+    title: "chore(memory-bank): cap changelog archive files below 1000 lines"
+    details: |-
+      Fixes the memory-bank hygiene issue found during PR `#38` review work:
+
+      - Split the oversized historical changelog archive into two closed
+        archives, each below the 1,000-line initialization limit.
+      - Added a changelog archive README identifying the latest closed archive
+        and explaining how future quarter-numbered archive files should be
+        interpreted.
+      - Updated `scripts/rotate-changelog.sh` to enforce
+        `MAX_ARCHIVE_LINES` (default 1,000) and create the next archive file
+        before an append would exceed the cap.
+      - Fixed date parsing for extracted entries that start with `- date:` so
+        future rotated archives use quarter-based names instead of the
+        `UNKNOWN` fallback.
+      - Updated memory-bank usage guidance so archive files are historical
+        reference and not part of default thread initialization.
+
+      Validation: Bash syntax check, temp-file rotation test, and active plus
+      archive file line-count checks all passed.
+    refs:
+      - "#38"
+
+  - date: "2026-05-04"
+    version: "1.4.1.11"
+    commit: eaee7b3
+    status: committed
+    title: "fix(header,plans): address latest PR #38 review feedback"
+    details: |-
+      Addresses the two unresolved Gemini review threads on PR `#38`:
+
+      - `src/components/layout/Header.tsx`: extracted the duplicated
+        session-aware account label logic into `useAccountLabel()` so desktop
+        and mobile account navigation derive "Sign in" versus "Account" from
+        the same Better Auth session source.
+      - `tests/browser/smoke.spec.ts`: updated the `/plans` smoke coverage to
+        assert the internal Creem Product IDs are absent from the public page,
+        matching the intentional Product ID removal from the public UI.
+      - `specs/current-changes/issue-5-final-production-readiness-plan.md`:
+        corrected the implementation progress note so the plan records that
+        raw Creem Product IDs are kept internal and Storefront URLs are the
+        public purchase surface.
+
+      Validation: focused Playwright plans smoke check and TypeScript
+      typecheck passed before the full commit-process validation pass.
+    refs:
+      - "I5D14"
+      - "#36"
+      - "#38"
+
+  - date: "2026-04-30"
+    version: "1.4.1.10"
+    commit: fbefb44
+    status: committed
+    title: "fix(plans,settings): address final PR #38 review feedback"
+    details: |-
+      Addresses the unresolved PR `#38` code-review comments from the latest
+      Gemini review pass and moves the remaining manual activation checks into
+      a dedicated GitHub follow-up issue.
+
+      - `src/routes/settings.tsx`: added `useNavigate` import from
+        `@tanstack/react-router`, added `const navigate = useNavigate()` to
+        `AccountAccessCard` component, and replaced
+        `window.location.reload()` with `navigate({ replace: true, to: "/" })` in the
+        `handleSignOut` function.
+      - Improved magic-link submission handling by clearing the settings URL
+        state after a successful request, clearing the email field, and
+        returning more specific user-facing messages for rate-limit,
+        invalid-email, and network/fetch failures.
+      - `src/routes/plans.tsx` and `src/lib/billing/storefront.ts`: stopped
+        returning or rendering raw Creem Product IDs from the public `/plans`
+        loader payload while preserving Storefront URL fallback behaviour.
+      - `.env.example`: documented the Pro Product ID and Storefront URL
+        variables with purpose and expected formats.
+      - Created GitHub issue `#40` ("Manual Activation Checks") and moved the
+        remaining deployed/provider-dashboard checks out of PR `#38`.
+
+      No route changes and no schema changes. The sign-out flow now uses
+      idiomatic React navigation instead of a full page reload, and the public
+      plans page no longer exposes internal Product IDs.
+
+      Validation: `pnpm format`, `pnpm lint`, `pnpm typecheck`,
+      `pnpm test --run` (153/153 across 28 files).
+    refs:
+      - "#36"
+      - "#38"
+      - "#40"
+
+  - date: "2026-04-28"
+    version: "1.4.1.9"
+    commit: 0e23053
+    status: committed
+    title: "fix(plans,header): address PR #38 Gemini review feedback"
+    details: |-
+      Addresses the two Gemini code-review comments left on PR `#38`:
+
+      - `src/routes/plans.tsx`: extracted a shared `PlanCard` component
+        and dropped the `<CardTitle><h2>...</h2></CardTitle>` nesting in
+        favour of a single semantic `<h2>` styled with the title classes.
+        Removes the four duplicated card structures (Free, Pro Monthly,
+        Pro Annual, Team / Enterprise) so future pricing edits change one
+        place. Tightened the `features` prop to `string[]` so React keys
+        are stable values rather than array indices.
+      - `src/components/layout/Header.tsx`: made the mobile-menu account
+        link session-aware via a new `MobileAccountNav` component wrapped
+        in `ClientOnly`. The mobile menu now toggles between "Sign in"
+        and "Account" exactly like the desktop nav, instead of hard-coded
+        "Account".
+
+      No public copy changes, no route changes, no schema changes. The
+      `/plans` page renders identically; only the underlying markup is
+      cleaner and the mobile auth label now matches the desktop label
+      based on session state.
+
+      Validation: `pnpm format`, `pnpm lint`, `pnpm typecheck`,
+      `pnpm test --run` (153/153 across 28 files).
+    refs:
+      - "#36"
+      - "#38"
+
+  - date: "2026-04-28"
+    version: "1.4.1.8"
+    commit: 7bb0823
+    status: committed
+    title: "docs(planning): add #16 EDI sibling-product plan and open #39 umbrella monorepo refactor issue"
+    details: |-
+      Markdown-only planning additions on the `#36` branch that ride into
+      `main` with PR `#38`. No code changes. No worktree creation. No
+      restructure. The execution sequence stays strict: `#36` → `#39` → `#16`.
+
+      What changed:
+
+      - Added `specs/current-changes/issue-39-monorepo-rename-plan.md`
+        — standalone plan for renaming the GitHub repo and local working
+        folder from `shipping-api-dojo` to `apidojo-app` and converting the
+        single-app repo to a pnpm-workspaces monorepo with `apps/shipping/`
+        plus seven shared packages: `@apidojo/shared-domain`,
+        `shared-db`, `shared-auth`, `shared-billing`, `shared-email`,
+        `shared-observability`, `shared-ui`. Content schema + runtime
+        engine fold into `shared-domain`. `shared-ui` carries the shadcn
+        primitives plus the content-type-driven renderers (drill, lesson,
+        arena, wiki, progress). No `shared-content-schema` package — that
+        responsibility lives inside `shared-domain`. Pure mechanical
+        refactor. No Turborepo/Nx/Rush/Lerna in this issue.
+      - Added `specs/current-changes/issue-16-edi-product-plan.md` —
+        long-form EDI sibling-product strategy: `edi.apidojo.app`,
+        product name "EDI API Dojo", IA mirroring Shipping, single
+        Better Auth user across products, single Creem customer with a
+        cross-product API Dojo Pro Bundle, shared infra, separate
+        per-product SEO with no cross-domain canonicals, cross-product
+        overlap matrix, compatibility with the future native app from
+        `#13`.
+      - Added `specs/current-changes/issue-16-edi-product-implementation-plan.md`
+        — wave breakdown for after `#39` merges (Wave 1 scaffolding →
+        Wave 2 MVP curriculum + wiki → Wave 3 paid tier + bundle →
+        Wave 4 cross-product polish), with sub-issue layout, validation
+        rules, and 66h dev / 34h test estimates.
+      - Added `specs/current-changes/issue-16-edi-curriculum-draft.md`
+        — first-wave EDI curriculum (8 lessons, 18 drill family stubs,
+        10 scenario family stubs across X12, EDIFACT, ACKs, AS2/SFTP/
+        VAN/OFTP2 transports, mapping, ops, and ERP/WMS/TMS integration
+        realities including DHL Freight Sweden via `dhldashboard.se`).
+      - Added `specs/current-changes/issue-16-edi-wiki-inventory.md` —
+        wiki + integration + carrier-EDI + directory inventory using
+        the `#15` deep-wiki convention adapted for EDI, plus the
+        cross-product overlap matrix that decides which topics
+        canonicalise on which product.
+      - Added `specs/current-changes/issue-16-fresh-thread-prompt.md`
+        — fresh-thread prompt for the future `#16` worktree (after
+        `#39` merges).
+      - Updated `specs/memory-bank/active-context.yaml`: bumped
+        `meta.release` to `1.4.1.8`, added a new `#39` roadmap entry as
+        `planned` with `blocked_by: #36` and `blocks: [#16, #13]`,
+        refreshed the `#16` entry with the locked decisions, the wave
+        deliverables `I16D6`–`I16D9`, and the new `66h dev / 34h test`
+        estimate.
+      - Created GitHub issue `#39` (`Rename to apidojo-app and convert
+        to pnpm-workspaces monorepo`) with the body lifted from the
+        umbrella refactor plan; blocked by `#36`.
+      - Updated GitHub issue `#16` body to reflect the locked decisions
+        (subdomain `edi.apidojo.app`, EDI Pro + bundle pricing, shared
+        packages roster, `shared-ui` included), link to the new plan
+        files, and mark blocked-by `#39`.
+      - Updated PR `#38` description to note the markdown-only planning
+        additions and the new issue `#39`.
+
+      Validation:
+
+      - Markdown-only edits + YAML metadata; no runtime behavior
+        changes, all existing automated checks still apply when the
+        user runs them on this branch before merging.
+    refs:
+      - "#5"
+      - "#13"
+      - "#16"
+      - "#36"
+      - "#39"
+
+  - date: "2026-04-27"
+    version: "1.4.1.7"
+    commit: pending
+    status: uncommitted
+    title: "feat(plans): ship public Pro storefront readiness surfaces"
+    details: |-
+      Implemented the final `#5` production-readiness slice tracked by
+      issue `#36`, making the hosted v2 product ready for Creem
+      Storefront activation and public Pro sales review.
+
+      What changed:
+
+      - Added a crawlable `/plans` page with Free, Pro Monthly, Pro
+        Annual, and Team / Enterprise inquiry-only plan cards.
+      - Added runtime Creem Storefront URL configuration through
+        `CREEM_PRO_MONTHLY_STOREFRONT_URL` and
+        `CREEM_PRO_ANNUAL_STOREFRONT_URL`, while keeping the webhook
+        product IDs separate:
+        `prod_3jDZfwYMV4z7s0yyzLMGtp` and
+        `prod_2UKovfLiNB4uUAdlQrN2TD`.
+      - Added visible Plans and Sign in / Account navigation, plus footer
+        Plans access.
+      - Updated lesson and arena paid-feature locks to point to `/plans`
+        instead of `/settings#paid-access`.
+      - Added lightweight plan direction from home, learning hubs, wiki,
+        and directory while keeping public educational content crawlable.
+      - Refocused settings on account, privacy, progress, and entitlement
+        status instead of acting as the public sales page.
+      - Added `/plans` to sitemap generation and regenerated
+        `public/sitemap.xml`.
+      - Documented the external provider dashboard checks that still need
+        manual verification during payment activation.
+
+      Validation:
+
+      - `pnpm format`: passed.
+      - `pnpm lint`: passed.
+      - `pnpm typecheck`: passed.
+      - `pnpm test --run`: 153/153 tests passing across 28 files.
+      - `pnpm test:checkpoint`: passed; 14 browser checks passed and 5
+        tiered-auth checks skipped because seeded auth credentials were not
+        present locally.
+      - `pnpm audit --json`: zero advisories.
+      - `pnpm exec drizzle-kit check`: passed.
+      - `pnpm build`: passed.
+      - `pre-commit`: passed.
+    refs:
+      - "I5D14"
+      - "#5"
+      - "#36"
+
   - date: "2026-04-27"
     version: "1.4.1.6"
     commit: 21e6f1f

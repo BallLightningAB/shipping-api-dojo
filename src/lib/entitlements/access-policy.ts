@@ -28,18 +28,18 @@ export const TIER_CAPABILITY_MATRIX: TierCapabilityRow[] = [
 		label: "Pro",
 		surfaces: [
 			"All Free surfaces",
-			"Premium challenge rerolls and variant depth",
-			"Advanced review-mode scenario access",
-			"Basic certificates (when shipped)",
+			"Premium lesson and arena challenge rerolls",
+			"Advanced scenario review depth",
+			"More drill and scenario variant practice",
 		],
 	},
 	{
 		tier: "enterprise",
 		label: "Enterprise",
 		surfaces: [
-			"All Pro surfaces",
-			"Branded certificates (when shipped)",
-			"Team reporting and custom premium packs",
+			"Inquiry-only future access path",
+			"No Team or Enterprise checkout is live today",
+			"Support-handled procurement and custom-access questions",
 		],
 	},
 ];

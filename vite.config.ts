@@ -32,6 +32,10 @@ const config = defineConfig({
 		nitro({
 			// Use Vercel preset for deployment
 			preset: "vercel",
+			// Vite already emits public assets into .vercel/output/static. On
+			// Windows, Nitro's redundant public-copy chmod can fail with EPERM on
+			// SVG assets; keep the production/Linux copy path unchanged.
+			noPublicDir: process.platform === "win32",
 		}),
 		// this is the plugin that enables path aliases
 		viteTsConfigPaths({

@@ -42,6 +42,14 @@ function WikiIndexPage() {
 				concepts (idempotency, retry strategies, SOAP envelopes) and precise
 				vendor surfaces grouped by business unit, region, and protocol.
 			</p>
+			<p className="mb-10 max-w-2xl text-sm text-muted-foreground">
+				The wiki stays public and crawlable.{" "}
+				<Link className="text-bl-red hover:underline" to="/plans">
+					Pro plans
+				</Link>{" "}
+				add deeper practice in lessons and arena without hiding these reference
+				pages.
+			</p>
 
 			<section className="mb-12">
 				<div className="mb-4 flex items-center justify-between">
