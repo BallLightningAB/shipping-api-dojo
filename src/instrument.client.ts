@@ -5,7 +5,7 @@ import { sentryBeforeSend } from "./lib/observability/sentry-init";
 /**
  * Client-side Sentry bootstrap.
  *
- * Imported as a side effect from `src/router.tsx`. Installs Sentry only when
+ * Imported as a side effect from `src/client.tsx`. Installs Sentry only when
  * `VITE_SENTRY_DSN` is defined at build time AND the module is running in a
  * browser environment, otherwise it is a no-op. That double gate keeps local
  * development, CI, and preview environments Sentry-free by default and

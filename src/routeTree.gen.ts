@@ -9,43 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PlansRouteImport } from './routes/plans'
-import { Route as DirectoryRouteImport } from './routes/directory'
-import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WikiIndexRouteImport } from './routes/wiki/index'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as DirectoryRouteImport } from './routes/directory'
+import { Route as PlansRouteImport } from './routes/plans'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ArenaIndexRouteImport } from './routes/arena/index'
-import { Route as WikiSlugRouteImport } from './routes/wiki/$slug'
-import { Route as LessonSlugRouteImport } from './routes/lesson/$slug'
-import { Route as LearnSoapRouteImport } from './routes/learn/soap'
-import { Route as LearnRestRouteImport } from './routes/learn/rest'
 import { Route as LearnCrossTrackRouteImport } from './routes/learn/cross-track'
+import { Route as LearnRestRouteImport } from './routes/learn/rest'
+import { Route as LearnSoapRouteImport } from './routes/learn/soap'
+import { Route as LessonSlugRouteImport } from './routes/lesson/$slug'
+import { Route as WikiIndexRouteImport } from './routes/wiki/index'
+import { Route as WikiSlugRouteImport } from './routes/wiki/$slug'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
+import { Route as ApiWebhooksResendRouteImport } from './routes/api/webhooks/resend'
 import { Route as WikiCarriersIndexRouteImport } from './routes/wiki/carriers/index'
 import { Route as WikiCarriersSlugRouteImport } from './routes/wiki/carriers/$slug'
-import { Route as ApiWebhooksResendRouteImport } from './routes/api/webhooks/resend'
-import { Route as ApiWebhooksCreemRouteImport } from './routes/api/webhooks/creem'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlansRoute = PlansRouteImport.update({
-  id: '/plans',
-  path: '/plans',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DirectoryRoute = DirectoryRouteImport.update({
-  id: '/directory',
-  path: '/directory',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiesRoute = CookiesRouteImport.update({
@@ -53,14 +38,24 @@ const CookiesRoute = CookiesRouteImport.update({
   path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DirectoryRoute = DirectoryRouteImport.update({
+  id: '/directory',
+  path: '/directory',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WikiIndexRoute = WikiIndexRouteImport.update({
-  id: '/wiki/',
-  path: '/wiki/',
+const PlansRoute = PlansRouteImport.update({
+  id: '/plans',
+  path: '/plans',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArenaIndexRoute = ArenaIndexRouteImport.update({
@@ -68,19 +63,9 @@ const ArenaIndexRoute = ArenaIndexRouteImport.update({
   path: '/arena/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WikiSlugRoute = WikiSlugRouteImport.update({
-  id: '/wiki/$slug',
-  path: '/wiki/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LessonSlugRoute = LessonSlugRouteImport.update({
-  id: '/lesson/$slug',
-  path: '/lesson/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearnSoapRoute = LearnSoapRouteImport.update({
-  id: '/learn/soap',
-  path: '/learn/soap',
+const LearnCrossTrackRoute = LearnCrossTrackRouteImport.update({
+  id: '/learn/cross-track',
+  path: '/learn/cross-track',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRestRoute = LearnRestRouteImport.update({
@@ -88,9 +73,39 @@ const LearnRestRoute = LearnRestRouteImport.update({
   path: '/learn/rest',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LearnCrossTrackRoute = LearnCrossTrackRouteImport.update({
-  id: '/learn/cross-track',
-  path: '/learn/cross-track',
+const LearnSoapRoute = LearnSoapRouteImport.update({
+  id: '/learn/soap',
+  path: '/learn/soap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LessonSlugRoute = LessonSlugRouteImport.update({
+  id: '/lesson/$slug',
+  path: '/lesson/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WikiIndexRoute = WikiIndexRouteImport.update({
+  id: '/wiki/',
+  path: '/wiki/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WikiSlugRoute = WikiSlugRouteImport.update({
+  id: '/wiki/$slug',
+  path: '/wiki/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWebhooksCreemRoute = ApiWebhooksCreemRouteImport.update({
+  id: '/api/webhooks/creem',
+  path: '/api/webhooks/creem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWebhooksResendRoute = ApiWebhooksResendRouteImport.update({
+  id: '/api/webhooks/resend',
+  path: '/api/webhooks/resend',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WikiCarriersIndexRoute = WikiCarriersIndexRouteImport.update({
@@ -101,21 +116,6 @@ const WikiCarriersIndexRoute = WikiCarriersIndexRouteImport.update({
 const WikiCarriersSlugRoute = WikiCarriersSlugRouteImport.update({
   id: '/wiki/carriers/$slug',
   path: '/wiki/carriers/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiWebhooksResendRoute = ApiWebhooksResendRouteImport.update({
-  id: '/api/webhooks/resend',
-  path: '/api/webhooks/resend',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiWebhooksCreemRoute = ApiWebhooksCreemRouteImport.update({
-  id: '/api/webhooks/creem',
-  path: '/api/webhooks/creem',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -266,32 +266,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/plans': {
-      id: '/plans'
-      path: '/plans'
-      fullPath: '/plans'
-      preLoaderRoute: typeof PlansRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/directory': {
-      id: '/directory'
-      path: '/directory'
-      fullPath: '/directory'
-      preLoaderRoute: typeof DirectoryRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cookies': {
@@ -301,18 +280,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/directory': {
+      id: '/directory'
+      path: '/directory'
+      fullPath: '/directory'
+      preLoaderRoute: typeof DirectoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/wiki/': {
-      id: '/wiki/'
-      path: '/wiki'
-      fullPath: '/wiki/'
-      preLoaderRoute: typeof WikiIndexRouteImport
+    '/plans': {
+      id: '/plans'
+      path: '/plans'
+      fullPath: '/plans'
+      preLoaderRoute: typeof PlansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/arena/': {
@@ -322,25 +315,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArenaIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/wiki/$slug': {
-      id: '/wiki/$slug'
-      path: '/wiki/$slug'
-      fullPath: '/wiki/$slug'
-      preLoaderRoute: typeof WikiSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lesson/$slug': {
-      id: '/lesson/$slug'
-      path: '/lesson/$slug'
-      fullPath: '/lesson/$slug'
-      preLoaderRoute: typeof LessonSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/learn/soap': {
-      id: '/learn/soap'
-      path: '/learn/soap'
-      fullPath: '/learn/soap'
-      preLoaderRoute: typeof LearnSoapRouteImport
+    '/learn/cross-track': {
+      id: '/learn/cross-track'
+      path: '/learn/cross-track'
+      fullPath: '/learn/cross-track'
+      preLoaderRoute: typeof LearnCrossTrackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn/rest': {
@@ -350,11 +329,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnRestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/learn/cross-track': {
-      id: '/learn/cross-track'
-      path: '/learn/cross-track'
-      fullPath: '/learn/cross-track'
-      preLoaderRoute: typeof LearnCrossTrackRouteImport
+    '/learn/soap': {
+      id: '/learn/soap'
+      path: '/learn/soap'
+      fullPath: '/learn/soap'
+      preLoaderRoute: typeof LearnSoapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lesson/$slug': {
+      id: '/lesson/$slug'
+      path: '/lesson/$slug'
+      fullPath: '/lesson/$slug'
+      preLoaderRoute: typeof LessonSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wiki/': {
+      id: '/wiki/'
+      path: '/wiki'
+      fullPath: '/wiki/'
+      preLoaderRoute: typeof WikiIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wiki/$slug': {
+      id: '/wiki/$slug'
+      path: '/wiki/$slug'
+      fullPath: '/wiki/$slug'
+      preLoaderRoute: typeof WikiSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/webhooks/creem': {
+      id: '/api/webhooks/creem'
+      path: '/api/webhooks/creem'
+      fullPath: '/api/webhooks/creem'
+      preLoaderRoute: typeof ApiWebhooksCreemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/webhooks/resend': {
+      id: '/api/webhooks/resend'
+      path: '/api/webhooks/resend'
+      fullPath: '/api/webhooks/resend'
+      preLoaderRoute: typeof ApiWebhooksResendRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wiki/carriers/': {
@@ -369,27 +390,6 @@ declare module '@tanstack/react-router' {
       path: '/wiki/carriers/$slug'
       fullPath: '/wiki/carriers/$slug'
       preLoaderRoute: typeof WikiCarriersSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/webhooks/resend': {
-      id: '/api/webhooks/resend'
-      path: '/api/webhooks/resend'
-      fullPath: '/api/webhooks/resend'
-      preLoaderRoute: typeof ApiWebhooksResendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/webhooks/creem': {
-      id: '/api/webhooks/creem'
-      path: '/api/webhooks/creem'
-      fullPath: '/api/webhooks/creem'
-      preLoaderRoute: typeof ApiWebhooksCreemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

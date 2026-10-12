@@ -1,5 +1,5 @@
 meta:
-  release: "1.4.1.14"
+  release: "1.4.1.15"
   repo: "github.com/BallLightningAB/shipping-api-dojo"
   github-project: "https://github.com/users/BallLightningAB/projects/10"
   pdd_version: "1.0"
@@ -404,6 +404,11 @@ roadmap:
         - "[I6D1] Add wiki search"
         - "[I6D2] Add directory filtering"
   recent_done:
+    - id: security-pr-review-2026-10
+      title: "Review PR #41 and remediate the dependency security backlog"
+      status: implemented-awaiting-release
+      progress_log:
+        - note: "Reviewed the sole open PR #41, including its incidental Nitro/Rolldown changes. Its full dependency audit reported 77 advisories (5 critical, 33 high, 31 moderate, 8 low). Prepared a follow-up branch incorporating #41 and upgrading Better Auth, TanStack, Sentry, Undici, Seroval, build tooling, and vulnerable transitives to reach zero reported advisories. Aligned Nitro with Vite 8 and compatible plugins, Zod with auth IP validation, and Store with router hydration. Added password/session, one-time magic-link, verification-purpose, and English html[lang] coverage. See specs/current-changes/security-pr-review-2026-10-10.md for validation, release gates, and limitations; no production deployment or merge is implied."
     - id: create-og-images
       issue: "#6"
       title: "Create new OG images for Shipping API Dojo site"
