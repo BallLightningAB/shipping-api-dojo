@@ -17,6 +17,10 @@ entries:
       metadata in browser smoke coverage. Full validation and release limits
       are recorded in specs/current-changes/security-pr-review-2026-10-10.md.
       Changes await PR checks and release; no merge or deployment is recorded.
+      Follow-up validation: all 19 browser tests passed against an isolated
+      Neon branch derived from preview, including all five signed-in tiers.
+      Authenticated Vercel CLI SSR checks passed on four hosted public routes.
+      Shared preview had no application tables; its seed guard was preserved.
     refs:
       - "#41"
       - "I5D14"

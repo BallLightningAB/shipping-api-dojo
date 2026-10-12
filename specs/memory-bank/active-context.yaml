@@ -408,6 +408,7 @@ roadmap:
       title: "Review PR #41 and remediate the dependency security backlog"
       status: implemented-awaiting-release
       progress_log:
+        - note: "Completed all 19 Chromium tests, with zero skips, against isolated Neon branch br-wild-dawn-al62eyca derived from preview after applying existing migrations and guarded local seeds with random passwords. Shared preview was empty and was not seeded. Hosted SSR checks passed for home, plans, REST hub, and settings through the authenticated Vercel CLI without changing deployment protection. PR #42 is ready for review; rollout still requires coordinated Better Auth cutover."
         - note: "Reviewed the sole open PR #41, including its incidental Nitro/Rolldown changes. Its full dependency audit reported 77 advisories (5 critical, 33 high, 31 moderate, 8 low). Prepared a follow-up branch incorporating #41 and upgrading Better Auth, TanStack, Sentry, Undici, Seroval, build tooling, and vulnerable transitives to reach zero reported advisories. Aligned Nitro with Vite 8 and compatible plugins, Zod with auth IP validation, and Store with router hydration. Added password/session, one-time magic-link, verification-purpose, and English html[lang] coverage. See specs/current-changes/security-pr-review-2026-10-10.md for validation, release gates, and limitations; no production deployment or merge is implied."
     - id: create-og-images
       issue: "#6"

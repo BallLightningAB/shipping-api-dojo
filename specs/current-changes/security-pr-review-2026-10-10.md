@@ -63,8 +63,8 @@ social/Generic OAuth provider, so the advisory's complete attack conditions
 are not currently present. The upgrade protects future configurations too.
 Deploy all servers sharing verification storage together. Users must request
 new magic links after cutover; pending pre-upgrade links/state cannot finish.
-This advisory requires no database schema migration. No provider data was
-mutated during this review.
+This advisory requires no database schema migration. No production or shared
+preview application data was mutated during this review.
 
 ## Validation and release gates
 
@@ -76,16 +76,26 @@ mutated during this review.
 - Production build: passed with the Vercel preset on Windows. Existing
   server-function deprecation and module-directive warnings remain; the Zod
   undefined-import warning is resolved.
-- Chromium browser suite: 14 passed, 5 seeded-tier checks skipped. The English
-  language declaration, public routes, anonymous gating, and interactive
-  practice flows passed.
+- Chromium browser suite: **19 passed, zero skipped** after preparing the
+  isolated preview-derived database below. English language metadata, public
+  routes, anonymous gating, interactive practice, and all five signed-in
+  tiers passed through the actual PostgreSQL/Drizzle/Better Auth paths.
 
-Public browser checks use process-local placeholder auth/email/database
-configuration and never connect to a real provider. The five seeded-tier
-browser checks require `.playwright-auth/credentials.json` plus a real local
-or non-production database; their absence is a validation limitation, not
-evidence that signed-in tiers passed. Isolated auth integration tests use an
-in-memory adapter and do not replace deployed PostgreSQL/provider checks.
+The initial public-only run used placeholder provider configuration. After
+the user selected the preview database, a read-only inspection confirmed the
+configured endpoint maps to Neon's `preview` branch (`br-bold-brook-alzmm0ox`)
+and that this branch has no application tables. Repository seed guards
+explicitly prohibit seeding preview or production, so they were preserved.
+
+Created the isolated child branch `security-pr-42-preview-tests-2026-10-12`
+(`br-wild-dawn-al62eyca`), applied the three existing migrations, and ran the
+guarded local seed with randomized credentials. All five fixture accounts
+were created; welcome emails were suppressed by the existing seed hook.
+The complete 19-test suite passed against this branch. Credentials and logs
+remain gitignored. The test branch is retained for inspection; cleanup has
+not been performed. No real email, billing, or production-auth acceptance
+was claimed. The shared hosted preview requires schema initialization before
+it can support database-backed auth acceptance tests.
 
 Localization is deferred by the project plans. There is no Paraglide runtime,
 translation catalog, or locale route set in this app. English rendering and
@@ -102,14 +112,19 @@ untouched in their original directory.
 
 ## Hosted review outcome — 2026-10-12
 
-Draft PR [#42](https://github.com/BallLightningAB/shipping-api-dojo/pull/42)
+PR [#42](https://github.com/BallLightningAB/shipping-api-dojo/pull/42)
 contains the original #41 commit and the security fixes. Gitleaks, CodeQL
 (Actions and JavaScript/TypeScript analyses), and the Vercel build passed on
 the implementation commit `7ff4cc2`. No review findings were returned after
 the settling period. Main remains `76152b6`, already an ancestor of this
 branch, so no rebase is required. Neither PR was merged or closed.
 
-The hosted preview redirects to Vercel sign-in, so deployed routes could not
-be smoke-tested from the available browser session. Keep #42 draft until
-preview access and the five seeded-tier checks are available. Main's existing
-dependency alerts remain until a tested fix is merged and deployed.
+The initial browser session redirected to Vercel sign-in. The existing
+authenticated Vercel CLI subsequently provided authorized access without
+changing deployment protection. Hosted SSR smoke checks passed for `/`,
+`/plans`, `/learn/rest`, and `/settings`: each rendered its expected heading
+with English metadata and no server error page. Full interactive browser
+coverage ran locally against the isolated Neon branch, not the hosted URL.
+The seeded-tier and hosted-route validation gates are complete, and #42 can
+proceed to review. Main's existing dependency alerts remain until a tested
+fix is merged and deployed; the Better Auth cutover notes still apply.
