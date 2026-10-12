@@ -1,4 +1,49 @@
 entries:
+  - date: "2026-10-12"
+    version: "1.4.1.16"
+    commit: pending
+    status: uncommitted
+    title: "docs: park the artifact and record future launch verification"
+    details: |-
+      Records the user's clarification that authenticated functionality was
+      never established in production. Marks the project as parked, clarifies
+      README feature claims, and adds a concise resumption checklist covering
+      environments/schema, auth, progress, access tiers, billing/email,
+      observability, localization, and dependency/security revalidation.
+      Keeps the October security test baseline separate from live acceptance.
+      Repairs 15 pre-existing inline progress entries so memory-bank YAML
+      parses successfully. The owner requested retaining the isolated Neon
+      test branch; review credentials/logs are preserved outside the worktree.
+    refs:
+      - "#42"
+      - "I5D14"
+
+  - date: "2026-10-12"
+    version: "1.4.1.15"
+    commit: 7ff4cc2
+    status: committed
+    title: "fix(security): remediate dependency advisories and validate auth compatibility"
+    details: |-
+      Incorporates PR #41's Kysely hardening and remediates the full dependency
+      backlog from 77 reported advisories to zero. Updates Better Auth, Sentry,
+      TanStack, Undici, Seroval, and vulnerable build/transitive dependencies.
+      Aligns Nitro with Vite 8 and its plugins, Store with router hydration,
+      and Zod with Better Auth IP validation. Moves Sentry initialization to
+      the client entry and enforces deterministic sitemap LF checkouts.
+
+      Adds auth integration coverage for sessions, forwarded IPs, magic-link
+      replay, and verification-purpose separation, plus English language
+      metadata in browser smoke coverage. Full validation and release limits
+      are recorded in specs/current-changes/security-pr-review-2026-10-10.md.
+      Changes await PR checks and release; no merge or deployment is recorded.
+      Follow-up validation: all 19 browser tests passed against an isolated
+      Neon branch derived from preview, including all five signed-in tiers.
+      Authenticated Vercel CLI SSR checks passed on four hosted public routes.
+      Shared preview had no application tables; its seed guard was preserved.
+    refs:
+      - "#41"
+      - "I5D14"
+
   - date: "2026-05-04"
     version: "1.4.1.14"
     commit: pending

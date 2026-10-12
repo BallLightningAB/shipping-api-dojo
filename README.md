@@ -4,7 +4,13 @@ Shipping API Dojo is a web-first, open-core learning product for shipping and ca
 
 ## Current Product State
 
-The current public build includes:
+This project is currently maintained primarily as an artifact. The
+authenticated version was never established as a production service;
+implemented auth, paid access, and provider integrations below should not be
+read as verified live functionality. Before resuming development or launching
+those features, follow the [resumption notes](specs/current-changes/artifact-resumption-notes.md).
+
+The repository implements:
 
 - **REST lessons** covering semantics, auth, error handling, pagination, and webhooks
 - **SOAP lessons** covering envelopes, namespaces, WSDL/XSD, and faults

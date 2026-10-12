@@ -1,0 +1,2 @@
+# Generated sitemap must match the deterministic LF output on every platform.
+public/sitemap.xml text eol=lf

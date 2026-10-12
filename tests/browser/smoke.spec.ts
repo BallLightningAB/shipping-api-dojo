@@ -69,6 +69,7 @@ const XMLUNIT = /xmlunit/i;
 
 test("home page exposes the main learning surfaces", async ({ page }) => {
 	await page.goto("/");
+	await expect(page.locator("html")).toHaveAttribute("lang", "en");
 
 	await expect(
 		page.getByRole("heading", { level: 1, name: HOME_HEADING })
