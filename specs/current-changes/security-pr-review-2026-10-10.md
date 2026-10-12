@@ -99,3 +99,17 @@ before proceeding to the next PR. Do not treat elapsed time alone as a pass.
 
 The user's original checkout and its uncommitted activation-check work remain
 untouched in their original directory.
+
+## Hosted review outcome — 2026-10-12
+
+Draft PR [#42](https://github.com/BallLightningAB/shipping-api-dojo/pull/42)
+contains the original #41 commit and the security fixes. Gitleaks, CodeQL
+(Actions and JavaScript/TypeScript analyses), and the Vercel build passed on
+the implementation commit `7ff4cc2`. No review findings were returned after
+the settling period. Main remains `76152b6`, already an ancestor of this
+branch, so no rebase is required. Neither PR was merged or closed.
+
+The hosted preview redirects to Vercel sign-in, so deployed routes could not
+be smoke-tested from the available browser session. Keep #42 draft until
+preview access and the five seeded-tier checks are available. Main's existing
+dependency alerts remain until a tested fix is merged and deployed.
