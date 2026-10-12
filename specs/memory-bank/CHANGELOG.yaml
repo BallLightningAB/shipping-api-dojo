@@ -1,5 +1,24 @@
 entries:
   - date: "2026-10-12"
+    version: "1.4.1.16"
+    commit: pending
+    status: uncommitted
+    title: "docs: park the artifact and record future launch verification"
+    details: |-
+      Records the user's clarification that authenticated functionality was
+      never established in production. Marks the project as parked, clarifies
+      README feature claims, and adds a concise resumption checklist covering
+      environments/schema, auth, progress, access tiers, billing/email,
+      observability, localization, and dependency/security revalidation.
+      Keeps the October security test baseline separate from live acceptance.
+      Repairs 15 pre-existing inline progress entries so memory-bank YAML
+      parses successfully. The owner requested retaining the isolated Neon
+      test branch; review credentials/logs are preserved outside the worktree.
+    refs:
+      - "#42"
+      - "I5D14"
+
+  - date: "2026-10-12"
     version: "1.4.1.15"
     commit: 7ff4cc2
     status: committed

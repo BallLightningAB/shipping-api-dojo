@@ -61,8 +61,10 @@ the original PR's changes and remediates the larger backlog before release.
 requires 1.7.7. The current app enables magic links but does not configure a
 social/Generic OAuth provider, so the advisory's complete attack conditions
 are not currently present. The upgrade protects future configurations too.
-Deploy all servers sharing verification storage together. Users must request
-new magic links after cutover; pending pre-upgrade links/state cannot finish.
+If resuming with older running servers sharing verification storage, update
+them together and replace pending magic links/state. The owner clarified that
+authenticated functionality was never established in production, so an
+existing production-user migration is not assumed.
 This advisory requires no database schema migration. No production or shared
 preview application data was mutated during this review.
 
@@ -127,4 +129,6 @@ with English metadata and no server error page. Full interactive browser
 coverage ran locally against the isolated Neon branch, not the hosted URL.
 The seeded-tier and hosted-route validation gates are complete, and #42 can
 proceed to review. Main's existing dependency alerts remain until a tested
-fix is merged and deployed; the Better Auth cutover notes still apply.
+fix is merged and deployed. The site is now parked primarily as an artifact;
+see [resumption notes](artifact-resumption-notes.md) for unverified hosted
+auth/provider acceptance. This maintenance work does not launch those features.
