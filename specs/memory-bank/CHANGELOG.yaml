@@ -1,8 +1,8 @@
 entries:
   - date: "2026-11-27"
     version: "1.4.1.17"
-    commit: pending
-    status: uncommitted
+    commit: 8549736
+    status: committed
     title: "fix(security): patch serialization and test/tooling dependency advisories"
     details: |-
       Reviewed the current GitHub PR queue through two connected API paths:
@@ -32,6 +32,7 @@ entries:
     refs:
       - "I5D14"
       - "#42"
+      - "#43"
 
   - date: "2026-10-12"
     version: "1.4.1.16"

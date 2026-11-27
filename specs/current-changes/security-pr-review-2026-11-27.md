@@ -34,9 +34,9 @@ covered. Glob is a major transitive tooling update, kept scoped to these two
 parents. Ultracite CLI and the production build are part of validation.
 Sentry source-map upload with real credentials remains deferred.
 
-The updated audit reports **zero advisories at every severity**. This result
-applies to the prepared worktree; main remains unchanged until a future commit
-and merge. Dependency deprecation notices remain separate maintenance work.
+The validated candidate audit reports **zero advisories at every severity**.
+Hosted alert resolution must be checked after merge. Dependency deprecation
+notices remain separate maintenance work.
 
 ## Verification
 
@@ -96,9 +96,9 @@ The initial CLI token was invalid and the connected GitHub tool did not expose
 security-alert endpoints. At the user's request, browser/device authorization
 was completed before further navigation tests. `gh auth status` and `gh api
 user` now verify the active account as `BallLightningAB`, with credentials in
-the system keyring. Authenticated API checks show four open medium Dependabot
+the system keyring. Pre-merge authenticated API checks found four medium Dependabot
 alerts: #89/#90 for Vitest mocker and #91/#92 for Seroval. All four are covered
-by the prepared updates, but remain open on unchanged main. There are zero
+by the candidate updates. At that check there were zero
 open CodeQL alerts, zero open secret-scanning alerts, and zero open PRs.
 The registry audit also covered the two Glob/Minimatch advisories that are not
 listed in those four hosted alerts. Main's branch metadata
@@ -122,6 +122,10 @@ to perform while the queue remains empty.
 The queue was rechecked after validation and still contained no open PRs.
 The original checkout's tracked/untracked work remains unchanged. The review
 worktree is retained with the prepared changes and gitignored test artifacts.
+
+The validated maintenance was subsequently committed as `8549736` and opened
+as [PR #43](https://github.com/BallLightningAB/shipping-api-dojo/pull/43).
+That PR records hosted checks and the final merge/deployment outcome.
 
 Commit message:
 
