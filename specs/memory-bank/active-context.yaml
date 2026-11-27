@@ -1,5 +1,5 @@
 meta:
-  release: "1.4.1.16"
+  release: "1.4.1.17"
   project_status: parked-artifact
   production_auth_status: never-established
   repo: "github.com/BallLightningAB/shipping-api-dojo"
@@ -421,6 +421,15 @@ roadmap:
         - "[I6D1] Add wiki search"
         - "[I6D2] Add directory filtering"
   recent_done:
+    - id: security-pr-review-2026-11-27
+      title: "Recheck the PR queue and remediate new dependency advisories"
+      status: validated
+      progress_log:
+        - note: "Committed the validated security maintenance as 8549736 and opened PR #43. The PR tracks hosted checks and the final merge outcome; local unit/browser/build/security gates are complete. Artifact parking and the future hosted-auth/provider acceptance limits remain unchanged."
+        - note: "After verifying refreshed GitHub authentication, reran the entire Chromium suite three times with four concurrent workers, retries disabled, and failure traces enabled: 57 passed, zero failed/skipped in 1.7 minutes. Both previously failing navigation cases passed all three repetitions. No application/test code changed. The earlier aborts were not reproduced; root cause remains unproven and background-request cancellation noise remains documented. Acceptable for artifact maintenance, without claiming hosted-auth launch acceptance."
+        - note: "GitHub CLI authentication was refreshed with the user's browser/device authorization and verified as BallLightningAB before resuming navigation tests. Live dashboards now confirm four medium Dependabot alerts (#89-#92, all covered by the prepared fixes), zero CodeQL alerts, zero secret-scanning alerts, and zero open PRs. Main is unchanged; hosted dependency alerts will not clear until the fixes are committed and merged."
+        - note: "Validation: 161 unit/auth tests and all 19 serial Chromium checks pass, including English language metadata and all seeded tiers. Production build, schema check, format, lint, typecheck, configured private-key hook, Ultracite CLI, Gitleaks scans, and structured YAML validation pass. Concurrent cold-server browser run had two ERR_ABORTED navigations; this is documented separately from the clean serial result. Changelog rotated from 618 lines; old user edits and shared databases were preserved."
+        - note: "Verified through connected GitHub search and REST pull listing that there were no open PRs and main was 1b8fe82 at initial review. A fresh audit found six moderate advisories despite the empty queue. Updated Vitest to 4.1.12, Seroval to 1.6.11, and scoped Glob 14.0.6 overrides to Ultracite and Sentry bundler tooling; the updated audit reports zero advisories. Local validation is complete for commit and PR review. Work is isolated in .local/pr-review-2026-11-27 so original activation edits remain untouched. Full validation and limitations are in specs/current-changes/security-pr-review-2026-11-27.md."
     - id: artifact-parking-2026-10
       title: "Park the artifact with explicit resumption verification notes"
       status: documented
@@ -428,8 +437,9 @@ roadmap:
         - note: "User clarified that the authenticated version was never really put into production and the site is primarily an artifact. README now distinguishes implemented code from verified hosted functionality. specs/current-changes/artifact-resumption-notes.md records the known test baseline, environment limitations, and checks required before any future auth/paid-access launch. Temporary review resources are being cleaned up; original local activation work remains untouched."
     - id: security-pr-review-2026-10
       title: "Review PR #41 and remediate the dependency security backlog"
-      status: implemented-awaiting-release
+      status: merged
       progress_log:
+        - note: "Confirmed the October maintenance work was squash-merged as 1b8fe82 through PR #42; #41 was closed as superseded. Earlier ready-for-review notes below describe intermediate states. The artifact remains parked and hosted auth/provider acceptance remains unverified."
         - note: "Completed all 19 Chromium tests, with zero skips, against isolated Neon branch br-wild-dawn-al62eyca derived from preview after applying existing migrations and guarded local seeds with random passwords. Shared preview was empty and was not seeded. Hosted SSR checks passed for home, plans, REST hub, and settings through the authenticated Vercel CLI without changing deployment protection. PR #42 is ready for review; rollout still requires coordinated Better Auth cutover."
         - note: "Reviewed the sole open PR #41, including its incidental Nitro/Rolldown changes. Its full dependency audit reported 77 advisories (5 critical, 33 high, 31 moderate, 8 low). Prepared a follow-up branch incorporating #41 and upgrading Better Auth, TanStack, Sentry, Undici, Seroval, build tooling, and vulnerable transitives to reach zero reported advisories. Aligned Nitro with Vite 8 and compatible plugins, Zod with auth IP validation, and Store with router hydration. Added password/session, one-time magic-link, verification-purpose, and English html[lang] coverage. See specs/current-changes/security-pr-review-2026-10-10.md for validation, release gates, and limitations; no production deployment or merge is implied."
     - id: create-og-images
